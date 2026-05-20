@@ -2084,6 +2084,11 @@
             <param name="error">Original error, if the value is error, <c>#VALUE!</c> if type is not a reference or #REF! if more than one area in the reference.</param>
             <returns>True if area could be determined, false otherwise.</returns>
         </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.AnyValue.TryPickCollectionArray(ClosedXML.Excel.CalcEngine.Array@,ClosedXML.Excel.CalcEngine.CalcContext)">
+            <summary>
+            Return array from a single area reference or array. If value is scalar, return false.
+            </summary>
+        </member>
         <member name="M:ClosedXML.Excel.CalcEngine.AnyValue.TryPickSingleOrMultiValue(ClosedXML.Excel.CalcEngine.ScalarValue@,ClosedXML.Excel.CalcEngine.Array@,ClosedXML.Excel.CalcEngine.CalcContext)">
             <summary>
             <para>
@@ -2234,6 +2239,21 @@
             <summary>
             An array where all elements have same value.
             </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.CalcEngine.SlicedArray">
+            <summary>
+            An array that is a rectangular slice of the original array.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.SlicedArray.#ctor(ClosedXML.Excel.CalcEngine.Array,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a sliced array from the original array.
+            </summary>
+            <param name="original">Original array.</param>
+            <param name="rowOfs">The row offset indicating the starting row of the slice in the original array.</param>
+            <param name="rows">The number of rows in the sliced array.</param>
+            <param name="colOfs">The column offset indicating the starting column of the slice in the original array.</param>
+            <param name="cols">The number of columns in the sliced array.</param>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.AstNode">
             <summary>
@@ -2437,28 +2457,38 @@
             values from other sheets, but not from this sheetId.
             </summary>
         </member>
-        <member name="M:ClosedXML.Excel.CalcEngine.CalcContext.GetNonBlankCells(ClosedXML.Excel.CalcEngine.Reference)">
+        <member name="P:ClosedXML.Excel.CalcEngine.CalcContext.Use1904DateSystem">
             <summary>
-            Get cells with a value for a reference.
+            What date system should be used in calculation. Either 1900 or 1904.
             </summary>
-            <param name="reference">Reference for which to return cells.</param>
-            <returns>A lazy (non-materialized) enumerable of cells with a value for the reference.</returns>
         </member>
-        <member name="M:ClosedXML.Excel.CalcEngine.CalcEngineHelpers.GetTotalCellsCount(ClosedXML.Excel.CalcEngine.XObjectExpression)">
+        <member name="P:ClosedXML.Excel.CalcEngine.CalcContext.DateSystemUpperLimit">
             <summary>
-            Get total count of cells in the specified range without initializing them all
-            (which might cause serious performance issues on column-wide calculations).
+            An upper limit (exclusive) of used calendar system.
             </summary>
-            <param name="rangeExpression">Expression referring to the cell range.</param>
-            <returns>Total number of cells in the range.</returns>
         </member>
-        <member name="M:ClosedXML.Excel.CalcEngine.CalcEngineHelpers.GetRangeDimensions(ClosedXML.Excel.CalcEngine.XObjectExpression)">
+        <member name="M:ClosedXML.Excel.CalcEngine.CalcContext.ThrowIfCancelled">
             <summary>
-            Get dimensions of the specified range without initializing them all
-            (which might cause serious performance issues on column-wide calculations).
+            A helper method to check is user cancelled the calculation in function loops.
             </summary>
-            <param name="rangeExpression">Expression referring to the cell range.</param>
-            <returns>A tuple of column and row counts.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.CalcContext.GetNonBlankValues(ClosedXML.Excel.CalcEngine.Reference)">
+            <summary>
+            This method goes over slices and returns a value for each non-blank cell. Because it is using
+            slice iterators, it scales with number of cells, not a size of area in reference (i.e. it works
+            fine even if reference is <c>A1:XFD1048576</c>). It also works for 3D references.  
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.CalcContext.GetCriteriaPoints(ClosedXML.Excel.XLRangeAddress,ClosedXML.Excel.CalcEngine.Functions.Criteria)">
+            <summary>
+            Return all points in the <paramref name="areaReference" /> that satisfy the <paramref name="criteria" />.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.CalcContext.GetNonBlankValues(ClosedXML.Excel.CalcEngine.AnyValue)">
+            <summary>
+            This method should be used mostly for range arguments. If a value is scalar,
+            return a single value enumerable.
+            </summary>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.DefaultFormulaVisitor`1">
             <summary>
@@ -2646,11 +2676,6 @@
             <param name="precedentRange">A precedent area in the sheet.</param>
             <param name="formula">Formula depending on the <paramref name="precedentRange"/>.</param>
         </member>
-        <member name="T:ClosedXML.Excel.CalcEngine.Exceptions.FormulaErrorException">
-            <summary>
-            An exception to propagate error from legacy expression function.
-            </summary>
-        </member>
         <member name="T:ClosedXML.Excel.CalcEngine.Exceptions.GettingDataException">
             <summary>
             Exception that happens when formula in a cell depends on other cells,
@@ -2663,28 +2688,6 @@
             is evaluated from methods like <see cref="M:ClosedXML.Excel.XLWorkbook.Evaluate(System.String)"/>. Causes vary, e.g. implicit intersection
             needs an address of the formula cell. Various methods in ClosedXML are missing different information, e.g.
             <see cref="M:ClosedXML.Excel.IXLWorksheet.Evaluate(System.String,System.String)"/> has worksheet, but no cell address (=ranges will work, other things won't).
-            </summary>
-        </member>
-        <member name="T:ClosedXML.Excel.CalcEngine.Expression">
-            <summary>
-            An adapter for legacy function implementations.
-            </summary>
-        </member>
-        <member name="T:ClosedXML.Excel.CalcEngine.XObjectExpression">
-            <summary>
-            Expression that represents an external object.
-            </summary>
-        </member>
-        <member name="T:ClosedXML.Excel.CalcEngine.EmptyValueExpression">
-            <summary>
-            Expression that represents an omitted parameter.
-            </summary>
-        </member>
-        <member name="T:ClosedXML.Excel.CalcEngine.IValueObject">
-            <summary>
-            Interface supported by external objects that have to return a value
-            other than themselves (e.g. a cell range object should return the
-            cell content instead of the range itself).
             </summary>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.ExpressionCache">
@@ -2737,34 +2740,6 @@
             to <c>B7</c> or just value <c>7</c> =&gt; formula no longer depends on <c>A5</c>).
             </summary>
         </member>
-        <member name="T:ClosedXML.Excel.CalcEngine.FormulaFlags">
-            <summary>
-            Flags that contain some useful information about a formula (mostly derived from flags in functions).
-            </summary>
-        </member>
-        <member name="F:ClosedXML.Excel.CalcEngine.FormulaFlags.None">
-            <summary>
-            Basic formula that takes an input and returns output that is determined solely by the input. No side effects.
-            </summary>
-        </member>
-        <member name="F:ClosedXML.Excel.CalcEngine.FormulaFlags.Volatile">
-            <summary>
-            Formula contains a function whose value can be different each time the function is called, even if arguments and workbook are same.
-            </summary>
-            <example><c>TODAY</c>, <c>RAND</c></example>
-        </member>
-        <member name="F:ClosedXML.Excel.CalcEngine.FormulaFlags.SideEffect">
-            <summary>
-            Formula that has a side effects beside returning the value.
-            </summary>
-            <example><c>HYPERLINK</c> changes the content of a cell in a workbook.</example>
-        </member>
-        <member name="F:ClosedXML.Excel.CalcEngine.FormulaFlags.HasSubtotal">
-            <summary>
-            Formula contains a reference to the <c>SUBTOTAL</c> function.
-            </summary>
-            <remarks>Performance optimization, so a formula with SUBTOTAL doesn't have to check each dependent cell each time it is evaluated.</remarks>
-        </member>
         <member name="M:ClosedXML.Excel.CalcEngine.FormulaParser.GetAst(System.String,System.Boolean)">
             <summary>
             Parse a formula into an abstract syntax tree.
@@ -2794,16 +2769,6 @@
         <member name="T:ClosedXML.Excel.CalcEngine.FunctionDefinition">
             <summary>
             Function definition class (keeps function name, parameter counts, and delegate).
-            </summary>
-        </member>
-        <member name="F:ClosedXML.Excel.CalcEngine.FunctionDefinition._function">
-            <summary>
-            Only the <see cref="F:ClosedXML.Excel.CalcEngine.FunctionDefinition._function"/> or <see cref="F:ClosedXML.Excel.CalcEngine.FunctionDefinition._legacyFunction"/> is set.
-            </summary>
-        </member>
-        <member name="F:ClosedXML.Excel.CalcEngine.FunctionDefinition._legacyFunction">
-            <summary>
-            Only the <see cref="F:ClosedXML.Excel.CalcEngine.FunctionDefinition._function"/> or <see cref="F:ClosedXML.Excel.CalcEngine.FunctionDefinition._legacyFunction"/> is set.
             </summary>
         </member>
         <member name="F:ClosedXML.Excel.CalcEngine.FunctionDefinition._markedParams">
@@ -2845,6 +2810,21 @@
             <summary>
             Function returns array. Functions without this flag return a scalar value.
             CalcEngine treats such functions differently for array formulas.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.FunctionFlags.Volatile">
+            <summary>
+            Function is not deterministic.
+            </summary>
+            <example>RAND(), DATE()</example>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.FunctionFlags.Future">
+            <summary>
+            The function is a future function (i.e. functions not present in Excel 2007). Future
+            functions are displayed to the user with a name (e.g <c>SEC</c>), but are actually
+            stored in the workbook with a prefix <c>_xlfn</c> (e.g. <c>_xlfn.SEC</c>).
+            The prefix is there for backwards compatibility, to not clash with user defined
+            functions and other such reasons. See [MS-XLSX] 2.3.3 for complete list.
             </summary>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.AllowRange">
@@ -2917,16 +2897,62 @@
             all values are treated same. Make sure the method is static lambda to avoid useless allocations.
             </param>
         </member>
-        <member name="M:ClosedXML.Excel.CalcEngine.Functions.DateAndTime.BusinessDaysUntil(System.DateTime,System.DateTime,System.Collections.Generic.IEnumerable{System.DateTime})">
+        <member name="T:ClosedXML.Excel.CalcEngine.Functions.Criteria">
             <summary>
-            Calculates number of business days, taking into account:
-             - weekends (Saturdays and Sundays)
-             - bank holidays in the middle of the week
+            A representation of selection criteria used in IFs functions <c>{SUM,AVERAGE,COUNT}{IF,IFS}</c>
+            and database functions (<c>D{AVERAGE,COUNT,COUNTA,...}</c>).
             </summary>
-            <param name="firstDay">First day in the time interval</param>
-            <param name="lastDay">Last day in the time interval</param>
-            <param name="bankHolidays">List of bank holidays excluding weekends</param>
-            <returns>Number of business days during the 'span'</returns>
+        </member>
+        <member name="P:ClosedXML.Excel.CalcEngine.Functions.Criteria.CanBlankValueMatch">
+            <summary>
+            Can a blank value match the criteria?
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.Criteria.Comparison.None">
+            <summary>
+            There has to be a None comparison, because criteria empty string ("")
+            matches blank and empty string. That is not same as "=" or actual
+            blank value. Thus it can't be reduced to equal with some operand
+            and has to have a special case.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.DateAndTime.Year10K">
+            <summary>
+            Serial date of 9999-12-31. Date is generally considered invalid, if above that or below 0.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.DateAndTime.WeekdayCalc(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Calculate week day. No checks. The default form is form 3 (week starts at Sun, range 1..7). 
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.CalcEngine.Functions.DateAndTime.DateParts">
+            <summary>
+            A date type unconstrained by DateTime limitations (1900-01-00 or 1900-02-29).
+            Has some similar methods as DateTime, but without limit checks.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.DateAndTime.DateParts.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            A date type unconstrained by DateTime limitations (1900-01-00 or 1900-02-29).
+            Has some similar methods as DateTime, but without limit checks.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.CalcEngine.Functions.DateAndTime.DateParts.DayOfYear">
+            <summary>
+            Return day of year, starting from 1 to 365/366. Counts 1900 as 366 leap year.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.Lookup.Bisection(ClosedXML.Excel.CalcEngine.ScalarValue,ClosedXML.Excel.CalcEngine.Array,System.Collections.Generic.IComparer{ClosedXML.Excel.CalcEngine.ScalarValue})">
+            <summary>
+            Find index of the greatest element smaller or equal to the <paramref name="target"/>.
+            </summary>
+            <param name="target">Value to look for.</param>
+            <param name="data">Data in ascending order.</param>
+            <param name="comparer">A comparator for comparing two values.</param>
+            <returns>Index of found element. If the <paramref name="data"/> contains
+              a sequence of <paramref name="target"/> values, it can be index of any of them.
+            </returns>
         </member>
         <member name="M:ClosedXML.Excel.CalcEngine.Functions.Lookup.FindMiddle(ClosedXML.Excel.CalcEngine.Array,System.Int32,System.Int32,ClosedXML.Excel.CalcEngine.ScalarValue@)">
             <summary>
@@ -2948,17 +2974,153 @@
             A collection of adapter functions from a more a generic formula function to more specific ones.
             </summary>
         </member>
-        <member name="M:ClosedXML.Excel.CalcEngine.Text.TextJoin(System.Collections.Generic.List{ClosedXML.Excel.CalcEngine.Expression})">
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.SignatureAdapter.AdaptIfs(System.Func{ClosedXML.Excel.CalcEngine.CalcContext,ClosedXML.Excel.CalcEngine.AnyValue,System.Collections.Generic.List{System.ValueTuple{ClosedXML.Excel.CalcEngine.AnyValue,ClosedXML.Excel.CalcEngine.ScalarValue}},ClosedXML.Excel.CalcEngine.AnyValue})">
             <summary>
-            A function to Join text https://support.office.com/en-us/article/textjoin-function-357b449a-ec91-49d0-80c3-0e8fc845691c
+            An adapter for <c>{SUM,AVERAGE}IFS</c> functions.
             </summary>
-            <param name="p">Parameters</param>
-            <returns> string </returns>
-            <exception cref="T:System.ApplicationException">
-            Delimiter in first param must be a string
-            or
-            Second param must be a boolean (TRUE/FALSE)
-            </exception>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.SignatureAdapter.AdaptIfs(System.Func{ClosedXML.Excel.CalcEngine.CalcContext,System.Collections.Generic.List{System.ValueTuple{ClosedXML.Excel.CalcEngine.AnyValue,ClosedXML.Excel.CalcEngine.ScalarValue}},ClosedXML.Excel.CalcEngine.AnyValue})">
+            <summary>
+            An adapter for <c>COUNTIFS</c> function.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.SignatureAdapter.Adapt(System.Func{ClosedXML.Excel.CalcEngine.CalcContext,ClosedXML.Excel.CalcEngine.Array[],ClosedXML.Excel.CalcEngine.AnyValue})">
+            <summary>
+            Adapt a function that accepts areas as arguments (e.g. SUMPRODUCT). The key benefit is
+            that all <c>ReferenceArray</c> allocation is done once for a function. The method
+            shouldn't be used for functions that accept 3D references (e.g. SUMSQ). It is still
+            necessary to check all errors in the <paramref name="f"/>, adapt method doesn't do that
+            on its own (potential performance problem). The signature uses an array instead of
+            IReadOnlyList interface for performance reasons (can't JIT access props through interface).
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.CalcEngine.Functions.TallyAll">
+            <summary>
+            A tally function for *A functions (e.g. AverageA, MinA, MaxA). The behavior is buggy in Excel,
+            because they doesn't count logical values in array, but do count them in reference ¯\_(ツ)_/¯.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyAll.Default">
+            <summary>
+            <list type="bullet">
+              <item>Scalar values are converted to number, conversion might lead to errors.</item>
+              <item>Array values includes numbers, ignore logical and text.</item>
+              <item>Reference values include logical, number and text is considered a zero.</item>
+            </list>
+            Errors are propagated.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyAll.WithArrayText">
+            <summary>
+            <list type="bullet">
+              <item>Scalar values are converted to number, conversion might lead to errors.</item>
+              <item>Array values includes numbers, text is considered a zero and logical values are ignored.</item>
+              <item>Reference values include logical, number and text is considered a zero.</item>
+            </list>
+            Errors are propagated.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyAll.IncludeErrors">
+            <summary>
+            <list type="bullet">
+              <item>Scalar values are converted to number, conversion might lead to errors.</item>
+              <item>Array values includes numbers, text is considered a zero and logical values are ignored.</item>
+              <item>Reference values include logical, number and text is considered a zero.</item>
+            </list>
+            Errors are considered zero and are <strong>not</strong> propagated.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyAll.Subtotal10">
+            <summary>
+            Tally algorithm for <c>SUBTOTAL</c> functions 1..11.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyAll.Subtotal100">
+            <summary>
+            Tally algorithm for <c>SUBTOTAL</c> functions 101..111.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.CalcEngine.Functions.TallyCriteria">
+            <summary>
+            Tally for <c>{SUM,COUNT,AVERAGE}IF/S</c> and database function. The created tally must contain
+            all selection areas and associated criteria. The main <see cref="M:ClosedXML.Excel.CalcEngine.Functions.TallyCriteria.Tally``1(ClosedXML.Excel.CalcEngine.CalcContext,System.Span{ClosedXML.Excel.CalcEngine.AnyValue},``0)"/> function is then
+            called with values that will be tallied, based on the areas+criteria in the tally object.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyCriteria._criteriaRanges">
+            <summary>
+            A collection of areas that are tested and if all satisfy the criteria, corresponding values
+            in the tally areas are tallied.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyCriteria._toNumber">
+            <summary>
+            A method to convert a value in the tally area to a number. If scalar value shouldn't be tallied, return null.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.TallyCriteria.Add(ClosedXML.Excel.XLRangeAddress,ClosedXML.Excel.CalcEngine.Functions.Criteria)">
+            <summary>
+            Add criteria to the tally that limit which values should be tallied.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyNumbers.Default">
+            <summary>
+            Tally numbers.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyNumbers.WithoutScalarBlank">
+            <summary>
+            Ignore blank from scalar values. Basically used for <c>PRODUCT</c> function, so it doesn't end up with 0.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyNumbers.Subtotal10">
+            <summary>
+            Tally algorithm for <c>SUBTOTAL</c> functions 1..11.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyNumbers.Subtotal100">
+            <summary>
+            Tally algorithm for <c>SUBTOTAL</c> functions 101..111.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Functions.TallyNumbers.IgnoreErrors">
+            <summary>
+            Tally numbers. Any error (including conversion), logical, text is ignored and not tallied.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Functions.TallyNumbers.Tally``1(ClosedXML.Excel.CalcEngine.CalcContext,System.Span{ClosedXML.Excel.CalcEngine.AnyValue},``0)">
+            <summary>
+            The method tries to convert scalar arguments to numbers, but ignores non-numbers in
+            reference/array. Any error found is propagated to the result.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.MathTrig.MaxDoubleInt">
+            <summary>
+            Maximum integer number that can be precisely represented in a double.
+            Calculated as <c>Math.Pow(2, 53) - 1</c>, but use literal to make it
+            constant (=usable in pattern matching).
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.MathTrig.RomanForms">
+            <summary>
+            Key: roman form. Value: A collection of subtract symbols and subtract value.
+            Collection is sorted by subtract value in descending order.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Statistical.GetSquareDiffSum(ClosedXML.Excel.CalcEngine.CalcContext,System.Span{ClosedXML.Excel.CalcEngine.AnyValue},ClosedXML.Excel.CalcEngine.Functions.ITally)">
+            <summary>
+            Calculate <c>SUM((x_i - mean_x)^2)</c> and number of samples. This method uses two-pass algorithm.
+            There are several one-pass algorithms, but they are not numerically stable. In this case, accuracy
+            takes precedence (plus VAR/STDEV are not a very frequently used function). Excel might have used
+            those one-pass formulas in the past (see <em>Statistical flaws in Excel</em>), but doesn't seem to
+            be using them anymore.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Text.Windows1252">
+            <summary>
+            Characters 0x80 to 0xFF of win-1252 encoding. Core doesn't include win-1252 encoding,
+            so keep conversion table in this string.
+            </summary>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.Reference">
             <summary>
@@ -3021,6 +3183,19 @@
         <member name="M:ClosedXML.Excel.CalcEngine.ScalarValue.ToNumber(System.Globalization.CultureInfo)">
             <summary>
             Convert value to number. Error is not convertible.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.ScalarValue.Parse(System.String,System.Globalization.CultureInfo)">
+            <summary>
+            Parse text to a scalar value. Generally used in formulas or autofilter.
+            </summary>
+            <param name="text">Text to parse.</param>
+            <param name="culture">Culture used for parsing numbers or dates.</param>
+            <returns>Parsed scalar value.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.ScalarValue.TryPickNumberOrBlank(System.Double@,ClosedXML.Excel.XLError@)">
+            <summary>
+            Try to pick a number (interpret blank as number 0).
             </summary>
         </member>
         <member name="M:ClosedXML.Excel.CalcEngine.ScalarValue.HaveSameType(ClosedXML.Excel.CalcEngine.ScalarValue)">
@@ -3104,9 +3279,53 @@
             Factory to get all references (cells, tables, names) in local workbook.
             </summary>
         </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.FixFutureFunctions(System.String,System.String,ClosedXML.Excel.XLSheetPoint)">
+            <summary>
+            Add necessary prefixes to a user-supplied future functions without a prefix (e.g.
+            <c>acot(A5)/2</c> to <c>_xlfn.ACOT(A5)/2</c>).
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.PrefixTree">
+            <summary>
+            All functions must have chars in the <c>.</c>-<c>_</c> range (trie range).
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.PrefixTree.IsEnd">
+            <summary>
+            Indicates the node represents a full prefix. Leaves are always ends and middle nodes
+            sometimes (e.g. AB and ABC).
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.PrefixTree.IsLeaf">
+            <summary>
+            Something transitions to this tree.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.PrefixTree.Transitions">
+            <summary>
+            Index is a character minus <see cref="F:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.PrefixTree.LowestChar"/>. The possible range of characters
+            is from <see cref="F:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.PrefixTree.LowestChar"/> to <see cref="F:ClosedXML.Excel.CalcEngine.Visitors.FormulaTransformation.PrefixTree.HighestChar"/>.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.CalcEngine.Visitors.RenameFunctionsVisitor">
+            <summary>
+            A visitor for <see cref="T:ClosedXML.Parser.FormulaConverter"/> that maps one name of a function to another.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.CalcEngine.Visitors.RenameFunctionsVisitor._functionMap">
+            <summary>
+            Case insensitive dictionary of function names.
+            </summary>
+        </member>
         <member name="T:ClosedXML.Excel.CalcEngine.Visitors.RenameRefModVisitor">
             <summary>
             A factory to rename named reference object (sheets, tables ect.).
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.CalcEngine.Visitors.RenameRefModVisitor.Sheets">
+            <summary>
+            A mapping of sheets, from old name (key) to a new name (value).
+            The <c>null</c> value indicates sheet has been deleted.
             </summary>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.Wildcard">
@@ -3120,16 +3339,19 @@
             <summary>
             Search for the wildcard anywhere in the text.
             </summary>
-            <param name="text">Text used to search for a pattern.</param>
+            <param name="input">Text used to search for a pattern.</param>
             <returns>zero-based index of a first character in a text that matches to a pattern or -1, if match wasn't found.</returns>
         </member>
-        <member name="M:ClosedXML.Excel.CalcEngine.Wildcard.SearchSegment(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+        <member name="M:ClosedXML.Excel.CalcEngine.Wildcard.Matches(System.ReadOnlySpan{System.Char})">
             <summary>
-            Check if a segment can be found in a text.
+            Match the pattern against input.
             </summary>
-            <param name="segmentPattern">Non-empty pattern without <c>*</c> wildcard, though it can contain ? and escaped *.</param>
-            <param name="text">Non-empty text.</param>
-            <returns>First index of the pattern in the <paramref name="text"/> or -1 if not found.</returns>
+            <returns>Pattern matches whole input.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.CalcEngine.Wildcard.MatchFromStart(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <summary>
+            Does the start of an input match the pattern?
+            </summary>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.XLCalcEngine">
             <summary>
@@ -3143,10 +3365,10 @@
         </member>
         <member name="M:ClosedXML.Excel.CalcEngine.XLCalcEngine.Parse(System.String)">
             <summary>
-            Parses a string into an <see cref="T:ClosedXML.Excel.CalcEngine.Expression"/>.
+            Parses a string into an <see cref="T:ClosedXML.Excel.CalcEngine.Formula"/>.
             </summary>
             <param name="expression">String to parse.</param>
-            <returns>An <see cref="T:ClosedXML.Excel.CalcEngine.Expression"/> object that can be evaluated.</returns>
+            <returns>An formula that can be evaluated.</returns>
         </member>
         <member name="M:ClosedXML.Excel.CalcEngine.XLCalcEngine.AddArrayFormula(ClosedXML.Excel.XLSheetRange,ClosedXML.Excel.XLCellFormula,ClosedXML.Excel.XLWorksheet)">
             <summary>
@@ -3203,14 +3425,6 @@
                <item><see cref="T:ClosedXML.Excel.XLError" /> - represents a formula calculation error.</item>
             </list>
             </summary>
-        </member>
-        <member name="T:ClosedXML.Excel.CalcEngine.LegacyCalcEngineFunction">
-            <summary>
-            Delegate that represents CalcEngine functions.
-            </summary>
-            <param name="parms">List of <see cref="T:ClosedXML.Excel.CalcEngine.Expression"/> objects that represent the
-            parameters to be used in the function call.</param>
-            <returns>The function result.</returns>
         </member>
         <member name="T:ClosedXML.Excel.CalcEngine.XLCalculationChain">
             <summary>
@@ -3685,12 +3899,22 @@
             <summary>
             Gets or sets the cell's formula with A1 references.
             </summary>
+            <remarks>
+            Setter trims the formula and if formula starts with an <c>=</c>, it is removed. If the
+            formula contains unprefixed future function (e.g. <c>CONCAT</c>), it will be correctly
+            prefixed (e.g. <c>_xlfn.CONCAT</c>).
+            </remarks>
             <value>The formula with A1 references.</value>
         </member>
         <member name="P:ClosedXML.Excel.IXLCell.FormulaR1C1">
             <summary>
             Gets or sets the cell's formula with R1C1 references.
             </summary>
+            <remarks>
+            Setter trims the formula and if formula starts with an <c>=</c>, it is removed. If the
+            formula contains unprefixed future function (e.g. <c>CONCAT</c>), it will be correctly
+            prefixed (e.g. <c>_xlfn.CONCAT</c>).
+            </remarks>
             <value>The formula with R1C1 references.</value>
         </member>
         <member name="P:ClosedXML.Excel.IXLCell.FormulaReference">
@@ -4015,6 +4239,21 @@
             Invalidate <see cref="P:ClosedXML.Excel.IXLCell.CachedValue"/> so the formula will be re-evaluated next time <see cref="P:ClosedXML.Excel.IXLCell.Value"/> is accessed.
             If cell does not contain formula nothing happens.
             </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.IXLCell.SetHyperlink(ClosedXML.Excel.XLHyperlink)">
+            <summary>
+            Set hyperlink of a cell. When user clicks on a cell with hyperlink,
+            the Excel opens the target or moves cursor to the target cells in a
+            worksheet. The text of hyperlink is a cell value, the hyperlink
+            target and tooltip are defined by the <paramref name="hyperlink"/>
+            parameter.
+            </summary>
+            <remarks>
+            If the cell uses worksheet style, the method also sets <see cref="F:ClosedXML.Excel.XLThemeColor.Hyperlink">
+            hyperlink font color from theme</see> and the underline property.
+            </remarks>
+            <param name="hyperlink">The new cell hyperlink. Use <c>null</c> to
+              remove the hyperlink.</param>
         </member>
         <member name="M:ClosedXML.Excel.IXLCell.SetValue(ClosedXML.Excel.XLCellValue)">
             <inheritdoc cref="P:ClosedXML.Excel.IXLCell.Value"/>
@@ -4379,6 +4618,9 @@
             Sets the value even for merged cells.
             </summary>
         </member>
+        <member name="M:ClosedXML.Excel.XLCell.SetHyperlink(ClosedXML.Excel.XLHyperlink)">
+            <inheritdoc />
+        </member>
         <member name="P:ClosedXML.Excel.XLCell.NeedsRecalculation">
             <summary>
             Flag indicating that previously calculated cell value may be not valid anymore and has to be re-evaluated.
@@ -4431,14 +4673,7 @@
         </member>
         <member name="P:ClosedXML.Excel.XLCellFormula.A1">
             <summary>
-            Formula in A1 notation. Either this or <see cref="P:ClosedXML.Excel.XLCellFormula.R1C1"/> must be set (potentially
-            both, due to conversion from one notation to another).
-            </summary>
-        </member>
-        <member name="P:ClosedXML.Excel.XLCellFormula.R1C1">
-            <summary>
-            Formula in R1C1 notation. Either this or <see cref="P:ClosedXML.Excel.XLCellFormula.A1"/> must be set (potentially
-            both, due to conversion from one notation to another).
+            Formula in A1 notation. Doesn't start with <c>=</c> sign.
             </summary>
         </member>
         <member name="P:ClosedXML.Excel.XLCellFormula.Range">
@@ -4503,12 +4738,6 @@
             This property is meaningless, if called for non-data-table formula.
             </summary>
         </member>
-        <member name="M:ClosedXML.Excel.XLCellFormula.GetFormulaA1(ClosedXML.Excel.XLSheetPoint)">
-            <summary>
-            Get stored formula in A1 notation. Returned formula doesn't contain equal sign.
-            </summary>
-            <param name="cellAddress">Address of the formula cell. Used to convert relative R1C1 to A1, if conversion is necessary.</param>
-        </member>
         <member name="M:ClosedXML.Excel.XLCellFormula.GetFormulaR1C1(ClosedXML.Excel.XLSheetPoint)">
             <summary>
             Get stored formula in R1C1 notation. Returned formula doesn't contain equal sign.
@@ -4519,12 +4748,6 @@
             A factory method to create a normal A1 formula. Doesn't affect recalculation version.
             </summary>
             <param name="formulaA1">Formula in A1 form. Shouldn't start with <c>=</c>.</param>
-        </member>
-        <member name="M:ClosedXML.Excel.XLCellFormula.NormalR1C1(System.String)">
-            <summary>
-            A factory method to create a normal R1C1 formula. Doesn't affect recalculation version.
-            </summary>
-            <param name="formulaR1C1">Formula in R1C1 form. Shouldn't start with <c>=</c>.</param>
         </member>
         <member name="M:ClosedXML.Excel.XLCellFormula.Array(System.String,ClosedXML.Excel.XLSheetRange,System.Boolean)">
             <summary>
@@ -4632,6 +4855,17 @@
             </summary>
             <param name="map">A sorted map of columns. The values must be resorted columns numbers from <paramref name="sheetRange"/>.</param>
             <param name="sheetRange">Sheet that should have its columns rearranged.</param>
+        </member>
+        <member name="M:ClosedXML.Excel.XLCellsCollection.ForValuesAndFormulas(ClosedXML.Excel.XLSheetRange)">
+            <summary>
+            Gets used points in the range.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.XLCellsCollection.SlicesEnumerator">
+            <summary>
+            Enumerator that combines several other slice enumerators and enumerates
+            <see cref="T:ClosedXML.Excel.XLSheetPoint"/> in any of them.
+            </summary>
         </member>
         <member name="P:ClosedXML.Excel.IXLColumn.Width">
             <summary>
@@ -4983,6 +5217,44 @@
             Reorders the according to original priority. Done during load process
             </summary>
         </member>
+        <member name="T:ClosedXML.Excel.AbsLengthUnit">
+            <summary>
+            Absolute units of physical length.
+            </summary>
+            <remarks>
+            Pixels are relative units to the size of screen.
+            </remarks>
+        </member>
+        <member name="F:ClosedXML.Excel.AbsLengthUnit.Point">
+            <summary>
+            1 pt = 1/72 inch
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.AbsLengthUnit.Pica">
+            <summary>
+            1 pc = 12pt.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.AbsLengthUnit.Emu">
+            <summary>
+            English metric unit.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.Emu">
+            <summary>
+            English metric unit.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.Emu.Value">
+            <summary>
+            Length in EMU.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.Emu.To(ClosedXML.Excel.AbsLengthUnit)">
+            <summary>
+            Return length in specified unit.
+            </summary>
+        </member>
         <member name="T:ClosedXML.Excel.IXLAddress">
             <summary>
             Reference to a single cell in a workbook. Reference can be absolute, relative or mixed.
@@ -5129,6 +5401,26 @@
             <see cref="T:ClosedXML.Excel.XLRangeAddress"/> only for area reference.
             </remarks>
         </member>
+        <member name="T:ClosedXML.Excel.XLSheetOffset">
+            <summary>
+            An offset of a cell in a sheet.
+            </summary>
+            <param name="RowOfs">The row offset in number of rows from the original point.</param>
+            <param name="ColOfs">The column offset in number of columns from the original point</param>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetOffset.#ctor(System.Int32,System.Int32)">
+            <summary>
+            An offset of a cell in a sheet.
+            </summary>
+            <param name="RowOfs">The row offset in number of rows from the original point.</param>
+            <param name="ColOfs">The column offset in number of columns from the original point</param>
+        </member>
+        <member name="P:ClosedXML.Excel.XLSheetOffset.RowOfs">
+            <summary>The row offset in number of rows from the original point.</summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLSheetOffset.ColOfs">
+            <summary>The column offset in number of columns from the original point</summary>
+        </member>
         <member name="T:ClosedXML.Excel.XLSheetPoint">
             <summary>
             An point (address) in a worksheet, an equivalent of <c>ST_CellRef</c>.
@@ -5145,6 +5437,11 @@
             1-based column number in a sheet.
             </summary>
         </member>
+        <member name="M:ClosedXML.Excel.XLSheetPoint.op_Subtraction(ClosedXML.Excel.XLSheetPoint,ClosedXML.Excel.XLSheetPoint)">
+            <summary>
+            Get offset that must be added to <paramref name="origin"/> so we can get <paramref name="target"/>.
+            </summary>
+        </member>
         <member name="M:ClosedXML.Excel.XLSheetPoint.Parse(System.String)">
             <inheritdoc cref="M:ClosedXML.Excel.XLSheetPoint.Parse(System.ReadOnlySpan{System.Char})"/>
         </member>
@@ -5155,6 +5452,12 @@
             </summary>
             <param name="input">Input text</param>
             <exception cref="T:System.FormatException">If the input doesn't match expected grammar.</exception>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetPoint.TryParse(System.ReadOnlySpan{System.Char},ClosedXML.Excel.XLSheetPoint@)">
+            <summary>
+            Try to parse sheet point. Doesn't accept any extra whitespace anywhere in the input.
+            Letters must be upper case.
+            </summary>
         </member>
         <member name="M:ClosedXML.Excel.XLSheetPoint.Format(System.Span{System.Char})">
             <summary>
@@ -5248,6 +5551,12 @@
             <param name="input">Input text</param>
             <exception cref="T:System.FormatException">If the input doesn't match expected grammar.</exception>
         </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.TryParse(System.ReadOnlySpan{System.Char},ClosedXML.Excel.XLSheetRange@)">
+            <summary>
+            Try to parse area. Doesn't accept any extra whitespace anywhere in the input. Letters
+            must be upper case. Area can specify one corner (<c>A1</c>) or both corners (<c>A1:B3</c>).
+            </summary>
+        </member>
         <member name="M:ClosedXML.Excel.XLSheetRange.Format(System.Span{System.Char})">
             <summary>
             Write the sheet range to the span. If range has only one cell, write only the cell.
@@ -5296,6 +5605,12 @@
             </summary>
             <param name="rows">How many rows to take, must be at least one.</param>
         </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.SliceFromLeft(System.Int32)">
+            <summary>
+            Create a new range from this one by taking a number of rows from the left column to the right.
+            </summary>
+            <param name="columns">How many columns to take, must be at least one.</param>
+        </member>
         <member name="M:ClosedXML.Excel.XLSheetRange.SliceFromRight(System.Int32)">
             <summary>
             Create a new range from this one by taking a number of rows from the bottom row up.
@@ -5310,12 +5625,23 @@
             <param name="otherRange">The other range.</param>
             <returns>A range that contains both this range and <paramref name="otherRange"/>.</returns>
         </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.Intersects(ClosedXML.Excel.XLSheetRange)">
+            <summary>
+            Does this range intersects with <paramref name="other"/>.
+            </summary>
+            <returns><c>true</c> if intersects, <c>false</c> otherwise.</returns>
+        </member>
         <member name="M:ClosedXML.Excel.XLSheetRange.Intersect(ClosedXML.Excel.XLSheetRange)">
             <summary>
             Do an intersection between this range and other range.
             </summary>
             <param name="other">Other range.</param>
             <returns>The intersection range if it exists and is non-empty or null, if intersection doesn't exist.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.Overlaps(ClosedXML.Excel.XLSheetRange)">
+            <summary>
+            Does this range overlaps the <paramref name="otherRange"/>?
+            </summary>
         </member>
         <member name="M:ClosedXML.Excel.XLSheetRange.IsEntireColumn">
             <summary>
@@ -5340,6 +5666,59 @@
             </summary>
             <param name="rowShift">By how much to shift the range, positive - downwards, negative - upwards.</param>
             <returns>Newly created area.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.ShiftColumns(System.Int32)">
+            <summary>
+            Return a new range that has been shifted in horizontal direction by <paramref name="columnShift"/>.
+            </summary>
+            <param name="columnShift">By how much to shift the range, positive - rightward, negative - leftward.</param>
+            <returns>Newly created area.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.TryInsertAreaAndShiftRight(ClosedXML.Excel.XLSheetRange,System.Nullable{ClosedXML.Excel.XLSheetRange}@)">
+            <summary>
+            Calculate size and position of the area when another area is inserted into a sheet.
+            </summary>
+            <param name="insertedArea">Inserted area.</param>
+            <param name="result">The result, might be <c>null</c> as a valid result if area is pushed out.</param>
+            <returns><c>true</c> if results wasn't partially shifted.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.TryInsertAreaAndShiftDown(ClosedXML.Excel.XLSheetRange,System.Nullable{ClosedXML.Excel.XLSheetRange}@)">
+            <summary>
+            Calculate size and position of the area when another area is inserted into a sheet.
+            </summary>
+            <param name="insertedArea">Inserted area.</param>
+            <param name="result">The result, might be <c>null</c> as a valid result if area is pushed out.</param>
+            <returns><c>true</c> if results wasn't partially shifted.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.TryDeleteAreaAndShiftLeft(ClosedXML.Excel.XLSheetRange,System.Nullable{ClosedXML.Excel.XLSheetRange}@)">
+            <summary>
+            Take the area and reposition it as if the <paramref name="deletedArea"/> was removed
+            from sheet. If cells the left of the area are deleted, the area shifts to the left.
+            If <paramref name="deletedArea"/> is within the area, the width of the area decreases.
+            </summary>
+            <remarks>
+            If the method returns <c>false</c>, there is a partial cover and it's up to you to
+            decide what to do.
+            </remarks>
+            <returns>
+            The <paramref name="result"/> has a value <c>null</c> if the range was completely
+            removed by <paramref name="deletedArea"/>.
+            </returns>
+        </member>
+        <member name="M:ClosedXML.Excel.XLSheetRange.TryDeleteAreaAndShiftUp(ClosedXML.Excel.XLSheetRange,System.Nullable{ClosedXML.Excel.XLSheetRange}@)">
+            <summary>
+            Take the area and reposition it as if the <paramref name="deletedArea"/> was removed
+            from sheet. If cells upward of the area are deleted, the area shifts to the upward.
+            If <paramref name="deletedArea"/> is within the area, the height of the area decreases.
+            </summary>
+            <remarks>
+            If the method returns <c>false</c>, there is a partial cover and it's up to you to
+            decide what to do.
+            </remarks>
+            <returns>
+            The <paramref name="result"/> has a value <c>null</c> if the range was completely
+            removed by <paramref name="deletedArea"/>.
+            </returns>
         </member>
         <member name="T:ClosedXML.Excel.XLSheetReference">
             <summary>
@@ -5771,11 +6150,118 @@
             </summary>
             <returns>A created copy of the picture.</returns>
         </member>
+        <member name="P:ClosedXML.Excel.IXLDrawingMargins.Left">
+            <summary>
+            Left margin in inches.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.IXLDrawingMargins.Right">
+            <summary>
+            Right margin in inches.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.IXLDrawingMargins.Top">
+            <summary>
+            Top margin in inches.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.IXLDrawingMargins.Bottom">
+            <summary>
+            Bottom margin in inches.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.IXLDrawingMargins.All">
+            <summary>
+            Set <see cref="P:ClosedXML.Excel.IXLDrawingMargins.Left"/>, <see cref="P:ClosedXML.Excel.IXLDrawingMargins.Top"/>, <see cref="P:ClosedXML.Excel.IXLDrawingMargins.Right"/>, <see cref="P:ClosedXML.Excel.IXLDrawingMargins.Bottom"/> margins at once.
+            </summary>
+        </member>
         <member name="T:ClosedXML.Excel.Exceptions.InvalidReferenceException">
             <summary>
             A reference to the data in a worksheet is not valid. E.g. sheet with
             specific name doesn't exist, name doesn't exist.
             </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.IXLHyperlinks.Delete(ClosedXML.Excel.XLHyperlink)">
+            <summary>
+            Remove the hyperlink from a worksheet. Doesn't throw if hyperlinks is
+            not attached to a worksheet.
+            </summary>
+            <remarks>
+            If hyperlink range uses a <see cref="F:ClosedXML.Excel.XLThemeColor.Hyperlink">hyperlink
+            theme color</see>, the style is reset to the sheet style font color.
+            The <see cref="P:ClosedXML.Excel.IXLFontBase.Underline"/> is also set to sheet style
+            underline.
+            </remarks>
+            <param name="hyperlink">Hyperlink to remove.</param>
+            <returns><c>true</c> if hyperlink was part of the worksheet and was
+              removed. <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.IXLHyperlinks.Delete(ClosedXML.Excel.IXLAddress)">
+            <summary>
+            Delete a hyperlink defined for a single cell. It doesn't delete
+            hyperlinks that cover the cell.
+            </summary>
+            <remarks>
+            If hyperlink range uses a <see cref="F:ClosedXML.Excel.XLThemeColor.Hyperlink">hyperlink
+            theme color</see>, the style is reset to the sheet style font color.
+            The <see cref="P:ClosedXML.Excel.IXLFontBase.Underline"/> is also set to sheet style
+            underline.
+            </remarks>
+            <param name="address">Address of the cell.</param>
+            <returns><c>true</c> if there was such hyperlink and was deleted.
+              <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.IXLHyperlinks.Get(ClosedXML.Excel.IXLAddress)">
+            <summary>
+            Get a hyperlink for a single cell.
+            </summary>
+            <param name="address">Address of the cell.</param>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Cell doesn't have a hyperlink.</exception>
+        </member>
+        <member name="M:ClosedXML.Excel.IXLHyperlinks.TryGet(ClosedXML.Excel.IXLAddress,ClosedXML.Excel.XLHyperlink@)">
+            <summary>
+            Get a hyperlink for a single cell.
+            </summary>
+            <param name="address">Address of the cell.</param>
+            <param name="hyperlink">Found hyperlink.</param>
+            <returns><c>true</c> if there was a hyperlink for <paramref name="address"/>, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ClosedXML.Excel.XLHyperlinks.Delete(ClosedXML.Excel.XLHyperlink)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Excel.XLHyperlinks.Delete(ClosedXML.Excel.IXLAddress)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Excel.XLHyperlinks.Get(ClosedXML.Excel.IXLAddress)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Excel.XLHyperlinks.TryGet(ClosedXML.Excel.IXLAddress,ClosedXML.Excel.XLHyperlink@)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Excel.XLHyperlinks.Add(ClosedXML.Excel.XLSheetRange,ClosedXML.Excel.XLHyperlink)">
+            <summary>
+            Add a hyperlink. Doesn't modify style, unlike public API.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.XLHyperlinks.Clear(ClosedXML.Excel.XLSheetRange)">
+            <summary>
+            Remove a hyperlink. Doesn't modify style, unlike public API.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLHyperlink.Cell">
+            <summary>
+            Gets top left cell of a hyperlink range. Return <c>null</c>,
+            if the hyperlink isn't in a worksheet.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLHyperlink.Tooltip">
+            <summary>
+            Tooltip displayed when user hovers over the hyperlink range. If not specified,
+            the link target is displayed in the tooltip.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.XLHyperlink.Delete">
+            <inheritdoc cref="M:ClosedXML.Excel.IXLHyperlinks.Delete(ClosedXML.Excel.XLHyperlink)"/>
         </member>
         <member name="T:ClosedXML.Excel.InsertData.IInsertDataReader">
             <summary>
@@ -6156,6 +6642,11 @@
         <member name="P:ClosedXML.Excel.IXLWorksheet.Outline">
             <summary>
             Gets an object to manipulate the Outline levels.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.IXLWorksheet.Hyperlinks">
+            <summary>
+            All hyperlinks in the sheet.
             </summary>
         </member>
         <member name="M:ClosedXML.Excel.IXLWorksheet.FirstRow">
@@ -7478,6 +7969,19 @@
             <param name="range">Range for which to create the pivot cache.</param>
             <returns>The pivot cache for the range.</returns>
         </member>
+        <member name="T:ClosedXML.Excel.IXLPivotSource">
+            <summary>
+            An abstraction of source data for a <see cref="T:ClosedXML.Excel.XLPivotCache"/>. Implementations must correctly
+            implement equals.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Excel.IXLPivotSource.TryGetSource(ClosedXML.Excel.XLWorkbook,ClosedXML.Excel.XLWorksheet@,System.Nullable{ClosedXML.Excel.XLSheetRange}@)">
+            <summary>
+            Try to determine actual area of the source reference in the
+            workbook. Source reference might not be valid in the workbook, some might
+            not be supported.
+            </summary>
+        </member>
         <member name="P:ClosedXML.Excel.IXLPivotTable.ColumnLabels">
             <summary>
             Labels displayed in columns (i.e. horizontal axis) of the pivot table.
@@ -7935,6 +8439,12 @@
             Pivot cache definition id from the file.
             </summary>
         </member>
+        <member name="P:ClosedXML.Excel.XLPivotCache.Source">
+            <summary>
+            A source of the in the cache. Can be used to refresh the cache. May not always be
+            available (e.g. external source)
+            </summary>
+        </member>
         <member name="M:ClosedXML.Excel.XLPivotCache.TryGetFieldIndex(System.String,System.Int32@)">
             <summary>
             Try to get a field index for a field name.
@@ -7978,6 +8488,36 @@
         <member name="M:ClosedXML.Excel.XLPivotCacheSharedItems.IndexOf(ClosedXML.Excel.XLCellValue)">
             <summary>
             Get index of value or -1 if not among shared items.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.XLPivotCacheSourceConsolidationPage">
+            <summary>
+            A page filter for pivot table that uses <see cref="T:ClosedXML.Excel.XLPivotSourceConsolidation"/> as the source
+            of data. It is basically a container of strings that are displayed in a page filter above
+            the pivot table.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotCacheSourceConsolidationPage.PageItems">
+            <summary>
+            Page items (=names) displayed in the filter. The value is referenced
+            through index by <see cref="P:ClosedXML.Excel.XLPivotCacheSourceConsolidationRangeSet.Indexes"/>.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.XLPivotCacheSourceConsolidationRangeSet">
+            <summary>
+            One of ranges that form a <see cref="T:ClosedXML.Excel.XLPivotSourceConsolidation"/> source for a <see cref="T:ClosedXML.Excel.XLPivotCache"/>.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotCacheSourceConsolidationRangeSet.Indexes">
+            <summary>
+            Indexes into the <see cref="P:ClosedXML.Excel.XLPivotSourceConsolidation.Pages"/>. If the value is null
+            and page filter exists, it is displayed as a blank. There can be at most 4 indexes, because
+            there can be at most 4 page filters.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotCacheSourceConsolidationRangeSet.RelId">
+            <summary>
+            If range set is from another workbook, a relationship id to the workbook from cache definition.
             </summary>
         </member>
         <member name="T:ClosedXML.Excel.XLPivotCacheValue">
@@ -8364,10 +8904,80 @@
             absolute reference. This attribute is used if posRef is set to true.
             </summary>
         </member>
+        <member name="T:ClosedXML.Excel.XLPivotSourceConnection">
+            <summary>
+            Source of data for a <see cref="T:ClosedXML.Excel.XLPivotCache"/> that takes data from a connection
+            to external source of data (e.g. database or a workbook).
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.XLPivotSourceConsolidation">
+            <summary>
+            Source of data for a <see cref="T:ClosedXML.Excel.XLPivotCache"/> that takes uses a union of multiple scenarios in the workbook to
+            create data.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceConsolidation.AutoPage">
+            <summary>
+            Will application automatically create additional page filter in addition to the <see cref="P:ClosedXML.Excel.XLPivotSourceConsolidation.Pages"/>.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceConsolidation.Pages">
+            <summary>
+            <para>
+            Custom page filters that toggle whether to display data from a particular
+            <see cref="T:ClosedXML.Excel.XLPivotCacheSourceConsolidationRangeSet">range set</see>.
+            There can be 0..4 page filters. Each can have a different combination
+            of range sets.
+            </para>
+            <para>
+            Example:
+            <example>
+            The range sets are months and one page is <em>Q1</em>,<em>Q2</em>,<em>Q3</em>,<em>Q4</em>
+            and second page filter is <em>Last month of quarter</em> and <em>Other months</em>. These
+            page items are referenced by <see cref="P:ClosedXML.Excel.XLPivotCacheSourceConsolidationRangeSet.Indexes"/>.
+            </example>
+            </para>
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceConsolidation.RangeSets">
+            <summary>
+            Range sets that consists the cache source.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.XLPivotSourceExternalWorkbook">
+            <summary>
+            Source of data for a <see cref="T:ClosedXML.Excel.XLPivotCache"/> that takes data from external workbook.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceExternalWorkbook.RelId">
+            <summary>
+            External workbook relId. If relationships of cache definition changes, make sure to either keep same or update it.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceExternalWorkbook.UsesName">
+            <summary>
+            Are source data in external workbook defined by a <see cref="P:ClosedXML.Excel.XLPivotSourceExternalWorkbook.TableOrName"/> or by <see cref="P:ClosedXML.Excel.XLPivotSourceExternalWorkbook.Area">cell area</see>.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceExternalWorkbook.TableOrName">
+            <summary>
+            A table or defined name in an external workbook that contains source data.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceExternalWorkbook.Area">
+            <summary>
+            An area in an external workbook that contains source data.
+            </summary>
+        </member>
         <member name="T:ClosedXML.Excel.XLPivotSourceReference">
             <summary>
-            A reference to the pivot source. The source might exist or not, that
-            is evaluated during pivot cache record refresh.
+            A reference to the source data of <see cref="T:ClosedXML.Excel.XLPivotCache"/>. The source might exist
+            or not, that is evaluated during pivot cache record refresh.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Excel.XLPivotSourceReference.UsesName">
+            <summary>
+            Are source data in external workbook defined by a <see cref="P:ClosedXML.Excel.XLPivotSourceReference.Name"/> or by <see cref="P:ClosedXML.Excel.XLPivotSourceReference.Area">cell area</see>.
             </summary>
         </member>
         <member name="P:ClosedXML.Excel.XLPivotSourceReference.Area">
@@ -8385,6 +8995,12 @@
             <summary>
             Try to determine actual area of the source reference in the
             workbook. Source reference might not be valid in the workbook.
+            </summary>
+        </member>
+        <member name="T:ClosedXML.Excel.XLPivotSourceScenario">
+            <summary>
+            Source of data for a <see cref="T:ClosedXML.Excel.XLPivotCache"/> that takes uses scenarios in the workbook to
+            create data.
             </summary>
         </member>
         <member name="F:ClosedXML.Excel.XLPivotTable._fields">
@@ -8934,16 +9550,6 @@
         <member name="F:ClosedXML.Excel.XLPivotSortType.Descending">
             <summary>
             Field values are sorted in descending order.
-            </summary>
-        </member>
-        <member name="F:ClosedXML.Excel.XLPivotTableSourceType.Area">
-            <summary>
-            A range in a sheet of the workbook.
-            </summary>
-        </member>
-        <member name="F:ClosedXML.Excel.XLPivotTableSourceType.Named">
-            <summary>
-            Book-scoped named range or a table.
             </summary>
         </member>
         <member name="T:ClosedXML.Excel.XLPivotTableField">
@@ -9753,18 +10359,33 @@
             <summary>
               Sets the cells' formula with A1 references.
             </summary>
+            <remarks>
+            Setter trims the formula and if formula starts with an <c>=</c>, it is removed. If the
+            formula contains unprefixed future function (e.g. <c>CONCAT</c>), it will be correctly
+            prefixed (e.g. <c>_xlfn.CONCAT</c>).
+            </remarks>
             <value>The formula with A1 references.</value>
         </member>
         <member name="P:ClosedXML.Excel.IXLRangeBase.FormulaArrayA1">
             <summary>
             Create an array formula for all cells in the range.
             </summary>
+            <remarks>
+            Setter trims the formula and if formula starts with an <c>=</c>, it is removed. If the
+            formula contains unprefixed future function (e.g. <c>CONCAT</c>), it will be correctly
+            prefixed (e.g. <c>_xlfn.CONCAT</c>).
+            </remarks>
             <exception cref="T:System.InvalidOperationException">When the range overlaps with a table, pivot table, merged cells or partially overlaps another array formula.</exception>
         </member>
         <member name="P:ClosedXML.Excel.IXLRangeBase.FormulaR1C1">
             <summary>
               Sets the cells' formula with R1C1 references.
             </summary>
+            <remarks>
+            Setter trims the formula and if formula starts with an <c>=</c>, it is removed. If the
+            formula contains unprefixed future function (e.g. <c>CONCAT</c>), it will be correctly
+            prefixed (e.g. <c>_xlfn.CONCAT</c>).
+            </remarks>
             <value>The formula with R1C1 references.</value>
         </member>
         <member name="P:ClosedXML.Excel.IXLRangeBase.ShareString">
@@ -12375,6 +12996,33 @@
             <param name="value">The converted value.</param>
             <param name="culture">The culture used to get time and decimal separators.</param>
         </member>
+        <member name="F:ClosedXML.Excel.XLConstants.FutureFunctions">
+            <summary>
+            Functions that are marked with a prefix <c>_xlfn</c> in formulas, but not GUI. Officially,
+            they are called future functions.
+            </summary>
+            <remarks>
+            Up to date for MS-XLSX 26.1 from 2024-12-11.
+            </remarks>
+        </member>
+        <member name="F:ClosedXML.Excel.XLConstants.WorksheetOnlyFunctions">
+            <summary>
+            Functions that are marked with a prefix <c>_xlfn._xlws</c> in formulas, but not GUI. They
+            are part of the future functions. Unlike other future functions, they can only be used in
+            a worksheet, but not a macro sheet. In the grammar, they are marked as
+            <c>worksheet-only-function-list</c>.
+            </summary>
+            <remarks>
+            Up to date for MS-XLSX 26.1 from 2024-12-11.
+            </remarks>
+        </member>
+        <member name="F:ClosedXML.Excel.XLConstants.FutureFunctionMap">
+            <summary>
+            Key: GUI name of future function, Value: prefixed name of future function. This doesn't
+            include all future functions, only ones that need a hidden prefix (e.g. <c>ECMA.CEILING</c>
+            is a future function without a prefix).
+            </summary>
+        </member>
         <member name="F:ClosedXML.Excel.XLCellSetValueBehavior.Smart">
             <summary>
               Analyze input string and convert value. For avoid analyzing use escape symbol '
@@ -12534,6 +13182,11 @@
             Evaluate a formula and return a value. Formulas with references don't work and culture used for conversion is invariant.
             </summary>
         </member>
+        <member name="M:ClosedXML.Excel.XLWorkbook.EvaluateExprCurrent(System.String)">
+            <summary>
+            Evaluate a formula and return a value. Use current culture.
+            </summary>
+        </member>
         <member name="M:ClosedXML.Excel.XLWorkbook.NotifyWorksheetAdded(ClosedXML.Excel.XLWorksheet)">
             <summary>
             Notify various component of a workbook that sheet has been added.
@@ -12549,6 +13202,20 @@
             Calculate expected column width as a number displayed in the column in Excel from
             number of characters that should fit into the width and a font.
             </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.XLWorkbook.VmlLengthUnits">
+            <summary>
+            List of all VML length units and their conversion. Key is a name, value is a conversion
+            function to EMU. See <a href="https://learn.microsoft.com/en-us/windows/win32/vml/msdn-online-vml-units">documentation</a>.
+            </summary>
+            <remarks>
+            OI-29500 says <em>Office also uses EMUs throughout VML as a valid unit system</em>.
+            Relative units conversions are guesstimated by how Excel 2022 behaves for inset
+            attribute of <c>TextBox</c> element of a note/comment. Generally speaking, Excel
+            converts relative values to physical length (e.g. <c>px</c> to <c>pt</c>) and saves
+            them as such. The <c>ex</c>/<c>em</c> units are not interpreted as described in the
+            doc, but as 1/90th or an inch. The <c>%</c> seems to be always 0.
+            </remarks>
         </member>
         <member name="M:ClosedXML.Excel.XLWorkbook.SetCellText(ClosedXML.Excel.XLCell,DocumentFormat.OpenXml.Spreadsheet.RstType)">
             <summary>
@@ -12625,7 +13292,7 @@
             Address of active cell/cursor in the worksheet.
             </summary>
         </member>
-        <member name="M:ClosedXML.Excel.XLWorksheet.GetCell(System.Int32,System.Int32)">
+        <member name="M:ClosedXML.Excel.XLWorksheet.GetCell(ClosedXML.Excel.XLSheetPoint)">
             <summary>
             Get cell or null, if cell doesn't exist.
             </summary>
@@ -12735,6 +13402,21 @@
             	Common methods
             </summary>
         </member>
+        <member name="F:ClosedXML.Excel.XLHelper.CellTextLimit">
+            <summary>
+            Maximum number of code units that can be stored in a cell.
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.XLHelper.Calendar1900UpperLimit">
+            <summary>
+            1900 calendar serial date upper limit (exclusive).
+            </summary>
+        </member>
+        <member name="F:ClosedXML.Excel.XLHelper.Calendar1904UpperLimit">
+            <summary>
+            1904 calendar serial date upper limit (exclusive).
+            </summary>
+        </member>
         <member name="F:ClosedXML.Excel.XLHelper.SheetComparer">
             <summary>
             Comparer used to compare sheet names.
@@ -12765,9 +13447,19 @@
         </member>
         <member name="M:ClosedXML.Excel.XLHelper.GetTimeSpan(System.Double)">
             <summary>
-            A backward compatible version of <see cref="M:System.TimeSpan.FromDays(System.Double)"/> that returns a value
-            rounded to milliseconds. In .Net Core 3.0 the behavior has changed and timespan includes microseconds
-            as well. As a result, the value 1:12:30 saved on one machine could become 1:12:29.999999 on another.
+            <para>
+            An alternative to <see cref="M:System.TimeSpan.FromDays(System.Double)"/>. In NetFx, it returned a value
+            rounded to milliseconds. In .Net Core 3.0 the behavior has changed and conversion doesn't
+            round at all (=precision down to ticks). To avoid problems with a different behavior on
+            NetFx and Core (saving value 1:12:30 on NetFx machine could become 1:12:29.999999 on Core
+            one machine), we use instead this method for both runtimes (behaves as on Core).
+            </para>
+            <para>
+            TimeSpan has a resolution of 0.1 us (1.15e-12 as a serial date). ~12 digits of precision
+            are needed to accurately represent one day as a serial date time in that resolution. Double
+            has ~15 digits of precision, so it should be able to represent up to ~100 days in a ticks
+            precision.
+            </para>
             </summary>
         </member>
         <member name="M:ClosedXML.Excel.XLHelper.PixelToNoC(System.Int32,System.Int32)">

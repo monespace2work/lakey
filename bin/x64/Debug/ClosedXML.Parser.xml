@@ -57,7 +57,105 @@
         <member name="T:ClosedXML.Parser.CopyVisitor">
             <summary>
             A visitor that generates the identical formula for the parsed formula based on passed arguments.
+            CopyVisitor doesn't make any judgements if passed arguments have been modified. It just makes
+            a newly allocated copy based on passed values.
             </summary>
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.LogicalValue(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.NumberValue(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Double)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.TextValue(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ErrorValue(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.ReadOnlySpan{System.Char})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ArrayNode(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.Int32,System.Collections.Generic.IReadOnlyList{ClosedXML.Parser.TransformedSymbol})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.BlankNode(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.LogicalNode(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ErrorNode(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.ReadOnlySpan{System.Char})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.NumberNode(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Double)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.TextNode(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.Reference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.ReferenceArea)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.SheetReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,ClosedXML.Parser.ReferenceArea)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.BangReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.ReferenceArea)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.Reference3D(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,System.String,ClosedXML.Parser.ReferenceArea)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ExternalSheetReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.String,ClosedXML.Parser.ReferenceArea)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ExternalReference3D(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.String,System.String,ClosedXML.Parser.ReferenceArea)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.Function(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.ReadOnlySpan{System.Char},System.Collections.Generic.IReadOnlyList{ClosedXML.Parser.TransformedSymbol})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ExternalFunction(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.ReadOnlySpan{System.Char},System.Collections.Generic.IReadOnlyList{ClosedXML.Parser.TransformedSymbol})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.Function(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,System.ReadOnlySpan{System.Char},System.Collections.Generic.IReadOnlyList{ClosedXML.Parser.TransformedSymbol})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ExternalFunction(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.String,System.ReadOnlySpan{System.Char},System.Collections.Generic.IReadOnlyList{ClosedXML.Parser.TransformedSymbol})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.CellFunction(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.RowCol,System.Collections.Generic.IReadOnlyList{ClosedXML.Parser.TransformedSymbol})">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.StructureReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.StructuredReferenceArea,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.StructureReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,ClosedXML.Parser.StructuredReferenceArea,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ExternalStructureReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.String,ClosedXML.Parser.StructuredReferenceArea,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.Name(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.SheetName(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.BangName(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ExternalName(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.ExternalSheetName(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.BinaryNode(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.BinaryOperation,ClosedXML.Parser.TransformedSymbol,ClosedXML.Parser.TransformedSymbol)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.Unary(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.UnaryOperation,ClosedXML.Parser.TransformedSymbol)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClosedXML.Parser.CopyVisitor.Nested(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.TransformedSymbol)">
+            <inheritdoc />
         </member>
         <member name="T:ClosedXML.Parser.FormulaConverter">
             <summary>
@@ -89,6 +187,16 @@
             Modify the formula using the passed <paramref name="factory"/>.
             </summary>
             <param name="formulaA1">Original formula in A1 style.</param>
+            <param name="row">Row number of formula.</param>
+            <param name="col">Column number of formula.</param>
+            <param name="factory">Visitor to transform the formula.</param>
+        </member>
+        <member name="M:ClosedXML.Parser.FormulaConverter.ModifyA1(System.String,System.String,System.Int32,System.Int32,ClosedXML.Parser.IAstFactory{ClosedXML.Parser.TransformedSymbol,ClosedXML.Parser.TransformedSymbol,ClosedXML.Parser.ModContext})">
+            <summary>
+            Modify the formula using the passed <paramref name="factory"/>.
+            </summary>
+            <param name="formulaA1">Original formula in A1 style.</param>
+            <param name="sheet">Name of the sheet where is the formula.</param>
             <param name="row">Row number of formula.</param>
             <param name="col">Column number of formula.</param>
             <param name="factory">Visitor to transform the formula.</param>
@@ -298,6 +406,18 @@
             <param name="sheet">Name of a sheet (unescaped) of the <paramref name="reference"/>.</param>
             <param name="reference">Area in the sheet.</param>
         </member>
+        <member name="M:ClosedXML.Parser.IAstFactory`3.BangReference(`2,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.ReferenceArea)">
+            <summary>
+            Create a node that processes a bang reference in a formula (e.g <c>"Branch:" &amp; !$C$5</c>). Bang reference should
+            <list>
+              <item>Be used only in defined names.</item>
+              <item>Always be absolute (name doesn't have an anchor).</item>
+            </list>
+            </summary>
+            <param name="context">User supplied context for parsing a tree that is an argument of a parsing method.</param>
+            <param name="range">Range in a formula that contains the bang reference.</param>
+            <param name="reference">Area in the sheet.</param>
+        </member>
         <member name="M:ClosedXML.Parser.IAstFactory`3.Reference3D(`2,ClosedXML.Parser.SymbolRange,System.String,System.String,ClosedXML.Parser.ReferenceArea)">
             <summary>
             Create a node for a 3D reference.
@@ -438,6 +558,18 @@
             <param name="sheet">Name of a sheet, unescaped.</param>
             <param name="name">The defined name.</param>
         </member>
+        <member name="M:ClosedXML.Parser.IAstFactory`3.BangName(`2,ClosedXML.Parser.SymbolRange,System.String)">
+            <summary>
+            Create a node that processes a bang name in a formula (e.g <c>"Branch:" &amp; !Data</c>). Bang reference should
+            be used only in defined names.
+            </summary>
+            <remarks>
+            TODO: This method is not yet implemented, just added so I don't have to deal with API breakage.
+            </remarks>
+            <param name="context">User supplied context for parsing a tree that is an argument of a parsing method.</param>
+            <param name="range">Range in a formula that contains the bang reference.</param>
+            <param name="name">The defined name.</param>
+        </member>
         <member name="M:ClosedXML.Parser.IAstFactory`3.ExternalName(`2,ClosedXML.Parser.SymbolRange,System.Int32,System.String)">
             <summary>
             Create a node that should evaluate to a value of a defined name in a different workbook.
@@ -500,9 +632,19 @@
             Create a context for modifying formulas. 
             </summary>
         </member>
+        <member name="M:ClosedXML.Parser.ModContext.#ctor(System.String,System.String,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Create a context for modifying formulas. 
+            </summary>
+        </member>
         <member name="P:ClosedXML.Parser.ModContext.Formula">
             <summary>
             The original formula without any modifications.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Parser.ModContext.Sheet">
+            <summary>
+            Name of the current sheet.
             </summary>
         </member>
         <member name="P:ClosedXML.Parser.ModContext.Row">
@@ -598,6 +740,16 @@
         <member name="P:ClosedXML.Parser.ReferenceArea.Style">
             <summary>
             Semantic style of reference.
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Parser.ReferenceArea.IsRowSpan">
+            <summary>
+            Is area a row span (e.g. <c>$5:7</c> in A1 or <c>R[7]</c>, <c>R7:R[9]</c>)?
+            </summary>
+        </member>
+        <member name="P:ClosedXML.Parser.ReferenceArea.IsColSpan">
+            <summary>
+            Is area a col span (e.g. <c>$C:Z</c> in A1 or <c>C[7]</c>, <c>C7:C[9]</c>)?
             </summary>
         </member>
         <member name="M:ClosedXML.Parser.ReferenceArea.#ctor(ClosedXML.Parser.RowCol,ClosedXML.Parser.RowCol)">
@@ -700,6 +852,98 @@
             </para>
             </summary>
         </member>
+        <member name="T:ClosedXML.Parser.ReferenceParser">
+            <summary>
+            A utility class that parses various types of references.
+            </summary>
+        </member>
+        <member name="M:ClosedXML.Parser.ReferenceParser.TryParseA1(System.String,System.String@,ClosedXML.Parser.ReferenceArea@)">
+            <summary>
+            <para>
+            Try to parse <paramref name="text"/> as a sheet reference (<c>Sheet!A5</c>) or a local
+            reference (<c>A1</c>). If the <paramref name="text"/> is a local reference, the output
+            value of the <paramref name="sheetName"/> is <c>null</c>.
+            </para>
+            <para>
+            Unlike the <see cref="M:ClosedXML.Parser.ReferenceParser.TryParseA1(System.String,ClosedXML.Parser.ReferenceArea@)"/> or <see cref="M:ClosedXML.Parser.ReferenceParser.TryParseSheetA1(System.String,System.String@,ClosedXML.Parser.ReferenceArea@)"/>,
+            this method can parse both sheet reference or local reference.
+            </para>
+            </summary>
+            <param name="text">Text to parse.</param>
+            <param name="sheetName">The unescaped name of a sheet for sheet reference, <c>null</c> for local reference.</param>
+            <param name="area">The parsed reference area.</param>
+            <returns><c>true</c> if parsing was a success, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ClosedXML.Parser.ReferenceParser.TryParseA1(System.String,ClosedXML.Parser.ReferenceArea@)">
+            <summary>
+            Parses area reference in A1 form. The possibilities are
+            <list type="bullet">
+              <item>Cell (e.g. <c>F8</c>).</item>
+              <item>Area (e.g. <c>B2:$D7</c>).</item>
+              <item>Colspan (e.g. <c>$D:$G</c>).</item>
+              <item>Rowspan (e.g. <c>14:$15</c>).</item>
+            </list>
+            Doesn't allow any whitespaces or extra values inside.
+            </summary>
+            <param name="text">Text to parse.</param>
+            <param name="area">Parsed area.</param>
+            <returns><c>true</c> if parsing was a success, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ClosedXML.Parser.ReferenceParser.ParseA1(System.String)">
+            <summary>
+            Parses area reference in A1 form. The possibilities are
+            <list type="bullet">
+              <item>Cell (e.g. <c>F8</c>).</item>
+              <item>Area (e.g. <c>B2:$D7</c>).</item>
+              <item>Colspan (e.g. <c>$D:$G</c>).</item>
+              <item>Rowspan (e.g. <c>14:$15</c>).</item>
+            </list>
+            Doesn't allow any whitespaces or extra values inside.
+            </summary>
+            <exception cref="T:ClosedXML.Parser.ParsingException">Invalid input.</exception>
+        </member>
+        <member name="M:ClosedXML.Parser.ReferenceParser.TryParseSheetA1(System.String,System.String@,ClosedXML.Parser.ReferenceArea@)">
+            <summary>
+            Try to parse a A1 reference that has a sheet (e.g. <c>'Data values'!A$1:F10</c>).
+            If <paramref name="text"/> contains only reference without a sheet or anything
+            else (e.g. <c>A1</c>), return <c>false</c>.
+            </summary>
+            <remarks>
+            The method doesn't accept
+            <list type="bullet">
+              <item>Sheet names, e.g. <c>Sheet!name</c>.</item>
+              <item>External sheet references, e.g. <c>[1]Sheet!A1</c>.</item>
+              <item>Sheet errors, e.g. <c>Sheet5!$REF!</c>.</item>
+            </list>
+            </remarks>
+            <param name="text">Text to parse.</param>
+            <param name="sheetName">Name of the sheet, unescaped (e.g. the sheetName will contain <c>Jane's</c> for <c>'Jane''s'!A1</c>).</param>
+            <param name="area">Parsed reference.</param>
+            <returns><c>true</c> if parsing was a success, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ClosedXML.Parser.ReferenceParser.TryParseName(System.String,System.String@,System.String@)">
+            <summary>
+            <para>
+            Try to parse <paramref name="text"/> as a name (e.g. <c>Name</c>) or a sheet name
+            (<c>Sheet!Name</c>). If the <paramref name="text"/> is only a name, the output value of the
+            <paramref name="sheetName"/> is <c>null</c>.
+            </para>
+            </summary>
+            <param name="text">Text to parse.</param>
+            <param name="sheetName">The unescaped name of a sheet for sheet name, <c>null</c> for a name.</param>
+            <param name="name">The parsed name.</param>
+            <returns><c>true</c> if parsing was a success, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ClosedXML.Parser.ReferenceParser.TryParseSheetName(System.String,System.String@,System.String@)">
+            <summary>
+            Try to parse a text as a sheet name (e.g. <c>Sheet!Name</c>). Doesn't accept pure name
+            without sheet (e.g. <c>name</c>).
+            </summary>
+            <param name="text">Text to parse.</param>
+            <param name="sheetName">Parsed sheet name, unescaped.</param>
+            <param name="name">Parsed defined name.</param>
+            <returns><c>true</c> if parsing was a success, <c>false</c> otherwise.</returns>
+        </member>
         <member name="T:ClosedXML.Parser.ReferenceStyle">
             <summary>
             Style of referencing areas in a worksheet.
@@ -761,6 +1005,9 @@
         <member name="M:ClosedXML.Parser.RefModVisitor.SheetReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,ClosedXML.Parser.ReferenceArea)">
             <inheritdoc />
         </member>
+        <member name="M:ClosedXML.Parser.RefModVisitor.BangReference(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,ClosedXML.Parser.ReferenceArea)">
+            <inheritdoc />
+        </member>
         <member name="M:ClosedXML.Parser.RefModVisitor.Reference3D(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,System.String,ClosedXML.Parser.ReferenceArea)">
             <inheritdoc />
         </member>
@@ -800,6 +1047,9 @@
         <member name="M:ClosedXML.Parser.RefModVisitor.SheetName(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String,System.String)">
             <inheritdoc />
         </member>
+        <member name="M:ClosedXML.Parser.RefModVisitor.BangName(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.String)">
+            <inheritdoc />
+        </member>
         <member name="M:ClosedXML.Parser.RefModVisitor.ExternalName(ClosedXML.Parser.ModContext,ClosedXML.Parser.SymbolRange,System.Int32,System.String)">
             <inheritdoc />
         </member>
@@ -833,7 +1083,7 @@
         </member>
         <member name="M:ClosedXML.Parser.RefModVisitor.ModifyFunction(ClosedXML.Parser.ModContext,System.ReadOnlySpan{System.Char})">
             <summary>
-            An extension to modify name of a function.
+            An extension to modify name of a function. Doesn't modify the sheet/external functions.
             </summary>
             <param name="ctx">The transformation context.</param>
             <param name="functionName">Original name of function.</param>

@@ -197,7 +197,7 @@
              to clone only the node itself.
             </param>
         </member>
-        <member name="T:DocumentFormat.OpenXml.Builder.PackageInitializerDelegate`1">
+        <member name="T:DocumentFormat.OpenXml.Builder.PackageDelegate`1">
             <summary>
             A delegate for initializing a package.
             </summary>
@@ -213,7 +213,7 @@
             Gets a key/value collection that can be used to share data between middleware.
             </summary>
         </member>
-        <member name="M:DocumentFormat.OpenXml.Builder.IPackageBuilder`1.Use(System.Func{DocumentFormat.OpenXml.Builder.PackageInitializerDelegate{`0},DocumentFormat.OpenXml.Builder.PackageInitializerDelegate{`0}})">
+        <member name="M:DocumentFormat.OpenXml.Builder.IPackageBuilder`1.Use(System.Func{DocumentFormat.OpenXml.Builder.PackageDelegate{`0},DocumentFormat.OpenXml.Builder.PackageDelegate{`0}})">
             <summary>
             Add middleware to the package builder.
             </summary>
@@ -266,7 +266,7 @@
             Opens the <paramref name="package"/>.
             </summary>
         </member>
-        <member name="M:DocumentFormat.OpenXml.Builder.OpenXmlPackageBuilderExtensions.Use``1(DocumentFormat.OpenXml.Builder.IPackageBuilder{``0},System.Action{``0,DocumentFormat.OpenXml.Builder.PackageInitializerDelegate{``0}})">
+        <member name="M:DocumentFormat.OpenXml.Builder.OpenXmlPackageBuilderExtensions.Use``1(DocumentFormat.OpenXml.Builder.IPackageBuilder{``0},System.Action{``0,DocumentFormat.OpenXml.Builder.PackageDelegate{``0}})">
             <summary>
             Adds the <paramref name="middleware"/> to the builder for initializing a package.
             </summary>
@@ -311,11 +311,6 @@
         <member name="T:DocumentFormat.OpenXml.Builder.TemplateBuilderExtensions">
             <summary>
             A collection of extensions to add a template as part of the <see cref="T:DocumentFormat.OpenXml.Builder.IPackageBuilder`1"/>.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Builder.TemplateBuilderExtensions.UseTemplate``2(DocumentFormat.OpenXml.Builder.IPackageBuilder{``0},System.String,``1)">
-            <summary>
-            Adds a template to the current <paramref name="builder"/>.
             </summary>
         </member>
         <member name="T:DocumentFormat.OpenXml.ElementEventArgs">
@@ -1761,6 +1756,11 @@
             VC-1 Stream (.wmv)
             </summary>
         </member>
+        <member name="F:DocumentFormat.OpenXml.Packaging.MediaDataPartType.Mp4">
+            <summary>
+            MP4 Stream (.mp4)
+            </summary>
+        </member>
         <member name="T:DocumentFormat.OpenXml.Packaging.MediaReferenceRelationship">
             <summary>
             Represents an internal media reference relationship to a MediaDataPart element.
@@ -1941,7 +1941,7 @@
         </member>
         <member name="M:DocumentFormat.OpenXml.Packaging.OpenXmlPackage.Dispose(System.Boolean)">
             <summary>
-            Flushes and saves the content, closes the document, and releases all resources.
+            Flushes the content, closes the document, and releases all resources. If the <see cref="P:DocumentFormat.OpenXml.Packaging.OpenXmlPackage.AutoSave" /> property is <c>true</c>, the content will be saved before closing.
             </summary>
             <param name="disposing">Specify true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
@@ -1981,6 +1981,35 @@
         </member>
         <member name="P:DocumentFormat.OpenXml.Packaging.OpenXmlPackage.Features">
             <inheritdoc/>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Packaging.OpenXmlPackage.IsEncryptedOfficeFile(System.IO.Stream)">
+            <summary>
+            Determines whether the provided stream represents an encrypted Office Open XML file.
+            </summary>
+            <param name="inputStream">The <see cref="T:System.IO.Stream"/> to check. The stream must be seekable and not null.</param>
+            <returns>
+            <c>true</c> if the stream is an encrypted Office file (either OLE Compound File or contains an encrypted package part); otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="inputStream"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="inputStream"/> is not seekable.</exception>
+            <remarks>
+            This method checks for the OLE Compound File signature at the start of the stream, which is used for encrypted Office files.
+            If not found, it attempts to open the stream as an OPC package and checks for the presence of an encrypted package part.
+            The stream position is restored after the check.
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Packaging.OpenXmlPackage.IsEncryptedOfficeFile(System.String)">
+            <summary>
+            Determines whether the file at the specified path is an encrypted Office Open XML file.
+            </summary>
+            <param name="filePath">The path to the file to check. Must not be null.</param>
+            <returns>
+            <c>true</c> if the file is an encrypted Office file (either OLE Compound File or contains an encrypted package part); otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="filePath"/> is null.</exception>
+            <remarks>
+            This method opens the file at the specified path and checks its contents using <see cref="M:DocumentFormat.OpenXml.Packaging.OpenXmlPackage.IsEncryptedOfficeFile(System.IO.Stream)"/>.
+            </remarks>
         </member>
         <member name="T:DocumentFormat.OpenXml.Packaging.OpenXmlPackageException">
             <summary>
@@ -3389,6 +3418,16 @@
         <member name="M:DocumentFormat.OpenXml.OpenXmlCompositeElement.ReplaceChild``1(DocumentFormat.OpenXml.OpenXmlElement,``0)">
             <inheritdoc/>
         </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlCompositeElement.IsValidChild(DocumentFormat.OpenXml.OpenXmlElement)">
+            <summary>
+            Determines whether the specified <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> is a valid child element
+            for this <see cref="T:DocumentFormat.OpenXml.OpenXmlCompositeElement"/> according to the schema definition.
+            </summary>
+            <param name="element">The <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> to validate as a child.</param>
+            <returns>
+            <c>true</c> if the specified element is a valid child; otherwise, <c>false</c>.
+            </returns>
+        </member>
         <member name="M:DocumentFormat.OpenXml.OpenXmlCompositeElement.WriteContentTo(System.Xml.XmlWriter)">
             <summary>
             Saves all of the current node's children to the specified XmlWriter.
@@ -3739,7 +3778,14 @@
             Finds the first child element in type T.
             </summary>
             <typeparam name="T">Type of element.</typeparam>
-            <returns></returns>
+            <returns>The first child element of type T or null</returns>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlElement.GetOrAddFirstChild``1">
+            <summary>
+            Finds the first child element of <typeparam ref="T"/> or adds a new element if it does not exist.
+            </summary>
+            <typeparam name="T">Type of element.</typeparam>
+            <returns>The new or existing OpenXmlElement</returns>
         </member>
         <member name="M:DocumentFormat.OpenXml.OpenXmlElement.PreviousSibling">
             <summary>
@@ -4715,12 +4761,13 @@
             <param name="openXmlPart">The part this root element to be loaded from.</param>
             <exception cref="T:System.IO.InvalidDataException">Thrown when the part contains an incorrect root element.</exception>
         </member>
-        <member name="M:DocumentFormat.OpenXml.OpenXmlPartRootElement.LoadFromPart(DocumentFormat.OpenXml.Packaging.OpenXmlPart,System.IO.Stream)">
+        <member name="M:DocumentFormat.OpenXml.OpenXmlPartRootElement.LoadFromPart(DocumentFormat.OpenXml.Packaging.OpenXmlPart,System.IO.Stream,System.Boolean)">
             <summary>
             Load the DOM tree from the Open XML part.
             </summary>
             <param name="openXmlPart">The part this root element to be loaded from.</param>
             <param name="partStream">The stream of the part.</param>
+            <param name="strictRelationshipFound">Whether a strict relationship was found.</param>
             <returns>
             Returns true when the part stream is loaded successfully into this root element.
             Returns false when the part stream does not contain any xml element.
@@ -4796,6 +4843,13 @@
             <param name="openXmlPart">The OpenXmlPart to be written to.</param>
             <param name="encoding">The encoding for the XML stream.</param>
         </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlPartWriter.#ctor(DocumentFormat.OpenXml.Packaging.OpenXmlPart,DocumentFormat.OpenXml.OpenXmlPartWriterSettings)">
+            <summary>
+            Initializes a new instance of the OpenXmlPartWriter.
+            </summary>
+            <param name="openXmlPart">The OpenXmlPart to be written to.</param>
+            <param name="settings">The settings for the OpenXmlPartWriter.</param>
+        </member>
         <member name="M:DocumentFormat.OpenXml.OpenXmlPartWriter.#ctor(System.IO.Stream)">
             <summary>
             Initializes a new instance of the OpenXmlPartWriter.
@@ -4808,6 +4862,13 @@
             </summary>
             <param name="partStream">The given part stream.</param>
             <param name="encoding">The encoding for the XML stream.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlPartWriter.#ctor(System.IO.Stream,DocumentFormat.OpenXml.OpenXmlPartWriterSettings)">
+            <summary>
+            Initializes a new instance of the OpenXmlPartWriter.
+            </summary>
+            <param name="partStream">The given part stream.</param>
+            <param name="settings">The settings for the OpenXmlPartWriter.</param>
         </member>
         <member name="M:DocumentFormat.OpenXml.OpenXmlPartWriter.WriteStartDocument">
             <summary>
@@ -4882,6 +4943,21 @@
         <member name="M:DocumentFormat.OpenXml.OpenXmlPartWriter.Close">
             <summary>
             Close the writer.
+            </summary>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.OpenXmlPartWriterSettings">
+            <summary>
+            Settings for the <see cref="T:DocumentFormat.OpenXml.OpenXmlPartWriter" /> .
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.OpenXmlPartWriterSettings.CloseOutput">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:DocumentFormat.OpenXml.OpenXmlPartWriter" />  should also close the underlying stream or TextWriter when the Close() method is called.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.OpenXmlPartWriterSettings.Encoding">
+            <summary>
+            Gets or sets the type of text encoding to use.
             </summary>
         </member>
         <member name="T:DocumentFormat.OpenXml.OpenXmlReader">
@@ -5441,6 +5517,11 @@
               Looks up a localized string similar to Empty collection..
             </summary>
         </member>
+        <member name="P:DocumentFormat.OpenXml.ExceptionMessages.EncryptedPackageNotSupported">
+            <summary>
+              Looks up a localized string similar to Encrypted packages are not supported..
+            </summary>
+        </member>
         <member name="P:DocumentFormat.OpenXml.ExceptionMessages.ErrorContentType">
             <summary>
               Looks up a localized string similar to The contentType parameter has incorrect value..
@@ -5604,11 +5685,6 @@
               Looks up a localized string similar to Namespace ids are only available for namespaces for Office 2021 and before. Please use prefixes or URLs instead..
             </summary>
         </member>
-        <member name="P:DocumentFormat.OpenXml.ExceptionMessages.NoMainPart">
-            <summary>
-              Looks up a localized string similar to The specified package is invalid. The main part is missing..
-            </summary>
-        </member>
         <member name="P:DocumentFormat.OpenXml.ExceptionMessages.NonCompositeNoChild">
             <summary>
               Looks up a localized string similar to Non-composite elements do not have child elements..
@@ -5748,6 +5824,13 @@
             <summary>
               Looks up a localized string similar to A shared part is referenced by multiple source parts with a different relationship type..
             </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.ExceptionMessages.SpecifiedPartNotFound">
+             <summary>
+               Looks up a localized string similar to  Part: {0} doesn&apos;t exist in the package.
+            
+            Original Message:{1}.
+             </summary>
         </member>
         <member name="P:DocumentFormat.OpenXml.ExceptionMessages.StreamAccessModeShouldBeWrite">
             <summary>
@@ -7515,21 +7598,33 @@
         </member>
         <member name="M:DocumentFormat.OpenXml.Validation.DocumentValidator.Validate(DocumentFormat.OpenXml.Packaging.OpenXmlPackage,DocumentFormat.OpenXml.Validation.ValidationSettings,System.Threading.CancellationToken)">
             <summary>
-            Validate the specified document.
+            Validates the specified Open XML package against the provided validation settings.
             </summary>
-            <param name="document">The document to be validated.</param>
-            <param name="settings">The settings to be used during validation.</param>
-            <param name="token"></param>
-            <returns>Return results in ValidationResult.</returns>
+            <param name="document">The <see cref="T:DocumentFormat.OpenXml.Packaging.OpenXmlPackage"/> to be validated.</param>
+            <param name="settings">The <see cref="T:DocumentFormat.OpenXml.Validation.ValidationSettings"/> to use during validation.</param>
+            <param name="token">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the validation to complete.</param>
+            <returns>
+            A list of <see cref="T:DocumentFormat.OpenXml.Validation.ValidationErrorInfo"/> objects that represent the validation errors found in the package.
+            If no errors are found, the list will be empty.
+            </returns>
+            <remarks>
+            <para><b>Note:</b> This method can only validate transitional Open XML documents. Strict documents are not supported.</para>
+            </remarks>
         </member>
         <member name="M:DocumentFormat.OpenXml.Validation.DocumentValidator.Validate(DocumentFormat.OpenXml.Packaging.OpenXmlPart,DocumentFormat.OpenXml.Validation.ValidationSettings,System.Threading.CancellationToken)">
             <summary>
-            Validate the specified part.
+            Validates the specified Open XML part against the provided validation settings.
             </summary>
-            <param name="part">The OpenXmlPart to be validated.</param>
-            <param name="settings">The settings to be used during validation.</param>
-            <param name="token"></param>
-            <returns></returns>
+            <param name="part">The <see cref="T:DocumentFormat.OpenXml.Packaging.OpenXmlPart"/> to be validated.</param>
+            <param name="settings">The <see cref="T:DocumentFormat.OpenXml.Validation.ValidationSettings"/> to use during validation.</param>
+            <param name="token">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the validation to complete.</param>
+            <returns>
+            A list of <see cref="T:DocumentFormat.OpenXml.Validation.ValidationErrorInfo"/> objects that represent the validation errors found in the part.
+            If no errors are found, the list will be empty.
+            </returns>
+            <remarks>
+            <para><b>Note:</b> This method can only validate transitional Open XML documents. Strict documents are not supported.</para>
+            </remarks>
         </member>
         <member name="M:DocumentFormat.OpenXml.Validation.DocumentValidator.PartsToBeValidated(DocumentFormat.OpenXml.Packaging.OpenXmlPackage)">
             <summary>
@@ -7885,7 +7980,7 @@
             Particle constraint data for particle which type is ParticleType.Element.
             </summary>
         </member>
-        <member name="M:DocumentFormat.OpenXml.Validation.Schema.ElementParticle.#ctor(System.Type,System.Int32,System.Int32,DocumentFormat.OpenXml.FileFormatVersions)">
+        <member name="M:DocumentFormat.OpenXml.Validation.Schema.ElementParticle.#ctor(DocumentFormat.OpenXml.Framework.OpenXmlSchemaType,System.Int32,System.Int32,DocumentFormat.OpenXml.FileFormatVersions)">
             <summary>
             Initializes a new instance of the ElementParticle.
             </summary>
@@ -7916,11 +8011,11 @@
             Hold expected children for error reporting.
             </summary>
         </member>
-        <member name="M:DocumentFormat.OpenXml.Validation.Schema.ExpectedChildren.Add(System.Type)">
+        <member name="M:DocumentFormat.OpenXml.Validation.Schema.ExpectedChildren.Add(DocumentFormat.OpenXml.Framework.OpenXmlSchemaType)">
             <summary>
             Add a known element of the child.
             </summary>
-            <param name="elementType"></param>
+            <param name="type"></param>
         </member>
         <member name="M:DocumentFormat.OpenXml.Validation.Schema.ExpectedChildren.Add(System.String)">
             <summary>
@@ -8804,6 +8899,11 @@
         <member name="P:DocumentFormat.OpenXml.Validation.ValidationResources.Sch_MinLengthConstraintFailed">
             <summary>
               Looks up a localized string similar to  The actual length according to data type &apos;{0}&apos; is less than the MinLength value. The length must be bigger than or equal to {1}..
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Validation.ValidationResources.Sch_MissingPartRootElement">
+            <summary>
+              Looks up a localized string similar to The &apos;{0}&apos; part is missing its root element..
             </summary>
         </member>
         <member name="P:DocumentFormat.OpenXml.Validation.ValidationResources.Sch_MissRequiredAttribute">

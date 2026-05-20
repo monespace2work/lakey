@@ -16,7 +16,6 @@ C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.Wpf.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\RBush.dll
-C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\SixLabors.Fonts.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Buffers.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.ComponentModel.Annotations.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Data.SQLite.dll
@@ -25,7 +24,6 @@ C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Data.SQLite.Linq.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Memory.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Numerics.Vectors.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Security.Cryptography.Xml.dll
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.pdb
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.Parser.xml
@@ -41,14 +39,10 @@ C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.Wpf.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\RBush.xml
-C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\SixLabors.Fonts.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Buffers.xml
-C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Data.SQLite.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Memory.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Numerics.Vectors.xml
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.xml
-C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Security.Cryptography.Xml.xml
-C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.g.vb
@@ -146,10 +140,8 @@ C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.g.resources
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.Resources.resources
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.GenerateResource.cache
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
-C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.Up2Date
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.exe
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.xml
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.pdb
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\desktop.ini
-C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.SuggestedBindingRedirects.cache
-C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.exe.config
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete

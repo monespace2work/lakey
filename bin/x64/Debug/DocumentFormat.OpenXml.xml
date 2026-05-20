@@ -77,6 +77,33 @@
             Defines type information for Html alternative format import part.
             </summary>
         </member>
+        <member name="T:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart">
+            <summary>
+            Defines the CoreFilePropertiesPart
+            </summary>
+            <summary>
+            Defines the CoreFilePropertiesPart
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.CoreFileProperties">
+            <summary>
+            Gets the package (core.xml) properties.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.#ctor">
+            <summary>
+            Creates an instance of the CoreFilePropertiesPart OpenXmlType
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.ContentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.RelationshipType">
+            <inheritdoc/>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.Features">
+            <inheritdoc/>
+        </member>
         <member name="T:DocumentFormat.OpenXml.Packaging.CustomPropertyPartType">
             <summary>
             Defines CustomPropertyPartType - types of CustomPropertyPart.
@@ -2205,25 +2232,6 @@
             <inheritdoc/>
         </member>
         <member name="P:DocumentFormat.OpenXml.Packaging.ControlPropertiesPart.Features">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart">
-            <summary>
-            Defines the CoreFilePropertiesPart
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.#ctor">
-            <summary>
-            Creates an instance of the CoreFilePropertiesPart OpenXmlType
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.ContentType">
-            <inheritdoc/>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.RelationshipType">
-            <inheritdoc/>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart.Features">
             <inheritdoc/>
         </member>
         <member name="T:DocumentFormat.OpenXml.Packaging.CustomDataPart">
@@ -25200,6 +25208,42 @@
             xmlns:r=http://schemas.openxmlformats.org/officeDocument/2006/relationships
             </remarks>
         </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotRichData.PivotCacheRichInfo">
+            <summary>
+            <para>Defines the PivotCacheRichInfo Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xprd:richInfo.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotRichData.PivotCacheRichInfo.#ctor">
+            <summary>
+            Initializes a new instance of the PivotCacheRichInfo class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotRichData.PivotCacheRichInfo.PivotCacheGuid">
+            <summary>
+            <para>pivotCacheGuid, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: pivotCacheGuid</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotRichData.PivotCacheRichInfo.PivotIgnoreInvalidCache">
+            <summary>
+            <para>pivotIgnoreInvalidCache, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: pivotIgnoreInvalidCache</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotRichData.PivotCacheRichInfo.Id">
+            <summary>
+            <para>id, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: r:id</para>
+            </summary>
+            <remarks>
+            xmlns:r=http://schemas.openxmlformats.org/officeDocument/2006/relationships
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotRichData.PivotCacheRichInfo.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
         <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotVersionInfo.CacheVersionInfo">
             <summary>
             <para>Defines the CacheVersionInfo Class.</para>
@@ -25700,6 +25744,198 @@
         <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.FeatureSupport.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotFieldSubtotals">
+            <summary>
+            <para>Defines the PivotFieldSubtotals Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpcalc:pivotFieldSubtotals.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalPivotItemSubtotal" /> <c>&lt;xlpcalc:subtotal></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotFieldSubtotals.#ctor">
+            <summary>
+            Initializes a new instance of the PivotFieldSubtotals class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotFieldSubtotals.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the PivotFieldSubtotals class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotFieldSubtotals.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the PivotFieldSubtotals class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotFieldSubtotals.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the PivotFieldSubtotals class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotFieldSubtotals.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotAreaReferenceSubtotals">
+            <summary>
+            <para>Defines the PivotAreaReferenceSubtotals Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpcalc:pivotAreaReferenceSubtotals.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotSubtotalType" /> <c>&lt;xlpcalc:subtotal></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotAreaReferenceSubtotals.#ctor">
+            <summary>
+            Initializes a new instance of the PivotAreaReferenceSubtotals class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotAreaReferenceSubtotals.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the PivotAreaReferenceSubtotals class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotAreaReferenceSubtotals.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the PivotAreaReferenceSubtotals class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotAreaReferenceSubtotals.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the PivotAreaReferenceSubtotals class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotAreaReferenceSubtotals.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotTableSubtotalLineItems">
+            <summary>
+            <para>Defines the PivotTableSubtotalLineItems Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpcalc:pivotFieldSubtotalLineItems.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalLineItemPivotItemSubtotal" /> <c>&lt;xlpcalc:subtotalLineItem></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotTableSubtotalLineItems.#ctor">
+            <summary>
+            Initializes a new instance of the PivotTableSubtotalLineItems class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotTableSubtotalLineItems.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the PivotTableSubtotalLineItems class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotTableSubtotalLineItems.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the PivotTableSubtotalLineItems class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotTableSubtotalLineItems.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the PivotTableSubtotalLineItems class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotTableSubtotalLineItems.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalPivotItemSubtotal">
+            <summary>
+            <para>Defines the SubtotalPivotItemSubtotal Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpcalc:subtotal.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalPivotItemSubtotal.#ctor">
+            <summary>
+            Initializes a new instance of the SubtotalPivotItemSubtotal class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalPivotItemSubtotal.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalLineItemPivotItemSubtotal">
+            <summary>
+            <para>Defines the SubtotalLineItemPivotItemSubtotal Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpcalc:subtotalLineItem.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalLineItemPivotItemSubtotal.#ctor">
+            <summary>
+            Initializes a new instance of the SubtotalLineItemPivotItemSubtotal class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.SubtotalLineItemPivotItemSubtotal.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.OpenXmlPivotItemSubtotalElement">
+            <summary>
+            <para>Defines the OpenXmlPivotItemSubtotalElement Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is :.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.OpenXmlPivotItemSubtotalElement.#ctor">
+            <summary>
+            Initializes a new instance of the OpenXmlPivotItemSubtotalElement class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.OpenXmlPivotItemSubtotalElement.SubtotalType">
+            <summary>
+            <para>subtotalType, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: subtotalType</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.OpenXmlPivotItemSubtotalElement.ItemLocation">
+            <summary>
+            <para>itemLocation, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: itemLocation</para>
+            </summary>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotSubtotalType">
+            <summary>
+            <para>Defines the PivotSubtotalType Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpcalc:subtotal.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotSubtotalType.#ctor">
+            <summary>
+            Initializes a new instance of the PivotSubtotalType class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotSubtotalType.SubtotalType">
+            <summary>
+            <para>subtotalType, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: subtotalType</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.PivotSubtotalType.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
         <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.AggregationType">
             <summary>
             Defines the AggregationType enumeration.
@@ -25722,6 +25958,24 @@
             <para>When the item is serialized out as xml, its value is "median".</para>
             </summary>
         </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.AggregationType.DistinctDuplicates">
+            <summary>
+            distinctDuplicates.
+            <para>When the item is serialized out as xml, its value is "distinctDuplicates".</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.AggregationType.CountValuesDuplicated">
+            <summary>
+            countValuesDuplicated.
+            <para>When the item is serialized out as xml, its value is "countValuesDuplicated".</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.Pivot2023Calculation.AggregationType.CountRepeatValues">
+            <summary>
+            countRepeatValues.
+            <para>When the item is serialized out as xml, its value is "countRepeatValues".</para>
+            </summary>
+        </member>
         <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotAutoRefresh.Xsdboolean">
             <summary>
             <para>Defines the Xsdboolean Class.</para>
@@ -25741,6 +25995,135 @@
             <param name="text">Specifies the text content of the element.</param>
         </member>
         <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotAutoRefresh.Xsdboolean.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotDynamicArrays.PivotCacheDynamicArray">
+            <summary>
+            <para>Defines the PivotCacheDynamicArray Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpda:pivotCacheDynamicArray.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotDynamicArrays.PivotCacheDynamicArray.#ctor">
+            <summary>
+            Initializes a new instance of the PivotCacheDynamicArray class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotDynamicArrays.PivotCacheDynamicArray.Ref">
+            <summary>
+            <para>ref, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: ref</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotDynamicArrays.PivotCacheDynamicArray.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.WorkbookCompatibilityVersion.Version">
+            <summary>
+            <para>Defines the Version Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlwcv:version.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.WorkbookCompatibilityVersion.Version.#ctor">
+            <summary>
+            Initializes a new instance of the Version class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.WorkbookCompatibilityVersion.Version.WarnBelowVersion">
+            <summary>
+            <para>warnBelowVersion, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: warnBelowVersion</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.WorkbookCompatibilityVersion.Version.SetVersion">
+            <summary>
+            <para>setVersion, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: setVersion</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.WorkbookCompatibilityVersion.Version.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.ExternalCodeService2.ExternalCodeServiceImageAsInput">
+            <summary>
+            <para>Defines the ExternalCodeServiceImageAsInput Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlecs2:externalCodeServiceImageAsInput.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.ExternalCodeService2.ExternalCodeServiceImageAsInput.#ctor">
+            <summary>
+            Initializes a new instance of the ExternalCodeServiceImageAsInput class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.ExternalCodeService2.ExternalCodeServiceImageAsInput.MaxWidth">
+            <summary>
+            <para>maxWidth, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: maxWidth</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.ExternalCodeService2.ExternalCodeServiceImageAsInput.MaxHeight">
+            <summary>
+            <para>maxHeight, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: maxHeight</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.ExternalCodeService2.ExternalCodeServiceImageAsInput.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource">
+            <summary>
+            <para>Defines the PivotCacheDataSource Class.</para>
+            <para>This class is available in Microsoft365 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is xlpds:pivotCacheDataSource.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.Excel.Formula" /> <c>&lt;xne:f></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource.#ctor">
+            <summary>
+            Initializes a new instance of the PivotCacheDataSource class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the PivotCacheDataSource class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the PivotCacheDataSource class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the PivotCacheDataSource class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource.Ref">
+            <summary>
+            <para>ref, this property is only available in Microsoft365 and later.</para>
+            <para>Represents the following attribute in the schema: ref</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource.Formula">
+            <summary>
+            <para>Formula.</para>
+            <para>Represents the following element tag in the schema: xne:f.</para>
+            </summary>
+            <remarks>
+            xmlns:xne = http://schemas.microsoft.com/office/excel/2006/main
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.PivotDataSource.PivotCacheDataSource.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:DocumentFormat.OpenXml.Office.Y2022.FeaturePropertyBag.FeaturePropertyBags">
@@ -57815,7 +58198,10 @@
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2013.Excel.PivotCacheDecoupled" /> <c>&lt;x15:pivotCacheDecoupled></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2013.Excel.PivotCacheIdVersion" /> <c>&lt;x15:pivotCacheIdVersion></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2013.Excel.TimelinePivotCacheDefinition" /> <c>&lt;x15:timelinePivotCacheDefinition></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotDynamicArrays.PivotCacheDynamicArray" /> <c>&lt;xlpda:pivotCacheDynamicArray></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotRichData.PivotCacheRichInfo" /> <c>&lt;xprd:richInfo></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2021.Excel.Pivot.Xsdboolean" /> <c>&lt;xxpim:implicitMeasureSupport></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.PivotAutoRefresh.Xsdboolean" /> <c>&lt;xlpar:autoRefresh></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2022.PivotVersionInfo.CacheVersionInfo" /> <c>&lt;xxpvi:cacheVersionInfo></c></description></item>
             </list>
             </remarks>
@@ -59074,6 +59460,8 @@
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2013.Excel.TimelineCacheReferences" /> <c>&lt;x15:timelineCacheRefs></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2013.Excel.WorkbookProperties" /> <c>&lt;x15:workbookPr></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.ExternalCodeService.ExternalCodeService" /> <c>&lt;xlecs:externalCodeService></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2025.ExternalCodeService2.ExternalCodeServiceImageAsInput" /> <c>&lt;xlecs2:externalCodeServiceImageAsInput></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office.SpreadSheetML.Y2024.WorkbookCompatibilityVersion.Version" /> <c>&lt;xlwcv:version></c></description></item>
             </list>
             </remarks>
         </member>
@@ -64250,6 +64638,94 @@
         <member name="M:DocumentFormat.OpenXml.Wordprocessing.Styles.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
+        <member name="T:DocumentFormat.OpenXml.Wordprocessing.Table">
+            <summary>
+            <para>Defines the Table Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is w:tbl.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart" /> <c>&lt;w:bookmarkStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ContentPart" /> <c>&lt;w:contentPart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlRow" /> <c>&lt;w:customXml></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeEnd" /> <c>&lt;w:customXmlInsRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeEnd" /> <c>&lt;w:customXmlDelRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeEnd" /> <c>&lt;w:customXmlMoveFromRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeEnd" /> <c>&lt;w:customXmlMoveToRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeEnd" /> <c>&lt;w14:customXmlConflictInsRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeEnd" /> <c>&lt;w14:customXmlConflictDelRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkEnd" /> <c>&lt;w:bookmarkEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeStart" /> <c>&lt;w:commentRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeEnd" /> <c>&lt;w:commentRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeEnd" /> <c>&lt;w:moveFromRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeEnd" /> <c>&lt;w:moveToRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeStart" /> <c>&lt;w:moveFromRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeStart" /> <c>&lt;w:moveToRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermEnd" /> <c>&lt;w:permEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermStart" /> <c>&lt;w:permStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ProofError" /> <c>&lt;w:proofErr></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableRow" /> <c>&lt;w:tr></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.InsertedRun" /> <c>&lt;w:ins></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.DeletedRun" /> <c>&lt;w:del></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRun" /> <c>&lt;w:moveFrom></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRun" /> <c>&lt;w:moveTo></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictInsertion" /> <c>&lt;w14:conflictIns></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictDeletion" /> <c>&lt;w14:conflictDel></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.SdtRow" /> <c>&lt;w:sdt></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableGrid" /> <c>&lt;w:tblGrid></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableProperties" /> <c>&lt;w:tblPr></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeStart" /> <c>&lt;w:customXmlInsRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeStart" /> <c>&lt;w:customXmlDelRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeStart" /> <c>&lt;w:customXmlMoveFromRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeStart" /> <c>&lt;w:customXmlMoveToRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeStart" /> <c>&lt;w14:customXmlConflictInsRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeStart" /> <c>&lt;w14:customXmlConflictDelRangeStart></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.Table.TableProperties">
+            <summary>
+            Gets or sets the TableProperties.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.Table.TableGrid">
+            <summary>
+            Gets or sets the TableGrid.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.Table.TableRows">
+            <summary>
+            Gets the collection of TableRow elements.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor">
+            <summary>
+            Initializes a new instance of the Table class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the Table class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the Table class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Table class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
         <member name="T:DocumentFormat.OpenXml.Wordprocessing.TableJustification">
             <summary>
             <para>Defines the TableJustification Class.</para>
@@ -64365,6 +64841,159 @@
             </remarks>
         </member>
         <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableLook.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Wordprocessing.TableRow">
+            <summary>
+            Represents a table row in a Wordprocessing document.
+            </summary>
+            <summary>
+            <para>Table Row.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is w:tr.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart" /> <c>&lt;w:bookmarkStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ContentPart" /> <c>&lt;w:contentPart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlCell" /> <c>&lt;w:customXml></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeEnd" /> <c>&lt;w:customXmlInsRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeEnd" /> <c>&lt;w:customXmlDelRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeEnd" /> <c>&lt;w:customXmlMoveFromRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeEnd" /> <c>&lt;w:customXmlMoveToRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeEnd" /> <c>&lt;w14:customXmlConflictInsRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeEnd" /> <c>&lt;w14:customXmlConflictDelRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkEnd" /> <c>&lt;w:bookmarkEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeStart" /> <c>&lt;w:commentRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeEnd" /> <c>&lt;w:commentRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeEnd" /> <c>&lt;w:moveFromRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeEnd" /> <c>&lt;w:moveToRangeEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeStart" /> <c>&lt;w:moveFromRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeStart" /> <c>&lt;w:moveToRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermEnd" /> <c>&lt;w:permEnd></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermStart" /> <c>&lt;w:permStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ProofError" /> <c>&lt;w:proofErr></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.InsertedRun" /> <c>&lt;w:ins></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.DeletedRun" /> <c>&lt;w:del></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRun" /> <c>&lt;w:moveFrom></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRun" /> <c>&lt;w:moveTo></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictInsertion" /> <c>&lt;w14:conflictIns></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictDeletion" /> <c>&lt;w14:conflictDel></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.SdtCell" /> <c>&lt;w:sdt></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TablePropertyExceptions" /> <c>&lt;w:tblPrEx></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableCell" /> <c>&lt;w:tc></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeStart" /> <c>&lt;w:customXmlInsRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeStart" /> <c>&lt;w:customXmlDelRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeStart" /> <c>&lt;w:customXmlMoveFromRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeStart" /> <c>&lt;w:customXmlMoveToRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeStart" /> <c>&lt;w14:customXmlConflictInsRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeStart" /> <c>&lt;w14:customXmlConflictDelRangeStart></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableRowProperties" /> <c>&lt;w:trPr></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.TableCells">
+            <summary>
+            Gets the collection of table cells within the table row.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor">
+            <summary>
+            Initializes a new instance of the TableRow class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the TableRow class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the TableRow class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the TableRow class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowMarkRevision">
+            <summary>
+            <para>Revision Identifier for Table Row Glyph Formatting</para>
+            <para>Represents the following attribute in the schema: w:rsidRPr</para>
+            </summary>
+            <remarks>
+            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowAddition">
+            <summary>
+            <para>Revision Identifier for Table Row</para>
+            <para>Represents the following attribute in the schema: w:rsidR</para>
+            </summary>
+            <remarks>
+            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowDeletion">
+            <summary>
+            <para>Revision Identifier for Table Row Deletion</para>
+            <para>Represents the following attribute in the schema: w:rsidDel</para>
+            </summary>
+            <remarks>
+            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowProperties">
+            <summary>
+            <para>Revision Identifier for Table Row Properties</para>
+            <para>Represents the following attribute in the schema: w:rsidTr</para>
+            </summary>
+            <remarks>
+            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.ParagraphId">
+            <summary>
+            <para>paraId, this property is only available in Office 2010 and later.</para>
+            <para>Represents the following attribute in the schema: w14:paraId</para>
+            </summary>
+            <remarks>
+            xmlns:w14=http://schemas.microsoft.com/office/word/2010/wordml
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.TextId">
+            <summary>
+            <para>textId, this property is only available in Office 2010 and later.</para>
+            <para>Represents the following attribute in the schema: w14:textId</para>
+            </summary>
+            <remarks>
+            xmlns:w14=http://schemas.microsoft.com/office/word/2010/wordml
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.TablePropertyExceptions">
+            <summary>
+            <para>Table-Level Property Exceptions.</para>
+            <para>Represents the following element tag in the schema: w:tblPrEx.</para>
+            </summary>
+            <remarks>
+            xmlns:w = http://schemas.openxmlformats.org/wordprocessingml/2006/main
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.TableRowProperties">
+            <summary>
+            <para>Table Row Properties.</para>
+            <para>Represents the following element tag in the schema: w:trPr.</para>
+            </summary>
+            <remarks>
+            xmlns:w = http://schemas.openxmlformats.org/wordprocessingml/2006/main
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:DocumentFormat.OpenXml.Wordprocessing.TabStop">
@@ -73951,224 +74580,6 @@
             </remarks>
         </member>
         <member name="M:DocumentFormat.OpenXml.Wordprocessing.Paragraph.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Wordprocessing.Table">
-            <summary>
-            <para>Defines the Table Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is w:tbl.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart" /> <c>&lt;w:bookmarkStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ContentPart" /> <c>&lt;w:contentPart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlRow" /> <c>&lt;w:customXml></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeEnd" /> <c>&lt;w:customXmlInsRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeEnd" /> <c>&lt;w:customXmlDelRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeEnd" /> <c>&lt;w:customXmlMoveFromRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeEnd" /> <c>&lt;w:customXmlMoveToRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeEnd" /> <c>&lt;w14:customXmlConflictInsRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeEnd" /> <c>&lt;w14:customXmlConflictDelRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkEnd" /> <c>&lt;w:bookmarkEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeStart" /> <c>&lt;w:commentRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeEnd" /> <c>&lt;w:commentRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeEnd" /> <c>&lt;w:moveFromRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeEnd" /> <c>&lt;w:moveToRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeStart" /> <c>&lt;w:moveFromRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeStart" /> <c>&lt;w:moveToRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermEnd" /> <c>&lt;w:permEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermStart" /> <c>&lt;w:permStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ProofError" /> <c>&lt;w:proofErr></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableRow" /> <c>&lt;w:tr></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.InsertedRun" /> <c>&lt;w:ins></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.DeletedRun" /> <c>&lt;w:del></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRun" /> <c>&lt;w:moveFrom></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRun" /> <c>&lt;w:moveTo></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictInsertion" /> <c>&lt;w14:conflictIns></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictDeletion" /> <c>&lt;w14:conflictDel></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.SdtRow" /> <c>&lt;w:sdt></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableGrid" /> <c>&lt;w:tblGrid></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableProperties" /> <c>&lt;w:tblPr></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeStart" /> <c>&lt;w:customXmlInsRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeStart" /> <c>&lt;w:customXmlDelRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeStart" /> <c>&lt;w:customXmlMoveFromRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeStart" /> <c>&lt;w:customXmlMoveToRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeStart" /> <c>&lt;w14:customXmlConflictInsRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeStart" /> <c>&lt;w14:customXmlConflictDelRangeStart></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor">
-            <summary>
-            Initializes a new instance of the Table class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the Table class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the Table class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the Table class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.Table.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Wordprocessing.TableRow">
-            <summary>
-            <para>Table Row.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is w:tr.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart" /> <c>&lt;w:bookmarkStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ContentPart" /> <c>&lt;w:contentPart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlCell" /> <c>&lt;w:customXml></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeEnd" /> <c>&lt;w:customXmlInsRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeEnd" /> <c>&lt;w:customXmlDelRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeEnd" /> <c>&lt;w:customXmlMoveFromRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeEnd" /> <c>&lt;w:customXmlMoveToRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeEnd" /> <c>&lt;w14:customXmlConflictInsRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeEnd" /> <c>&lt;w14:customXmlConflictDelRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkEnd" /> <c>&lt;w:bookmarkEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeStart" /> <c>&lt;w:commentRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CommentRangeEnd" /> <c>&lt;w:commentRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeEnd" /> <c>&lt;w:moveFromRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeEnd" /> <c>&lt;w:moveToRangeEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRangeStart" /> <c>&lt;w:moveFromRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRangeStart" /> <c>&lt;w:moveToRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermEnd" /> <c>&lt;w:permEnd></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.PermStart" /> <c>&lt;w:permStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.ProofError" /> <c>&lt;w:proofErr></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.InsertedRun" /> <c>&lt;w:ins></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.DeletedRun" /> <c>&lt;w:del></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveFromRun" /> <c>&lt;w:moveFrom></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.MoveToRun" /> <c>&lt;w:moveTo></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictInsertion" /> <c>&lt;w14:conflictIns></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.RunConflictDeletion" /> <c>&lt;w14:conflictDel></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.SdtCell" /> <c>&lt;w:sdt></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TablePropertyExceptions" /> <c>&lt;w:tblPrEx></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableCell" /> <c>&lt;w:tc></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlInsRangeStart" /> <c>&lt;w:customXmlInsRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlDelRangeStart" /> <c>&lt;w:customXmlDelRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveFromRangeStart" /> <c>&lt;w:customXmlMoveFromRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlMoveToRangeStart" /> <c>&lt;w:customXmlMoveToRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeStart" /> <c>&lt;w14:customXmlConflictInsRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeStart" /> <c>&lt;w14:customXmlConflictDelRangeStart></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Wordprocessing.TableRowProperties" /> <c>&lt;w:trPr></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor">
-            <summary>
-            Initializes a new instance of the TableRow class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the TableRow class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the TableRow class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the TableRow class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowMarkRevision">
-            <summary>
-            <para>Revision Identifier for Table Row Glyph Formatting</para>
-            <para>Represents the following attribute in the schema: w:rsidRPr</para>
-            </summary>
-            <remarks>
-            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowAddition">
-            <summary>
-            <para>Revision Identifier for Table Row</para>
-            <para>Represents the following attribute in the schema: w:rsidR</para>
-            </summary>
-            <remarks>
-            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowDeletion">
-            <summary>
-            <para>Revision Identifier for Table Row Deletion</para>
-            <para>Represents the following attribute in the schema: w:rsidDel</para>
-            </summary>
-            <remarks>
-            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.RsidTableRowProperties">
-            <summary>
-            <para>Revision Identifier for Table Row Properties</para>
-            <para>Represents the following attribute in the schema: w:rsidTr</para>
-            </summary>
-            <remarks>
-            xmlns:w=http://schemas.openxmlformats.org/wordprocessingml/2006/main
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.ParagraphId">
-            <summary>
-            <para>paraId, this property is only available in Office 2010 and later.</para>
-            <para>Represents the following attribute in the schema: w14:paraId</para>
-            </summary>
-            <remarks>
-            xmlns:w14=http://schemas.microsoft.com/office/word/2010/wordml
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.TextId">
-            <summary>
-            <para>textId, this property is only available in Office 2010 and later.</para>
-            <para>Represents the following attribute in the schema: w14:textId</para>
-            </summary>
-            <remarks>
-            xmlns:w14=http://schemas.microsoft.com/office/word/2010/wordml
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.TablePropertyExceptions">
-            <summary>
-            <para>Table-Level Property Exceptions.</para>
-            <para>Represents the following element tag in the schema: w:tblPrEx.</para>
-            </summary>
-            <remarks>
-            xmlns:w = http://schemas.openxmlformats.org/wordprocessingml/2006/main
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Wordprocessing.TableRow.TableRowProperties">
-            <summary>
-            <para>Table Row Properties.</para>
-            <para>Represents the following element tag in the schema: w:trPr.</para>
-            </summary>
-            <remarks>
-            xmlns:w = http://schemas.openxmlformats.org/wordprocessingml/2006/main
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Wordprocessing.TableRow.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:DocumentFormat.OpenXml.Wordprocessing.CustomXmlRow">
@@ -160976,6 +161387,24 @@
             </summary>
             <param name="outerXml">Specifies the outer XML of the element.</param>
         </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ChartSpace.Version">
+            <summary>
+            <para>version, this property is only available in Office 2016 and later.</para>
+            <para>Represents the following attribute in the schema: version</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ChartSpace.FeatureList">
+            <summary>
+            <para>featureList, this property is only available in Office 2016 and later.</para>
+            <para>Represents the following attribute in the schema: featureList</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ChartSpace.FallbackImg">
+            <summary>
+            <para>fallbackImg, this property is only available in Office 2016 and later.</para>
+            <para>Represents the following attribute in the schema: fallbackImg</para>
+            </summary>
+        </member>
         <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ChartSpace.ChartData">
             <summary>
             <para>ChartData.</para>
@@ -162313,6 +162742,33 @@
         <member name="M:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ShapeProperties.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
+        <member name="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset">
+            <summary>
+            <para>Defines the Offset Class.</para>
+            <para>This class is available in Office 2016 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is cx:offset.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset.#ctor">
+            <summary>
+            Initializes a new instance of the Offset class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset.Top">
+            <summary>
+            <para>top, this property is only available in Office 2016 and later.</para>
+            <para>Represents the following attribute in the schema: top</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset.Left">
+            <summary>
+            <para>left, this property is only available in Office 2016 and later.</para>
+            <para>Represents the following attribute in the schema: left</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
         <member name="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.AxisUnitsLabel">
             <summary>
             <para>Defines the AxisUnitsLabel Class.</para>
@@ -162463,6 +162919,7 @@
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ShapeProperties" /> <c>&lt;cx:spPr></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.TxPrTextBody" /> <c>&lt;cx:txPr></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionList" /> <c>&lt;cx:extLst></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset" /> <c>&lt;cx:offset></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Text" /> <c>&lt;cx:tx></c></description></item>
             </list>
             </remarks>
@@ -162512,6 +162969,15 @@
             <summary>
             <para>TxPrTextBody.</para>
             <para>Represents the following element tag in the schema: cx:txPr.</para>
+            </summary>
+            <remarks>
+            xmlns:cx = http://schemas.microsoft.com/office/drawing/2014/chartex
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.AxisTitle.Offset">
+            <summary>
+            <para>Offset.</para>
+            <para>Represents the following element tag in the schema: cx:offset.</para>
             </summary>
             <remarks>
             xmlns:cx = http://schemas.microsoft.com/office/drawing/2014/chartex
@@ -165830,6 +166296,7 @@
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ShapeProperties" /> <c>&lt;cx:spPr></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.TxPrTextBody" /> <c>&lt;cx:txPr></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionList" /> <c>&lt;cx:extLst></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset" /> <c>&lt;cx:offset></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Text" /> <c>&lt;cx:tx></c></description></item>
             </list>
             </remarks>
@@ -165897,6 +166364,15 @@
             <summary>
             <para>TxPrTextBody.</para>
             <para>Represents the following element tag in the schema: cx:txPr.</para>
+            </summary>
+            <remarks>
+            xmlns:cx = http://schemas.microsoft.com/office/drawing/2014/chartex
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ChartTitle.Offset">
+            <summary>
+            <para>Offset.</para>
+            <para>Represents the following element tag in the schema: cx:offset.</para>
             </summary>
             <remarks>
             xmlns:cx = http://schemas.microsoft.com/office/drawing/2014/chartex
@@ -165977,6 +166453,7 @@
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ShapeProperties" /> <c>&lt;cx:spPr></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.TxPrTextBody" /> <c>&lt;cx:txPr></c></description></item>
               <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionList" /> <c>&lt;cx:extLst></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Offset" /> <c>&lt;cx:offset></c></description></item>
             </list>
             </remarks>
         </member>
@@ -166034,6 +166511,15 @@
             <summary>
             <para>TxPrTextBody.</para>
             <para>Represents the following element tag in the schema: cx:txPr.</para>
+            </summary>
+            <remarks>
+            xmlns:cx = http://schemas.microsoft.com/office/drawing/2014/chartex
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.Legend.Offset">
+            <summary>
+            <para>Offset.</para>
+            <para>Represents the following element tag in the schema: cx:offset.</para>
             </summary>
             <remarks>
             xmlns:cx = http://schemas.microsoft.com/office/drawing/2014/chartex
@@ -166726,6 +167212,40 @@
         </member>
         <member name="M:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.UnsignedIntegerType.CloneNode(System.Boolean)">
             <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionDropMode">
+            <summary>
+            Defines the ExtensionDropMode enumeration.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionDropMode.#ctor(System.String)">
+            <summary>
+            Creates a new ExtensionDropMode enum instance
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionDropMode.Never">
+            <summary>
+            never.
+            <para>When the item is serialized out as xml, its value is "never".</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionDropMode.OnModelChange">
+            <summary>
+            onModelChange.
+            <para>When the item is serialized out as xml, its value is "onModelChange".</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionDropMode.OnDataChange">
+            <summary>
+            onDataChange.
+            <para>When the item is serialized out as xml, its value is "onDataChange".</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.ExtensionDropMode.Always">
+            <summary>
+            always.
+            <para>When the item is serialized out as xml, its value is "always".</para>
+            </summary>
         </member>
         <member name="T:DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing.FormulaDirection">
             <summary>
@@ -179729,36 +180249,6 @@
         <member name="M:DocumentFormat.OpenXml.Drawing.Charts.NoMultiLevelLabels.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Date1904">
-            <summary>
-            <para>Defines the Date1904 Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:date1904.</para>
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Date1904.#ctor">
-            <summary>
-            Initializes a new instance of the Date1904 class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Date1904.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.RoundedCorners">
-            <summary>
-            <para>Defines the RoundedCorners Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:roundedCorners.</para>
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.RoundedCorners.#ctor">
-            <summary>
-            Initializes a new instance of the RoundedCorners class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.RoundedCorners.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
         <member name="T:DocumentFormat.OpenXml.Drawing.Charts.AutoTitleDeleted">
             <summary>
             <para>True if the chart automatic title has been deleted..</para>
@@ -179802,6 +180292,36 @@
             </summary>
         </member>
         <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ShowDataLabelsOverMaximum.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Date1904">
+            <summary>
+            <para>Defines the Date1904 Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:date1904.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Date1904.#ctor">
+            <summary>
+            Initializes a new instance of the Date1904 class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Date1904.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.RoundedCorners">
+            <summary>
+            <para>Defines the RoundedCorners Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:roundedCorners.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.RoundedCorners.#ctor">
+            <summary>
+            Initializes a new instance of the RoundedCorners class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.RoundedCorners.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:DocumentFormat.OpenXml.Drawing.Charts.BooleanType">
@@ -181739,6 +182259,24 @@
             Initializes a new instance of the ChartSpace class from outer XML.
             </summary>
             <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ChartSpace.Version">
+            <summary>
+            <para>Version number of the file, as determined by the features used by this chart</para>
+            <para>Represents the following attribute in the schema: version</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ChartSpace.FeatureList">
+            <summary>
+            <para>A space-delimited list of additional features used in this chart but not captured in the version</para>
+            <para>Represents the following attribute in the schema: featureList</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ChartSpace.FallbackImg">
+            <summary>
+            <para>A reference (in the form of a relationship ID) to a fallback image to be used if the chart cannot be loaded</para>
+            <para>Represents the following attribute in the schema: fallbackImg</para>
+            </summary>
         </member>
         <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ChartSpace.Date1904">
             <summary>
@@ -189526,713 +190064,6 @@
         <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ValAxExtensionList.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage">
-            <summary>
-            <para>Defines the EditingLanguage Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:lang.</para>
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage.#ctor">
-            <summary>
-            Initializes a new instance of the EditingLanguage class.
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage.Val">
-            <summary>
-            <para>Language Code</para>
-            <para>Represents the following attribute in the schema: val</para>
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Style">
-            <summary>
-            <para>Defines the Style Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:style.</para>
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Style.#ctor">
-            <summary>
-            Initializes a new instance of the Style class.
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Style.Val">
-            <summary>
-            <para>Style Type</para>
-            <para>Represents the following attribute in the schema: val</para>
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Style.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride">
-            <summary>
-            <para>Defines the ColorMapOverride Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:clrMapOvr.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.ExtensionList" /> <c>&lt;a:extLst></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor">
-            <summary>
-            Initializes a new instance of the ColorMapOverride class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the ColorMapOverride class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the ColorMapOverride class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the ColorMapOverride class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Background1">
-            <summary>
-            <para>Background 1</para>
-            <para>Represents the following attribute in the schema: bg1</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Text1">
-            <summary>
-            <para>Text 1</para>
-            <para>Represents the following attribute in the schema: tx1</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Background2">
-            <summary>
-            <para>Background 2</para>
-            <para>Represents the following attribute in the schema: bg2</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Text2">
-            <summary>
-            <para>Text 2</para>
-            <para>Represents the following attribute in the schema: tx2</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent1">
-            <summary>
-            <para>Accent 1</para>
-            <para>Represents the following attribute in the schema: accent1</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent2">
-            <summary>
-            <para>Accent 2</para>
-            <para>Represents the following attribute in the schema: accent2</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent3">
-            <summary>
-            <para>Accent 3</para>
-            <para>Represents the following attribute in the schema: accent3</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent4">
-            <summary>
-            <para>Accent 4</para>
-            <para>Represents the following attribute in the schema: accent4</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent5">
-            <summary>
-            <para>Accent 5</para>
-            <para>Represents the following attribute in the schema: accent5</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent6">
-            <summary>
-            <para>Accent 6</para>
-            <para>Represents the following attribute in the schema: accent6</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Hyperlink">
-            <summary>
-            <para>Hyperlink</para>
-            <para>Represents the following attribute in the schema: hlink</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.FollowedHyperlink">
-            <summary>
-            <para>Followed Hyperlink</para>
-            <para>Represents the following attribute in the schema: folHlink</para>
-            </summary>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.ExtensionList">
-            <summary>
-            <para>ExtensionList.</para>
-            <para>Represents the following element tag in the schema: a:extLst.</para>
-            </summary>
-            <remarks>
-            xmlns:a = http://schemas.openxmlformats.org/drawingml/2006/main
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.PivotSource">
-            <summary>
-            <para>Defines the PivotSource Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:pivotSource.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ExtensionList" /> <c>&lt;c:extLst></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.FormatId" /> <c>&lt;c:fmtId></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PivotTableName" /> <c>&lt;c:name></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor">
-            <summary>
-            Initializes a new instance of the PivotSource class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the PivotSource class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the PivotSource class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the PivotSource class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.PivotTableName">
-            <summary>
-            <para>Pivot Name.</para>
-            <para>Represents the following element tag in the schema: c:name.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.FormatId">
-            <summary>
-            <para>Format ID.</para>
-            <para>Represents the following element tag in the schema: c:fmtId.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.ExtensionList">
-            <summary>
-            <para>Chart Extensibility.</para>
-            <para>Represents the following element tag in the schema: c:extLst.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Protection">
-            <summary>
-            <para>Defines the Protection Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:protection.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ChartObject" /> <c>&lt;c:chartObject></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Data" /> <c>&lt;c:data></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Formatting" /> <c>&lt;c:formatting></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Selection" /> <c>&lt;c:selection></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.UserInterface" /> <c>&lt;c:userInterface></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor">
-            <summary>
-            Initializes a new instance of the Protection class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the Protection class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the Protection class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the Protection class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.ChartObject">
-            <summary>
-            <para>Chart Object.</para>
-            <para>Represents the following element tag in the schema: c:chartObject.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.Data">
-            <summary>
-            <para>Data Cannot Be Changed.</para>
-            <para>Represents the following element tag in the schema: c:data.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.Formatting">
-            <summary>
-            <para>Formatting.</para>
-            <para>Represents the following element tag in the schema: c:formatting.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.Selection">
-            <summary>
-            <para>Selection.</para>
-            <para>Represents the following element tag in the schema: c:selection.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.UserInterface">
-            <summary>
-            <para>User Interface.</para>
-            <para>Represents the following element tag in the schema: c:userInterface.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Chart">
-            <summary>
-            <para>Defines the Chart Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:chart.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.AutoTitleDeleted" /> <c>&lt;c:autoTitleDeleted></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PlotVisibleOnly" /> <c>&lt;c:plotVisOnly></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ShowDataLabelsOverMaximum" /> <c>&lt;c:showDLblsOverMax></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ChartExtensionList" /> <c>&lt;c:extLst></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.DisplayBlanksAs" /> <c>&lt;c:dispBlanksAs></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Legend" /> <c>&lt;c:legend></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PivotFormats" /> <c>&lt;c:pivotFmts></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PlotArea" /> <c>&lt;c:plotArea></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Floor" /> <c>&lt;c:floor></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.SideWall" /> <c>&lt;c:sideWall></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.BackWall" /> <c>&lt;c:backWall></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Title" /> <c>&lt;c:title></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.View3D" /> <c>&lt;c:view3D></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor">
-            <summary>
-            Initializes a new instance of the Chart class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the Chart class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the Chart class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the Chart class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.Title">
-            <summary>
-            <para>Title data and formatting.</para>
-            <para>Represents the following element tag in the schema: c:title.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.AutoTitleDeleted">
-            <summary>
-            <para>True if the chart automatic title has been deleted..</para>
-            <para>Represents the following element tag in the schema: c:autoTitleDeleted.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.PivotFormats">
-            <summary>
-            <para>pivot chart format persistence data.</para>
-            <para>Represents the following element tag in the schema: c:pivotFmts.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.View3D">
-            <summary>
-            <para>3D view settings.</para>
-            <para>Represents the following element tag in the schema: c:view3D.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.Floor">
-            <summary>
-            <para>3D floor formatting.</para>
-            <para>Represents the following element tag in the schema: c:floor.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.SideWall">
-            <summary>
-            <para>3D side wall formatting.</para>
-            <para>Represents the following element tag in the schema: c:sideWall.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.BackWall">
-            <summary>
-            <para>3D back wall formatting.</para>
-            <para>Represents the following element tag in the schema: c:backWall.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.PlotArea">
-            <summary>
-            <para>Plot data and formatting.</para>
-            <para>Represents the following element tag in the schema: c:plotArea.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.Legend">
-            <summary>
-            <para>Legend data and formatting.</para>
-            <para>Represents the following element tag in the schema: c:legend.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.PlotVisibleOnly">
-            <summary>
-            <para>True if only visible cells are plotted..</para>
-            <para>Represents the following element tag in the schema: c:plotVisOnly.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.DisplayBlanksAs">
-            <summary>
-            <para>The way that blank cells are plotted on a chart..</para>
-            <para>Represents the following element tag in the schema: c:dispBlanksAs.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.ShowDataLabelsOverMaximum">
-            <summary>
-            <para>True if we should render datalabels over the maximum scale.</para>
-            <para>Represents the following element tag in the schema: c:showDLblsOverMax.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.ChartExtensionList">
-            <summary>
-            <para>Extensibility container.</para>
-            <para>Represents the following element tag in the schema: c:extLst.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ExternalData">
-            <summary>
-            <para>Defines the ExternalData Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:externalData.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.AutoUpdate" /> <c>&lt;c:autoUpdate></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor">
-            <summary>
-            Initializes a new instance of the ExternalData class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the ExternalData class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the ExternalData class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the ExternalData class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.Id">
-            <summary>
-            <para>Relationship Reference</para>
-            <para>Represents the following attribute in the schema: r:id</para>
-            </summary>
-            <remarks>
-            xmlns:r=http://schemas.openxmlformats.org/officeDocument/2006/relationships
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.AutoUpdate">
-            <summary>
-            <para>Update Automatically.</para>
-            <para>Represents the following element tag in the schema: c:autoUpdate.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings">
-            <summary>
-            <para>Defines the PrintSettings Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:printSettings.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.HeaderFooter" /> <c>&lt;c:headerFooter></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PageMargins" /> <c>&lt;c:pageMargins></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PageSetup" /> <c>&lt;c:pageSetup></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.LegacyDrawingHeaderFooter" /> <c>&lt;c:legacyDrawingHF></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor">
-            <summary>
-            Initializes a new instance of the PrintSettings class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the PrintSettings class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the PrintSettings class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the PrintSettings class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.HeaderFooter">
-            <summary>
-            <para>Header and Footer.</para>
-            <para>Represents the following element tag in the schema: c:headerFooter.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.PageMargins">
-            <summary>
-            <para>Page Margins.</para>
-            <para>Represents the following element tag in the schema: c:pageMargins.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.PageSetup">
-            <summary>
-            <para>Page Setup.</para>
-            <para>Represents the following element tag in the schema: c:pageSetup.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.LegacyDrawingHeaderFooter">
-            <summary>
-            <para>Legacy Drawing for Headers and Footers.</para>
-            <para>Represents the following element tag in the schema: c:legacyDrawingHF.</para>
-            </summary>
-            <remarks>
-            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList">
-            <summary>
-            <para>Defines the ChartSpaceExtensionList Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:extLst.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension" /> <c>&lt;c:ext></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtensionList class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtensionList class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtensionList class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtensionList class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension">
-            <summary>
-            <para>Defines the ChartSpaceExtension Class.</para>
-            <para>This class is available in Office 2007 and above.</para>
-            <para>When the object is serialized out as xml, it's qualified name is c:ext.</para>
-            </summary>
-            <remarks>
-            <para>The following table lists the possible child types:</para>
-            <list type="bullet">
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2013.Drawing.Chart.PivotSource" /> <c>&lt;c15:pivotSource></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Drawing.Charts.PivotOptions" /> <c>&lt;c14:pivotOptions></c></description></item>
-              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Drawing.Charts.SketchOptions" /> <c>&lt;c14:sketchOptions></c></description></item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtension class.
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtension class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtension class with the specified child elements.
-            </summary>
-            <param name="childElements">Specifies the child elements.</param>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the ChartSpaceExtension class from outer XML.
-            </summary>
-            <param name="outerXml">Specifies the outer XML of the element.</param>
-        </member>
-        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.Uri">
-            <summary>
-            <para>URI</para>
-            <para>Represents the following attribute in the schema: uri</para>
-            </summary>
-        </member>
-        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.CloneNode(System.Boolean)">
-            <inheritdoc/>
-        </member>
         <member name="T:DocumentFormat.OpenXml.Drawing.Charts.DLblExtensionList">
             <summary>
             <para>Defines the DLblExtensionList Class.</para>
@@ -192196,6 +192027,713 @@
             <param name="outerXml">Specifies the outer XML of the element.</param>
         </member>
         <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartExtensionList.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage">
+            <summary>
+            <para>Defines the EditingLanguage Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:lang.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage.#ctor">
+            <summary>
+            Initializes a new instance of the EditingLanguage class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage.Val">
+            <summary>
+            <para>Language Code</para>
+            <para>Represents the following attribute in the schema: val</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.EditingLanguage.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Style">
+            <summary>
+            <para>Defines the Style Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:style.</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Style.#ctor">
+            <summary>
+            Initializes a new instance of the Style class.
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Style.Val">
+            <summary>
+            <para>Style Type</para>
+            <para>Represents the following attribute in the schema: val</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Style.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride">
+            <summary>
+            <para>Defines the ColorMapOverride Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:clrMapOvr.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.ExtensionList" /> <c>&lt;a:extLst></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor">
+            <summary>
+            Initializes a new instance of the ColorMapOverride class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the ColorMapOverride class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the ColorMapOverride class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the ColorMapOverride class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Background1">
+            <summary>
+            <para>Background 1</para>
+            <para>Represents the following attribute in the schema: bg1</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Text1">
+            <summary>
+            <para>Text 1</para>
+            <para>Represents the following attribute in the schema: tx1</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Background2">
+            <summary>
+            <para>Background 2</para>
+            <para>Represents the following attribute in the schema: bg2</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Text2">
+            <summary>
+            <para>Text 2</para>
+            <para>Represents the following attribute in the schema: tx2</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent1">
+            <summary>
+            <para>Accent 1</para>
+            <para>Represents the following attribute in the schema: accent1</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent2">
+            <summary>
+            <para>Accent 2</para>
+            <para>Represents the following attribute in the schema: accent2</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent3">
+            <summary>
+            <para>Accent 3</para>
+            <para>Represents the following attribute in the schema: accent3</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent4">
+            <summary>
+            <para>Accent 4</para>
+            <para>Represents the following attribute in the schema: accent4</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent5">
+            <summary>
+            <para>Accent 5</para>
+            <para>Represents the following attribute in the schema: accent5</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Accent6">
+            <summary>
+            <para>Accent 6</para>
+            <para>Represents the following attribute in the schema: accent6</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.Hyperlink">
+            <summary>
+            <para>Hyperlink</para>
+            <para>Represents the following attribute in the schema: hlink</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.FollowedHyperlink">
+            <summary>
+            <para>Followed Hyperlink</para>
+            <para>Represents the following attribute in the schema: folHlink</para>
+            </summary>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.ExtensionList">
+            <summary>
+            <para>ExtensionList.</para>
+            <para>Represents the following element tag in the schema: a:extLst.</para>
+            </summary>
+            <remarks>
+            xmlns:a = http://schemas.openxmlformats.org/drawingml/2006/main
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ColorMapOverride.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.PivotSource">
+            <summary>
+            <para>Defines the PivotSource Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:pivotSource.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ExtensionList" /> <c>&lt;c:extLst></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.FormatId" /> <c>&lt;c:fmtId></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PivotTableName" /> <c>&lt;c:name></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor">
+            <summary>
+            Initializes a new instance of the PivotSource class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the PivotSource class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the PivotSource class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the PivotSource class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.PivotTableName">
+            <summary>
+            <para>Pivot Name.</para>
+            <para>Represents the following element tag in the schema: c:name.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.FormatId">
+            <summary>
+            <para>Format ID.</para>
+            <para>Represents the following element tag in the schema: c:fmtId.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.ExtensionList">
+            <summary>
+            <para>Chart Extensibility.</para>
+            <para>Represents the following element tag in the schema: c:extLst.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PivotSource.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Protection">
+            <summary>
+            <para>Defines the Protection Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:protection.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ChartObject" /> <c>&lt;c:chartObject></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Data" /> <c>&lt;c:data></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Formatting" /> <c>&lt;c:formatting></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Selection" /> <c>&lt;c:selection></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.UserInterface" /> <c>&lt;c:userInterface></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor">
+            <summary>
+            Initializes a new instance of the Protection class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the Protection class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the Protection class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Protection class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.ChartObject">
+            <summary>
+            <para>Chart Object.</para>
+            <para>Represents the following element tag in the schema: c:chartObject.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.Data">
+            <summary>
+            <para>Data Cannot Be Changed.</para>
+            <para>Represents the following element tag in the schema: c:data.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.Formatting">
+            <summary>
+            <para>Formatting.</para>
+            <para>Represents the following element tag in the schema: c:formatting.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.Selection">
+            <summary>
+            <para>Selection.</para>
+            <para>Represents the following element tag in the schema: c:selection.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Protection.UserInterface">
+            <summary>
+            <para>User Interface.</para>
+            <para>Represents the following element tag in the schema: c:userInterface.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Protection.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.Chart">
+            <summary>
+            <para>Defines the Chart Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:chart.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.AutoTitleDeleted" /> <c>&lt;c:autoTitleDeleted></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PlotVisibleOnly" /> <c>&lt;c:plotVisOnly></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ShowDataLabelsOverMaximum" /> <c>&lt;c:showDLblsOverMax></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ChartExtensionList" /> <c>&lt;c:extLst></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.DisplayBlanksAs" /> <c>&lt;c:dispBlanksAs></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Legend" /> <c>&lt;c:legend></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PivotFormats" /> <c>&lt;c:pivotFmts></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PlotArea" /> <c>&lt;c:plotArea></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Floor" /> <c>&lt;c:floor></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.SideWall" /> <c>&lt;c:sideWall></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.BackWall" /> <c>&lt;c:backWall></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.Title" /> <c>&lt;c:title></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.View3D" /> <c>&lt;c:view3D></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor">
+            <summary>
+            Initializes a new instance of the Chart class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the Chart class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the Chart class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Chart class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.Title">
+            <summary>
+            <para>Title data and formatting.</para>
+            <para>Represents the following element tag in the schema: c:title.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.AutoTitleDeleted">
+            <summary>
+            <para>True if the chart automatic title has been deleted..</para>
+            <para>Represents the following element tag in the schema: c:autoTitleDeleted.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.PivotFormats">
+            <summary>
+            <para>pivot chart format persistence data.</para>
+            <para>Represents the following element tag in the schema: c:pivotFmts.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.View3D">
+            <summary>
+            <para>3D view settings.</para>
+            <para>Represents the following element tag in the schema: c:view3D.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.Floor">
+            <summary>
+            <para>3D floor formatting.</para>
+            <para>Represents the following element tag in the schema: c:floor.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.SideWall">
+            <summary>
+            <para>3D side wall formatting.</para>
+            <para>Represents the following element tag in the schema: c:sideWall.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.BackWall">
+            <summary>
+            <para>3D back wall formatting.</para>
+            <para>Represents the following element tag in the schema: c:backWall.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.PlotArea">
+            <summary>
+            <para>Plot data and formatting.</para>
+            <para>Represents the following element tag in the schema: c:plotArea.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.Legend">
+            <summary>
+            <para>Legend data and formatting.</para>
+            <para>Represents the following element tag in the schema: c:legend.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.PlotVisibleOnly">
+            <summary>
+            <para>True if only visible cells are plotted..</para>
+            <para>Represents the following element tag in the schema: c:plotVisOnly.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.DisplayBlanksAs">
+            <summary>
+            <para>The way that blank cells are plotted on a chart..</para>
+            <para>Represents the following element tag in the schema: c:dispBlanksAs.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.ShowDataLabelsOverMaximum">
+            <summary>
+            <para>True if we should render datalabels over the maximum scale.</para>
+            <para>Represents the following element tag in the schema: c:showDLblsOverMax.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.Chart.ChartExtensionList">
+            <summary>
+            <para>Extensibility container.</para>
+            <para>Represents the following element tag in the schema: c:extLst.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.Chart.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ExternalData">
+            <summary>
+            <para>Defines the ExternalData Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:externalData.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.AutoUpdate" /> <c>&lt;c:autoUpdate></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor">
+            <summary>
+            Initializes a new instance of the ExternalData class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the ExternalData class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the ExternalData class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the ExternalData class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.Id">
+            <summary>
+            <para>Relationship Reference</para>
+            <para>Represents the following attribute in the schema: r:id</para>
+            </summary>
+            <remarks>
+            xmlns:r=http://schemas.openxmlformats.org/officeDocument/2006/relationships
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.AutoUpdate">
+            <summary>
+            <para>Update Automatically.</para>
+            <para>Represents the following element tag in the schema: c:autoUpdate.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ExternalData.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings">
+            <summary>
+            <para>Defines the PrintSettings Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:printSettings.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.HeaderFooter" /> <c>&lt;c:headerFooter></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PageMargins" /> <c>&lt;c:pageMargins></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.PageSetup" /> <c>&lt;c:pageSetup></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.LegacyDrawingHeaderFooter" /> <c>&lt;c:legacyDrawingHF></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor">
+            <summary>
+            Initializes a new instance of the PrintSettings class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the PrintSettings class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the PrintSettings class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the PrintSettings class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.HeaderFooter">
+            <summary>
+            <para>Header and Footer.</para>
+            <para>Represents the following element tag in the schema: c:headerFooter.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.PageMargins">
+            <summary>
+            <para>Page Margins.</para>
+            <para>Represents the following element tag in the schema: c:pageMargins.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.PageSetup">
+            <summary>
+            <para>Page Setup.</para>
+            <para>Represents the following element tag in the schema: c:pageSetup.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.LegacyDrawingHeaderFooter">
+            <summary>
+            <para>Legacy Drawing for Headers and Footers.</para>
+            <para>Represents the following element tag in the schema: c:legacyDrawingHF.</para>
+            </summary>
+            <remarks>
+            xmlns:c = http://schemas.openxmlformats.org/drawingml/2006/chart
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.PrintSettings.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList">
+            <summary>
+            <para>Defines the ChartSpaceExtensionList Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:extLst.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension" /> <c>&lt;c:ext></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtensionList class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtensionList class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtensionList class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtensionList class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtensionList.CloneNode(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension">
+            <summary>
+            <para>Defines the ChartSpaceExtension Class.</para>
+            <para>This class is available in Office 2007 and above.</para>
+            <para>When the object is serialized out as xml, it's qualified name is c:ext.</para>
+            </summary>
+            <remarks>
+            <para>The following table lists the possible child types:</para>
+            <list type="bullet">
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2013.Drawing.Chart.PivotSource" /> <c>&lt;c15:pivotSource></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Drawing.Charts.PivotOptions" /> <c>&lt;c14:pivotOptions></c></description></item>
+              <item><description><see cref="T:DocumentFormat.OpenXml.Office2010.Drawing.Charts.SketchOptions" /> <c>&lt;c14:sketchOptions></c></description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtension class.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtension class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor(DocumentFormat.OpenXml.OpenXmlElement[])">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtension class with the specified child elements.
+            </summary>
+            <param name="childElements">Specifies the child elements.</param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the ChartSpaceExtension class from outer XML.
+            </summary>
+            <param name="outerXml">Specifies the outer XML of the element.</param>
+        </member>
+        <member name="P:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.Uri">
+            <summary>
+            <para>URI</para>
+            <para>Represents the following attribute in the schema: uri</para>
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.Drawing.Charts.ChartSpaceExtension.CloneNode(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:DocumentFormat.OpenXml.Drawing.Charts.LayoutTargetValues">
