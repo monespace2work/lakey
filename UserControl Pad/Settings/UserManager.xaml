@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="UserManager"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Lakey"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <Grid Background="#FF00002D">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=" 300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#FF0C3E5D" >
+            <StackPanel VerticalAlignment="Top">
+                <TextBlock Text="USERS / UTILISATEURS" FontSize="20" Foreground="#FFD1F9F6" Margin="10,5,0,0"/>
+            </StackPanel>
+
+        </Border>
+        <Border Grid.Row="1" Grid.Column="0" Background="#FF011725" >
+            <StackPanel Margin="0,10,0,0" >
+                <StackPanel Orientation="Horizontal"  Margin="0,0,0,10">
+                    <TextBlock  Text="Nom de l'opérateur :" Foreground="White" Width="145" Margin="5,0,0,0"/>
+                    <ComboBox x:Name="CbxOperateur" Width="137"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="0,0,0,10" Visibility="Collapsed">
+                    <TextBlock  Text="Agence :" Foreground="White" Width="145" Margin="5,0,0,0"/>
+                    <TextBox x:Name="TbxAgence" Width="137" IsReadOnly="True"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"  Margin="0,0,0,10">
+                    <TextBlock  Text=" User Name :" Foreground="White" Width="145" Margin="5,0,0,0"/>
+                    <TextBox x:Name="TbxUserName" Width="137"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"  Margin="0,0,0,10">
+                    <TextBlock  Text="PassWord / Mot de passe :" Foreground="White" Width="145" Margin="5,0,0,0"/>
+                    <TextBox x:Name="TbxPassW" Width="137" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="0,0,0,10">
+                    <TextBlock Text="Level/Niveau :" Foreground="White" Width="145" Margin="5,0,0,0"/>
+                    <ComboBox x:Name="cbxLevel"  Width="137"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="BtnCancel" Content="Annuler" Padding="30,0,30,0" Height="30" FontSize="18" FontWeight="Bold" Foreground="#FF013924"  HorizontalAlignment="Center" Margin="5,0,0,0"/>
+                    <Button x:Name="BtnSave" Content="Enregistrer" Padding="30,0,30,0"  Height="30" FontSize="18" FontWeight="Bold" Foreground="Black"  HorizontalAlignment="Center" Background="#FF3AD600" Margin="10,0,0,0"/>
+
+                </StackPanel>
+
+
+            </StackPanel>
+
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" Background="#FF395B71" >
+            <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto" >
+                <DataGrid x:Name="dgUsers" AutoGenerateColumns="True" IsReadOnly="True"/>
+            </ScrollViewer>
+
+        </Border>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,45 @@
+﻿<Window x:Class="ReseauSelect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lakey"
+        mc:Ignorable="d"
+        Title="Selction du dossier RESEAU" Height="200" MaxHeight="250" Width="450" MaxWidth="500" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/Lakey;component/MyIco.ico">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Image Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Reseau.jpg">
+        </Image>
+        <StackPanel Grid.Column="1" >
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0,0.5" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="5.906" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="#FF8688AC" Offset="1"/>
+                    <GradientStop Color="White"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+            <Label Content="CHOISIR UN DOSSIER RESEAU" Margin="0,10,0,20" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Lettre de lecteur"  Width="100"/>
+                <ComboBox x:Name="cbxLetterDrive" Width="45"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Dossier réseau" Width="100"/>
+                <TextBox x:Name="tbxPathDrive" Width="180" HorizontalAlignment="Left" VerticalAlignment="Center" IsReadOnly="True"/>
+                <Button x:Name="btnOpen" Content="Ouvrir" Height="20"/>
+            </StackPanel>
+            <Button x:Name="btnSave"  Content="ENREGISTRER" Margin="10,15,10,0"/>
+
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,190 @@
+﻿<UserControl x:Class="usercClientsPoste"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Lakey"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Center">
+                    <Label Content="CLIENTS"  Foreground="White" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
+                    <Label Content=" / "  Foreground="#FF87FF6D" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
+                    <Label Content="POSTES"  Foreground="#FF87FF6D" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
+                </StackPanel>
+                <Border  Grid.Column="1" Background="#FFF3E0FF" >
+                    <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" />
+                        </Button.Background>
+                    </Button>
+                </Border>
+            </Grid>
+        </Border>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+            <StackPanel >
+                <Border BorderBrush="Black" BorderThickness="1" Background="#FF000A1D">
+                    <StackPanel>
+                        <Grid >
+                            <StackPanel >
+                                <StackPanel >
+                                    <Grid  Background="#FF150452" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition MaxWidth="350"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition MinWidth="200"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Visible">
+                                                <Label Content="CLIENTS" Foreground="#FF9DFF87"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
+                                                <Label Content=" / " Foreground="LightSkyBlue"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                                                <Label Content="POSTES" Foreground="White"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}"  />
+                                                <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
+
+                                            </WrapPanel>
+                                            <WrapPanel>
+                                                <TextBlock x:Name="tblNbClientPostesActifs" Text=" Nombre de contrats en cours de validité : "  Background="#FF150452" Foreground="LightSkyBlue" TextWrapping="Wrap" />
+                                                <CheckBox x:Name="CltActif" Content="Actif" Background="White" Foreground="White" IsChecked="True" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="20,0,7,0" />
+                                                <CheckBox x:Name="CltInActif" Content="Inactif" Background="White" Foreground="White" IsChecked="False" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="20,0,7,0" />
+                                            </WrapPanel>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button x:Name="btnNewData" Content="NOUVEAU" MinWidth="100" Margin=" 8" Padding="5"/>
+                                            <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Visibility="Collapsed" Background="#FF700101" Foreground="White"/>
+                                            <Button x:Name="btnRefresh" Content="ACTUALISER" Background="#FF87FF6D" Margin=" 12"  Width="80"/>
+                                        </StackPanel>
+                                        <WrapPanel Orientation="Horizontal"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
+                                            <!--StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Début :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
+                                                    <DatePicker  x:Name="dtpDebutSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Fin :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
+                                                    <DatePicker  x:Name="dtpFinSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
+                                                </StackPanel>
+                                            </StackPanel-->
+                                            <TextBox x:Name="BtnDataSearch" Width="150" Height="28" Style="{StaticResource SearchButtonRounded}" />
+                                            <Button x:Name="btnExportExcel" MinWidth="30" MinHeight="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="White" >
+                                                <Button.Background>
+                                                    <ImageBrush Stretch="Uniform" ImageSource="Logo_excel.png"/>
+                                                </Button.Background>
+                                            </Button>
+
+                                        </WrapPanel>
+                                    </Grid>
+
+                                </StackPanel >
+                                <StackPanel x:Name="stpSaisie" Visibility="Collapsed"   >
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="5">
+                                            <TextBlock MinWidth="25" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="100"><Run Text="Site "/><Run Text=": "/></TextBlock>
+                                            <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                                            <Grid>
+                                                <ComboBox x:Name="CbxSite" Width="360" Height="26" FontSize="14" VerticalAlignment="Bottom" />
+                                                <TextBlock  x:Name="TblIndicationCbxSite" Text=" Site" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="Gray"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <TextBox x:Name="tbxListePoste" Background="Black" Foreground="White" Visibility="Collapsed" Margin="140,0,10,0" Opacity="0.60" IsReadOnly="True" />
+
+                                        <StackPanel Orientation ="Horizontal"  Margin="5">
+                                            <TextBlock MinWidth="25" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="100"><Run Text="Durée "/><Run Text=": "/></TextBlock>
+                                            <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                                            <Grid>
+                                                <ComboBox x:Name="CbxDuree" Width="150" Height="26" FontSize="14" VerticalAlignment="Bottom" />
+                                                <TextBlock  x:Name="TblIndicationDuree" Text="Durée " VerticalAlignment="Center" IsHitTestVisible="False" Foreground="Gray"/>
+                                            </Grid>
+
+                                            <TextBlock MinWidth="25" Margin="15,5,5,5" VerticalAlignment="Center" Foreground="White" Width="50"><Run Text="Id Poste "/><Run Text=":"/></TextBlock>
+                                            <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                                            <Grid>
+                                                <TextBox x:Name="TbxCode" Width="130" Height="25" FontSize="14" VerticalAlignment="Center" Background="White" FontWeight="Bold" />
+                                                <TextBlock  x:Name="TblIndicationCode" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="Gray" Text="Code du poste"/>
+                                            </Grid>
+                                            
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="5">
+                                            <TextBlock MinWidth="25" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="100"><Run Text="Désignation "/><Run Text=": "/></TextBlock>
+                                            <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                                            <Grid>
+                                                <TextBox x:Name="TbxDesignation" MinWidth="360" Height="26" FontSize="14" VerticalAlignment="Top" />
+                                                <TextBlock  x:Name="TblIndicationDesignation" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="Gray" Text="Désignation du poste"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <StackPanel  Orientation="Horizontal" Margin="5" >
+                                            <CheckBox x:Name="ChbActif" Content="Actif" Background="White" Foreground="White" IsChecked="True" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="120,0,7,0" />
+                                            <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="5">
+                                            <TextBlock MinWidth="25" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="100"><Run Text="Jours de repos"/><Run Text=": "/></TextBlock>
+                                            <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                                            <Grid>
+                                                <ComboBox x:Name="CbxRepos" Width="180" Height="26" FontSize="14" VerticalAlignment="Bottom" />
+                                                <TextBlock  x:Name="TblIndicationRepos" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="Gray" Text="Jour de repos"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <!--StackPanel Orientation="Horizontal" Margin="5">
+                                            <TextBlock MinWidth="25" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="100"><Run  Text="Montant unit. "/></TextBlock>
+                                            <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                                            <Grid>
+                                                <TextBox x:Name="TbxMontant" Width="300" Height="26" FontSize="14" VerticalAlignment="Bottom" />
+                                                <TextBlock  x:Name="TblIndicationTbxMontant" Text="Montant unitaire de la facturation" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="Gray"/>
+                                            </Grid>
+                                        </StackPanel-->
+
+
+                                        <!--StackPanel Orientation ="Horizontal"  Margin="5">
+                                            <TextBlock MinWidth="25" Margin="0,0,5,5" VerticalAlignment="Top" Foreground="White" Width="103"><Run Text="Observations "/><Run Text=": "/></TextBlock>
+                                            <Grid>
+                                                <TextBox x:Name="TbxObs" Height="63" FontSize="14"  TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="400" />
+                                                <TextBlock  x:Name="TblIndicationObs" Text="Observations" IsHitTestVisible="False" Foreground="Gray" Margin="0,0,27,0"/>
+                                            </Grid>
+                                        </StackPanel-->
+                                        <StackPanel x:Name="stpButtonsPad" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" Visibility="Visible">
+                                            <Button x:Name="btnAnnule" Content="Annuler l'opération" Margin="0,0,10,0" Padding="10,5"/>
+                                            <Button x:Name="btnSave" Content="Enregistrer et fermer" Margin="0,0,10,0"  Padding="10,5" Visibility="Collapsed"/>
+                                            <Button x:Name="btnSaveContinue" Content="Enregistrer et ajouter un autre" Padding="10,5" Visibility="Collapsed"/>
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                                <DataGrid x:Name="DgClientsPoste" AutoGenerateColumns="True" >
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Modifier" Name="cmiModif"/>
+                                            <MenuItem Header="Supprimer" Background="#FF4D0000" Name="cmiSuppr" Foreground="White"/>
+                                            <Separator/>
+                                            <MenuItem Header="Copier"/>
+                                            <Separator/>
+                                            <MenuItem Header="Contrat" Name="cmiContrat" />
+                                            <MenuItem Header="Affectation" Name="cmiAffectation" />
+                                            <MenuItem Header="Abence/Permission" Name="cmiAbsence" />
+                                            <Separator/>
+                                            <MenuItem Header="Résumé" Name="cmiResume" />
+
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
+
+                                </DataGrid>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

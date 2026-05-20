@@ -1,0 +1,391 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\JPB\\source\\repos\\Lakey\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|c:\\users\\jpb\\source\\repos\\lakey\\usercontrol pad\\userctbord.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\userctbord.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\mainwindow.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:mainwindow.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|c:\\users\\jpb\\source\\repos\\lakey\\usercontrol pad\\userctbord.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\userctbord.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|c:\\users\\jpb\\source\\repos\\lakey\\modules pad\\dbmanipulation.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:modules pad\\dbmanipulation.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\usercagents.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\usercagents.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\usercclients.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\usercclients.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\usercagents.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\usercagents.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\usercstructure.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\usercstructure.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\usercstructure.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\usercstructure.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\structure\\usercfonction.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\structure\\usercfonction.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\structure\\usercfonction.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\structure\\usercfonction.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\structure\\usercangence.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\structure\\usercangence.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\structure\\usercsociete.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\structure\\usercsociete.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\clientsub\\usercclientssite.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\clientsub\\usercclientssite.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentsentree.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentsentree.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentsconges.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentsconges.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentsheuresupp.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentsheuresupp.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentsabsences.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentsabsences.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentsplanning.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentsplanning.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentssortie.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentssortie.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentsaffectation.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentsaffectation.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\Users\\JPB\\source\\repos\\Lakey\\usercontrol pad\\agentsub\\usercagentscontrat.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentscontrat.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserControl Pad\\usercTBord.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercTBord.xaml.vb",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercTBord.xaml.vb",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercTBord.xaml.vb",
+              "RelativeToolTip": "UserControl Pad\\usercTBord.xaml.vb",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAABoAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-19T01:23:50.389Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "usercTBord.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercTBord.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercTBord.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercTBord.xaml",
+              "RelativeToolTip": "UserControl Pad\\usercTBord.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-19T01:23:23.351Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T13:54:19.806Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\MainWindow.xaml.vb",
+              "RelativeDocumentMoniker": "MainWindow.xaml.vb",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\MainWindow.xaml.vb",
+              "RelativeToolTip": "MainWindow.xaml.vb",
+              "ViewState": "AgIAADABAAAAAAAAAAAWwD4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-13T14:16:06.531Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UserControl Pad\\usercClients.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercClients.xaml.vb",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercClients.xaml.vb",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercClients.xaml.vb",
+              "RelativeToolTip": "UserControl Pad\\usercClients.xaml.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-13T16:20:00.312Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "usercAgents.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercAgents.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercAgents.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercAgents.xaml",
+              "RelativeToolTip": "UserControl Pad\\usercAgents.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T16:22:23.812Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "usercAgentsSortie.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsSortie.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsSortie.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsSortie.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsSortie.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:24:49.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "usercAgentsEntree.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsEntree.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsEntree.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsEntree.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsEntree.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:24:25.069Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "usercAgentsContrat.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsContrat.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsContrat.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsContrat.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsContrat.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:23:43.287Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "usercClientsSite.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "RelativeToolTip": "UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:22:56.292Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DbManipulation.vb",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\Modules Pad\\DbManipulation.vb",
+              "RelativeDocumentMoniker": "Modules Pad\\DbManipulation.vb",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\Modules Pad\\DbManipulation.vb",
+              "RelativeToolTip": "Modules Pad\\DbManipulation.vb",
+              "ViewState": "AgIAANsAAAAAAAAAAADgv+sAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-13T16:07:05.922Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserControl Pad\\usercAgents.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercAgents.xaml.vb",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercAgents.xaml.vb",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercAgents.xaml.vb",
+              "RelativeToolTip": "UserControl Pad\\usercAgents.xaml.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABSAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-13T16:23:23.628Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserControl Pad\\usercStructure.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercStructure.xaml.vb",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercStructure.xaml.vb",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercStructure.xaml.vb",
+              "RelativeToolTip": "UserControl Pad\\usercStructure.xaml.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAIAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-13T16:07:02.073Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "usercStructure.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercStructure.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercStructure.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\usercStructure.xaml",
+              "RelativeToolTip": "UserControl Pad\\usercStructure.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T16:06:31.961Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "usercFonction.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercFonction.xaml.vb",
+              "RelativeDocumentMoniker": "UserControl Pad\\Structure\\usercFonction.xaml.vb",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercFonction.xaml.vb",
+              "RelativeToolTip": "UserControl Pad\\Structure\\usercFonction.xaml.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-13T16:05:27.008Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "usercFonction.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercFonction.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\Structure\\usercFonction.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercFonction.xaml",
+              "RelativeToolTip": "UserControl Pad\\Structure\\usercFonction.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T16:04:47.314Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "usercAngence.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercAngence.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\Structure\\usercAngence.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercAngence.xaml",
+              "RelativeToolTip": "UserControl Pad\\Structure\\usercAngence.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T15:55:29.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "usercSociete.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercSociete.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\Structure\\usercSociete.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\Structure\\usercSociete.xaml",
+              "RelativeToolTip": "UserControl Pad\\Structure\\usercSociete.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T15:54:26.246Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "usercAgentsConges.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsConges.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsConges.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsConges.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsConges.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:27:25.397Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "usercAgentsHeureSupp.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsHeureSupp.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsHeureSupp.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsHeureSupp.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsHeureSupp.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:26:55.96Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "usercAgentsAbsences.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:26:34.385Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "usercAgentsPlanning.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsPlanning.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsPlanning.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsPlanning.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsPlanning.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:25:48.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "usercAgentsAffectation.xaml",
+              "DocumentMoniker": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsAffectation.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsAffectation.xaml",
+              "ToolTip": "C:\\Users\\JPB\\source\\repos\\Lakey\\UserControl Pad\\AgentSub\\usercAgentsAffectation.xaml",
+              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsAffectation.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-03-13T14:25:21.583Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

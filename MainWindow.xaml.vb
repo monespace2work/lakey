@@ -1,0 +1,1199 @@
+﻿Imports System.Windows.Threading
+Imports System.Data
+
+Class MainWindow
+    'Dim iUsrcEnntree As New usercAgentsEntree(AddressOf LoadEntree)
+    Dim iUserC As New UserControl
+    Public LocalConnxStr As String
+
+    Public Sub New()
+
+        ' Cet appel est requis par le concepteur.
+        InitializeComponent()
+
+        ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
+    End Sub
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+        tbxVersion.Text = My.Application.Info.Version.ToString
+        tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
+        DbPathGeneral = PaphBackUp()
+        LocalConnxStr = $"Data Source={DbPath};Version=3;"
+
+        maj()
+        InitializeGlobal()
+        'If Not SessLogin() Then Me.Close()
+    End Sub
+    Sub InitializeGlobal()
+        TestConnexionDbIcon()
+        LoadPrimSettings()
+        iUserC = New usercTBord(Sub()
+                                    cctrlCentral.Content = iUserC
+                                End Sub)
+        cctrlCentral.Content = iUserC
+        'cctrlCentral.Content = New usercTBord
+        Try
+            InitStpVisibility()
+            SelectPrincipalBtn(btnTBord)
+            AfficheStatValue()
+            ReDirectStaval()
+            RappelsMemos()
+            ReDirectRappel()
+            AfficheProfilUser()
+            AfficheInfosStructure()
+            RedirectSociete()
+            BtnAgentSearch.Text = ""
+            BtnPlanningSearch.Text = ""
+            BtnContratSearch.Text = ""
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
+        Try
+            Dim iIdber As String = "C:\Program Files\JPBA\idbuder\idbuder.exe"
+            StartProcess(iIdber)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Me.Close()
+        End Try
+
+    End Sub
+
+    Private Sub btnTBord_Click(sender As Object, e As RoutedEventArgs)
+        elpsLoading.Visibility = Visibility.Visible
+        iUserC = New usercTBord(Sub()
+                                    cctrlCentral.Content = iUserC
+                                End Sub)
+        cctrlCentral.Content = iUserC
+
+        'cctrlCentral.Content = New usercTBord
+
+        SelectPrincipalBtn(btnTBord)
+        SelecStp(stpTBord)
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+
+    Private Sub btnAgents_Click(sender As Object, e As RoutedEventArgs)
+        elpsLoading.Visibility = Visibility.Visible
+        Me.Cursor = Cursors.Wait
+        iUserC = New usercAgents(Sub()
+                                     cctrlCentral.Content = iUserC
+                                 End Sub)
+        cctrlCentral.Content = iUserC
+        'cctrlCentral.Content = New usercAgents
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        Me.Cursor = Cursors.Arrow
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnTraitement_Click(sender As Object, e As RoutedEventArgs) Handles btnTraitement.Click
+        cctrlCentral.Content = New usercTraitements
+        SelecStp(stpTraitement)
+        SelectPrincipalBtn(btnTraitement)
+    End Sub
+
+    Private Sub btnClient_Click(sender As Object, e As RoutedEventArgs) Handles btnClient.Click
+        iUserC = New usercClients(Sub()
+                                      cctrlCentral.Content = iUserC
+                                  End Sub)
+        cctrlCentral.Content = iUserC
+        'cctrlCentral.Content = New usercClients
+        SelecStp(stpClient)
+        SelectPrincipalBtn(btnClient)
+    End Sub
+
+    Private Sub btnStructure_Click(sender As Object, e As RoutedEventArgs) Handles btnStructure.Click
+        cctrlCentral.Content = New usercStructure
+        SelecStp(stpStructure)
+        SelectPrincipalBtn(btnStructure)
+    End Sub
+
+
+    Sub AfficheInfosStructure()
+        maj()
+        'MsgBox("ok")
+        Try
+            If IO.File.Exists(SocieteLogoPath) Then
+                Dim iUri = New Uri((SocieteLogoPath))
+                ImgBackground.Source = New BitmapImage(iUri)
+                imgLoogo.Source = New BitmapImage(iUri)
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
+        Dim SteName As String = ""
+        If SocieteSigle <> "" Then
+
+            SteName = $"{SocieteName} ({SocieteSigle})"
+        Else
+            SteName = SocieteName
+        End If
+        tbkSteName.Text = SteName
+        Me.Title = $"{My.Application.Info.ProductName}-{My.Application.Info.Version}  ~ {SteName}"
+        'MsgBox("ok")
+
+    End Sub
+    Sub ReDirectRappel()
+        usercAgentsAbsences.AfficheMemos = AddressOf RappelsMemos
+        usercAgentsContrat.AfficheMemos = AddressOf RappelsMemos
+        usercAgentsSortie.AfficheMemos = AddressOf RappelsMemos
+    End Sub
+    Sub ReDirectStaval()
+        usercAgentsEntree.AfficheStat = AddressOf AfficheStatValue
+        usercAgentsContrat.AfficheStat = AddressOf AfficheStatValue
+        usercAgentsAffectation.AfficheStat = AddressOf AfficheStatValue
+        usercAgentsSortie.AfficheStat = AddressOf AfficheStatValue
+        usercClientsContrat.AfficheStat = AddressOf AfficheStatValue
+        usercClientsSite.AfficheStat = AddressOf AfficheStatValue
+    End Sub
+    Sub RedirectSociete()
+        usercSociete.AfficheInfosStructure = AddressOf AfficheInfosStructure
+    End Sub
+    Sub RappelsMemos()
+        tbxRappel.Text = ListeAgentFinContrat()
+        If tbxRappel.Text <> "" Then
+            Dim iText As String = tbxRappel.Text
+            Dim irappel As String = RappelActifs()
+            Dim CongeRapel As String = ListePermissionCongeEnAttente("permis")
+            If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== PERMISSIONS en attente ===" & CongeRapel
+            CongeRapel = ListePermissionCongeEnAttente("cong")
+            If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== CONGES en attente ===" & CongeRapel
+            If irappel <> "" Then
+                iText += Environment.NewLine & Environment.NewLine & irappel
+                Try
+                    ShowTempMsg(irappel, 60, "RAPPELS IMPORTANTS", "r")
+
+                Catch ex As Exception
+                    MsgBox(ex.Message)
+                End Try
+            End If
+            tbxRappel.Text = iText
+        End If
+    End Sub
+    Sub AfficheStatValue()
+        tbxAgentStat.Text = StatAgent(LocalConnxStr)
+        tbxClientStat.Text = StatClient(LocalConnxStr)
+    End Sub
+
+
+
+    Private Sub btnFonction_Click(sender As Object, e As RoutedEventArgs) Handles btnFonction.Click
+        cctrlCentral.Content = New usercFonction
+        SelectStructure(btnFonction)
+    End Sub
+    Sub SelecStp(MyStp As StackPanel)
+        InitStpVisibility()
+        MyStp.Visibility = Visibility.Visible
+    End Sub
+    Sub InitStpVisibility()
+        stpClient.Visibility = Visibility.Collapsed
+        stpTraitement.Visibility = Visibility.Collapsed
+        stpStructure.Visibility = Visibility.Collapsed
+        stpSupplement.Visibility = Visibility.Collapsed
+        stpEmployes.Visibility = Visibility.Collapsed
+        stpSetting.Visibility = Visibility.Collapsed
+    End Sub
+    Sub InitLoadStpVisibility()
+        stpClient.Visibility = Visibility.Visible
+        stpTraitement.Visibility = Visibility.Visible
+        stpStructure.Visibility = Visibility.Visible
+        stpSupplement.Visibility = Visibility.Visible
+        stpEmployes.Visibility = Visibility.Visible
+        stpSetting.Visibility = Visibility.Collapsed
+    End Sub
+
+    Sub initPrincipalBtn()
+        btnTraitement.Height = 30
+        btnAgents.Height = 30
+        btnClient.Height = 30
+        btnStructure.Height = 30
+        btnSupplement.Height = 30
+        btnSeting.Height = 30
+        btnTBord.Height = 30
+
+        btnTraitement.IsEnabled = True
+        btnAgents.IsEnabled = True
+        btnClient.IsEnabled = True
+        btnStructure.IsEnabled = True
+        btnSupplement.IsEnabled = True
+        btnSeting.IsEnabled = True
+        btnTBord.IsEnabled = True
+
+        btnTraitement.FontWeight = FontWeights.Normal
+        btnAgents.FontWeight = FontWeights.Normal
+        btnClient.FontWeight = FontWeights.Normal
+        btnStructure.FontWeight = FontWeights.Normal
+        btnSupplement.FontWeight = FontWeights.Normal
+        btnSeting.FontWeight = FontWeights.Normal
+        btnTBord.FontWeight = FontWeights.Normal
+
+        btnTraitement.ClearValue(Button.BackgroundProperty)
+        btnAgents.ClearValue(Button.BackgroundProperty)
+        btnClient.ClearValue(Button.BackgroundProperty)
+        btnStructure.ClearValue(Button.BackgroundProperty)
+        btnSupplement.ClearValue(Button.BackgroundProperty)
+        btnSeting.ClearValue(Button.BackgroundProperty)
+        btnTBord.ClearValue(Button.BackgroundProperty)
+
+    End Sub
+
+    Sub initRacourcisBtn()
+        'initRacourcisClientBtn()
+        btnRacAbsenceAg.Height = 20
+        btnRacAffectationAg.Height = 20
+        btnRacContratAg.Height = 20
+        btnRacEntreeAg.Height = 20
+        btnRacHeureSupAg.Height = 20
+        btnRacPlanningAg.Height = 20
+        btnRacSortieAg.Height = 20
+        'btnRacCalCong.Height = 20
+
+        btnRacAbsenceAg.FontWeight = FontWeights.Normal
+        btnRacAffectationAg.FontWeight = FontWeights.Normal
+        btnRacContratAg.FontWeight = FontWeights.Normal
+        btnRacEntreeAg.FontWeight = FontWeights.Normal
+        btnRacHeureSupAg.FontWeight = FontWeights.Normal
+        btnRacPlanningAg.FontWeight = FontWeights.Normal
+        btnRacSortieAg.FontWeight = FontWeights.Normal
+        'btnRacCalCong.FontWeight = FontWeights.Normal
+
+        btnRacAbsenceAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) 'ClearValue(Button.BackgroundProperty)
+        btnRacAffectationAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
+        btnRacContratAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
+        btnRacEntreeAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
+        btnRacHeureSupAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
+        btnRacPlanningAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
+        btnRacSortieAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
+        btnRacCalCong.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF557E94")) '.ClearValue(Button.BackgroundProperty)
+
+        btnRacAbsenceAg.IsEnabled = True
+        btnRacAffectationAg.IsEnabled = True
+        btnRacContratAg.IsEnabled = True
+        btnRacEntreeAg.IsEnabled = True
+        btnRacHeureSupAg.IsEnabled = True
+        btnRacPlanningAg.IsEnabled = True
+        btnRacSortieAg.IsEnabled = True
+        btnRacCalCong.IsEnabled = True
+
+    End Sub
+    Sub initRacourcisClientBtn()
+        'initRacourcisBtn()
+        btnRacEtatCl.Height = 20
+        btnRacContratCl.Height = 20
+        btnRacSiteCl.Height = 20
+        btnRacPosteCl.Height = 20
+        btnRacAgentListeCl.Height = 20
+
+        btnRacEtatCl.FontWeight = FontWeights.Normal
+        btnRacContratCl.FontWeight = FontWeights.Normal
+        btnRacSiteCl.FontWeight = FontWeights.Normal
+        btnRacPosteCl.FontWeight = FontWeights.Normal
+        btnRacAgentListeCl.FontWeight = FontWeights.Normal
+
+        btnRacEtatCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
+        btnRacContratCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
+        btnRacSiteCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
+        btnRacPosteCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
+        btnRacAgentListeCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
+
+        btnRacEtatCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
+        btnRacContratCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
+        btnRacSiteCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
+        btnRacPosteCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
+        btnRacAgentListeCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
+
+        btnRacEtatCl.IsEnabled = True
+        btnRacContratCl.IsEnabled = True
+        btnRacSiteCl.IsEnabled = True
+        btnRacPosteCl.IsEnabled = True
+        btnRacAgentListeCl.IsEnabled = True
+
+    End Sub
+
+    Sub SelectSetingBtn(myBtn As Button)
+        initSetingsBtn()
+        myBtn.Height = 40
+        myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF58B1FF"))
+        myBtn.FontWeight = FontWeights.Bold
+    End Sub
+    Sub SelectRacoucourcilBtn(myBtn As Button)
+        TestConnexionDbIcon()
+        bdrColonneCentre.ScrollToTop()
+        initialzTousBtnRcourcis()
+        myBtn.Height = 25
+        'myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF58B1FF"))
+        myBtn.FontWeight = FontWeights.Bold
+        myBtn.IsEnabled = False
+    End Sub
+    Sub initialzTousBtnRcourcis()
+        initRacourcisBtn()
+        initRacourcisClientBtn()
+    End Sub
+    Sub SelectRacoucourciClientBtn(myBtn As Button)
+        TestConnexionDbIcon()
+        bdrColonneCentre.ScrollToTop()
+        initRacourcisClientBtn()
+        initRacourcisBtn()
+        myBtn.Height = 25
+        'myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF58B1FF"))
+        myBtn.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FF000000")) '.ClearValue(Button.BackgroundProperty)
+        myBtn.FontWeight = FontWeights.Bold
+        myBtn.IsEnabled = False
+    End Sub
+
+    Sub SelectPrincipalBtn(myBtn As Button)
+        initialzTousBtnRcourcis()
+        TestConnexionDbIcon()
+        initPrincipalBtn()
+        bdrColonneCentre.ScrollToTop()
+        initAgentBtn()
+        initClientBtn()
+        initSetingsBtn()
+        initStructureBtn()
+        initSupplementBtn()
+        initTraitementBtn()
+
+        'myBtn.IsEnabled = False
+
+        myBtn.Height = 35
+        myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF58B1FF"))
+        myBtn.FontWeight = FontWeights.Bold
+    End Sub
+
+    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
+        cctrlCentral.Content = New usercExterneActs
+        SelecStp(stpSupplement)
+        SelectPrincipalBtn(btnSupplement)
+
+    End Sub
+
+    Private Sub btnSeting_Click(sender As Object, e As RoutedEventArgs) Handles btnSeting.Click
+        cctrlCentral.Content = New usercSettings
+        SelectPrincipalBtn(btnSeting)
+        SelecStp(stpSetting)
+    End Sub
+    Sub initSetingsBtn()
+        btnGeneral.Height = 20
+        btnUser.Height = 20
+        btnDataSets.Height = 20
+        btnProfilUser.Height = 20
+
+        btnGeneral.FontWeight = FontWeights.Normal
+        btnUser.FontWeight = FontWeights.Normal
+        btnDataSets.FontWeight = FontWeights.Normal
+        btnProfilUser.FontWeight = FontWeights.Normal
+
+        btnGeneral.ClearValue(Button.BackgroundProperty)
+        btnUser.ClearValue(Button.BackgroundProperty)
+        btnDataSets.ClearValue(Button.BackgroundProperty)
+        btnProfilUser.ClearValue(Button.BackgroundProperty)
+
+        btnGeneral.Foreground = Brushes.Black
+        btnUser.Foreground = Brushes.Black
+        btnDataSets.Foreground = Brushes.Black
+        btnProfilUser.Foreground = Brushes.Black
+        'btnSortie.Foreground = Brushes.Black
+    End Sub
+
+    Sub initAgentBtn()
+        TestConnexionDbIcon()
+        btnEntree.Height = 20
+        btnContrat.Height = 20
+        btnAffectation.Height = 20
+        btnPlanning.Height = 20
+        btnSortie.FontWeight = FontWeights.Normal
+        btnEntree.FontWeight = FontWeights.Normal
+        btnContrat.FontWeight = FontWeights.Normal
+        btnAffectation.FontWeight = FontWeights.Normal
+        btnPlanning.FontWeight = FontWeights.Normal
+        'btnSortie.FontWeight = FontWeights.Normal
+
+        btnEntree.ClearValue(Button.BackgroundProperty)
+        btnContrat.ClearValue(Button.BackgroundProperty)
+        btnAffectation.ClearValue(Button.BackgroundProperty)
+        btnPlanning.ClearValue(Button.BackgroundProperty)
+        btnSortie.ClearValue(Button.BackgroundProperty)
+
+        btnEntree.Foreground = Brushes.Black
+        btnContrat.Foreground = Brushes.Black
+        btnAffectation.Foreground = Brushes.Black
+        btnPlanning.Foreground = Brushes.Black
+        btnSortie.Foreground = Brushes.Black
+    End Sub
+    Sub initTraitementBtn()
+
+        btnAbsence.Height = 20
+        btnHeureSupp.Height = 20
+        btnConges.Height = 20
+        btnEvenement.Height = 20
+
+        btnAbsence.FontWeight = FontWeights.Normal
+        btnHeureSupp.FontWeight = FontWeights.Normal
+        btnConges.FontWeight = FontWeights.Normal
+        btnEvenement.FontWeight = FontWeights.Normal
+        'btnPlanning.FontWeight = FontWeights.Normal
+        'btnSortie.FontWeight = FontWeights.Normal
+
+        btnAbsence.ClearValue(Button.BackgroundProperty)
+        btnHeureSupp.ClearValue(Button.BackgroundProperty)
+        btnConges.ClearValue(Button.BackgroundProperty)
+        btnEvenement.ClearValue(Button.BackgroundProperty)
+        'btnSortie.ClearValue(Button.BackgroundProperty)
+
+        btnAbsence.Foreground = Brushes.Black
+        btnHeureSupp.Foreground = Brushes.Black
+        btnConges.Foreground = Brushes.Black
+        btnEvenement.Foreground = Brushes.Black
+        'btnSortie.Foreground = Brushes.Black
+    End Sub
+    Sub initClientBtn()
+
+        btnClientEtat.Height = 20
+        btnSite.Height = 20
+        btnPoste.Height = 20
+        btnClientContrat.Height = 20
+
+        btnClientEtat.FontWeight = FontWeights.Normal
+        btnSite.FontWeight = FontWeights.Normal
+        btnPoste.FontWeight = FontWeights.Normal
+        btnClientContrat.FontWeight = FontWeights.Normal
+        'btnPlanning.FontWeight = FontWeights.Normal
+        'btnSortie.FontWeight = FontWeights.Normal
+
+        btnClientEtat.ClearValue(Button.BackgroundProperty)
+        btnSite.ClearValue(Button.BackgroundProperty)
+        btnPoste.ClearValue(Button.BackgroundProperty)
+        btnClientContrat.ClearValue(Button.BackgroundProperty)
+        'btnSortie.ClearValue(Button.BackgroundProperty)
+
+        btnClientEtat.Foreground = Brushes.Black
+        btnSite.Foreground = Brushes.Black
+        btnPoste.Foreground = Brushes.Black
+        btnClientContrat.Foreground = Brushes.Black
+        'btnSortie.Foreground = Brushes.Black
+    End Sub
+    Sub initSupplementBtn()
+
+        btnCompta.Height = 20
+        btnCnss.Height = 20
+        btnRappel.Height = 20
+        btnMemo.Height = 20
+        btnEvenement.Height = 20
+
+        btnCompta.FontWeight = FontWeights.Normal
+        btnCnss.FontWeight = FontWeights.Normal
+        btnRappel.FontWeight = FontWeights.Normal
+        btnMemo.FontWeight = FontWeights.Normal
+        btnEvenement.FontWeight = FontWeights.Normal
+
+        btnCompta.ClearValue(Button.BackgroundProperty)
+        btnCnss.ClearValue(Button.BackgroundProperty)
+        btnRappel.ClearValue(Button.BackgroundProperty)
+        btnMemo.ClearValue(Button.BackgroundProperty)
+        btnEvenement.ClearValue(Button.BackgroundProperty)
+
+        btnCompta.Foreground = Brushes.Black
+        btnCnss.Foreground = Brushes.Black
+        btnRappel.Foreground = Brushes.Black
+        btnMemo.Foreground = Brushes.Black
+        btnEvenement.Foreground = Brushes.Black
+    End Sub
+    Sub initStructureBtn()
+
+        btnFonction.Height = 20
+        btnSociety.Height = 20
+        btnAgency.Height = 20
+
+        btnFonction.FontWeight = FontWeights.Normal
+        btnSociety.FontWeight = FontWeights.Normal
+        btnAgency.FontWeight = FontWeights.Normal
+
+        btnFonction.ClearValue(Button.BackgroundProperty)
+        btnSociety.ClearValue(Button.BackgroundProperty)
+        btnAgency.ClearValue(Button.BackgroundProperty)
+
+        btnFonction.Foreground = Brushes.Black
+        btnSociety.Foreground = Brushes.Black
+        btnAgency.Foreground = Brushes.Black
+
+    End Sub
+
+    Sub SelectAgentBtn(myBtn As Button)
+        initAgentBtn()
+        bdrColonneCentre.ScrollToTop()
+        initRacourcisBtn()
+        initRacourcisClientBtn()
+        myBtn.Height = 30
+        myBtn.FontWeight = FontWeights.Bold
+        myBtn.Foreground = Brushes.White
+        myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
+    End Sub
+    Sub SelectTraitementBtn(myBtn As Button)
+        initRacourcisBtn()
+        initRacourcisClientBtn()
+        initTraitementBtn()
+        myBtn.Height = 30
+        myBtn.FontWeight = FontWeights.Bold
+        myBtn.Foreground = Brushes.White
+        myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
+    End Sub
+    Sub SelectClientBtn(myBtn As Button)
+        initialzTousBtnRcourcis()
+        initClientBtn()
+        myBtn.Height = 30
+        myBtn.FontWeight = FontWeights.Bold
+        myBtn.Foreground = Brushes.White
+        myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
+    End Sub
+    Sub SelectSupplement(myBtn As Button)
+        initialzTousBtnRcourcis()
+        initSupplementBtn()
+        myBtn.Height = 30
+        myBtn.FontWeight = FontWeights.Bold
+        myBtn.Foreground = Brushes.White
+        myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
+    End Sub
+    Sub SelectStructure(myBtn As Button)
+        initialzTousBtnRcourcis()
+        initStructureBtn()
+        myBtn.Height = 30
+        myBtn.FontWeight = FontWeights.Bold
+        myBtn.Foreground = Brushes.White
+        myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
+    End Sub
+
+    Private Sub btnEntree_Click(sender As Object, e As RoutedEventArgs) Handles btnEntree.Click
+        elpsLoading.Visibility = Visibility.Visible
+        LoadEntree()
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+    Sub LoadEntree()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnEntree)
+        iUserC = New usercAgentsEntree(Sub()
+                                           cctrlCentral.Content = iUserC
+                                       End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+    Private Sub btnContrat_Click(sender As Object, e As RoutedEventArgs) Handles btnContrat.Click
+        SelectAgentBtn(btnContrat)
+        LoadContrat()
+        cctrlCentral.Content = iUserC
+    End Sub
+    Sub LoadContrat()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnContrat)
+        iUserC = New usercAgentsContrat(Sub()
+                                            cctrlCentral.Content = iUserC
+                                        End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+
+    Private Sub btnAffectation_Click(sender As Object, e As RoutedEventArgs) Handles btnAffectation.Click
+        SelectAgentBtn(btnAffectation)
+        LoadAffectation()
+        'cctrlCentral.Content = New usercAgentsAffectation
+    End Sub
+    Sub LoadAffectation()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnAffectation)
+        iUserC = New usercAgentsAffectation(Sub()
+                                                cctrlCentral.Content = iUserC
+                                            End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+
+    Private Sub btnPlanning_Click(sender As Object, e As RoutedEventArgs) Handles btnPlanning.Click
+        SelectAgentBtn(btnPlanning)
+        LoadPlanning()
+    End Sub
+    Sub LoadPlanning()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnPlanning)
+        iUserC = New usercAgentsPlanning(Sub()
+                                             cctrlCentral.Content = iUserC
+                                         End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+
+    Private Sub btnSortie_Click(sender As Object, e As RoutedEventArgs) Handles btnSortie.Click
+        SelectAgentBtn(btnSortie)
+        LoadSortie()
+    End Sub
+    Sub LoadSortie()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnSortie)
+        iUserC = New usercAgentsSortie(Sub()
+                                           cctrlCentral.Content = iUserC
+                                       End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnAbsence_Click(sender As Object, e As RoutedEventArgs) Handles btnAbsence.Click
+        SelectTraitementBtn(btnAbsence)
+        LoadAbsence()
+    End Sub
+    Sub LoadAbsence()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnAbsence)
+        iUserC = New usercAgentsAbsences(Sub()
+                                             cctrlCentral.Content = iUserC
+                                         End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnHeureSupp_Click(sender As Object, e As RoutedEventArgs) Handles btnHeureSupp.Click
+        SelectTraitementBtn(btnHeureSupp)
+        LoadHeureS()
+    End Sub
+    Sub LoadHeureS()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnHeureSupp)
+        iUserC = New usercAgentsHeureSupp(Sub()
+                                              cctrlCentral.Content = iUserC
+                                          End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+
+    Private Sub btnConges_Click(sender As Object, e As RoutedEventArgs) Handles btnConges.Click
+        SelectTraitementBtn(btnConges)
+        cctrlCentral.Content = New usercAgentsConges
+    End Sub
+
+    Private Sub btnEvenement_Click(sender As Object, e As RoutedEventArgs)
+        SelectTraitementBtn(btnEvenement)
+    End Sub
+
+    Private Sub btnClientEtat_Click(sender As Object, e As RoutedEventArgs) Handles btnClientEtat.Click
+        cctrlCentral.Content = New usercClientsEtat
+        SelectClientBtn(btnClientEtat)
+    End Sub
+
+    Private Sub btnSite_Click(sender As Object, e As RoutedEventArgs) Handles btnSite.Click
+        LoadSite()
+        SelectClientBtn(btnSite)
+    End Sub
+    Sub LoadSite()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnEntree)
+        iUserC = New usercClientsSite(Sub()
+                                          cctrlCentral.Content = iUserC
+                                      End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+    Sub LoadPoste()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnEntree)
+        iUserC = New usercClientsPoste(Sub()
+                                           cctrlCentral.Content = iUserC
+                                       End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnPoste_Click(sender As Object, e As RoutedEventArgs) Handles btnPoste.Click
+        LoadPoste()
+        SelectClientBtn(btnPoste)
+    End Sub
+
+    Private Sub btnClientContrat_Click(sender As Object, e As RoutedEventArgs) Handles btnClientContrat.Click
+        LoadClientContrat()
+        SelectClientBtn(btnClientContrat)
+    End Sub
+    Sub LoadClientContrat()
+        elpsLoading.Visibility = Visibility.Visible
+        SelectAgentBtn(btnEntree)
+        iUserC = New usercClientsContrat(Sub()
+                                             cctrlCentral.Content = iUserC
+                                         End Sub)
+        cctrlCentral.Content = iUserC
+        elpsLoading.Visibility = Visibility.Collapsed
+    End Sub
+    Sub LoadSociete()
+        iUserC = New usercSociete(Sub()
+                                      cctrlCentral.Content = iUserC
+                                  End Sub)
+
+        cctrlCentral.Content = iUserC
+
+    End Sub
+
+    Private Sub btnSociety_Click(sender As Object, e As RoutedEventArgs) Handles btnSociety.Click
+        LoadSociete()
+        SelectStructure(btnSociety)
+    End Sub
+
+    Private Sub btnAgency_Click(sender As Object, e As RoutedEventArgs) Handles btnAgency.Click
+        SelectStructure(btnAgency)
+        cctrlCentral.Content = New usercAngence
+    End Sub
+
+    Private Sub btnCompta_Click(sender As Object, e As RoutedEventArgs) Handles btnCompta.Click
+        SelectSupplement(btnCompta)
+        cctrlCentral.Content = New usercNBanque
+    End Sub
+
+    Private Sub btnCnss_Click(sender As Object, e As RoutedEventArgs) Handles btnCnss.Click
+        SelectSupplement(btnCnss)
+        cctrlCentral.Content = New usercNCNSS
+    End Sub
+
+    Private Sub btnRappel_Click(sender As Object, e As RoutedEventArgs) Handles btnRappel.Click
+        SelectSupplement(btnRappel)
+        cctrlCentral.Content = New usercRappel
+    End Sub
+
+    Private Sub btnMemo_Click(sender As Object, e As RoutedEventArgs) Handles btnMemo.Click
+        SelectSupplement(btnMemo)
+        cctrlCentral.Content = New usercMemo
+    End Sub
+
+    Private Sub btnEvenement_Click_1(sender As Object, e As RoutedEventArgs) Handles btnEvenement.Click
+        SelectSupplement(btnEvenement)
+        cctrlCentral.Content = New usercEvenement
+
+    End Sub
+
+    Private Sub btnGeneral_Click(sender As Object, e As RoutedEventArgs) Handles btnGeneral.Click
+        cctrlCentral.Content = New GeneralSets
+        'SelecStp(stpClient)
+        SelectSetingBtn(btnGeneral)
+
+    End Sub
+
+    Private Sub btnUser_Click(sender As Object, e As RoutedEventArgs) Handles btnUser.Click
+        cctrlCentral.Content = New UserManager
+        'SelecStp(stpClient)
+        SelectSetingBtn(btnUser)
+
+    End Sub
+
+    Private Sub btnCalCong_Click(sender As Object, e As RoutedEventArgs) Handles btnCalCong.Click
+        Dim iCalCon As New wdwConges
+        iCalCon.WindowStartupLocation = WindowStartupLocation.CenterScreen
+        iCalCon.Show()
+
+    End Sub
+
+    Private Sub tbxRappel_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tbxRappel.TextChanged
+        If tbxRappel.Text = "" Then
+            wrpRappel.Visibility = Visibility.Collapsed
+        Else
+            wrpRappel.Visibility = Visibility.Visible
+        End If
+    End Sub
+
+    Private Sub btnRefresh_Click(sender As Object, e As RoutedEventArgs) Handles btnRefresh.Click
+        If MsgBox("Réinitialiser toutes les données de planning?" & Environment.NewLine & "CONTINUER ?", MsgBoxStyle.YesNo, "ACTUALISATION DES DONNEES") = MsgBoxResult.Yes Then InitializeGlobal()
+        'InitializeGlobal()
+    End Sub
+    Sub ResetData()
+        If tbxRappel.Text <> "" Then
+            Dim irappel As String = RappelActifs()
+            If irappel <> "" Then
+                ShowTempMsg(irappel, 60, "RAPPELS")
+            End If
+        End If
+
+    End Sub
+
+    Private Sub btnRacEntreeAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacEntreeAg.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        LoadEntree()
+        SelectRacoucourcilBtn(btnRacEntreeAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnRacContratAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacContratAg.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        SelectAgentBtn(btnContrat)
+        LoadContrat()
+        SelectRacoucourcilBtn(btnRacContratAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnRacAffectationAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAffectationAg.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        SelectAgentBtn(btnAffectation)
+        LoadAffectation()
+        SelectRacoucourcilBtn(btnRacAffectationAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnRacPlanningAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacPlanningAg.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        SelectAgentBtn(btnPlanning)
+        LoadPlanning()
+        SelectRacoucourcilBtn(btnRacPlanningAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnRacAbsenceAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAbsenceAg.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpTraitement)
+        SelectPrincipalBtn(btnTraitement)
+        SelectTraitementBtn(btnAbsence)
+        LoadAbsence()
+        SelectRacoucourcilBtn(btnRacAbsenceAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnRacSortieAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacSortieAg.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        SelectAgentBtn(btnSortie)
+        LoadSortie()
+        SelectRacoucourcilBtn(btnRacSortieAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnRacHeureSupAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacHeureSupAg.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpTraitement)
+        SelectPrincipalBtn(btnTraitement)
+        SelectTraitementBtn(btnHeureSupp)
+        LoadHeureS()
+        SelectRacoucourcilBtn(btnRacHeureSupAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+
+    End Sub
+
+    Private Sub btnRacCalCong_Click(sender As Object, e As RoutedEventArgs) Handles btnRacCalCong.Click
+        Dim iCalCon As New wdwCongeGlobal
+        iCalCon.WindowStartupLocation = WindowStartupLocation.CenterScreen
+        iCalCon.Show()
+        'SelectRacoucourcilBtn(btnRacCalCong)
+    End Sub
+
+    Private Sub btnRacPosteCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacPosteCl.Click
+        SelecStp(stpClient)
+        SelectPrincipalBtn(btnClient)
+        LoadPoste()
+        SelectClientBtn(btnPoste)
+        SelectRacoucourciClientBtn(btnRacPosteCl)
+    End Sub
+
+    Private Sub btnRacSiteCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacSiteCl.Click
+        SelecStp(stpClient)
+        SelectPrincipalBtn(btnClient)
+        LoadSite()
+        ' cctrlCentral.Content = New usercClientsSite
+        SelectClientBtn(btnSite)
+        SelectRacoucourciClientBtn(btnRacSiteCl)
+    End Sub
+
+    Private Sub btnRacContratCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacContratCl.Click
+        SelecStp(stpClient)
+        SelectPrincipalBtn(btnClient)
+        LoadClientContrat()
+        SelectClientBtn(btnClientContrat)
+        SelectRacoucourciClientBtn(btnRacContratCl)
+    End Sub
+
+    Private Sub btnRacEtatCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacEtatCl.Click
+        SelecStp(stpClient)
+        SelectPrincipalBtn(btnClient)
+        iUserC = New usercClients(Sub()
+                                      cctrlCentral.Content = iUserC
+                                  End Sub)
+        cctrlCentral.Content = iUserC
+        'cctrlCentral.Content = New usercClients
+        SelectClientBtn(btnClientEtat)
+        SelectRacoucourciClientBtn(btnRacEtatCl)
+    End Sub
+
+    Private Sub btnRacAgentListeCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAgentListeCl.Click
+        SelecStp(stpClient)
+        SelectPrincipalBtn(btnClient)
+        cctrlCentral.Content = New usercClientsEtat
+        SelectClientBtn(btnClientEtat)
+        SelectRacoucourciClientBtn(btnRacAgentListeCl)
+    End Sub
+
+    Private Sub BtnAgentSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles BtnAgentSearch.KeyDown
+        If e.Key = Key.Enter Then
+            BtnAgentSearch.SelectAll()
+            maj()
+            dgAgent.ItemsSource = LoadDataTable("SELECT a.AgentAffect,a.SiteAffect,ag.Contacts,ag.NumMatr from affectation a join agents ag on ag.NomPrenoms=a.AgentAffect where a.FinAffect>=date() and (a.AgentAffect like '%" & Apost(BtnAgentSearch.Text) & "%' or a.SiteAffect like '%" & Apost(BtnAgentSearch.Text) & "%' )order by a.SiteAffect, a.AgentAffect", LocalConnxStr).DefaultView
+            lblAgentSearch.Content = "Agents N=" & dgAgent.Items.Count
+        End If
+    End Sub
+
+    Private Sub BtnContratSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles BtnContratSearch.KeyDown
+        If e.Key = Key.Enter Then
+            BtnContratSearch.SelectAll()
+            maj()
+            dgContrat.ItemsSource = LoadDataTable("SELECT ag.NomPrenoms,date(c.DebutContr),date(c.FinContr),n.IdNature from contratstbl c join agents ag on ag.NumMatr=c.NomPrenoms join contratsnature n on n.NatureContr=c.NaturContr where c.FinContr>=date() and (ag.NomPrenoms like '%" & Apost(BtnContratSearch.Text) & "%' or n.IdNature like '%" & Apost(BtnContratSearch.Text) & "%' )order by ag.NomPrenoms,c.DebutContr desc", LocalConnxStr).DefaultView
+            lblContratSearch.Content = "Contrat N=" & dgContrat.Items.Count
+        End If
+
+    End Sub
+
+    Private Sub BtnPlanningSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles BtnPlanningSearch.KeyDown
+        If e.Key = Key.Enter Then
+            BtnPlanningSearch.SelectAll()
+            maj()
+            dgPlanning.ItemsSource = LoadDataTable("SELECT p.Agent, po.Designation from planposte p join postes po on p.Poste=po.Code where p.DatePlan=date() and (p.Agent like '%" & Apost(BtnPlanningSearch.Text) & "%' or po.Designation like '%" & Apost(BtnPlanningSearch.Text) & "%' ) order by p.Agent,po.Designation", LocalConnxStr).DefaultView
+            lblPlanningSearch.Content = "En poste N=" & dgPlanning.Items.Count
+        End If
+
+    End Sub
+
+    Private Sub cmiResume_Click(sender As Object, e As RoutedEventArgs) Handles cmiResume.Click
+        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumeAgentActif(rowView.Row.ItemArray(0).ToString)
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "RESUME - " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+    End Sub
+
+    Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
+        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumeCtr(rowView.Row.ItemArray(0).ToString)
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "CONTRAT - " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+    End Sub
+
+    Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
+        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumeAffect(rowView.Row.ItemArray(0).ToString)
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "AFFFECTATIONS - " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+    End Sub
+
+    Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
+        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumeAbs(rowView.Row.ItemArray(0).ToString)
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "ABSENCES/PERMISSIONS/CONGES - " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+    End Sub
+
+    Private Sub cmiHeureSup_Click(sender As Object, e As RoutedEventArgs) Handles cmiHeureSup.Click
+        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumeHS(rowView.Row.ItemArray(0).ToString)
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "HEURES SUPPLEMENTAIRES - " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+    End Sub
+
+    Private Sub cmiResumeC_Click(sender As Object, e As RoutedEventArgs) Handles cmiResumeC.Click
+        Dim rowView As DataRowView = TryCast(dgContrat.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumeCtr(rowView.Row.ItemArray(0).ToString)
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "CONTRATS - " & UCase(rowView.Row.ItemArray(0).ToString)) 'MsgBox(iWrd, MsgBoxStyle.OkOnly, "CONTRATS - " & UCase(rowView.Row.ItemArray(0).ToString))
+            'ShowTempMsg(iWrd,, "CONTRATS - " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+    End Sub
+
+    Private Sub cmiThisW_Click(sender As Object, e As RoutedEventArgs) Handles cmiThisW.Click
+        Dim rowView As DataRowView = TryCast(dgPlanning.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            'cmiPoste.Header = rowView.Row.ItemArray(1).ToString
+            Dim iWrd As String = ResumePlanning(rowView.Row.ItemArray(0).ToString, DebutDeSemaine(Today), finDeSemaine(Today))
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "CETTE SEMAINE => " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+
+    End Sub
+
+    Private Sub cmiNextW_Click(sender As Object, e As RoutedEventArgs) Handles cmiNextW.Click
+        Dim rowView As DataRowView = TryCast(dgPlanning.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            'cmiPoste.Header = rowView.Row.ItemArray(1).ToString
+            'MsgBox((Today.AddDays(7)))
+            Dim iWrd As String = ResumePlanning(rowView.Row.ItemArray(0).ToString, DebutDeSemaine(Today.AddDays(7)), finDeSemaine(Today).AddDays(7))
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "SEMAINE PROCHAINE => " & UCase(rowView.Row.ItemArray(0).ToString))
+        End If
+
+    End Sub
+
+    Private Sub cmiThisWp_Click(sender As Object, e As RoutedEventArgs) Handles cmiThisWp.Click
+        Dim rowView As DataRowView = TryCast(dgPlanning.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumePlanningPoste(rowView.Row.ItemArray(1).ToString, DebutDeSemaine(Today), finDeSemaine(Today))
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "CETTE SEMAINE => " & UCase(rowView.Row.ItemArray(1).ToString))
+        End If
+    End Sub
+
+    Private Sub cmiNextWp_Click(sender As Object, e As RoutedEventArgs) Handles cmiNextWp.Click
+        Dim rowView As DataRowView = TryCast(dgPlanning.CurrentItem, DataRowView)
+        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            Dim iWrd As String = ResumePlanningPoste(rowView.Row.ItemArray(1).ToString, DebutDeSemaine(Today.AddDays(7)), finDeSemaine(Today.AddDays(7)))
+            If iWrd <> "" Then ShowTempMsg(iWrd,, "SEMAINE PROCHAINE => " & UCase(rowView.Row.ItemArray(1).ToString))
+        End If
+    End Sub
+
+    Sub TestConnexionDbIcon()
+        DbPathGeneral = PaphBackUp()
+
+        If DbPath = DbPathGeneral Then
+            imgHorsConnex.Visibility = Visibility.Visible
+            bdrTitreCentre.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF6C0000"))
+        Else
+            imgHorsConnex.Visibility = Visibility.Collapsed
+            bdrTitreCentre.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF557E94"))
+        End If
+
+    End Sub
+    Sub AfficheProfilUser()
+        If Not CanGlobalDataManage Then
+            btnGeneral.Visibility = Visibility.Collapsed
+            mitPgeneraux.Visibility = Visibility.Collapsed
+            btnSeting.Visibility = Visibility.Collapsed
+        End If
+        If Not CanUserManage Then
+            btnUser.Visibility = Visibility.Collapsed
+            btnProfilUser.Visibility = Visibility.Collapsed
+            mitUtilisateur.Visibility = Visibility.Collapsed
+        End If
+        If Not CanSocieteDataManage Then
+            btnStructure.Visibility = Visibility.Collapsed
+            mitSociete.Visibility = Visibility.Collapsed
+        End If
+        If Not CanAddDataSpecial Then
+            btnCompta.Visibility = Visibility.Collapsed
+            btnCnss.Visibility = Visibility.Collapsed
+        End If
+        If UserLevel = 99 Then
+            btnAgents.Visibility = Visibility.Collapsed
+            btnTraitement.Visibility = Visibility.Collapsed
+            btnClient.Visibility = Visibility.Collapsed
+            btnSupplement.Visibility = Visibility.Collapsed
+            btnStructure.Visibility = Visibility.Collapsed
+            btnSeting.Visibility = Visibility.Collapsed
+            btnTBord.Visibility = Visibility.Collapsed
+
+            xpdAgentRaccourcis.Visibility = Visibility.Collapsed
+            xpdClientRaccourcis.Visibility = Visibility.Collapsed
+
+            mitParametres.Visibility = Visibility.Collapsed
+            mitMouvement.Visibility = Visibility.Collapsed
+            mitStructure.Visibility = Visibility.Collapsed
+            xpdPlusOp.Visibility = Visibility.Collapsed
+        End If
+
+    End Sub
+
+    Private Sub btnProfilUser_Click(sender As Object, e As RoutedEventArgs) Handles btnProfilUser.Click
+        cctrlCentral.Content = New ProfilUser
+        'SelecStp(stpClient)
+        SelectSetingBtn(btnProfilUser)
+
+    End Sub
+
+    Private Sub mitDConexion_Click(sender As Object, e As RoutedEventArgs) Handles mitDConexion.Click
+        oDeconect()
+    End Sub
+    Sub oDeconect()
+        Dim iwDecnx As New wdwDconnexion
+        Dim Resultat As Boolean? = iwDecnx.ShowDialog()
+        If Resultat.HasValue AndAlso Resultat = True Then
+        ElseIf Resultat.HasValue AndAlso Resultat = False Then
+            Me.Close()
+        End If
+
+    End Sub
+    Private Sub mitQuit_Click(sender As Object, e As RoutedEventArgs) Handles mitQuit.Click
+        Me.Close()
+    End Sub
+    Protected Overrides Sub OnClosing(e As ComponentModel.CancelEventArgs)
+        'Dim result = MessageBox.Show("Voulez-vous vraiment fermer ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question)
+        'If result <> MessageBoxResult.Yes Then
+        'e.Cancel = True
+        'Else
+        Me.DialogResult = True
+        StopProcess("idbuder")
+        'End If
+        MyBase.OnClosing(e)
+    End Sub
+
+    Private Sub Window_KeyDown(sender As Object, e As KeyEventArgs)
+        If e.Key = Key.X AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
+            oDeconect()
+        End If
+        If e.Key = Key.Q AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
+            If MessageBox.Show("Voulez-vous vraiment fermer ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+                Me.Close()
+            End If
+        End If
+        If e.Key = Key.A AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
+            InitializeGlobal()
+        End If
+    End Sub
+
+    Private Sub mitEntree_Click(sender As Object, e As RoutedEventArgs) Handles mitEntree.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        LoadEntree()
+        SelectRacoucourcilBtn(btnRacEntreeAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+
+    End Sub
+
+    Private Sub mitAffectation_Click(sender As Object, e As RoutedEventArgs) Handles mitAffectation.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        SelectAgentBtn(btnAffectation)
+        LoadAffectation()
+        SelectRacoucourcilBtn(btnRacAffectationAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+
+    End Sub
+
+    Private Sub mitSortie_Click(sender As Object, e As RoutedEventArgs) Handles mitSortie.Click
+        elpsLoadingCentral.Visibility = Visibility.Visible
+        SelecStp(stpEmployes)
+        SelectPrincipalBtn(btnAgents)
+        SelectAgentBtn(btnSortie)
+        LoadSortie()
+        SelectRacoucourcilBtn(btnRacSortieAg)
+        elpsLoadingCentral.Visibility = Visibility.Collapsed
+
+    End Sub
+
+    Private Sub mitFonction_Click(sender As Object, e As RoutedEventArgs) Handles mitFonction.Click
+        cctrlCentral.Content = New usercFonction
+        SelectStructure(btnFonction)
+    End Sub
+
+    Private Sub mitSociete_Click(sender As Object, e As RoutedEventArgs) Handles mitSociete.Click
+        LoadSociete()
+        SelectStructure(btnSociety)
+    End Sub
+
+    Private Sub mitPgeneraux_Click(sender As Object, e As RoutedEventArgs) Handles mitPgeneraux.Click
+        cctrlCentral.Content = New GeneralSets
+        SelectSetingBtn(btnGeneral)
+    End Sub
+
+    Private Sub mitUtilisateur_Click(sender As Object, e As RoutedEventArgs) Handles mitUtilisateur.Click
+        cctrlCentral.Content = New UserManager
+        SelectSetingBtn(btnUser)
+    End Sub
+End Class
+

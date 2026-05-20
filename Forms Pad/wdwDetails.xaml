@@ -1,0 +1,23 @@
+﻿<Window x:Class="wdwDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lakey"
+        mc:Ignorable="d"
+        Title="wdwDetails" Height="450" Width="800" Icon="/Lakey;component/MyIco.ico">
+    <Grid>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="1*" MaxHeight="5" />
+            <RowDefinition Height="11*" />
+        </Grid.RowDefinitions>
+        <Border/>
+        <StackPanel Background="#FFE87400"  >
+            <TextBlock x:Name="tbkTitre" Text="TITRE" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+            <TextBlock x:Name="tbkSousTitre" Text="Sous Titre" HorizontalAlignment="Center" Foreground="#FFC6FFDB"/>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" Background="#FF1A1F38" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                <UserControl x:Name="usrcCentralD"/>
+        </ScrollViewer>
+    </Grid>
+</Window>

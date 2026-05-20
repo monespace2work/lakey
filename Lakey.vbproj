@@ -1,0 +1,632 @@
+﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" />
+  <Import Project="packages\SQLite.3.13.0\build\net45\SQLite.props" Condition="Exists('packages\SQLite.3.13.0\build\net45\SQLite.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AE551211-DE32-4086-8AB5-69249A78E93C}</ProjectGuid>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Lakey</RootNamespace>
+    <AssemblyName>Lakey</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <MyType>Custom</MyType>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <IncrementalBuild>true</IncrementalBuild>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Lakey.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42314</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <IncrementalBuild>false</IncrementalBuild>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Lakey.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42314</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DocumentationFile>Lakey.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42314</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DocumentationFile>Lakey.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42314</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>MyIco.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ClosedXML, Version=0.105.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>packages\ClosedXML.0.105.0\lib\netstandard2.0\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML.Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1d5f7376574c51ec, processorArchitecture=MSIL">
+      <HintPath>packages\ClosedXML.Parser.2.0.0\lib\netstandard2.0\ClosedXML.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=3.5.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>packages\DocumentFormat.OpenXml.3.5.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.5.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>packages\DocumentFormat.OpenXml.Framework.3.5.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.5.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.5.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=8.4.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.Interfaces.8.4.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.1.0.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>packages\ExcelNumberFormat.1.1.0\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.HashCode.6.0.0\lib\net462\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="RBush, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c77e27b81f4d0187, processorArchitecture=MSIL">
+      <HintPath>packages\RBush.Signed.4.0.0\lib\net47\RBush.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=2.0.3.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\System.Data.SQLite.2.0.3\lib\net471\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=2.0.3.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\System.Data.SQLite.EF6.2.0.3\lib\net471\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.119.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\System.Data.SQLite.Linq.1.0.119.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="Application.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Forms Pad\ReseauSelect.xaml.vb">
+      <DependentUpon>ReseauSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms Pad\TempMsg.xaml.vb">
+      <DependentUpon>TempMsg.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms Pad\wdwCongeGlobal.xaml.vb">
+      <DependentUpon>wdwCongeGlobal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms Pad\wdwConges.xaml.vb">
+      <DependentUpon>wdwConges.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms Pad\wdwDconnexion.xaml.vb">
+      <DependentUpon>wdwDconnexion.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms Pad\wdwDetails.xaml.vb">
+      <DependentUpon>wdwDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms Pad\wdwPointMensuel.xaml.vb">
+      <DependentUpon>wdwPointMensuel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms Pad\wdwZoom.xaml.vb">
+      <DependentUpon>wdwZoom.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoadingWindow.xaml.vb">
+      <DependentUpon>LoadingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Login.xaml.vb">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules Pad\DbManipulation.vb" />
+    <Compile Include="Modules Pad\IpTraitement.vb" />
+    <Compile Include="Modules Pad\ObjectsManaging.vb" />
+    <Compile Include="Modules Pad\Parameters.vb" />
+    <Compile Include="Modules Pad\TextManip.vb" />
+    <Compile Include="Modules Pad\TimeDateManip.vb" />
+    <Compile Include="MyEmployes.vb" />
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsAbsences.xaml.vb">
+      <DependentUpon>usercAgentsAbsences.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsAffectation.xaml.vb">
+      <DependentUpon>usercAgentsAffectation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsConges.xaml.vb">
+      <DependentUpon>usercAgentsConges.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsContrat.xaml.vb">
+      <DependentUpon>usercAgentsContrat.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsEntree.xaml.vb">
+      <DependentUpon>usercAgentsEntree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsHeureSupp.xaml.vb">
+      <DependentUpon>usercAgentsHeureSupp.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsPlanning.xaml.vb">
+      <DependentUpon>usercAgentsPlanning.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\AgentSub\usercAgentsSortie.xaml.vb">
+      <DependentUpon>usercAgentsSortie.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\ClientSub\usercClientsContrat.xaml.vb">
+      <DependentUpon>usercClientsContrat.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\ClientSub\usercClientsEtat.xaml.vb">
+      <DependentUpon>usercClientsEtat.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\ClientSub\usercClientsPoste.xaml.vb">
+      <DependentUpon>usercClientsPoste.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\ClientSub\usercClientsSite.xaml.vb">
+      <DependentUpon>usercClientsSite.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\ClientSub\wdwActivOldClient.xaml.vb">
+      <DependentUpon>wdwActivOldClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\ClientSub\wdwEndClient.xaml.vb">
+      <DependentUpon>wdwEndClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Settings\GeneralSets.xaml.vb">
+      <DependentUpon>GeneralSets.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Settings\ProfilUser.xaml.vb">
+      <DependentUpon>ProfilUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Settings\UserManager.xaml.vb">
+      <DependentUpon>UserManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Structure\usercAngence.xaml.vb">
+      <DependentUpon>usercAngence.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Structure\usercSociete.xaml.vb">
+      <DependentUpon>usercSociete.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Supplement\usercEvenement.xaml.vb">
+      <DependentUpon>usercEvenement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Supplement\usercMemo.xaml.vb">
+      <DependentUpon>usercMemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Supplement\usercNBanque.xaml.vb">
+      <DependentUpon>usercNBanque.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Supplement\usercNCNSS.xaml.vb">
+      <DependentUpon>usercNCNSS.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Supplement\usercRappel.xaml.vb">
+      <DependentUpon>usercRappel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\usercAgents.xaml.vb">
+      <DependentUpon>usercAgents.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\usercClients.xaml.vb">
+      <DependentUpon>usercClients.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\usercExterneActs.xaml.vb">
+      <DependentUpon>usercExterneActs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\Structure\usercFonction.xaml.vb">
+      <DependentUpon>usercFonction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\usercSettings.xaml.vb">
+      <DependentUpon>usercSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\usercStructure.xaml.vb">
+      <DependentUpon>usercStructure.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\usercTBord.xaml.vb">
+      <DependentUpon>usercTBord.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl Pad\usercTraitements.xaml.vb">
+      <DependentUpon>usercTraitements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WaitFrm.xaml.vb">
+      <DependentUpon>WaitFrm.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Forms Pad\ReseauSelect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\TempMsg.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\wdwCongeGlobal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\wdwConges.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\wdwDconnexion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\wdwDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\wdwPointMensuel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\wdwZoom.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoadingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="Application.xaml.vb">
+      <DependentUpon>Application.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.vb">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsAbsences.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsAffectation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsConges.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsContrat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsEntree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsHeureSupp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsPlanning.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\AgentSub\usercAgentsSortie.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\ClientSub\usercClientsContrat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\ClientSub\usercClientsEtat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\ClientSub\usercClientsPoste.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\ClientSub\usercClientsSite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\ClientSub\wdwActivOldClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\ClientSub\wdwEndClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Settings\GeneralSets.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Settings\ProfilUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Settings\UserManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Structure\usercAngence.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Structure\usercSociete.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Supplement\usercEvenement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Supplement\usercMemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Supplement\usercNBanque.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Supplement\usercNCNSS.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Supplement\usercRappel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercAgents.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercClients.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercExterneActs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Structure\usercFonction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercStructure.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercTBord.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercTraitements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WaitFrm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="System.Threading.Tasks" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows" />
+    <Import Include="System.Windows.Controls" />
+    <Import Include="System.Windows.Data" />
+    <Import Include="System.Windows.Documents" />
+    <Import Include="System.Windows.Input" />
+    <Import Include="System.Windows.Shapes" />
+    <Import Include="System.Windows.Media" />
+    <Import Include="System.Windows.Media.Imaging" />
+    <Import Include="System.Windows.Navigation" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="My Project\AssemblyInfo.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="My Project\MyExtensions\MyWpfExtension.vb">
+      <VBMyExtensionTemplateID>Microsoft.VisualBasic.WPF.MyExtension</VBMyExtensionTemplateID>
+      <VBMyExtensionTemplateVersion>1.0.0.0</VBMyExtensionTemplateVersion>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Class Pad\" />
+    <Folder Include="Pages Pad\" />
+    <Folder Include="Ressources Pad\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="settings-3110.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="home_1107821.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\aps_photo.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MyIco.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MyIco.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\Logo_excel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\ClientSub\Logo_excel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Forms Pad\Logo_excel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\Logo_excel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MyIco.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Forms Pad\MyIco.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Forms Pad\Reseau.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="hors_connexion2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\btnAgrandir.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\affectation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\employee2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\ABSENCES- 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\CALEND.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\planning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\contrat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\AgentSub\exit_employee.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\client2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserControl Pad\Settings\MyIco.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Ce projet fait référence à des packages NuGet qui sont manquants sur cet ordinateur. Utilisez l'option de restauration des packages NuGet pour les télécharger. Pour plus d'informations, consultez http://go.microsoft.com/fwlink/?LinkID=322105. Le fichier manquant est : {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
+    <Error Condition="!Exists('packages\SQLite.3.13.0\build\net45\SQLite.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SQLite.3.13.0\build\net45\SQLite.props'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\SixLabors.Fonts.3.0.0\build\SixLabors.Fonts.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SixLabors.Fonts.3.0.0\build\SixLabors.Fonts.targets'))" />
+  </Target>
+  <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+  <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" />
+  <Import Project="packages\SixLabors.Fonts.3.0.0\build\SixLabors.Fonts.targets" Condition="Exists('packages\SixLabors.Fonts.3.0.0\build\SixLabors.Fonts.targets')" />
+</Project>

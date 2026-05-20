@@ -1,0 +1,355 @@
+﻿<UserControl x:Class="usercTBord"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Lakey"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+
+        <Border BorderBrush="Black" BorderThickness="1">
+
+            <StackPanel >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel HorizontalAlignment="Center">
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MaxWidth="70" />
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" MaxWidth="45" Background="#CCFFFFFF" CornerRadius="20">
+                                <Image MaxWidth="40" Source="/Lakey;component/home_1107821.png" Stretch="Fill"  Margin="3"/>
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
+                                <Label Content="TABLEAU DE BORD" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" Background="{x:Null}"/>
+                                <Ellipse x:Name="elpGlobale" Height="20" Width="20" Fill="Red" Stroke="White" StrokeThickness="2" Visibility="Visible"/>
+                            </StackPanel>
+
+                        </Grid>
+                    </StackPanel>
+                    <Border  Grid.Column="1" Background="#FFF3E0FF" Margin=" 5" >
+                        <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
+                            <Button.Background>
+                                <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" />
+                            </Button.Background>
+                        </Button>
+                    </Border>
+
+                </Grid>
+
+                <!--Button x:Name="btnRefresh" Content="ACTUALISER" Background="#FFB6FFC0" Width="100"/-->
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight ="200"/>
+                        <RowDefinition MinHeight="200"/>
+                        <RowDefinition MinHeight="100"/>
+                    </Grid.RowDefinitions>
+                    <Border Background="#FF929292" Grid.Row="0">
+                        <Grid Name="grdHaut" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FF605C63" Grid.Column="0" Opacity="0.9"  >
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="5,10" Background="#FF676491" >
+                                        <TextBlock Text=" Evolution des effectifs" Foreground="White" FontSize="18" FontWeight="Bold"/>
+                                        <!-- Graphique avec LiveCharts -->
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartVentes" Margin="5" Height="120">
+                                            <lvc:CartesianChart.Series>
+                                                <lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/>
+                                                <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
+                                                <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
+                                            </lvc:CartesianChart.Series>
+                                            <lvc:CartesianChart.AxisX>
+                                                <lvc:Axis Title="Mois" Labels="{Binding MoisLabels}" />
+                                            </lvc:CartesianChart.AxisX>
+                                            <lvc:CartesianChart.AxisY >
+                                                <lvc:Axis Title="Nombre" MinValue="120" MaxValue="150">
+
+                                                </lvc:Axis>
+                                            </lvc:CartesianChart.AxisY>
+                                        </lvc:CartesianChart>
+                                        <Expander Header="Détails" IsExpanded="False" >
+                                            <DataGrid x:Name="dgNbEvol" AutoGenerateColumns="True"/>
+                                        </Expander>
+                                        <Expander Header="Tranche d'age (Diagramme)" IsExpanded="False"  FontWeight="Bold" Background="#FF051232" Foreground="#FFE0E0E0" >
+                                            <StackPanel>
+                                            <lvc:CartesianChart Grid.Row="1" Name="chartTAges" Margin="5" Height="190" Foreground="#FF3C487E" Background="#FF090B2E">
+                                                    <lvc:CartesianChart.Series >
+                                                        <lvc:ColumnSeries Title="Nombre" Values="{Binding NbTrancheSeries}"   Fill="#FFABB1BD" />
+                                                </lvc:CartesianChart.Series>
+                                                <lvc:CartesianChart.AxisX>
+                                                        <lvc:Axis Title="Age" Labels="{Binding AgesLabels}" />
+                                                </lvc:CartesianChart.AxisX>
+                                                <lvc:CartesianChart.AxisY >
+                                                    <lvc:Axis Title="Nombre" MinValue="15" MaxValue="70">
+
+                                                    </lvc:Axis>
+                                                </lvc:CartesianChart.AxisY>
+                                            </lvc:CartesianChart>
+
+                                            <DataGrid x:Name="dgTrancheAge" AutoGenerateColumns="True"/>
+                                            </StackPanel>
+                                        </Expander>
+                                    </StackPanel>
+                                </ScrollViewer>
+
+                            </Border>
+                            <Border Background="#FF7F7F7F" Grid.Column="1"  Opacity="0.9" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
+                                <StackPanel Margin="5,10,5,5">
+                                    <TextBlock Text="Clients infos" Foreground="White" FontSize="18" FontWeight="Bold"/>
+                                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  >
+                                                <StackPanel >
+                                                    <lvc:PieChart Name="PiechartClientType" Margin="5,0" MinWidth="138" MinHeight="138" />
+                                                    <TextBlock Text="client / type" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <Expander Header="Détails" IsExpanded="False" Foreground="White">
+                                                    <DataGrid x:Name="dgClientNbAgent" AutoGenerateColumns="True"/>
+                                                </Expander>
+
+                                            </StackPanel>
+                                            <Expander  Header="+Villes" IsExpanded="True" Margin="5,0,0,0" >
+                                                <StackPanel Margin="0,0,5,5" Background="#660C0530" >
+                                                    <!-- Diagramme à secteurs (PieChart) -->
+                                                    <lvc:CartesianChart Grid.Row="1" Name="chartClientVile" Margin="5" Height="116" MinWidth="238" >
+                                                        <lvc:CartesianChart.Series>
+                                                            <lvc:ColumnSeries Title="Nonbre de site" Values="{Binding NbSiteSeries}"   Stroke="#FF17336E" Fill="Aqua" />
+                                                            <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
+                                                            <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
+                                                        </lvc:CartesianChart.Series>
+                                                        <lvc:CartesianChart.AxisX>
+                                                            <lvc:Axis Title="Localisation des sites" Labels="{Binding VilleLabels}" />
+                                                        </lvc:CartesianChart.AxisX>
+                                                        <lvc:CartesianChart.AxisY >
+                                                            <lvc:Axis Title="Nombre" MinValue="1" MaxValue="100">
+
+                                                            </lvc:Axis>
+                                                        </lvc:CartesianChart.AxisY>
+                                                    </lvc:CartesianChart>
+                                                    <Expander Header="Détails" IsExpanded="False" Foreground="White" Background="{x:Null}">
+                                                        <DataGrid x:Name="dgSiteVile" AutoGenerateColumns="True"/>
+                                                    </Expander>
+                                                </StackPanel>
+                                            </Expander>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+                            <Border x:Name="brdT11" Background="#19414042" Grid.Column="2"  Opacity="0.9" >
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="55"/>
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Row="0" VerticalAlignment="Bottom">
+                                        <TextBlock Text="Type de clients" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Background="#4C1B143E" Grid.Row="1">
+                                        <!-- Diagramme à secteurs (PieChart) -->
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartClientType" Margin="5" Height="116" MinWidth="138" >
+                                            <lvc:CartesianChart.Series>
+                                                <lvc:ColumnSeries Title="Nonbre de site" Values="{Binding NbTypeSiteSeries}" Fill="#FFC1C164" />
+                                                <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
+                                                <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
+                                            </lvc:CartesianChart.Series>
+                                            <lvc:CartesianChart.AxisX>
+                                                <lvc:Axis Title="Type de site " Labels="{Binding TypeLabels}" />
+                                            </lvc:CartesianChart.AxisX>
+                                            <lvc:CartesianChart.AxisY >
+                                                <lvc:Axis Title="Nombre" MinValue="1" MaxValue="50">
+
+                                                </lvc:Axis>
+                                            </lvc:CartesianChart.AxisY>
+                                        </lvc:CartesianChart>
+                                        <Expander Header="Détails" IsExpanded="False" Foreground="White">
+                                            <DataGrid x:Name="dgSiteType" AutoGenerateColumns="True"/>
+                                        </Expander>
+                                    </StackPanel>
+
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <Border Background="#FF0C023E"  Grid.Row ="1"   >
+                        <Grid Name="grdMilieu">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Background="#FF070021" Grid.Column="0" Opacity="0.9"  Padding="5" >
+                                <StackPanel >
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="10*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal"  Grid.Column="0" >
+                                            <TextBlock  Text="Employés / Agents actifs" Foreground="White" FontSize="18" FontWeight="Bold" Margin="10,0,0,0"/>
+                                            <Label x:Name="lblNbAgentActif" Margin="10,0,0,0" Content="0" Foreground="White"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" >
+                                            <TextBox x:Name="BtnAgentActifSearch" Width="100" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2" />
+                                        </Border>
+
+
+                                    </Grid>
+
+                                    <ScrollViewer x:Name="scrAgentsActifs"  MinHeight="150"  MaxHeight="250" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <DataGrid x:Name="dgAgentActifs" AutoGenerateColumns="True" Background="#7FFFFFFF" >
+                                            <DataGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Resumé" Name="cmiResume" />
+                                                    <MenuItem Header="Contrat" Name="cmiContrat" />
+                                                    <MenuItem Header="Affectation" Name="cmiAffectation"/>
+                                                    <MenuItem Header="Absences/Permissions" Name="cmiAbsence"/>
+                                                    <MenuItem Header="Heures supplémentaire" Name="cmiHeureSup"/>
+                                                    <MenuItem Header="Congés dus" Name="cmiCongés" IsEnabled="False"/>
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>
+                                        </DataGrid>
+                                    </ScrollViewer>
+
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#FF2B263E" Grid.Column="1" Opacity="0.9" Padding="5" >
+                                <StackPanel >
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="10*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal"  Grid.Column="0" >
+                                            <TextBlock  Text="Sites actifs" Foreground="White" FontSize="18" FontWeight="Bold" Margin="10,0,0,0"/>
+                                            <Label x:Name="lblNbClentActif" Margin="10,0,0,0" Content="0" Foreground="White"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal"  Grid.Column="1" >
+                                            <TextBox x:Name="BtnClientActifSearch" Width="100" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2" />
+                                        </StackPanel>
+
+
+                                    </Grid>
+                                    <ScrollViewer MinHeight="150" MaxHeight="250" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <DataGrid x:Name="dgClientActifs" AutoGenerateColumns="True" Background="#7FFFFFFF" >
+                                            <DataGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Résumé" Name="cmiResumeClient"/>
+                                                    <MenuItem Header="Sites" Name="cmiSites"/>
+                                                    <MenuItem Header="Postes" Name="cmiPostes"/>
+                                                    <MenuItem Header="Agents" Name="cmiAgentt" />
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>
+
+                                        </DataGrid>
+                                    </ScrollViewer>
+
+                                </StackPanel>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                    <Border Background="#FF0A1937"  Grid.Row ="2" >
+                        <Grid Name="grdBas">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FF00C7C7" Grid.Column="0"   >
+                                <StackPanel Opacity="0.8" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text=" Contrat arrivant à échéance" VerticalAlignment="Center"/>
+                                        <Label x:Name="lblNbContratEcheance" Margin="10,0,0,0" Content="0" />
+                                    </StackPanel>
+                                    <ScrollViewer MaxHeight="150">
+                                        <DataGrid x:Name="dgContratEcheant" AutoGenerateColumns="True">
+                                            <DataGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Modifier" />
+                                                    <MenuItem Header="Contrat" />
+                                                    <MenuItem Header="Affectation" />
+                                                    <MenuItem Header="Sortie" />
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>
+
+                                        </DataGrid>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#FF3BFFFF" Grid.Column="1"  >
+                                <StackPanel Opacity="0.8" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text=" Nouveaux contrats / concentions " VerticalAlignment="Center"/>
+                                        <Label x:Name="lblNbContratNouveau" Margin="10,0,0,0" Content="0"/>
+                                    </StackPanel>
+                                    <ScrollViewer MaxHeight="150">
+                                        <DataGrid x:Name="dgNewAgent" AutoGenerateColumns="True">
+                                            <DataGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Modifier" />
+                                                    <MenuItem Header="Contrat" />
+                                                    <MenuItem Header="Affectation" />
+                                                    <MenuItem Header="Sortie" />
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>
+
+                                        </DataGrid>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#FF87FFFF" Grid.Column="2"  >
+                                <StackPanel Opacity="0.8" >
+                                    <TextBlock Text=" Top 10 - Grands clients"/>
+                                    <ScrollViewer MaxHeight="150">
+                                        <DataGrid x:Name="dgGrandClients" AutoGenerateColumns="True">
+                                            <DataGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Modifier" />
+                                                    <MenuItem Header="Nouveau" />
+                                                    <MenuItem Header="Site" />
+                                                    <MenuItem Header="Désactiver" />
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>
+
+                                        </DataGrid>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#FFB9FBFB" Grid.Column="3" Opacity="0.9" >
+                                <StackPanel Opacity="0.8" >
+                                    <TextBlock Text=" Top 20 - Anciens clients"/>
+                                    <ScrollViewer MaxHeight="150">
+                                        <DataGrid x:Name="dgAnciensClients" AutoGenerateColumns="True">
+                                            <DataGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Modifier" />
+                                                    <MenuItem Header="Nouveau" />
+                                                    <MenuItem Header="Site" />
+                                                    <MenuItem Header="Désactiver" />
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>
+
+                                        </DataGrid>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</UserControl>

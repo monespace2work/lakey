@@ -1,0 +1,155 @@
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\sqlite3.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Lakey.exe.config
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Lakey.exe
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Lakey.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Lakey.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.Parser.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\DocumentFormat.OpenXml.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\DocumentFormat.OpenXml.Framework.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\EntityFramework.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\EntityFramework.SqlServer.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\EPPlus.Interfaces.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ExcelNumberFormat.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.Wpf.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\RBush.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\SixLabors.Fonts.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Buffers.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.ComponentModel.Annotations.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Data.SQLite.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Data.SQLite.EF6.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Data.SQLite.Linq.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Memory.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Numerics.Vectors.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Security.Cryptography.Xml.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ClosedXML.Parser.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\DocumentFormat.OpenXml.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\DocumentFormat.OpenXml.Framework.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\EntityFramework.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\EntityFramework.SqlServer.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\ExcelNumberFormat.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.Wpf.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\LiveCharts.Wpf.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\RBush.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\SixLabors.Fonts.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Buffers.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Data.SQLite.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Memory.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Numerics.Vectors.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\System.Security.Cryptography.Xml.xml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwConges.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwDconnexion.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwDetails.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwPointMensuel.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwZoom.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\LoadingWindow.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Login.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\MainWindow.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAbsences.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAffectation.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsConges.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsContrat.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsEntree.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsHeureSupp.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsPlanning.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsSortie.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsContrat.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsEtat.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsPoste.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsSite.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwActivOldClient.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwEndClient.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Settings\GeneralSets.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Settings\ProfilUser.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Settings\UserManager.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Structure\usercAngence.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Structure\usercSociete.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercEvenement.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercMemo.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNBanque.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNCNSS.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercRappel.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercAgents.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercClients.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercExterneActs.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Structure\usercFonction.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercSettings.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercStructure.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercTBord.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercTraitements.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\WaitFrm.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Application.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey_Content.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey_MarkupCompile.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey_MarkupCompile.lref
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Application.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\ReseauSelect.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\TempMsg.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwConges.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwDconnexion.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwDetails.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwPointMensuel.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Forms Pad\wdwZoom.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\LoadingWindow.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Login.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\MainWindow.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAbsences.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAffectation.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsConges.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsContrat.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsEntree.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsHeureSupp.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsPlanning.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsSortie.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsContrat.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsEtat.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsPoste.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsSite.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwActivOldClient.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwEndClient.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Settings\GeneralSets.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Settings\ProfilUser.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Settings\UserManager.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Structure\usercAngence.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Structure\usercSociete.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercEvenement.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercMemo.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNBanque.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNCNSS.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Supplement\usercRappel.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercAgents.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercClients.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercExterneActs.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\Structure\usercFonction.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercSettings.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercStructure.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercTBord.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\UserControl Pad\usercTraitements.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\WaitFrm.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.g.resources
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.Resources.resources
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.GenerateResource.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.Up2Date
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.exe
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.xml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\desktop.ini
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.SuggestedBindingRedirects.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.exe.config

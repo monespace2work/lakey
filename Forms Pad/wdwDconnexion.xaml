@@ -1,0 +1,25 @@
+﻿<Window x:Class="wdwDconnexion"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lakey"
+        mc:Ignorable="d"
+        Title="Recomnetez-vous" Height="250" Width="400" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="Window_Closing" WindowStyle="None" Icon="/Lakey;component/MyIco.ico">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Lakey;component/MyIco.png"/>
+        </Grid.Background>
+        <Rectangle Fill="#99000000" />
+        <StackPanel Margin="15" Background="#59000000"  Height="220" >
+            <Button x:Name="btnSortie" Content=" SORTIE " Foreground="Red" HorizontalAlignment="Right" Background="#FF01083A"/>
+            <StackPanel Orientation="Horizontal" Margin="45,25,45,0" HorizontalAlignment="Center">
+                <TextBlock Text="Utilisateur : " Foreground="White"/>
+                <TextBlock x:Name="tbkUSer" Text="Nom" FontSize="14" Foreground="#FFFFF300" Margin="10,0,0,0" FontWeight="Bold" TextDecorations="Underline"/>
+            </StackPanel>
+            <TextBlock Text="Mot de passe : " Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,2"/>
+            <PasswordBox x:Name="pswUser" Margin="40,0" FontSize="14" />
+            <Button x:Name="btnValider"  Content="Valider" Height="25" Width="100" Margin="0,15,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

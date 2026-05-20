@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="usercRappel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Lakey"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="200"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MaxWidth="200"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Center">
+                    <Label Content="OUTILS SUPPLLEMENTAIRES /" Foreground="White" HorizontalContentAlignment="Center" FontSize="15" />
+                    <Label Content="RAPPELS IMPORTANTS" Foreground="#FF99FF53"  FontSize="20" HorizontalContentAlignment="Center" FontWeight="Bold" />
+                </StackPanel>
+                <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
+
+            </Grid>
+        </Border>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+            <Border BorderBrush="Black" BorderThickness="1" Background="#FF00170C">
+                <StackPanel>
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0">
+                            <TextBlock x:Name="tblNbRappels" Text=" Nombre d'agents actif: "  Background="#FF00170C" Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Center" />
+                            <StackPanel x:Name="stpAddNewFonction" Background="#4C02233E" >
+                                <StackPanel Orientation="Horizontal" Margin="10,10,10,0">
+                                    <TextBlock Text=" Mémo : " MinWidth="50" Margin="0,10,5,5" Foreground="White"/>
+                                    <TextBox x:Name="tbxMemoContent" Height="60" MinWidth="300" VerticalAlignment="Center" Padding="3" AcceptsReturn="True" Margin="0,3" />
+                                    <StackPanel Margin="10,0,0,0" >
+                                        <StackPanel Orientation="Horizontal" Margin="10,5">
+                                            <TextBlock Text=" Début : "  MinWidth="50" Margin="0,10,5,0" VerticalAlignment="Center" Foreground="White"/>
+                                            <DatePicker x:Name="DtpDebut" Margin="10,10,10,0" HorizontalContentAlignment="Stretch" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="10,5,10,20">
+                                            <TextBlock Text=" Fin : "  MinWidth="50" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White"/>
+                                            <DatePicker x:Name="DtpFin" Margin="10,5,10,10" HorizontalContentAlignment="Stretch" />
+                                        </StackPanel>
+
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="10,5,10,20">
+                                    <TextBlock Text=" Obs : "  MinWidth="50" Margin="0,10,5,5" VerticalAlignment="Top" Foreground="White"/>
+                                    <TextBox x:Name="tbxMemoObs" Height="60" MinWidth="300" VerticalAlignment="Center" Padding="3" AcceptsReturn="True" Margin="0,3" />
+                                    <StackPanel Orientation="Horizontal" Margin="20,5,10,20" VerticalAlignment="Top">
+                                        <TextBlock Text=" Actif : "  MinWidth="50" Margin="0,10,5,5" VerticalAlignment="Center" Foreground="White"/>
+                                        <CheckBox x:Name="ckbxMemoActif" IsChecked="True" Margin=" 10" HorizontalContentAlignment="Stretch" />
+                                    </StackPanel>
+                                </StackPanel>
+
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                                    <Button  x:Name="btnCancel" Content=" Annuler " Width="100" Margin="10" />
+                                    <Button x:Name="btnValidNewMemo" Content="AJOUTER" Width="100" Height="30" HorizontalContentAlignment="Center" Margin="10"  Background="#FF004700" Foreground="White"/>
+                                    <Button x:Name="btnCopyMemo" Content="COPIER" Width="100" Height="30" HorizontalContentAlignment="Center" Margin="10"  Background="#FF614F00" Foreground="White"/>
+                                    <Button x:Name="btnDelete" Content=" SUPPRIMER " Width="100" Margin="10" Foreground="White" Background="#FF440000" />
+
+                                </StackPanel>
+                            </StackPanel>
+                            <DataGrid x:Name="DgRappels" AutoGenerateColumns="True" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,12 @@
+﻿<Window x:Class="TempMsg"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lakey"
+        mc:Ignorable="d"
+        Title="TempMsg" MaxHeight="250" MaxWidth="450" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded" Background="White" Icon="/Lakey;component/MyIco.ico" >
+    <Grid>
+        <TextBox x:Name="tbxMsg" Text="Text" TextWrapping="Wrap" IsReadOnly="True" Background="{x:Null}"/>        
+    </Grid>
+</Window>

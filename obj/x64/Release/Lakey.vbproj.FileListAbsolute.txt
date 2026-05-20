@@ -1,0 +1,449 @@
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\sqlite3.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Lakey.exe.config
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Lakey.exe
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Lakey.pdb
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Lakey.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\ClosedXML.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\ClosedXML.Parser.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.Framework.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\EntityFramework.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\EntityFramework.SqlServer.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\EPPlus.Interfaces.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\ExcelNumberFormat.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\LiveCharts.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\LiveCharts.Wpf.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Microsoft.Bcl.HashCode.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\RBush.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\SixLabors.Fonts.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Buffers.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.ComponentModel.Annotations.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Data.SQLite.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Data.SQLite.EF6.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Data.SQLite.Linq.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Memory.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Numerics.Vectors.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Security.Cryptography.Xml.dll
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\ClosedXML.pdb
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\ClosedXML.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\ClosedXML.Parser.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.Framework.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\EntityFramework.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\EntityFramework.SqlServer.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\ExcelNumberFormat.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\LiveCharts.pdb
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\LiveCharts.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\LiveCharts.Wpf.pdb
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\LiveCharts.Wpf.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Microsoft.Bcl.HashCode.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\Microsoft.IO.RecyclableMemoryStream.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\RBush.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\SixLabors.Fonts.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Buffers.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Data.SQLite.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Memory.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Numerics.Vectors.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\JPB\source\repos\Lakey\bin\x64\Release\System.Security.Cryptography.Xml.xml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\ReseauSelect.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\TempMsg.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\wdwCongeGlobal.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\wdwConges.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\wdwDetails.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\LoadingWindow.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Login.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\MainWindow.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAbsences.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAffectation.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsConges.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsContrat.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsEntree.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsHeureSupp.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsPlanning.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsSortie.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsContrat.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsEtat.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsPoste.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsSite.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\GeneralSets.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\UserManager.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercAngence.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercSociete.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercEvenement.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercMemo.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNBanque.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNCNSS.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercRappel.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercAgents.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercClients.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercExterneActs.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercFonction.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercStructure.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercTBord.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercTraitements.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\WaitFrm.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Application.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey_Content.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey_MarkupCompile.cache
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey_MarkupCompile.lref
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Application.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\ReseauSelect.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\TempMsg.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\wdwCongeGlobal.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\wdwConges.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Forms Pad\wdwDetails.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\LoadingWindow.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Login.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\MainWindow.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAbsences.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAffectation.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsConges.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsContrat.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsEntree.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsHeureSupp.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsPlanning.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsSortie.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsContrat.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsEtat.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsPoste.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsSite.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\GeneralSets.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\UserManager.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercAngence.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercSociete.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercEvenement.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercMemo.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNBanque.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNCNSS.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercRappel.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercAgents.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercClients.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercExterneActs.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercFonction.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercStructure.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercTBord.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercTraitements.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\WaitFrm.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.g.resources
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.Resources.resources
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.vbproj.GenerateResource.cache
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.vbproj.CoreCompileInputs.cache
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.vbproj.CopyComplete
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.exe
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.xml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\Lakey.pdb
+E:\repos\Lakey\bin\x64\Release\sqlite3.dll
+E:\repos\Lakey\bin\x64\Release\Lakey.exe.config
+E:\repos\Lakey\bin\x64\Release\Lakey.exe
+E:\repos\Lakey\bin\x64\Release\Lakey.pdb
+E:\repos\Lakey\bin\x64\Release\Lakey.xml
+E:\repos\Lakey\bin\x64\Release\ClosedXML.dll
+E:\repos\Lakey\bin\x64\Release\ClosedXML.Parser.dll
+E:\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.dll
+E:\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.Framework.dll
+E:\repos\Lakey\bin\x64\Release\EntityFramework.dll
+E:\repos\Lakey\bin\x64\Release\EntityFramework.SqlServer.dll
+E:\repos\Lakey\bin\x64\Release\EPPlus.Interfaces.dll
+E:\repos\Lakey\bin\x64\Release\ExcelNumberFormat.dll
+E:\repos\Lakey\bin\x64\Release\LiveCharts.dll
+E:\repos\Lakey\bin\x64\Release\LiveCharts.Wpf.dll
+E:\repos\Lakey\bin\x64\Release\Microsoft.Bcl.HashCode.dll
+E:\repos\Lakey\bin\x64\Release\Microsoft.IO.RecyclableMemoryStream.dll
+E:\repos\Lakey\bin\x64\Release\RBush.dll
+E:\repos\Lakey\bin\x64\Release\SixLabors.Fonts.dll
+E:\repos\Lakey\bin\x64\Release\System.Buffers.dll
+E:\repos\Lakey\bin\x64\Release\System.ComponentModel.Annotations.dll
+E:\repos\Lakey\bin\x64\Release\System.Data.SQLite.dll
+E:\repos\Lakey\bin\x64\Release\System.Data.SQLite.EF6.dll
+E:\repos\Lakey\bin\x64\Release\System.Data.SQLite.Linq.dll
+E:\repos\Lakey\bin\x64\Release\System.Memory.dll
+E:\repos\Lakey\bin\x64\Release\System.Numerics.Vectors.dll
+E:\repos\Lakey\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.dll
+E:\repos\Lakey\bin\x64\Release\System.Security.Cryptography.Xml.dll
+E:\repos\Lakey\bin\x64\Release\ClosedXML.pdb
+E:\repos\Lakey\bin\x64\Release\ClosedXML.xml
+E:\repos\Lakey\bin\x64\Release\ClosedXML.Parser.xml
+E:\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.xml
+E:\repos\Lakey\bin\x64\Release\DocumentFormat.OpenXml.Framework.xml
+E:\repos\Lakey\bin\x64\Release\EntityFramework.xml
+E:\repos\Lakey\bin\x64\Release\EntityFramework.SqlServer.xml
+E:\repos\Lakey\bin\x64\Release\ExcelNumberFormat.xml
+E:\repos\Lakey\bin\x64\Release\LiveCharts.pdb
+E:\repos\Lakey\bin\x64\Release\LiveCharts.xml
+E:\repos\Lakey\bin\x64\Release\LiveCharts.Wpf.pdb
+E:\repos\Lakey\bin\x64\Release\LiveCharts.Wpf.xml
+E:\repos\Lakey\bin\x64\Release\Microsoft.Bcl.HashCode.xml
+E:\repos\Lakey\bin\x64\Release\Microsoft.IO.RecyclableMemoryStream.xml
+E:\repos\Lakey\bin\x64\Release\RBush.xml
+E:\repos\Lakey\bin\x64\Release\SixLabors.Fonts.xml
+E:\repos\Lakey\bin\x64\Release\System.Buffers.xml
+E:\repos\Lakey\bin\x64\Release\System.Data.SQLite.xml
+E:\repos\Lakey\bin\x64\Release\System.Memory.xml
+E:\repos\Lakey\bin\x64\Release\System.Numerics.Vectors.xml
+E:\repos\Lakey\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.xml
+E:\repos\Lakey\bin\x64\Release\System.Security.Cryptography.Xml.xml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\ReseauSelect.g.vb
+E:\repos\Lakey\obj\x64\Release\Forms Pad\TempMsg.g.vb
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwCongeGlobal.g.vb
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwConges.g.vb
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwDetails.g.vb
+E:\repos\Lakey\obj\x64\Release\LoadingWindow.g.vb
+E:\repos\Lakey\obj\x64\Release\Login.g.vb
+E:\repos\Lakey\obj\x64\Release\MainWindow.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAbsences.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAffectation.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsConges.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsContrat.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsEntree.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsHeureSupp.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsPlanning.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsSortie.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsContrat.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsEtat.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsPoste.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsSite.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\GeneralSets.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\UserManager.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercAngence.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercSociete.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercEvenement.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercMemo.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNBanque.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNCNSS.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercRappel.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercAgents.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercClients.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercExterneActs.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercFonction.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercStructure.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercTBord.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercTraitements.g.vb
+E:\repos\Lakey\obj\x64\Release\WaitFrm.g.vb
+E:\repos\Lakey\obj\x64\Release\Application.g.vb
+E:\repos\Lakey\obj\x64\Release\Lakey_Content.g.vb
+E:\repos\Lakey\obj\x64\Release\Lakey_MarkupCompile.cache
+E:\repos\Lakey\obj\x64\Release\Lakey_MarkupCompile.lref
+E:\repos\Lakey\obj\x64\Release\Application.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\ReseauSelect.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\TempMsg.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwCongeGlobal.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwConges.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwDetails.baml
+E:\repos\Lakey\obj\x64\Release\LoadingWindow.baml
+E:\repos\Lakey\obj\x64\Release\Login.baml
+E:\repos\Lakey\obj\x64\Release\MainWindow.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAbsences.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAffectation.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsConges.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsContrat.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsEntree.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsHeureSupp.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsPlanning.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsSortie.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsContrat.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsEtat.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsPoste.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsSite.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\GeneralSets.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\UserManager.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercAngence.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercSociete.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercEvenement.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercMemo.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNBanque.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNCNSS.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercRappel.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercAgents.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercClients.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercExterneActs.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Structure\usercFonction.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercStructure.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercTBord.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercTraitements.baml
+E:\repos\Lakey\obj\x64\Release\WaitFrm.baml
+E:\repos\Lakey\obj\x64\Release\Lakey.g.resources
+E:\repos\Lakey\obj\x64\Release\Lakey.Resources.resources
+E:\repos\Lakey\obj\x64\Release\Lakey.vbproj.GenerateResource.cache
+E:\repos\Lakey\obj\x64\Release\Lakey.vbproj.CoreCompileInputs.cache
+E:\repos\Lakey\obj\x64\Release\Lakey.vbproj.CopyComplete
+E:\repos\Lakey\obj\x64\Release\Lakey.exe
+E:\repos\Lakey\obj\x64\Release\Lakey.xml
+E:\repos\Lakey\obj\x64\Release\Lakey.pdb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwEndClient.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwEndClient.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwActivOldClient.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwActivOldClient.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercSettings.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\usercSettings.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwActivOldClient.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwEndClient.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercSettings.g.vb
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwActivOldClient.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwEndClient.baml
+C:\Users\JPB\source\repos\Lakey\obj\x64\Release\UserControl Pad\usercSettings.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwZoom.g.vb
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwZoom.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwPointMensuel.g.vb
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwPointMensuel.baml
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\ProfilUser.g.vb
+E:\repos\Lakey\obj\x64\Release\UserControl Pad\Settings\ProfilUser.baml
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwDconnexion.g.vb
+E:\repos\Lakey\obj\x64\Release\Forms Pad\wdwDconnexion.baml
+E:\repos\Lakey\obj\x64\Release\Lakey.vbproj.AssemblyReference.cache
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\sqlite3.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Lakey.exe.config
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Lakey.exe
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Lakey.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Lakey.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\ClosedXML.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\ClosedXML.Parser.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\DocumentFormat.OpenXml.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\DocumentFormat.OpenXml.Framework.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\EntityFramework.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\EntityFramework.SqlServer.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\EPPlus.Interfaces.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\ExcelNumberFormat.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\LiveCharts.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\LiveCharts.Wpf.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Microsoft.Bcl.HashCode.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\RBush.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\SixLabors.Fonts.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Buffers.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.ComponentModel.Annotations.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Data.SQLite.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Data.SQLite.EF6.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Data.SQLite.Linq.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Memory.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Numerics.Vectors.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Security.Cryptography.Xml.dll
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\ClosedXML.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\ClosedXML.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\ClosedXML.Parser.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\DocumentFormat.OpenXml.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\DocumentFormat.OpenXml.Framework.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\EntityFramework.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\EntityFramework.SqlServer.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\ExcelNumberFormat.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\LiveCharts.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\LiveCharts.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\LiveCharts.Wpf.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\LiveCharts.Wpf.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Microsoft.Bcl.HashCode.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\Microsoft.IO.RecyclableMemoryStream.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\RBush.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\SixLabors.Fonts.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Buffers.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Data.SQLite.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Memory.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Numerics.Vectors.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\System.Security.Cryptography.Xml.xml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\ReseauSelect.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\TempMsg.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwCongeGlobal.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwConges.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwDconnexion.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwDetails.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwPointMensuel.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwZoom.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\LoadingWindow.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Login.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\MainWindow.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAbsences.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAffectation.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsConges.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsContrat.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsEntree.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsHeureSupp.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsPlanning.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsSortie.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsContrat.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsEtat.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsPoste.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsSite.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwActivOldClient.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwEndClient.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Settings\GeneralSets.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Settings\ProfilUser.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Settings\UserManager.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Structure\usercAngence.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Structure\usercSociete.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercEvenement.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercMemo.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNBanque.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNCNSS.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercRappel.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercAgents.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercClients.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercExterneActs.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Structure\usercFonction.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercSettings.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercStructure.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercTBord.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercTraitements.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\WaitFrm.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Application.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey_Content.g.vb
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey_MarkupCompile.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey_MarkupCompile.lref
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Application.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\ReseauSelect.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\TempMsg.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwCongeGlobal.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwConges.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwDconnexion.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwDetails.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwPointMensuel.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Forms Pad\wdwZoom.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\LoadingWindow.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Login.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\MainWindow.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAbsences.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsAffectation.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsConges.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsContrat.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsEntree.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsHeureSupp.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsPlanning.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\AgentSub\usercAgentsSortie.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsContrat.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsEtat.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsPoste.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\usercClientsSite.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwActivOldClient.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\ClientSub\wdwEndClient.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Settings\GeneralSets.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Settings\ProfilUser.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Settings\UserManager.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Structure\usercAngence.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Structure\usercSociete.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercEvenement.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercMemo.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNBanque.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercNCNSS.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Supplement\usercRappel.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercAgents.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercClients.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercExterneActs.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\Structure\usercFonction.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercSettings.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercStructure.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercTBord.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\UserControl Pad\usercTraitements.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\WaitFrm.baml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.g.resources
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.Resources.resources
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.vbproj.GenerateResource.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.vbproj.CoreCompileInputs.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.vbproj.CopyComplete
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.exe
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.xml
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.pdb
+C:\Users\Public\TRACES\dev\Lakey\bin\x64\Release\desktop.ini
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.vbproj.AssemblyReference.cache
+C:\Users\Public\TRACES\dev\Lakey\obj\x64\Release\Lakey.exe.config

@@ -1,0 +1,18 @@
+﻿<Window x:Class="wdwEndClient"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lakey"
+        mc:Ignorable="d"
+        Title="FIN DE COLLABORATION" Height="125" Width="400" ResizeMode="NoResize" Background="#FF460000" Loaded="Window_Loaded">
+    <StackPanel >
+        <Label Content="Fin de contrat du client" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Client : " Foreground="White"/>
+            <ComboBox x:Name="cbxClent" MinWidth="170"/>
+            <DatePicker Name="dtpDateFin" Margin="5,0,0,0" Width="120"/>
+        </StackPanel>
+        <Button x:Name="btnValid" Content="VALIDER" Margin="40,5,40,0"/>
+    </StackPanel>
+</Window>
