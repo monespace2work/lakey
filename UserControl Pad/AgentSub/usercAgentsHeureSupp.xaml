@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="usercAgentsHeureSupp"
+<UserControl x:Class="usercAgentsHeureSupp"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border  Grid.Row="0" >
+        <Border  Grid.Row="0"  Style="{StaticResource SectionHeaderBorder}">
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>

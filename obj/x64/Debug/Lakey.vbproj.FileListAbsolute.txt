@@ -293,3 +293,4 @@ E:\iclones\lakey\obj\x64\Debug\Lakey.exe
 E:\iclones\lakey\obj\x64\Debug\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
 E:\iclones\lakey\bin\x64\Debug\packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache

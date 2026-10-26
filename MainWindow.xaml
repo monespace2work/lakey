@@ -5,30 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lakey"
         mc:Ignorable="d"
-        Title="Lakey" Height="450" Width="800" MinHeight="300" MinWidth="500" WindowStartupLocation="CenterScreen" WindowState="Maximized" Loaded="Window_Loaded" KeyDown="Window_KeyDown" >
+        Title="Lakey" Height="850" Width="1440" MinHeight="620" MinWidth="980" WindowStartupLocation="CenterScreen" WindowState="Maximized" Loaded="Window_Loaded" KeyDown="Window_KeyDown" Background="{StaticResource ThemeSurfaceBrush}" FontFamily="Segoe UI" UseLayoutRounding="True" SnapsToDevicePixels="True">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource ThemeNavyBrush}"/>
+            <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/></Trigger>
+                <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.78"/></Trigger>
+                <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="8,5"/><Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/><Setter Property="Background" Value="White"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-        <Image x:Name="ImgBackground" Source="/Lakey;component/MyIco.png" Stretch="UniformToFill">
-            <Image.Effect>
-                <BlurEffect Radius="20"/>
-            </Image.Effect>
-        </Image>
-
-        <!-- Couche semi-transparente pour améliorer la lisibilité -->
-        <Rectangle Fill="#CC000000" />
-
-        <Grid Background="#196B94A9">
+        <Grid Background="{StaticResource ThemeSurfaceBrush}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" MaxWidth="200" MinWidth="100"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="190" MinWidth="165" MaxWidth="230"/>
+                <ColumnDefinition Width="245" MinWidth="210" MaxWidth="300"/>
+                <ColumnDefinition Width="*" MinWidth="420"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="8*" MaxHeight="20"/>
-                <RowDefinition Height="15*" MinHeight="65" />
-                <RowDefinition Height="80*"/>
-                <RowDefinition Height="5*" MinHeight="50"/>
+                <RowDefinition Height="Auto" MinHeight="34"/>
+                <RowDefinition Height="Auto" MinHeight="112"/>
+                <RowDefinition Height="*" MinHeight="250"/>
+                <RowDefinition Height="155" MinHeight="105" MaxHeight="230"/>
             </Grid.RowDefinitions>
-            <Border x:Name="bdrEntete" Background="Azure" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3">
+            <Border x:Name="bdrEntete" Background="White" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="#DCE5ED" BorderThickness="0,0,0,1" CornerRadius="0">
                 <Menu >
                     <MenuItem x:Name="mitActions"  Header="Actions">
                         <MenuItem x:Name="mitActual"  Header="_Actualiser" InputGestureText="Ctrl+Shift+A" ></MenuItem>
@@ -54,7 +67,7 @@
 
                 </Menu>
             </Border>
-            <Border x:Name="bdrTitreGauche" Background="#CC557E94" Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="1" Margin="0" >
+            <Border x:Name="bdrTitreGauche" Background="{StaticResource ThemeHeaderBrush}" Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="1" Margin="0" Padding="10,8" CornerRadius="0">
                 <Grid Margin="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" MaxWidth="40"/>
@@ -64,24 +77,14 @@
                     </Image>
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="LAKEY" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0">
-                                <TextBlock.Foreground>
-                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                        <GradientStop Color="#FF1A008C" Offset="1"/>
-                                        <GradientStop Color="#FFD7B60C"/>
-                                        <GradientStop Color="#FFC1ECCB" Offset="0.203"/>
-                                        <GradientStop Color="#FFFFC60A" Offset="0.904"/>
-                                        <GradientStop Color="White" Offset="0.56"/>
-                                    </LinearGradientBrush>
-                                </TextBlock.Foreground>
-                            </TextBlock>
+                            <TextBlock Text="LAKEY" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0"/>
                             <TextBlock x:Name="tbxVersion" Text="version" Foreground="White" Margin="2,0,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" FontSize="10"/>
                         </StackPanel>
                         <TextBlock x:Name="tbxUserName" Text="UserName" Foreground="White" Margin="5,0,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </Grid>
             </Border>
-            <Border x:Name="bdrTitreCentre"  Grid.Column="2" Grid.Row="1" VerticalAlignment="Bottom">
+            <Border x:Name="bdrTitreCentre" Background="{StaticResource ThemeHeaderBrush}" Grid.Column="2" Grid.Row="1" VerticalAlignment="Stretch" Padding="12,8" CornerRadius="0">
                 <StackPanel >
                     <Border x:Name="bdrEnTete001" >
                         <Grid>
@@ -96,7 +99,7 @@
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <Border Background="#3300344F">
+                    <Border Background="{StaticResource ThemeNavyBrush}" CornerRadius="5" Padding="4">
                         <Grid  >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="375*"/>
@@ -105,14 +108,14 @@
                             </Grid.ColumnDefinitions>
                             <Expander x:Name="xpdAgentRaccourcis"  Header="Agents &gt; Raccourcis"  Grid.Column="0" Foreground="#FFD2FFD8"  IsExpanded="True" Margin="0,0,0,5" VerticalAlignment="Top" Background="{x:Null}"  >
                                 <WrapPanel Orientation="Horizontal">
-                                    <Button x:Name="btnRacEntreeAg"  Content="Entrées" Height="20" Margin="5,0,1,0" Padding="3,1,6,1" Background="#FFD1FFD7"/>
-                                    <Button x:Name="btnRacContratAg"  Content="Contrat" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FFD1FFD7"/>
-                                    <Button x:Name="btnRacAffectationAg"  Content="Affectation" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FFD1FFD7"/>
-                                    <Button x:Name="btnRacPlanningAg"  Content="Planning" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FFD1FFD7"/>
-                                    <Button x:Name="btnRacAbsenceAg"  Content="Absence/Permission/Congé" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FFD1FFD7"/>
-                                    <Button x:Name="btnRacHeureSupAg"  Content="HeuresSup" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FFD1FFD7"/>
+                                    <Button x:Name="btnRacEntreeAg"  Content="Entrées" Height="20" Margin="5,0,1,0" Padding="3,1,6,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <Button x:Name="btnRacContratAg"  Content="Contrat" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <Button x:Name="btnRacAffectationAg"  Content="Affectation" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <Button x:Name="btnRacPlanningAg"  Content="Planning" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <Button x:Name="btnRacAbsenceAg"  Content="Absence/Permission/Congé" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <Button x:Name="btnRacHeureSupAg"  Content="HeuresSup" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
                                     <Button x:Name="btnRacCalCong" Content="Point - Congés" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FF557E94" BorderBrush="White" BorderThickness="2" Foreground="White"/>
-                                    <Button x:Name="btnRacSortieAg"  Content="Sortie" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FFD1FFD7"/>
+                                    <Button x:Name="btnRacSortieAg"  Content="Sortie" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
                                 </WrapPanel>
                             </Expander>
                             <Expander x:Name="xpdClientRaccourcis" Header="Client  &gt; Raccourcis" Grid.Column="1" HorizontalAlignment="Right"  Foreground="#FFD2FFD8"  IsExpanded="True" Grid.ColumnSpan="2" Margin="0,0,0,5" VerticalAlignment="Top" Background="{x:Null}"  >
@@ -132,7 +135,7 @@
 
 
             <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.Row="2">
-                <Border x:Name="bdrColonneGauche" Background="#FF557E94"  >
+                <Border x:Name="bdrColonneGauche" Background="{StaticResource ThemeHeaderBrush}" Padding="8,10" BorderBrush="{StaticResource ThemeNavyBrush}" BorderThickness="0,0,1,0" CornerRadius="0">
                     <StackPanel>
                         <Button x:Name="btnTBord" Content="Tableau de bord" Height="30" FontSize="14" FontWeight="ExtraBold" Foreground="#FF0C2C3C"  Background="#FFDDDDDD" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
                         <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="#FFDDDDDD" Height="30" FontSize="14" FontWeight="Bold"/>
@@ -165,18 +168,18 @@
 
             <Border  Grid.Column="2" Grid.Row="2" >
                 <!--TextBlock x:Name="tblTitrCentral" Text="TITRE CENTRAL" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontFamily="Lucida Bright" FontWeight="Bold" /-->
-                <ScrollViewer x:Name="bdrColonneCentre" Background="#996B94A9" VerticalScrollBarVisibility="Auto" >
+                <ScrollViewer x:Name="bdrColonneCentre" Background="{StaticResource ThemeSurfaceBrush}" VerticalScrollBarVisibility="Auto" Padding="12" PreviewMouseWheel="bdrColonneCentre_PreviewMouseWheel">
                     <StackPanel>
                         <Ellipse x:Name="elpsLoadingCentral" Width="10" Height="10" Fill="Orange" Visibility="Collapsed"/>
-                        <ContentControl x:Name="cctrlCentral" Background="Black"/>
+                        <ContentControl x:Name="cctrlCentral" Background="Transparent"/>
                     </StackPanel>
                 </ScrollViewer>
 
             </Border>
-            <Border x:Name="bdrColonneDroit" Background="#7CC0E9FF" Grid.Column="1" Grid.Row="2" >
+            <Border x:Name="bdrColonneDroit" Background="White" Grid.Column="1" Grid.Row="2" Padding="10" BorderBrush="#DCE5ED" BorderThickness="1,0,1,0" CornerRadius="0">
                 <StackPanel>
                     <Ellipse x:Name="elpsLoading" Width="10" Height="10" Fill="Orange" Visibility="Collapsed"/>
-                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="#FFB6FFC0" Margin="10,5,10,7"/>
+                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{StaticResource ThemeAccentBrush}" Foreground="{StaticResource ThemeNavyBrush}" Margin="10,5,10,7"/>
                     <Separator/>
                     <Button x:Name="btnCalCong" Visibility="Collapsed" Content="Point - Congés" Style="{StaticResource btnSousStand}" Background="#FF557E94" BorderBrush="White" BorderThickness="2" Foreground="White" Margin="10,3"/>
                     <StackPanel x:Name="stpTBord" />
@@ -224,31 +227,24 @@
 
                 </StackPanel>
             </Border>
-            <Border x:Name="brdT11" Grid.Column="0"  Opacity="0.9" >
-                <StackPanel Margin="10">
-                    <TextBlock x:Name="tbkTtiteBloc01" Text="Données de base"  Foreground="White" FontSize="18" FontWeight="Bold"/>
-                </StackPanel>
-            </Border>
-
-
-            <Border x:Name="bdrBasPage" Background="Azure" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3">
+            <Border x:Name="bdrBasPage" Background="White" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" BorderBrush="#DCE5ED" BorderThickness="0,1,0,0" Padding="6" CornerRadius="0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="1" Background="DarkCyan">
+                    <Border Grid.Column="1" Background="#F8FAFC" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MaxWidth="80"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <Label x:Name="lblAgentSearch" Content="Agents" FontSize="10" Margin="1,0,0,1" Foreground="White"/>
+                                <Label x:Name="lblAgentSearch" Content="Agents" FontSize="10" Margin="1,0,0,1" Foreground="#60758A"/>
                                 <TextBox x:Name="BtnAgentSearch" Height="28" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
-                            <DataGrid x:Name="dgAgent" Grid.Column="1" AutoGenerateColumns="True" Background="#FF0F9B9B" HeadersVisibility="None" RowBackground="#FF88F4FF">
+                            <DataGrid x:Name="dgAgent" Grid.Column="1" AutoGenerateColumns="True" Background="White" HeadersVisibility="None" RowBackground="#F1F5F9">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Resumé" Name="cmiResume" />
@@ -262,17 +258,17 @@
                             </DataGrid>
                         </Grid>
                     </Border>
-                    <Border Grid.Column="2" Background="Aquamarine">
+                    <Border Grid.Column="2" Background="#F8FAFC" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MaxWidth="80"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <Label x:Name="lblContratSearch"  Content="Contrats" FontSize="10" Margin="1,0,0,1" Foreground="#FF000106"/>
+                                <Label x:Name="lblContratSearch"  Content="Contrats" FontSize="10" Margin="1,0,0,1" Foreground="#60758A"/>
                                 <TextBox x:Name="BtnContratSearch" Height="28" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
-                            <DataGrid  x:Name="dgContrat" Grid.Column="1" AutoGenerateColumns="True" Background="#FF62DEB5" HeadersVisibility="None" RowBackground="#FFABFFE3">
+                            <DataGrid  x:Name="dgContrat" Grid.Column="1" AutoGenerateColumns="True" Background="White" HeadersVisibility="None" RowBackground="#F1F5F9">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Résumé" Name="cmiResumeC" />
@@ -283,17 +279,17 @@
                         </Grid>
 
                     </Border>
-                    <Border Grid.Column="0" Background="#FF7FFFF3">
+                    <Border Grid.Column="0" Background="#F8FAFC" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MaxWidth="80"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <Label x:Name="lblPlanningSearch" Content="En poste" FontSize="10" Margin="1,0,0,1" Foreground="#FF00165A" Background="{x:Null}"/>
+                                <Label x:Name="lblPlanningSearch" Content="En poste" FontSize="10" Margin="1,0,0,1" Foreground="#60758A" Background="{x:Null}"/>
                                 <TextBox x:Name="BtnPlanningSearch" Height="28" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
-                            <DataGrid  x:Name="dgPlanning" Grid.Column="1" AutoGenerateColumns="True" HeadersVisibility="None" RowBackground="#FFA5FFF7" Background="#FF7FFFF3">
+                            <DataGrid  x:Name="dgPlanning" Grid.Column="1" AutoGenerateColumns="True" HeadersVisibility="None" RowBackground="#F1F5F9" Background="White">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Cette semaine" Name="cmiThisW" />
@@ -313,6 +309,29 @@
 
                 </Grid>
             </Border>
+            <Grid x:Name="grdLoadingOverlay" Grid.Row="2" Grid.Column="2" Panel.ZIndex="1000"
+                  Background="#9900113E" Visibility="Collapsed" IsHitTestVisible="True">
+                <Grid.Resources>
+                    <Storyboard x:Key="LoadingRotationStoryboard">
+                        <DoubleAnimation Storyboard.TargetName="LoadingRotation"
+                                         Storyboard.TargetProperty="Angle"
+                                         From="0" To="360" Duration="0:0:0.8"
+                                         RepeatBehavior="Forever"/>
+                    </Storyboard>
+                </Grid.Resources>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="54" Height="54" Stroke="{StaticResource ThemeAccentBrush}"
+                             StrokeThickness="6" StrokeDashArray="2,2"
+                             RenderTransformOrigin="0.5,0.5">
+                        <Ellipse.RenderTransform>
+                            <RotateTransform x:Name="LoadingRotation"/>
+                        </Ellipse.RenderTransform>
+                    </Ellipse>
+                    <TextBlock Text="Chargement des données..."
+                               Foreground="White" FontSize="15" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" Margin="0,14,0,0"/>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

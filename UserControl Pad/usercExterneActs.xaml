@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Border BorderBrush="Black" BorderThickness="1">
+        <Border Style="{StaticResource SectionHeaderBorder}" BorderThickness="1">
             <Label Content="OUTILS SUPPLEMENTAIRES" Foreground="White" HorizontalContentAlignment="Center" FontSize="20"/>
 
         </Border>

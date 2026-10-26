@@ -13,16 +13,99 @@ Class MainWindow
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
     End Sub
-    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
-        tbxVersion.Text = My.Application.Info.Version.ToString
-        tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
-        DbPathGeneral = PaphBackUp()
-        LocalConnxStr = $"Data Source={DbPath};Version=3;"
 
-        maj()
-        InitializeGlobal()
+    Private Sub bdrColonneCentre_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
+        Dim dataGrid = FindAncestorDataGrid(TryCast(e.OriginalSource, DependencyObject))
+        If dataGrid Is Nothing Then Return
+
+        Dim gridScrollViewer = FindVisualScrollViewer(dataGrid)
+        If gridScrollViewer IsNot Nothing AndAlso CanScrollVertically(gridScrollViewer, e.Delta) Then Return
+
+        Dim ancestor = GetParentElement(dataGrid)
+        While ancestor IsNot Nothing
+            Dim scrollViewer = TryCast(ancestor, ScrollViewer)
+            If scrollViewer IsNot Nothing AndAlso CanScrollVertically(scrollViewer, e.Delta) Then
+                Dim lineCount = Math.Max(1, CInt(Math.Round(Math.Abs(e.Delta) / 120.0 * 3)))
+                For index = 1 To lineCount
+                    If e.Delta < 0 Then
+                        scrollViewer.LineDown()
+                    Else
+                        scrollViewer.LineUp()
+                    End If
+                Next
+                e.Handled = True
+                Return
+            End If
+            ancestor = GetParentElement(ancestor)
+        End While
+    End Sub
+
+    Private Function FindAncestorDataGrid(element As DependencyObject) As DataGrid
+        Dim current = element
+        While current IsNot Nothing
+            Dim dataGrid = TryCast(current, DataGrid)
+            If dataGrid IsNot Nothing Then Return dataGrid
+            current = GetParentElement(current)
+        End While
+        Return Nothing
+    End Function
+
+    Private Function FindVisualScrollViewer(root As DependencyObject) As ScrollViewer
+        For index = 0 To VisualTreeHelper.GetChildrenCount(root) - 1
+            Dim child = VisualTreeHelper.GetChild(root, index)
+            Dim scrollViewer = TryCast(child, ScrollViewer)
+            If scrollViewer IsNot Nothing Then Return scrollViewer
+
+            scrollViewer = FindVisualScrollViewer(child)
+            If scrollViewer IsNot Nothing Then Return scrollViewer
+        Next
+        Return Nothing
+    End Function
+
+    Private Function GetParentElement(element As DependencyObject) As DependencyObject
+        Dim contentElement = TryCast(element, ContentElement)
+        If contentElement IsNot Nothing Then
+            Dim parent = ContentOperations.GetParent(contentElement)
+            If parent IsNot Nothing Then Return parent
+            Return LogicalTreeHelper.GetParent(element)
+        End If
+        Return VisualTreeHelper.GetParent(element)
+    End Function
+
+    Private Function CanScrollVertically(scrollViewer As ScrollViewer, delta As Integer) As Boolean
+        If delta < 0 Then Return scrollViewer.VerticalOffset < scrollViewer.ScrollableHeight
+        If delta > 0 Then Return scrollViewer.VerticalOffset > 0
+        Return False
+    End Function
+
+    Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+        Await RunWithLoadingAsync(
+            Sub()
+                tbxVersion.Text = "V" & My.Application.Info.Version.ToString
+                tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
+                DbPathGeneral = PaphBackUp()
+                LocalConnxStr = $"Data Source={DbPath};Version=3;"
+                maj()
+                InitializeGlobal()
+            End Sub)
         'If Not SessLogin() Then Me.Close()
     End Sub
+
+    Private Async Function RunWithLoadingAsync(loadAction As Action) As Task
+        Dim loadingStoryboard = TryCast(grdLoadingOverlay.Resources("LoadingRotationStoryboard"),
+                                       System.Windows.Media.Animation.Storyboard)
+        grdLoadingOverlay.Visibility = Visibility.Visible
+        Me.Cursor = Cursors.Wait
+        Try
+            loadingStoryboard?.Begin(grdLoadingOverlay, True)
+            Await Dispatcher.Yield(DispatcherPriority.Background)
+            loadAction()
+        Finally
+            loadingStoryboard?.Stop(grdLoadingOverlay)
+            grdLoadingOverlay.Visibility = Visibility.Collapsed
+            Me.Cursor = Cursors.Arrow
+        End Try
+    End Function
     Sub InitializeGlobal()
         TestConnexionDbIcon()
         LoadPrimSettings()
@@ -57,55 +140,59 @@ Class MainWindow
 
     End Sub
 
-    Private Sub btnTBord_Click(sender As Object, e As RoutedEventArgs)
-        elpsLoading.Visibility = Visibility.Visible
-        iUserC = New usercTBord(Sub()
-                                    cctrlCentral.Content = iUserC
-                                End Sub)
-        cctrlCentral.Content = iUserC
-
-        'cctrlCentral.Content = New usercTBord
-
-        SelectPrincipalBtn(btnTBord)
-        SelecStp(stpTBord)
-        elpsLoading.Visibility = Visibility.Collapsed
+    Private Async Sub btnTBord_Click(sender As Object, e As RoutedEventArgs)
+        Await RunWithLoadingAsync(
+            Sub()
+                iUserC = New usercTBord(Sub()
+                                            cctrlCentral.Content = iUserC
+                                        End Sub)
+                cctrlCentral.Content = iUserC
+                SelectPrincipalBtn(btnTBord)
+                SelecStp(stpTBord)
+            End Sub)
     End Sub
 
 
-    Private Sub btnAgents_Click(sender As Object, e As RoutedEventArgs)
-        elpsLoading.Visibility = Visibility.Visible
-        Me.Cursor = Cursors.Wait
-        iUserC = New usercAgents(Sub()
-                                     cctrlCentral.Content = iUserC
-                                 End Sub)
-        cctrlCentral.Content = iUserC
-        'cctrlCentral.Content = New usercAgents
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        Me.Cursor = Cursors.Arrow
-        elpsLoading.Visibility = Visibility.Collapsed
+    Private Async Sub btnAgents_Click(sender As Object, e As RoutedEventArgs)
+        Await RunWithLoadingAsync(
+            Sub()
+                iUserC = New usercAgents(Sub()
+                                             cctrlCentral.Content = iUserC
+                                         End Sub)
+                cctrlCentral.Content = iUserC
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+            End Sub)
     End Sub
 
-    Private Sub btnTraitement_Click(sender As Object, e As RoutedEventArgs) Handles btnTraitement.Click
-        cctrlCentral.Content = New usercTraitements
-        SelecStp(stpTraitement)
-        SelectPrincipalBtn(btnTraitement)
+    Private Async Sub btnTraitement_Click(sender As Object, e As RoutedEventArgs) Handles btnTraitement.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercTraitements
+                SelecStp(stpTraitement)
+                SelectPrincipalBtn(btnTraitement)
+            End Sub)
     End Sub
 
-    Private Sub btnClient_Click(sender As Object, e As RoutedEventArgs) Handles btnClient.Click
-        iUserC = New usercClients(Sub()
-                                      cctrlCentral.Content = iUserC
-                                  End Sub)
-        cctrlCentral.Content = iUserC
-        'cctrlCentral.Content = New usercClients
-        SelecStp(stpClient)
-        SelectPrincipalBtn(btnClient)
+    Private Async Sub btnClient_Click(sender As Object, e As RoutedEventArgs) Handles btnClient.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                iUserC = New usercClients(Sub()
+                                              cctrlCentral.Content = iUserC
+                                          End Sub)
+                cctrlCentral.Content = iUserC
+                SelecStp(stpClient)
+                SelectPrincipalBtn(btnClient)
+            End Sub)
     End Sub
 
-    Private Sub btnStructure_Click(sender As Object, e As RoutedEventArgs) Handles btnStructure.Click
-        cctrlCentral.Content = New usercStructure
-        SelecStp(stpStructure)
-        SelectPrincipalBtn(btnStructure)
+    Private Async Sub btnStructure_Click(sender As Object, e As RoutedEventArgs) Handles btnStructure.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercStructure
+                SelecStp(stpStructure)
+                SelectPrincipalBtn(btnStructure)
+            End Sub)
     End Sub
 
 
@@ -115,7 +202,6 @@ Class MainWindow
         Try
             If IO.File.Exists(SocieteLogoPath) Then
                 Dim iUri = New Uri((SocieteLogoPath))
-                ImgBackground.Source = New BitmapImage(iUri)
                 imgLoogo.Source = New BitmapImage(iUri)
             End If
         Catch ex As Exception
@@ -129,7 +215,7 @@ Class MainWindow
             SteName = SocieteName
         End If
         tbkSteName.Text = SteName
-        Me.Title = $"{My.Application.Info.ProductName}-{My.Application.Info.Version}  ~ {SteName}"
+        Me.Title = $"{My.Application.Info.ProductName} V{My.Application.Info.Version}  ~ {SteName}"
         'MsgBox("ok")
 
     End Sub
@@ -177,9 +263,12 @@ Class MainWindow
 
 
 
-    Private Sub btnFonction_Click(sender As Object, e As RoutedEventArgs) Handles btnFonction.Click
-        cctrlCentral.Content = New usercFonction
-        SelectStructure(btnFonction)
+    Private Async Sub btnFonction_Click(sender As Object, e As RoutedEventArgs) Handles btnFonction.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercFonction
+                SelectStructure(btnFonction)
+            End Sub)
     End Sub
     Sub SelecStp(MyStp As StackPanel)
         InitStpVisibility()
@@ -257,13 +346,13 @@ Class MainWindow
         btnRacSortieAg.FontWeight = FontWeights.Normal
         'btnRacCalCong.FontWeight = FontWeights.Normal
 
-        btnRacAbsenceAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) 'ClearValue(Button.BackgroundProperty)
-        btnRacAffectationAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
-        btnRacContratAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
-        btnRacEntreeAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
-        btnRacHeureSupAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
-        btnRacPlanningAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
-        btnRacSortieAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1FFD7")) '.ClearValue(Button.BackgroundProperty)
+        btnRacAbsenceAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) 'ClearValue(Button.BackgroundProperty)
+        btnRacAffectationAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
+        btnRacContratAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
+        btnRacEntreeAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
+        btnRacHeureSupAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
+        btnRacPlanningAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
+        btnRacSortieAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
         btnRacCalCong.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF557E94")) '.ClearValue(Button.BackgroundProperty)
 
         btnRacAbsenceAg.IsEnabled = True
@@ -360,17 +449,22 @@ Class MainWindow
         myBtn.FontWeight = FontWeights.Bold
     End Sub
 
-    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
-        cctrlCentral.Content = New usercExterneActs
-        SelecStp(stpSupplement)
-        SelectPrincipalBtn(btnSupplement)
-
+    Private Async Sub Button_Click(sender As Object, e As RoutedEventArgs)
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercExterneActs
+                SelecStp(stpSupplement)
+                SelectPrincipalBtn(btnSupplement)
+            End Sub)
     End Sub
 
-    Private Sub btnSeting_Click(sender As Object, e As RoutedEventArgs) Handles btnSeting.Click
-        cctrlCentral.Content = New usercSettings
-        SelectPrincipalBtn(btnSeting)
-        SelecStp(stpSetting)
+    Private Async Sub btnSeting_Click(sender As Object, e As RoutedEventArgs) Handles btnSeting.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercSettings
+                SelectPrincipalBtn(btnSeting)
+                SelecStp(stpSetting)
+            End Sub)
     End Sub
     Sub initSetingsBtn()
         btnGeneral.Height = 20
@@ -562,10 +656,8 @@ Class MainWindow
         myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
     End Sub
 
-    Private Sub btnEntree_Click(sender As Object, e As RoutedEventArgs) Handles btnEntree.Click
-        elpsLoading.Visibility = Visibility.Visible
-        LoadEntree()
-        elpsLoading.Visibility = Visibility.Collapsed
+    Private Async Sub btnEntree_Click(sender As Object, e As RoutedEventArgs) Handles btnEntree.Click
+        Await RunWithLoadingAsync(Sub() LoadEntree())
     End Sub
     Sub LoadEntree()
         elpsLoading.Visibility = Visibility.Visible
@@ -576,10 +668,13 @@ Class MainWindow
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
-    Private Sub btnContrat_Click(sender As Object, e As RoutedEventArgs) Handles btnContrat.Click
-        SelectAgentBtn(btnContrat)
-        LoadContrat()
-        cctrlCentral.Content = iUserC
+    Private Async Sub btnContrat_Click(sender As Object, e As RoutedEventArgs) Handles btnContrat.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectAgentBtn(btnContrat)
+                LoadContrat()
+                cctrlCentral.Content = iUserC
+            End Sub)
     End Sub
     Sub LoadContrat()
         elpsLoading.Visibility = Visibility.Visible
@@ -592,10 +687,12 @@ Class MainWindow
     End Sub
 
 
-    Private Sub btnAffectation_Click(sender As Object, e As RoutedEventArgs) Handles btnAffectation.Click
-        SelectAgentBtn(btnAffectation)
-        LoadAffectation()
-        'cctrlCentral.Content = New usercAgentsAffectation
+    Private Async Sub btnAffectation_Click(sender As Object, e As RoutedEventArgs) Handles btnAffectation.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectAgentBtn(btnAffectation)
+                LoadAffectation()
+            End Sub)
     End Sub
     Sub LoadAffectation()
         elpsLoading.Visibility = Visibility.Visible
@@ -608,9 +705,12 @@ Class MainWindow
     End Sub
 
 
-    Private Sub btnPlanning_Click(sender As Object, e As RoutedEventArgs) Handles btnPlanning.Click
-        SelectAgentBtn(btnPlanning)
-        LoadPlanning()
+    Private Async Sub btnPlanning_Click(sender As Object, e As RoutedEventArgs) Handles btnPlanning.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectAgentBtn(btnPlanning)
+                LoadPlanning()
+            End Sub)
     End Sub
     Sub LoadPlanning()
         elpsLoading.Visibility = Visibility.Visible
@@ -623,9 +723,12 @@ Class MainWindow
     End Sub
 
 
-    Private Sub btnSortie_Click(sender As Object, e As RoutedEventArgs) Handles btnSortie.Click
-        SelectAgentBtn(btnSortie)
-        LoadSortie()
+    Private Async Sub btnSortie_Click(sender As Object, e As RoutedEventArgs) Handles btnSortie.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectAgentBtn(btnSortie)
+                LoadSortie()
+            End Sub)
     End Sub
     Sub LoadSortie()
         elpsLoading.Visibility = Visibility.Visible
@@ -637,9 +740,12 @@ Class MainWindow
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnAbsence_Click(sender As Object, e As RoutedEventArgs) Handles btnAbsence.Click
-        SelectTraitementBtn(btnAbsence)
-        LoadAbsence()
+    Private Async Sub btnAbsence_Click(sender As Object, e As RoutedEventArgs) Handles btnAbsence.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectTraitementBtn(btnAbsence)
+                LoadAbsence()
+            End Sub)
     End Sub
     Sub LoadAbsence()
         elpsLoading.Visibility = Visibility.Visible
@@ -651,9 +757,12 @@ Class MainWindow
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnHeureSupp_Click(sender As Object, e As RoutedEventArgs) Handles btnHeureSupp.Click
-        SelectTraitementBtn(btnHeureSupp)
-        LoadHeureS()
+    Private Async Sub btnHeureSupp_Click(sender As Object, e As RoutedEventArgs) Handles btnHeureSupp.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectTraitementBtn(btnHeureSupp)
+                LoadHeureS()
+            End Sub)
     End Sub
     Sub LoadHeureS()
         elpsLoading.Visibility = Visibility.Visible
@@ -666,23 +775,32 @@ Class MainWindow
     End Sub
 
 
-    Private Sub btnConges_Click(sender As Object, e As RoutedEventArgs) Handles btnConges.Click
-        SelectTraitementBtn(btnConges)
-        cctrlCentral.Content = New usercAgentsConges
+    Private Async Sub btnConges_Click(sender As Object, e As RoutedEventArgs) Handles btnConges.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectTraitementBtn(btnConges)
+                cctrlCentral.Content = New usercAgentsConges
+            End Sub)
     End Sub
 
     Private Sub btnEvenement_Click(sender As Object, e As RoutedEventArgs)
         SelectTraitementBtn(btnEvenement)
     End Sub
 
-    Private Sub btnClientEtat_Click(sender As Object, e As RoutedEventArgs) Handles btnClientEtat.Click
-        cctrlCentral.Content = New usercClientsEtat
-        SelectClientBtn(btnClientEtat)
+    Private Async Sub btnClientEtat_Click(sender As Object, e As RoutedEventArgs) Handles btnClientEtat.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercClientsEtat
+                SelectClientBtn(btnClientEtat)
+            End Sub)
     End Sub
 
-    Private Sub btnSite_Click(sender As Object, e As RoutedEventArgs) Handles btnSite.Click
-        LoadSite()
-        SelectClientBtn(btnSite)
+    Private Async Sub btnSite_Click(sender As Object, e As RoutedEventArgs) Handles btnSite.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                LoadSite()
+                SelectClientBtn(btnSite)
+            End Sub)
     End Sub
     Sub LoadSite()
         elpsLoading.Visibility = Visibility.Visible
@@ -703,14 +821,20 @@ Class MainWindow
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnPoste_Click(sender As Object, e As RoutedEventArgs) Handles btnPoste.Click
-        LoadPoste()
-        SelectClientBtn(btnPoste)
+    Private Async Sub btnPoste_Click(sender As Object, e As RoutedEventArgs) Handles btnPoste.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                LoadPoste()
+                SelectClientBtn(btnPoste)
+            End Sub)
     End Sub
 
-    Private Sub btnClientContrat_Click(sender As Object, e As RoutedEventArgs) Handles btnClientContrat.Click
-        LoadClientContrat()
-        SelectClientBtn(btnClientContrat)
+    Private Async Sub btnClientContrat_Click(sender As Object, e As RoutedEventArgs) Handles btnClientContrat.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                LoadClientContrat()
+                SelectClientBtn(btnClientContrat)
+            End Sub)
     End Sub
     Sub LoadClientContrat()
         elpsLoading.Visibility = Visibility.Visible
@@ -730,54 +854,76 @@ Class MainWindow
 
     End Sub
 
-    Private Sub btnSociety_Click(sender As Object, e As RoutedEventArgs) Handles btnSociety.Click
-        LoadSociete()
-        SelectStructure(btnSociety)
+    Private Async Sub btnSociety_Click(sender As Object, e As RoutedEventArgs) Handles btnSociety.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                LoadSociete()
+                SelectStructure(btnSociety)
+            End Sub)
     End Sub
 
-    Private Sub btnAgency_Click(sender As Object, e As RoutedEventArgs) Handles btnAgency.Click
-        SelectStructure(btnAgency)
-        cctrlCentral.Content = New usercAngence
+    Private Async Sub btnAgency_Click(sender As Object, e As RoutedEventArgs) Handles btnAgency.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectStructure(btnAgency)
+                cctrlCentral.Content = New usercAngence
+            End Sub)
     End Sub
 
-    Private Sub btnCompta_Click(sender As Object, e As RoutedEventArgs) Handles btnCompta.Click
-        SelectSupplement(btnCompta)
-        cctrlCentral.Content = New usercNBanque
+    Private Async Sub btnCompta_Click(sender As Object, e As RoutedEventArgs) Handles btnCompta.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectSupplement(btnCompta)
+                cctrlCentral.Content = New usercNBanque
+            End Sub)
     End Sub
 
-    Private Sub btnCnss_Click(sender As Object, e As RoutedEventArgs) Handles btnCnss.Click
-        SelectSupplement(btnCnss)
-        cctrlCentral.Content = New usercNCNSS
+    Private Async Sub btnCnss_Click(sender As Object, e As RoutedEventArgs) Handles btnCnss.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectSupplement(btnCnss)
+                cctrlCentral.Content = New usercNCNSS
+            End Sub)
     End Sub
 
-    Private Sub btnRappel_Click(sender As Object, e As RoutedEventArgs) Handles btnRappel.Click
-        SelectSupplement(btnRappel)
-        cctrlCentral.Content = New usercRappel
+    Private Async Sub btnRappel_Click(sender As Object, e As RoutedEventArgs) Handles btnRappel.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectSupplement(btnRappel)
+                cctrlCentral.Content = New usercRappel
+            End Sub)
     End Sub
 
-    Private Sub btnMemo_Click(sender As Object, e As RoutedEventArgs) Handles btnMemo.Click
-        SelectSupplement(btnMemo)
-        cctrlCentral.Content = New usercMemo
+    Private Async Sub btnMemo_Click(sender As Object, e As RoutedEventArgs) Handles btnMemo.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectSupplement(btnMemo)
+                cctrlCentral.Content = New usercMemo
+            End Sub)
     End Sub
 
-    Private Sub btnEvenement_Click_1(sender As Object, e As RoutedEventArgs) Handles btnEvenement.Click
-        SelectSupplement(btnEvenement)
-        cctrlCentral.Content = New usercEvenement
-
+    Private Async Sub btnEvenement_Click_1(sender As Object, e As RoutedEventArgs) Handles btnEvenement.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelectSupplement(btnEvenement)
+                cctrlCentral.Content = New usercEvenement
+            End Sub)
     End Sub
 
-    Private Sub btnGeneral_Click(sender As Object, e As RoutedEventArgs) Handles btnGeneral.Click
-        cctrlCentral.Content = New GeneralSets
-        'SelecStp(stpClient)
-        SelectSetingBtn(btnGeneral)
-
+    Private Async Sub btnGeneral_Click(sender As Object, e As RoutedEventArgs) Handles btnGeneral.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New GeneralSets
+                SelectSetingBtn(btnGeneral)
+            End Sub)
     End Sub
 
-    Private Sub btnUser_Click(sender As Object, e As RoutedEventArgs) Handles btnUser.Click
-        cctrlCentral.Content = New UserManager
-        'SelecStp(stpClient)
-        SelectSetingBtn(btnUser)
-
+    Private Async Sub btnUser_Click(sender As Object, e As RoutedEventArgs) Handles btnUser.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New UserManager
+                SelectSetingBtn(btnUser)
+            End Sub)
     End Sub
 
     Private Sub btnCalCong_Click(sender As Object, e As RoutedEventArgs) Handles btnCalCong.Click
@@ -795,8 +941,10 @@ Class MainWindow
         End If
     End Sub
 
-    Private Sub btnRefresh_Click(sender As Object, e As RoutedEventArgs) Handles btnRefresh.Click
-        If MsgBox("Réinitialiser toutes les données de planning?" & Environment.NewLine & "CONTINUER ?", MsgBoxStyle.YesNo, "ACTUALISATION DES DONNEES") = MsgBoxResult.Yes Then InitializeGlobal()
+    Private Async Sub btnRefresh_Click(sender As Object, e As RoutedEventArgs) Handles btnRefresh.Click
+        If MsgBox("Réinitialiser toutes les données de planning?" & Environment.NewLine & "CONTINUER ?", MsgBoxStyle.YesNo, "ACTUALISATION DES DONNEES") = MsgBoxResult.Yes Then
+            Await RunWithLoadingAsync(Sub() InitializeGlobal())
+        End If
         'InitializeGlobal()
     End Sub
     Sub ResetData()
@@ -809,74 +957,80 @@ Class MainWindow
 
     End Sub
 
-    Private Sub btnRacEntreeAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacEntreeAg.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        LoadEntree()
-        SelectRacoucourcilBtn(btnRacEntreeAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    Private Async Sub btnRacEntreeAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacEntreeAg.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                LoadEntree()
+                SelectRacoucourcilBtn(btnRacEntreeAg)
+            End Sub)
     End Sub
 
-    Private Sub btnRacContratAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacContratAg.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        SelectAgentBtn(btnContrat)
-        LoadContrat()
-        SelectRacoucourcilBtn(btnRacContratAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    Private Async Sub btnRacContratAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacContratAg.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                SelectAgentBtn(btnContrat)
+                LoadContrat()
+                SelectRacoucourcilBtn(btnRacContratAg)
+            End Sub)
     End Sub
 
-    Private Sub btnRacAffectationAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAffectationAg.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        SelectAgentBtn(btnAffectation)
-        LoadAffectation()
-        SelectRacoucourcilBtn(btnRacAffectationAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    Private Async Sub btnRacAffectationAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAffectationAg.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                SelectAgentBtn(btnAffectation)
+                LoadAffectation()
+                SelectRacoucourcilBtn(btnRacAffectationAg)
+            End Sub)
     End Sub
 
-    Private Sub btnRacPlanningAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacPlanningAg.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        SelectAgentBtn(btnPlanning)
-        LoadPlanning()
-        SelectRacoucourcilBtn(btnRacPlanningAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    Private Async Sub btnRacPlanningAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacPlanningAg.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                SelectAgentBtn(btnPlanning)
+                LoadPlanning()
+                SelectRacoucourcilBtn(btnRacPlanningAg)
+            End Sub)
     End Sub
 
-    Private Sub btnRacAbsenceAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAbsenceAg.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpTraitement)
-        SelectPrincipalBtn(btnTraitement)
-        SelectTraitementBtn(btnAbsence)
-        LoadAbsence()
-        SelectRacoucourcilBtn(btnRacAbsenceAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    Private Async Sub btnRacAbsenceAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAbsenceAg.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpTraitement)
+                SelectPrincipalBtn(btnTraitement)
+                SelectTraitementBtn(btnAbsence)
+                LoadAbsence()
+                SelectRacoucourcilBtn(btnRacAbsenceAg)
+            End Sub)
     End Sub
 
-    Private Sub btnRacSortieAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacSortieAg.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        SelectAgentBtn(btnSortie)
-        LoadSortie()
-        SelectRacoucourcilBtn(btnRacSortieAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
+    Private Async Sub btnRacSortieAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacSortieAg.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                SelectAgentBtn(btnSortie)
+                LoadSortie()
+                SelectRacoucourcilBtn(btnRacSortieAg)
+            End Sub)
     End Sub
 
-    Private Sub btnRacHeureSupAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacHeureSupAg.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpTraitement)
-        SelectPrincipalBtn(btnTraitement)
-        SelectTraitementBtn(btnHeureSupp)
-        LoadHeureS()
-        SelectRacoucourcilBtn(btnRacHeureSupAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
-
+    Private Async Sub btnRacHeureSupAg_Click(sender As Object, e As RoutedEventArgs) Handles btnRacHeureSupAg.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpTraitement)
+                SelectPrincipalBtn(btnTraitement)
+                SelectTraitementBtn(btnHeureSupp)
+                LoadHeureS()
+                SelectRacoucourcilBtn(btnRacHeureSupAg)
+            End Sub)
     End Sub
 
     Private Sub btnRacCalCong_Click(sender As Object, e As RoutedEventArgs) Handles btnRacCalCong.Click
@@ -886,49 +1040,62 @@ Class MainWindow
         'SelectRacoucourcilBtn(btnRacCalCong)
     End Sub
 
-    Private Sub btnRacPosteCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacPosteCl.Click
-        SelecStp(stpClient)
-        SelectPrincipalBtn(btnClient)
-        LoadPoste()
-        SelectClientBtn(btnPoste)
-        SelectRacoucourciClientBtn(btnRacPosteCl)
+    Private Async Sub btnRacPosteCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacPosteCl.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpClient)
+                SelectPrincipalBtn(btnClient)
+                LoadPoste()
+                SelectClientBtn(btnPoste)
+                SelectRacoucourciClientBtn(btnRacPosteCl)
+            End Sub)
     End Sub
 
-    Private Sub btnRacSiteCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacSiteCl.Click
-        SelecStp(stpClient)
-        SelectPrincipalBtn(btnClient)
-        LoadSite()
-        ' cctrlCentral.Content = New usercClientsSite
-        SelectClientBtn(btnSite)
-        SelectRacoucourciClientBtn(btnRacSiteCl)
+    Private Async Sub btnRacSiteCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacSiteCl.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpClient)
+                SelectPrincipalBtn(btnClient)
+                LoadSite()
+                SelectClientBtn(btnSite)
+                SelectRacoucourciClientBtn(btnRacSiteCl)
+            End Sub)
     End Sub
 
-    Private Sub btnRacContratCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacContratCl.Click
-        SelecStp(stpClient)
-        SelectPrincipalBtn(btnClient)
-        LoadClientContrat()
-        SelectClientBtn(btnClientContrat)
-        SelectRacoucourciClientBtn(btnRacContratCl)
+    Private Async Sub btnRacContratCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacContratCl.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpClient)
+                SelectPrincipalBtn(btnClient)
+                LoadClientContrat()
+                SelectClientBtn(btnClientContrat)
+                SelectRacoucourciClientBtn(btnRacContratCl)
+            End Sub)
     End Sub
 
-    Private Sub btnRacEtatCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacEtatCl.Click
-        SelecStp(stpClient)
-        SelectPrincipalBtn(btnClient)
-        iUserC = New usercClients(Sub()
-                                      cctrlCentral.Content = iUserC
-                                  End Sub)
-        cctrlCentral.Content = iUserC
-        'cctrlCentral.Content = New usercClients
-        SelectClientBtn(btnClientEtat)
-        SelectRacoucourciClientBtn(btnRacEtatCl)
+    Private Async Sub btnRacEtatCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacEtatCl.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpClient)
+                SelectPrincipalBtn(btnClient)
+                iUserC = New usercClients(Sub()
+                                              cctrlCentral.Content = iUserC
+                                          End Sub)
+                cctrlCentral.Content = iUserC
+                SelectClientBtn(btnClientEtat)
+                SelectRacoucourciClientBtn(btnRacEtatCl)
+            End Sub)
     End Sub
 
-    Private Sub btnRacAgentListeCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAgentListeCl.Click
-        SelecStp(stpClient)
-        SelectPrincipalBtn(btnClient)
-        cctrlCentral.Content = New usercClientsEtat
-        SelectClientBtn(btnClientEtat)
-        SelectRacoucourciClientBtn(btnRacAgentListeCl)
+    Private Async Sub btnRacAgentListeCl_Click(sender As Object, e As RoutedEventArgs) Handles btnRacAgentListeCl.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpClient)
+                SelectPrincipalBtn(btnClient)
+                cctrlCentral.Content = New usercClientsEtat
+                SelectClientBtn(btnClientEtat)
+                SelectRacoucourciClientBtn(btnRacAgentListeCl)
+            End Sub)
     End Sub
 
     Private Sub BtnAgentSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles BtnAgentSearch.KeyDown
@@ -1097,11 +1264,12 @@ Class MainWindow
 
     End Sub
 
-    Private Sub btnProfilUser_Click(sender As Object, e As RoutedEventArgs) Handles btnProfilUser.Click
-        cctrlCentral.Content = New ProfilUser
-        'SelecStp(stpClient)
-        SelectSetingBtn(btnProfilUser)
-
+    Private Async Sub btnProfilUser_Click(sender As Object, e As RoutedEventArgs) Handles btnProfilUser.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New ProfilUser
+                SelectSetingBtn(btnProfilUser)
+            End Sub)
     End Sub
 
     Private Sub mitDConexion_Click(sender As Object, e As RoutedEventArgs) Handles mitDConexion.Click
@@ -1130,7 +1298,7 @@ Class MainWindow
         MyBase.OnClosing(e)
     End Sub
 
-    Private Sub Window_KeyDown(sender As Object, e As KeyEventArgs)
+    Private Async Sub Window_KeyDown(sender As Object, e As KeyEventArgs)
         If e.Key = Key.X AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             oDeconect()
         End If
@@ -1140,60 +1308,71 @@ Class MainWindow
             End If
         End If
         If e.Key = Key.A AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
-            InitializeGlobal()
+            Await RunWithLoadingAsync(Sub() InitializeGlobal())
         End If
     End Sub
 
-    Private Sub mitEntree_Click(sender As Object, e As RoutedEventArgs) Handles mitEntree.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        LoadEntree()
-        SelectRacoucourcilBtn(btnRacEntreeAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
-
+    Private Async Sub mitEntree_Click(sender As Object, e As RoutedEventArgs) Handles mitEntree.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                LoadEntree()
+                SelectRacoucourcilBtn(btnRacEntreeAg)
+            End Sub)
     End Sub
 
-    Private Sub mitAffectation_Click(sender As Object, e As RoutedEventArgs) Handles mitAffectation.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        SelectAgentBtn(btnAffectation)
-        LoadAffectation()
-        SelectRacoucourcilBtn(btnRacAffectationAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
-
+    Private Async Sub mitAffectation_Click(sender As Object, e As RoutedEventArgs) Handles mitAffectation.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                SelectAgentBtn(btnAffectation)
+                LoadAffectation()
+                SelectRacoucourcilBtn(btnRacAffectationAg)
+            End Sub)
     End Sub
 
-    Private Sub mitSortie_Click(sender As Object, e As RoutedEventArgs) Handles mitSortie.Click
-        elpsLoadingCentral.Visibility = Visibility.Visible
-        SelecStp(stpEmployes)
-        SelectPrincipalBtn(btnAgents)
-        SelectAgentBtn(btnSortie)
-        LoadSortie()
-        SelectRacoucourcilBtn(btnRacSortieAg)
-        elpsLoadingCentral.Visibility = Visibility.Collapsed
-
+    Private Async Sub mitSortie_Click(sender As Object, e As RoutedEventArgs) Handles mitSortie.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                SelecStp(stpEmployes)
+                SelectPrincipalBtn(btnAgents)
+                SelectAgentBtn(btnSortie)
+                LoadSortie()
+                SelectRacoucourcilBtn(btnRacSortieAg)
+            End Sub)
     End Sub
 
-    Private Sub mitFonction_Click(sender As Object, e As RoutedEventArgs) Handles mitFonction.Click
-        cctrlCentral.Content = New usercFonction
-        SelectStructure(btnFonction)
+    Private Async Sub mitFonction_Click(sender As Object, e As RoutedEventArgs) Handles mitFonction.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercFonction
+                SelectStructure(btnFonction)
+            End Sub)
     End Sub
 
-    Private Sub mitSociete_Click(sender As Object, e As RoutedEventArgs) Handles mitSociete.Click
-        LoadSociete()
-        SelectStructure(btnSociety)
+    Private Async Sub mitSociete_Click(sender As Object, e As RoutedEventArgs) Handles mitSociete.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                LoadSociete()
+                SelectStructure(btnSociety)
+            End Sub)
     End Sub
 
-    Private Sub mitPgeneraux_Click(sender As Object, e As RoutedEventArgs) Handles mitPgeneraux.Click
-        cctrlCentral.Content = New GeneralSets
-        SelectSetingBtn(btnGeneral)
+    Private Async Sub mitPgeneraux_Click(sender As Object, e As RoutedEventArgs) Handles mitPgeneraux.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New GeneralSets
+                SelectSetingBtn(btnGeneral)
+            End Sub)
     End Sub
 
-    Private Sub mitUtilisateur_Click(sender As Object, e As RoutedEventArgs) Handles mitUtilisateur.Click
-        cctrlCentral.Content = New UserManager
-        SelectSetingBtn(btnUser)
+    Private Async Sub mitUtilisateur_Click(sender As Object, e As RoutedEventArgs) Handles mitUtilisateur.Click
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New UserManager
+                SelectSetingBtn(btnUser)
+            End Sub)
     End Sub
 End Class
-

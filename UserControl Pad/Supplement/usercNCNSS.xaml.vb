@@ -47,7 +47,7 @@ Public Class usercNCNSS
         Dim istr As String = " select a.NomPrenoms,a.NumMatr, a.Nsecu,  a.Contacts,a.Actif from agents a where "
         istr += " (a.NomPrenoms  like '%" & KeyWord & "%' "
         istr += " or a.Nsecu  like '%" & KeyWord & "%' "
-        istr += " or ,a.NumMatr  like '%" & KeyWord & "%' "
+        istr += " or a.NumMatr  like '%" & KeyWord & "%' "
         istr += " or a.Contacts  like '%" & KeyWord & "%' )" & sufix
         istr += " order by a.Actif desc, a.NomPrenoms "
         Dgcnss.ItemsSource = LoadDataTable(istr).DefaultView
