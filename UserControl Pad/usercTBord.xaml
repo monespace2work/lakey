@@ -7,9 +7,9 @@
              xmlns:local="clr-namespace:Lakey"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{StaticResource ThemeSurfaceBrush}">
+    <Grid Background="{DynamicResource ThemeSurfaceBrush}">
 
-        <Border BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" Background="{StaticResource ThemeSurfaceBrush}">
+        <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="{DynamicResource ThemeSurfaceBrush}">
 
             <StackPanel >
                 <Grid>
@@ -17,13 +17,13 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource ThemeNavyBrush}" Margin="6,4" >
+                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource ThemeNavyBrush}" Margin="6,4" >
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MaxWidth="70" />
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" MaxWidth="45" Background="#CCFFFFFF" CornerRadius="20">
+                            <Border Grid.Column="0" MaxWidth="45" Background="{DynamicResource ThemeCardBrush}" CornerRadius="20">
                                 <Image MaxWidth="40" Source="/Lakey;component/home_1107821.png" Stretch="Fill"  Margin="3"/>
                             </Border>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
@@ -33,7 +33,7 @@
 
                         </Grid>
                     </StackPanel>
-                    <Border  Grid.Column="1" Background="{StaticResource ThemeAccentSoftBrush}" Margin="5" CornerRadius="6" >
+                    <Border  Grid.Column="1" Background="{DynamicResource ThemeAccentSoftBrush}" Margin="5" CornerRadius="6" >
                         <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
                             <Button.Background>
                                 <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" />
@@ -50,21 +50,21 @@
                         <RowDefinition MinHeight="200"/>
                         <RowDefinition MinHeight="100"/>
                     </Grid.RowDefinitions>
-                    <Border Background="{StaticResource ThemeSurfaceBrush}" Grid.Row="0" Padding="5">
+                    <Border Background="{DynamicResource ThemeSurfaceBrush}" Grid.Row="0" Padding="5">
                         <Grid Name="grdHaut" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="4*"/>
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
-                            <Border Background="{StaticResource ThemeCardBrush}" Grid.Column="0" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5">
+                            <Border Background="{DynamicResource ThemeCardBrush}" Grid.Column="0" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <StackPanel Margin="5" Background="#F8FAFC" >
-                                        <TextBlock Text="Évolution des effectifs" Foreground="{StaticResource ThemeNavyBrush}" FontSize="18" FontWeight="Bold"/>
+                                    <StackPanel Margin="5" Background="{DynamicResource ThemeCardBrush}" >
+                                        <TextBlock Text="Évolution des effectifs" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="18" FontWeight="Bold"/>
                                         <!-- Graphique avec LiveCharts -->
-                                        <lvc:CartesianChart Grid.Row="1" Name="chartVentes" Margin="5" Height="120">
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartVentes" Margin="5" Height="120" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}">
                                             <lvc:CartesianChart.Series>
-                                                <lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}" Stroke="#557E94" Fill="Transparent" PointGeometrySize="8"/>
+                                                <lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}" Stroke="{DynamicResource ThemeHeaderBrush}" Fill="Transparent" PointGeometrySize="8"/>
                                                 <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
                                                 <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
                                             </lvc:CartesianChart.Series>
@@ -80,11 +80,11 @@
                                         <Expander Header="Détails" IsExpanded="False" >
                                             <DataGrid x:Name="dgNbEvol" AutoGenerateColumns="True"/>
                                         </Expander>
-                                        <Expander Header="Tranche d'âge (diagramme)" IsExpanded="False" FontWeight="Bold" Background="{StaticResource ThemeAccentSoftBrush}" Foreground="{StaticResource ThemeNavyBrush}" >
+                                        <Expander Header="Tranche d'âge (diagramme)" IsExpanded="False" FontWeight="Bold" Background="{DynamicResource ThemeAccentSoftBrush}" Foreground="{DynamicResource ThemeInkBrush}" >
                                             <StackPanel>
-                                            <lvc:CartesianChart Grid.Row="1" Name="chartTAges" Margin="5" Height="190" Foreground="{StaticResource ThemeNavyBrush}" Background="White">
+                                            <lvc:CartesianChart Grid.Row="1" Name="chartTAges" Margin="5" Height="190" Foreground="{DynamicResource ThemeInkBrush}" Background="{DynamicResource ThemeCardBrush}">
                                                     <lvc:CartesianChart.Series >
-                                                        <lvc:ColumnSeries Title="Nombre" Values="{Binding NbTrancheSeries}" Fill="#557E94" />
+                                                        <lvc:ColumnSeries Title="Nombre" Values="{Binding NbTrancheSeries}" Fill="{DynamicResource ThemeHeaderBrush}" />
                                                 </lvc:CartesianChart.Series>
                                                 <lvc:CartesianChart.AxisX>
                                                         <lvc:Axis Title="Age" Labels="{Binding AgesLabels}" />
@@ -103,27 +103,27 @@
                                 </ScrollViewer>
 
                             </Border>
-                            <Border Background="{StaticResource ThemeCardBrush}" Grid.Column="1" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
+                            <Border Background="{DynamicResource ThemeCardBrush}" Grid.Column="1" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
                                 <StackPanel Margin="5,10,5,5">
-                                    <TextBlock Text="Informations clients" Foreground="{StaticResource ThemeNavyBrush}" FontSize="18" FontWeight="Bold"/>
+                                    <TextBlock Text="Informations clients" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="18" FontWeight="Bold"/>
                                     <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                         <StackPanel Orientation="Horizontal">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  >
                                                 <StackPanel >
                                                     <lvc:PieChart Name="PiechartClientType" Margin="5,0" MinWidth="138" MinHeight="138" />
-                                                    <TextBlock Text="client / type" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="client / type" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeInkBrush}"/>
                                                 </StackPanel>
-                                                <Expander Header="Détails" IsExpanded="False" Foreground="{StaticResource ThemeNavyBrush}">
+                                                <Expander Header="Détails" IsExpanded="False" Foreground="{DynamicResource ThemeInkBrush}">
                                                     <DataGrid x:Name="dgClientNbAgent" AutoGenerateColumns="True"/>
                                                 </Expander>
 
                                             </StackPanel>
                                             <Expander  Header="+Villes" IsExpanded="True" Margin="5,0,0,0" >
-                                                <StackPanel Margin="0,0,5,5" Background="{StaticResource ThemeSurfaceBrush}" >
+                                                <StackPanel Margin="0,0,5,5" Background="{DynamicResource ThemeSurfaceBrush}" >
                                                     <!-- Diagramme à secteurs (PieChart) -->
-                                                    <lvc:CartesianChart Grid.Row="1" Name="chartClientVile" Margin="5" Height="116" MinWidth="238" >
+                                                    <lvc:CartesianChart Grid.Row="1" Name="chartClientVile" Margin="5" Height="116" MinWidth="238" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}">
                                                         <lvc:CartesianChart.Series>
-                                                            <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbSiteSeries}" Stroke="#557E94" Fill="#557E94" />
+                                                            <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbSiteSeries}" Stroke="{DynamicResource ThemeHeaderBrush}" Fill="{DynamicResource ThemeHeaderBrush}" />
                                                             <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
                                                             <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
                                                         </lvc:CartesianChart.Series>
@@ -136,7 +136,7 @@
                                                             </lvc:Axis>
                                                         </lvc:CartesianChart.AxisY>
                                                     </lvc:CartesianChart>
-                                                    <Expander Header="Détails" IsExpanded="False" Foreground="{StaticResource ThemeNavyBrush}" Background="{x:Null}">
+                                                    <Expander Header="Détails" IsExpanded="False" Foreground="{DynamicResource ThemeInkBrush}" Background="{x:Null}">
                                                         <DataGrid x:Name="dgSiteVile" AutoGenerateColumns="True"/>
                                                     </Expander>
                                                 </StackPanel>
@@ -145,20 +145,20 @@
                                     </ScrollViewer>
                                 </StackPanel>
                             </Border>
-                            <Border x:Name="brdT11" Background="{StaticResource ThemeCardBrush}" Grid.Column="2" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5">
+                            <Border x:Name="brdT11" Background="{DynamicResource ThemeCardBrush}" Grid.Column="2" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="55"/>
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
                                     <Border Grid.Row="0" VerticalAlignment="Bottom">
-                                        <TextBlock Text="Type de clients" HorizontalAlignment="Center" Foreground="{StaticResource ThemeNavyBrush}" FontWeight="Bold"/>
+                                        <TextBlock Text="Type de clients" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold"/>
                                     </Border>
-                                    <StackPanel Background="#F8FAFC" Grid.Row="1">
+                                    <StackPanel Background="{DynamicResource ThemeCardBrush}" Grid.Row="1">
                                         <!-- Diagramme à secteurs (PieChart) -->
-                                        <lvc:CartesianChart Grid.Row="1" Name="chartClientType" Margin="5" Height="116" MinWidth="138" >
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartClientType" Margin="5" Height="116" MinWidth="138" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}">
                                             <lvc:CartesianChart.Series>
-                                                <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbTypeSiteSeries}" Fill="#557E94" />
+                                                <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbTypeSiteSeries}" Fill="{DynamicResource ThemeHeaderBrush}" />
                                                 <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
                                                 <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
                                             </lvc:CartesianChart.Series>
@@ -171,7 +171,7 @@
                                                 </lvc:Axis>
                                             </lvc:CartesianChart.AxisY>
                                         </lvc:CartesianChart>
-                                        <Expander Header="Détails" IsExpanded="False" Foreground="{StaticResource ThemeNavyBrush}">
+                                        <Expander Header="Détails" IsExpanded="False" Foreground="{DynamicResource ThemeInkBrush}">
                                             <DataGrid x:Name="dgSiteType" AutoGenerateColumns="True"/>
                                         </Expander>
                                     </StackPanel>
@@ -180,14 +180,14 @@
                             </Border>
                         </Grid>
                     </Border>
-                    <Border Background="{StaticResource ThemeSurfaceBrush}" Grid.Row="1" Padding="5">
+                    <Border Background="{DynamicResource ThemeSurfaceBrush}" Grid.Row="1" Padding="5">
                         <Grid Name="grdMilieu">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Background="{StaticResource ThemeCardBrush}" Grid.Column="0" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="8">
+                            <Border Background="{DynamicResource ThemeCardBrush}" Grid.Column="0" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="8">
                                 <StackPanel >
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -195,8 +195,8 @@
                                             <ColumnDefinition Width="3*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Orientation="Horizontal"  Grid.Column="0" >
-                                            <TextBlock Text="Employés / agents actifs" Foreground="{StaticResource ThemeNavyBrush}" FontSize="18" FontWeight="Bold" Margin="10,0,0,0"/>
-                                            <Label x:Name="lblNbAgentActif" Margin="10,0,0,0" Content="0" Foreground="{StaticResource ThemeNavyBrush}"/>
+                                            <TextBlock Text="Employés / agents actifs" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="18" FontWeight="Bold" Margin="10,0,0,0"/>
+                                            <Label x:Name="lblNbAgentActif" Margin="10,0,0,0" Content="0" Foreground="{DynamicResource ThemeHeadingBrush}"/>
                                         </StackPanel>
                                         <Border Grid.Column="1" >
                                             <TextBox x:Name="BtnAgentActifSearch" Width="100" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2" />
@@ -206,7 +206,7 @@
                                     </Grid>
 
                                     <ScrollViewer x:Name="scrAgentsActifs"  MinHeight="150"  MaxHeight="250" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                        <DataGrid x:Name="dgAgentActifs" AutoGenerateColumns="True" Background="White" Foreground="#1E293B">
+                                        <DataGrid x:Name="dgAgentActifs" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}">
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Resumé" Name="cmiResume" />
@@ -222,7 +222,7 @@
 
                                 </StackPanel>
                             </Border>
-                            <Border Background="{StaticResource ThemeCardBrush}" Grid.Column="1" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="5,0,0,0">
+                            <Border Background="{DynamicResource ThemeCardBrush}" Grid.Column="1" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="5,0,0,0">
                                 <StackPanel >
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -230,8 +230,8 @@
                                             <ColumnDefinition Width="3*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Orientation="Horizontal"  Grid.Column="0" >
-                                            <TextBlock Text="Sites actifs" Foreground="{StaticResource ThemeNavyBrush}" FontSize="18" FontWeight="Bold" Margin="10,0,0,0"/>
-                                            <Label x:Name="lblNbClentActif" Margin="10,0,0,0" Content="0" Foreground="{StaticResource ThemeNavyBrush}"/>
+                                            <TextBlock Text="Sites actifs" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="18" FontWeight="Bold" Margin="10,0,0,0"/>
+                                            <Label x:Name="lblNbClentActif" Margin="10,0,0,0" Content="0" Foreground="{DynamicResource ThemeHeadingBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal"  Grid.Column="1" >
                                             <TextBox x:Name="BtnClientActifSearch" Width="100" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2" />
@@ -240,7 +240,7 @@
 
                                     </Grid>
                                     <ScrollViewer MinHeight="150" MaxHeight="250" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                        <DataGrid x:Name="dgClientActifs" AutoGenerateColumns="True" Background="White" Foreground="#1E293B">
+                                        <DataGrid x:Name="dgClientActifs" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}">
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Résumé" Name="cmiResumeClient"/>
@@ -258,7 +258,7 @@
 
                         </Grid>
                     </Border>
-                    <Border Background="{StaticResource ThemeSurfaceBrush}" Grid.Row="2" Padding="5">
+                    <Border Background="{DynamicResource ThemeSurfaceBrush}" Grid.Row="2" Padding="5">
                         <Grid Name="grdBas">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -266,10 +266,10 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Border Background="{StaticResource ThemeCardBrush}" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="0">
+                            <Border Background="{DynamicResource ThemeCardBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="0">
                                 <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Background="{StaticResource ThemeAccentSoftBrush}">
-                                        <TextBlock Text="Contrats arrivant à échéance" Foreground="{StaticResource ThemeNavyBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <StackPanel Orientation="Horizontal" Background="{DynamicResource ThemeAccentSoftBrush}">
+                                        <TextBlock Text="Contrats arrivant à échéance" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
                                         <Label x:Name="lblNbContratEcheance" Margin="10,0,0,0" Content="0" />
                                     </StackPanel>
                                     <ScrollViewer MaxHeight="150">
@@ -287,10 +287,10 @@
                                     </ScrollViewer>
                                 </StackPanel>
                             </Border>
-                            <Border Background="{StaticResource ThemeCardBrush}" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="1">
+                            <Border Background="{DynamicResource ThemeCardBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="1">
                                 <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Background="{StaticResource ThemeAccentSoftBrush}">
-                                        <TextBlock Text="Nouveaux contrats / conventions" Foreground="{StaticResource ThemeNavyBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <StackPanel Orientation="Horizontal" Background="{DynamicResource ThemeAccentSoftBrush}">
+                                        <TextBlock Text="Nouveaux contrats / conventions" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
                                         <Label x:Name="lblNbContratNouveau" Margin="10,0,0,0" Content="0"/>
                                     </StackPanel>
                                     <ScrollViewer MaxHeight="150">
@@ -308,9 +308,9 @@
                                     </ScrollViewer>
                                 </StackPanel>
                             </Border>
-                            <Border Background="{StaticResource ThemeCardBrush}" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="2">
+                            <Border Background="{DynamicResource ThemeCardBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="2">
                                 <StackPanel>
-                                    <TextBlock Text="Top 10 - grands clients" Foreground="{StaticResource ThemeNavyBrush}" FontWeight="Bold" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <TextBlock Text="Top 10 - grands clients" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold" Background="{DynamicResource ThemeAccentSoftBrush}"/>
                                     <ScrollViewer MaxHeight="150">
                                         <DataGrid x:Name="dgGrandClients" AutoGenerateColumns="True">
                                             <DataGrid.ContextMenu>
@@ -326,9 +326,9 @@
                                     </ScrollViewer>
                                 </StackPanel>
                             </Border>
-                            <Border Background="{StaticResource ThemeCardBrush}" BorderBrush="{StaticResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="3">
+                            <Border Background="{DynamicResource ThemeCardBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="2" Padding="5" Grid.Column="3">
                                 <StackPanel>
-                                    <TextBlock Text="Top 20 - anciens clients" Foreground="{StaticResource ThemeNavyBrush}" FontWeight="Bold" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <TextBlock Text="Top 20 - anciens clients" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold" Background="{DynamicResource ThemeAccentSoftBrush}"/>
                                     <ScrollViewer MaxHeight="150">
                                         <DataGrid x:Name="dgAnciensClients" AutoGenerateColumns="True">
                                             <DataGrid.ContextMenu>

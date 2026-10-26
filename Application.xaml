@@ -5,31 +5,45 @@
     StartupUri="Login.xaml"
 ShutdownMode="OnMainWindowClose">
     <Application.Resources>
-        <SolidColorBrush x:Key="ThemeSurfaceBrush" Color="#E7EEF2"/>
-        <SolidColorBrush x:Key="ThemeCardBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="ThemeInkBrush" Color="#1E293B"/>
-        <SolidColorBrush x:Key="ThemeNavyBrush" Color="#00113E"/>
-        <SolidColorBrush x:Key="ThemeHeaderBrush" Color="#557E94"/>
+        <SolidColorBrush x:Key="ThemeSurfaceBrush" Color="#17212F"/>
+        <SolidColorBrush x:Key="ThemeCardBrush" Color="#222F40"/>
+        <SolidColorBrush x:Key="ThemeInkBrush" Color="#E6EDF5"/>
+        <SolidColorBrush x:Key="ThemeHeadingBrush" Color="#E6EDF5"/>
+        <SolidColorBrush x:Key="ThemeNavyBrush" Color="#0B1630"/>
+        <SolidColorBrush x:Key="ThemeHeaderBrush" Color="#35556A"/>
+        <SolidColorBrush x:Key="ThemeAgentButtonBrush" Color="#285B5A"/>
+        <SolidColorBrush x:Key="ThemeAgentButtonTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeAgentSelectedBrush" Color="#16877E"/>
+        <SolidColorBrush x:Key="ThemeAgentSelectedTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeClientButtonBrush" Color="#304E78"/>
+        <SolidColorBrush x:Key="ThemeClientButtonTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeClientSelectedBrush" Color="#416FAE"/>
+        <SolidColorBrush x:Key="ThemeClientSelectedTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeAgentGroupLabelBrush" Color="#7FE8D8"/>
+        <SolidColorBrush x:Key="ThemeClientGroupLabelBrush" Color="#B8D4FF"/>
         <SolidColorBrush x:Key="ThemeAccentBrush" Color="#00CFCB"/>
-        <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#D1F9F6"/>
-        <SolidColorBrush x:Key="ThemeBorderBrush" Color="#B9C8D0"/>
+        <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#29434B"/>
+        <SolidColorBrush x:Key="ThemeBorderBrush" Color="#415367"/>
+        <SolidColorBrush x:Key="ThemeRowBrush" Color="#222F40"/>
+        <SolidColorBrush x:Key="ThemeAlternateRowBrush" Color="#29384A"/>
+        <SolidColorBrush x:Key="ThemeHeaderTextBrush" Color="#FFFFFF"/>
         <Style TargetType="Window">
-            <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="UserControl">
-            <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="Border" >
             <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
         </Style>
         <Style x:Key="SectionHeaderBorder" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource ThemeNavyBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeHeaderBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeNavyBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeHeaderBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="Padding" Value="8,4"/>
@@ -37,44 +51,48 @@ ShutdownMode="OnMainWindowClose">
         </Style>
         <Style TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
         </Style>
         <Style TargetType="Label">
             <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
         </Style>
         <Style TargetType="TextBox">
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="Background" Value="{StaticResource ThemeCardBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="7,4"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="PasswordBox">
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="Background" Value="{StaticResource ThemeCardBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="ComboBox">
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
-            <Setter Property="Background" Value="{StaticResource ThemeCardBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="CheckBox">
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="Expander">
-            <Setter Property="Foreground" Value="{StaticResource ThemeNavyBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="MenuItem">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
@@ -82,11 +100,11 @@ ShutdownMode="OnMainWindowClose">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeNavyBrush}"/>
-            <Setter Property="Background" Value="#E7EEF2"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="MinHeight" Value="32"/>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/></Trigger>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource ThemeAccentSoftBrush}"/></Trigger>
                 <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.78"/></Trigger>
                 <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
             </Style.Triggers>
@@ -100,8 +118,8 @@ ShutdownMode="OnMainWindowClose">
         </Style>
         <Style TargetType="Button" x:Key="btnSousStand" BasedOn="{StaticResource btnStandars}">
             <Setter Property="FontStretch" Value="Medium"/>
-            <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
-            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#DCE5ED"/>
@@ -224,8 +242,8 @@ ShutdownMode="OnMainWindowClose">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridColumnHeader">
-                        <Border                         Background="#FF00113E"
-                                BorderBrush="#FFCBD5E1"
+                        <Border                         Background="{DynamicResource ThemeNavyBrush}"
+                        BorderBrush="{DynamicResource ThemeBorderBrush}"
                                 BorderThickness="1" 
                                 CornerRadius="5"
                                 Padding="5"
@@ -239,7 +257,7 @@ ShutdownMode="OnMainWindowClose">
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeHeaderTextBrush}"/>
         </Style>
         <!-- Style for DataGrid -->
         <Style TargetType="DataGrid">
@@ -248,12 +266,12 @@ ShutdownMode="OnMainWindowClose">
             <Setter Property="CanUserDeleteRows" Value="False"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeInkBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="RowBackground" Value="White"/>
-            <Setter Property="AlternatingRowBackground" Value="#E7EEF2"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
+            <Setter Property="RowBackground" Value="{DynamicResource ThemeRowBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{DynamicResource ThemeAlternateRowBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
     </Application.Resources>

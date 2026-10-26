@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lakey"
         mc:Ignorable="d"
-        Title="Lakey" Height="850" Width="1440" MinHeight="620" MinWidth="980" WindowStartupLocation="CenterScreen" WindowState="Maximized" Loaded="Window_Loaded" KeyDown="Window_KeyDown" Background="{StaticResource ThemeSurfaceBrush}" FontFamily="Segoe UI" UseLayoutRounding="True" SnapsToDevicePixels="True">
+        Title="Lakey" Height="850" Width="1440" MinHeight="620" MinWidth="980" WindowStartupLocation="CenterScreen" WindowState="Maximized" Loaded="Window_Loaded" KeyDown="Window_KeyDown" Background="{DynamicResource ThemeSurfaceBrush}" FontFamily="Segoe UI" UseLayoutRounding="True" SnapsToDevicePixels="True">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
@@ -13,23 +13,68 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="{StaticResource ThemeNavyBrush}"/>
-            <Setter Property="Background" Value="{StaticResource ThemeSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="MinHeight" Value="32"/>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource ThemeAccentSoftBrush}"/></Trigger>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource ThemeAccentSoftBrush}"/></Trigger>
                 <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.78"/></Trigger>
                 <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="QuickAccessButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Margin" Value="3,1"/>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.82"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AgentQuickAccessButton" TargetType="Button" BasedOn="{StaticResource QuickAccessButton}">
+            <Setter Property="Background" Value="{DynamicResource ThemeAgentButtonBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeAgentButtonTextBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeNavyBrush}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource ThemeAgentSelectedBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeAgentSelectedTextBrush}"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ClientQuickAccessButton" TargetType="Button" BasedOn="{StaticResource QuickAccessButton}">
+            <Setter Property="Background" Value="{DynamicResource ThemeClientButtonBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeClientButtonTextBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeNavyBrush}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource ThemeClientSelectedBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeClientSelectedTextBrush}"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="TextBox">
             <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="8,5"/><Setter Property="BorderBrush" Value="{StaticResource ThemeBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/><Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="8,5"/><Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
         </Style>
     </Window.Resources>
     <Grid>
-        <Grid Background="{StaticResource ThemeSurfaceBrush}">
+        <Grid Background="{DynamicResource ThemeSurfaceBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="190" MinWidth="165" MaxWidth="230"/>
                 <ColumnDefinition Width="245" MinWidth="210" MaxWidth="300"/>
@@ -41,7 +86,7 @@
                 <RowDefinition Height="*" MinHeight="250"/>
                 <RowDefinition Height="155" MinHeight="105" MaxHeight="230"/>
             </Grid.RowDefinitions>
-            <Border x:Name="bdrEntete" Background="White" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="#DCE5ED" BorderThickness="0,0,0,1" CornerRadius="0">
+            <Border x:Name="bdrEntete" Background="{DynamicResource ThemeCardBrush}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="0,0,0,1" CornerRadius="0">
                 <Menu >
                     <MenuItem x:Name="mitActions"  Header="Actions">
                         <MenuItem x:Name="mitActual"  Header="_Actualiser" InputGestureText="Ctrl+Shift+A" ></MenuItem>
@@ -67,7 +112,7 @@
 
                 </Menu>
             </Border>
-            <Border x:Name="bdrTitreGauche" Background="{StaticResource ThemeHeaderBrush}" Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="1" Margin="0" Padding="10,8" CornerRadius="0">
+            <Border x:Name="bdrTitreGauche" Background="{DynamicResource ThemeHeaderBrush}" Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="1" Margin="0" Padding="10,8" CornerRadius="0">
                 <Grid Margin="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" MaxWidth="40"/>
@@ -84,7 +129,7 @@
                     </StackPanel>
                 </Grid>
             </Border>
-            <Border x:Name="bdrTitreCentre" Background="{StaticResource ThemeHeaderBrush}" Grid.Column="2" Grid.Row="1" VerticalAlignment="Stretch" Padding="12,8" CornerRadius="0">
+            <Border x:Name="bdrTitreCentre" Background="{DynamicResource ThemeHeaderBrush}" Grid.Column="2" Grid.Row="1" VerticalAlignment="Stretch" Padding="12,8" CornerRadius="0">
                 <StackPanel >
                     <Border x:Name="bdrEnTete001" >
                         <Grid>
@@ -93,38 +138,42 @@
                                 <ColumnDefinition MinWidth="90"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Right" MinHeight="35">
-                                <TextBlock x:Name="tbkSteName" Text="Ma Socité" Margin="5,0" VerticalAlignment="Center" FontSize="16" TextDecorations="{x:Null}" Foreground="White" Background="#7F000000" Padding="5,0" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="tbkSteName" Text="Ma Socité" Margin="5,0" VerticalAlignment="Center" FontSize="16" TextDecorations="{x:Null}" Foreground="{DynamicResource ThemeHeaderTextBrush}" Background="#7F000000" Padding="5,0" TextWrapping="Wrap"/>
+                                <Button x:Name="btnThemeToggle" Content="Mode clair" Click="btnThemeToggle_Click"
+                                        Margin="5,0" Padding="9,4" MinHeight="28" VerticalAlignment="Center"
+                                        Background="{DynamicResource ThemeAccentBrush}" Foreground="{DynamicResource ThemeNavyBrush}"
+                                        FontWeight="SemiBold" ToolTip="Basculer entre le mode clair et le mode sombre"/>
                                 <Image x:Name="imgLoogo"  Source="MyIco.png" MaxHeight="30" MinHeight="20" Margin="0,0,5,0" />
                                 <Image x:Name="imgHorsConnex"  Source="hors_connexion2.png" Width="25" Margin="0,0,5,0" />
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <Border Background="{StaticResource ThemeNavyBrush}" CornerRadius="5" Padding="4">
+                    <Border Background="{DynamicResource ThemeNavyBrush}" CornerRadius="5" Padding="4">
                         <Grid  >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="375*"/>
                                 <ColumnDefinition Width="118*"/>
                                 <ColumnDefinition Width="42*"/>
                             </Grid.ColumnDefinitions>
-                            <Expander x:Name="xpdAgentRaccourcis"  Header="Agents &gt; Raccourcis"  Grid.Column="0" Foreground="#FFD2FFD8"  IsExpanded="True" Margin="0,0,0,5" VerticalAlignment="Top" Background="{x:Null}"  >
+                            <Expander x:Name="xpdAgentRaccourcis"  Header="Agents &gt; Raccourcis"  Grid.Column="0" Foreground="{DynamicResource ThemeAgentGroupLabelBrush}"  IsExpanded="True" Margin="0,0,0,5" VerticalAlignment="Top" Background="{x:Null}"  >
                                 <WrapPanel Orientation="Horizontal">
-                                    <Button x:Name="btnRacEntreeAg"  Content="Entrées" Height="20" Margin="5,0,1,0" Padding="3,1,6,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
-                                    <Button x:Name="btnRacContratAg"  Content="Contrat" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
-                                    <Button x:Name="btnRacAffectationAg"  Content="Affectation" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
-                                    <Button x:Name="btnRacPlanningAg"  Content="Planning" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
-                                    <Button x:Name="btnRacAbsenceAg"  Content="Absence/Permission/Congé" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
-                                    <Button x:Name="btnRacHeureSupAg"  Content="HeuresSup" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
-                                    <Button x:Name="btnRacCalCong" Content="Point - Congés" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FF557E94" BorderBrush="White" BorderThickness="2" Foreground="White"/>
-                                    <Button x:Name="btnRacSortieAg"  Content="Sortie" Height="20" Margin="5,0,1,0" Padding="3,1" Background="{StaticResource ThemeAccentSoftBrush}"/>
+                                    <Button x:Name="btnRacEntreeAg" Content="Entrées" Style="{StaticResource AgentQuickAccessButton}"/>
+                                    <Button x:Name="btnRacContratAg" Content="Contrat" Style="{StaticResource AgentQuickAccessButton}"/>
+                                    <Button x:Name="btnRacAffectationAg" Content="Affectation" Style="{StaticResource AgentQuickAccessButton}"/>
+                                    <Button x:Name="btnRacPlanningAg" Content="Planning" Style="{StaticResource AgentQuickAccessButton}"/>
+                                    <Button x:Name="btnRacAbsenceAg" Content="Absence/Permission/Congé" Style="{StaticResource AgentQuickAccessButton}"/>
+                                    <Button x:Name="btnRacHeureSupAg" Content="HeuresSup" Style="{StaticResource AgentQuickAccessButton}"/>
+                                    <Button x:Name="btnRacCalCong" Content="Point - Congés" Style="{StaticResource AgentQuickAccessButton}"/>
+                                    <Button x:Name="btnRacSortieAg" Content="Sortie" Style="{StaticResource AgentQuickAccessButton}"/>
                                 </WrapPanel>
                             </Expander>
-                            <Expander x:Name="xpdClientRaccourcis" Header="Client  &gt; Raccourcis" Grid.Column="1" HorizontalAlignment="Right"  Foreground="#FFD2FFD8"  IsExpanded="True" Grid.ColumnSpan="2" Margin="0,0,0,5" VerticalAlignment="Top" Background="{x:Null}"  >
+                            <Expander x:Name="xpdClientRaccourcis" Header="Client  &gt; Raccourcis" Grid.Column="1" HorizontalAlignment="Right"  Foreground="{DynamicResource ThemeClientGroupLabelBrush}"  IsExpanded="True" Grid.ColumnSpan="2" Margin="0,0,0,5" VerticalAlignment="Top" Background="{x:Null}"  >
                                 <WrapPanel Orientation="Horizontal">
-                                    <Button x:Name="btnRacContratCl" Content="Contrat" Height="20" Margin="5,0,1,0" Padding="3,1,6,1" Background="#FF00113E" BorderBrush="White" Foreground="White"/>
-                                    <Button x:Name="btnRacSiteCl"  Content="Sites" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FF00113E" BorderBrush="White" Foreground="White"/>
-                                    <Button x:Name="btnRacPosteCl" Content="Postes" Height="20" Margin="5,0,1,0" Padding="3,1" Background="#FF00113E" BorderBrush="White" Foreground="White"/>
-                                    <Button x:Name="btnRacEtatCl"  Content="Etat" Height="20" Margin="5,0,1,0" Padding="3,1,6,1" Background="#FF00113E" BorderBrush="White" Foreground="White"/>
-                                    <Button x:Name="btnRacAgentListeCl"  Content="Agents affect." Height="20" Margin="5,0,1,0" Padding="3,1,6,1" Background="#FF00113E" BorderBrush="White" Foreground="White"/>
+                                    <Button x:Name="btnRacContratCl" Content="Contrat" Style="{StaticResource ClientQuickAccessButton}"/>
+                                    <Button x:Name="btnRacSiteCl" Content="Sites" Style="{StaticResource ClientQuickAccessButton}"/>
+                                    <Button x:Name="btnRacPosteCl" Content="Postes" Style="{StaticResource ClientQuickAccessButton}"/>
+                                    <Button x:Name="btnRacEtatCl" Content="Etat" Style="{StaticResource ClientQuickAccessButton}"/>
+                                    <Button x:Name="btnRacAgentListeCl" Content="Agents affect." Style="{StaticResource ClientQuickAccessButton}"/>
                                 </WrapPanel>
                             </Expander>
 
@@ -135,10 +184,10 @@
 
 
             <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.Row="2">
-                <Border x:Name="bdrColonneGauche" Background="{StaticResource ThemeHeaderBrush}" Padding="8,10" BorderBrush="{StaticResource ThemeNavyBrush}" BorderThickness="0,0,1,0" CornerRadius="0">
+                <Border x:Name="bdrColonneGauche" Background="{DynamicResource ThemeHeaderBrush}" Padding="8,10" BorderBrush="{DynamicResource ThemeNavyBrush}" BorderThickness="0,0,1,0" CornerRadius="0">
                     <StackPanel>
-                        <Button x:Name="btnTBord" Content="Tableau de bord" Height="30" FontSize="14" FontWeight="ExtraBold" Foreground="#FF0C2C3C"  Background="#FFDDDDDD" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
-                        <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="#FFDDDDDD" Height="30" FontSize="14" FontWeight="Bold"/>
+                        <Button x:Name="btnTBord" Content="Tableau de bord" Height="30" FontSize="14" FontWeight="ExtraBold" Foreground="{DynamicResource ThemeNavyBrush}"  Background="{DynamicResource ThemeCardBrush}" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
+                        <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="{DynamicResource ThemeCardBrush}" Height="30" FontSize="14" FontWeight="Bold"/>
                         <Button x:Name="btnTraitement"  Content="Traitements"  Style="{StaticResource  btnStandars}" Click="btnTraitement_Click"  Height="30" FontWeight="Bold" FontSize="14"/>
                         <Button x:Name="btnClient"  Content="Clients" Style="{StaticResource  btnStandars}" Click="btnClient_Click"  Height="30" FontSize="14" FontWeight="Bold"/>
 
@@ -168,7 +217,7 @@
 
             <Border  Grid.Column="2" Grid.Row="2" >
                 <!--TextBlock x:Name="tblTitrCentral" Text="TITRE CENTRAL" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontFamily="Lucida Bright" FontWeight="Bold" /-->
-                <ScrollViewer x:Name="bdrColonneCentre" Background="{StaticResource ThemeSurfaceBrush}" VerticalScrollBarVisibility="Auto" Padding="12" PreviewMouseWheel="bdrColonneCentre_PreviewMouseWheel">
+                <ScrollViewer x:Name="bdrColonneCentre" Background="{DynamicResource ThemeSurfaceBrush}" VerticalScrollBarVisibility="Auto" Padding="12" PreviewMouseWheel="bdrColonneCentre_PreviewMouseWheel">
                     <StackPanel>
                         <Ellipse x:Name="elpsLoadingCentral" Width="10" Height="10" Fill="Orange" Visibility="Collapsed"/>
                         <ContentControl x:Name="cctrlCentral" Background="Transparent"/>
@@ -176,10 +225,10 @@
                 </ScrollViewer>
 
             </Border>
-            <Border x:Name="bdrColonneDroit" Background="White" Grid.Column="1" Grid.Row="2" Padding="10" BorderBrush="#DCE5ED" BorderThickness="1,0,1,0" CornerRadius="0">
+            <Border x:Name="bdrColonneDroit" Background="{DynamicResource ThemeCardBrush}" Grid.Column="1" Grid.Row="2" Padding="10" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1,0,1,0" CornerRadius="0">
                 <StackPanel>
                     <Ellipse x:Name="elpsLoading" Width="10" Height="10" Fill="Orange" Visibility="Collapsed"/>
-                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{StaticResource ThemeAccentBrush}" Foreground="{StaticResource ThemeNavyBrush}" Margin="10,5,10,7"/>
+                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeAccentBrush}" Foreground="{DynamicResource ThemeNavyBrush}" Margin="10,5,10,7"/>
                     <Separator/>
                     <Button x:Name="btnCalCong" Visibility="Collapsed" Content="Point - Congés" Style="{StaticResource btnSousStand}" Background="#FF557E94" BorderBrush="White" BorderThickness="2" Foreground="White" Margin="10,3"/>
                     <StackPanel x:Name="stpTBord" />
@@ -227,14 +276,14 @@
 
                 </StackPanel>
             </Border>
-            <Border x:Name="bdrBasPage" Background="White" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" BorderBrush="#DCE5ED" BorderThickness="0,1,0,0" Padding="6" CornerRadius="0">
+            <Border x:Name="bdrBasPage" Background="{DynamicResource ThemeCardBrush}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="0,1,0,0" Padding="6" CornerRadius="0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="1" Background="#F8FAFC" Margin="3" CornerRadius="5">
+                    <Border Grid.Column="1" Background="{DynamicResource ThemeSurfaceBrush}" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MaxWidth="80"/>
@@ -244,7 +293,7 @@
                                 <Label x:Name="lblAgentSearch" Content="Agents" FontSize="10" Margin="1,0,0,1" Foreground="#60758A"/>
                                 <TextBox x:Name="BtnAgentSearch" Height="28" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
-                            <DataGrid x:Name="dgAgent" Grid.Column="1" AutoGenerateColumns="True" Background="White" HeadersVisibility="None" RowBackground="#F1F5F9">
+                            <DataGrid x:Name="dgAgent" Grid.Column="1" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" HeadersVisibility="None" RowBackground="{DynamicResource ThemeAlternateRowBrush}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Resumé" Name="cmiResume" />
@@ -258,7 +307,7 @@
                             </DataGrid>
                         </Grid>
                     </Border>
-                    <Border Grid.Column="2" Background="#F8FAFC" Margin="3" CornerRadius="5">
+                    <Border Grid.Column="2" Background="{DynamicResource ThemeSurfaceBrush}" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MaxWidth="80"/>
@@ -268,7 +317,7 @@
                                 <Label x:Name="lblContratSearch"  Content="Contrats" FontSize="10" Margin="1,0,0,1" Foreground="#60758A"/>
                                 <TextBox x:Name="BtnContratSearch" Height="28" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
-                            <DataGrid  x:Name="dgContrat" Grid.Column="1" AutoGenerateColumns="True" Background="White" HeadersVisibility="None" RowBackground="#F1F5F9">
+                            <DataGrid  x:Name="dgContrat" Grid.Column="1" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" HeadersVisibility="None" RowBackground="{DynamicResource ThemeAlternateRowBrush}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Résumé" Name="cmiResumeC" />
@@ -279,7 +328,7 @@
                         </Grid>
 
                     </Border>
-                    <Border Grid.Column="0" Background="#F8FAFC" Margin="3" CornerRadius="5">
+                    <Border Grid.Column="0" Background="{DynamicResource ThemeSurfaceBrush}" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MaxWidth="80"/>
@@ -289,7 +338,7 @@
                                 <Label x:Name="lblPlanningSearch" Content="En poste" FontSize="10" Margin="1,0,0,1" Foreground="#60758A" Background="{x:Null}"/>
                                 <TextBox x:Name="BtnPlanningSearch" Height="28" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
-                            <DataGrid  x:Name="dgPlanning" Grid.Column="1" AutoGenerateColumns="True" HeadersVisibility="None" RowBackground="#F1F5F9" Background="White">
+                            <DataGrid  x:Name="dgPlanning" Grid.Column="1" AutoGenerateColumns="True" HeadersVisibility="None" RowBackground="{DynamicResource ThemeAlternateRowBrush}" Background="{DynamicResource ThemeCardBrush}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Cette semaine" Name="cmiThisW" />
@@ -320,14 +369,14 @@
                     </Storyboard>
                 </Grid.Resources>
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Ellipse Width="54" Height="54" Stroke="{StaticResource ThemeAccentBrush}"
+                    <Ellipse Width="54" Height="54" Stroke="{DynamicResource ThemeAccentBrush}"
                              StrokeThickness="6" StrokeDashArray="2,2"
                              RenderTransformOrigin="0.5,0.5">
                         <Ellipse.RenderTransform>
                             <RotateTransform x:Name="LoadingRotation"/>
                         </Ellipse.RenderTransform>
                     </Ellipse>
-                    <TextBlock Text="Chargement des données..."
+                    <TextBlock x:Name="tbkLoadingMessage" Text="Chargement des données..."
                                Foreground="White" FontSize="15" FontWeight="SemiBold"
                                HorizontalAlignment="Center" Margin="0,14,0,0"/>
                 </StackPanel>

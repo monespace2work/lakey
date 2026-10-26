@@ -5,6 +5,7 @@ Class MainWindow
     'Dim iUsrcEnntree As New usercAgentsEntree(AddressOf LoadEntree)
     Dim iUserC As New UserControl
     Public LocalConnxStr As String
+    Private isDarkTheme As Boolean = True
 
     Public Sub New()
 
@@ -91,21 +92,98 @@ Class MainWindow
         'If Not SessLogin() Then Me.Close()
     End Sub
 
-    Private Async Function RunWithLoadingAsync(loadAction As Action) As Task
+    Private Async Function RunWithLoadingAsync(loadAction As Action,
+                                               Optional loadingMessage As String = "Chargement des données...",
+                                               Optional minimumDisplayMilliseconds As Integer = 0) As Task
         Dim loadingStoryboard = TryCast(grdLoadingOverlay.Resources("LoadingRotationStoryboard"),
                                        System.Windows.Media.Animation.Storyboard)
+        tbkLoadingMessage.Text = loadingMessage
         grdLoadingOverlay.Visibility = Visibility.Visible
         Me.Cursor = Cursors.Wait
         Try
             loadingStoryboard?.Begin(grdLoadingOverlay, True)
             Await Dispatcher.Yield(DispatcherPriority.Background)
+            If minimumDisplayMilliseconds > 0 Then
+                Await System.Threading.Tasks.Task.Delay(minimumDisplayMilliseconds)
+            End If
             loadAction()
         Finally
             loadingStoryboard?.Stop(grdLoadingOverlay)
             grdLoadingOverlay.Visibility = Visibility.Collapsed
+            tbkLoadingMessage.Text = "Chargement des données..."
             Me.Cursor = Cursors.Arrow
         End Try
     End Function
+
+    Private Async Sub btnThemeToggle_Click(sender As Object, e As RoutedEventArgs)
+        Dim requestedDarkTheme = Not isDarkTheme
+        Await RunWithLoadingAsync(
+            Sub()
+                isDarkTheme = requestedDarkTheme
+                ApplyTheme(isDarkTheme)
+            End Sub,
+            "Application du thème...",
+            250)
+    End Sub
+
+    Private Sub ApplyTheme(useDarkTheme As Boolean)
+        If useDarkTheme Then
+            SetThemeColor("ThemeSurfaceBrush", "#17212F")
+            SetThemeColor("ThemeCardBrush", "#222F40")
+            SetThemeColor("ThemeInkBrush", "#E6EDF5")
+            SetThemeColor("ThemeHeadingBrush", "#E6EDF5")
+            SetThemeColor("ThemeNavyBrush", "#0B1630")
+            SetThemeColor("ThemeHeaderBrush", "#35556A")
+            SetThemeColor("ThemeAgentButtonBrush", "#285B5A")
+            SetThemeColor("ThemeAgentButtonTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeAgentSelectedBrush", "#16877E")
+            SetThemeColor("ThemeAgentSelectedTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeClientButtonBrush", "#304E78")
+            SetThemeColor("ThemeClientButtonTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeClientSelectedBrush", "#416FAE")
+            SetThemeColor("ThemeClientSelectedTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeAccentBrush", "#00CFCB")
+            SetThemeColor("ThemeAccentSoftBrush", "#29434B")
+            SetThemeColor("ThemeBorderBrush", "#415367")
+            SetThemeColor("ThemeRowBrush", "#222F40")
+            SetThemeColor("ThemeAlternateRowBrush", "#29384A")
+            SetThemeColor("ThemeHeaderTextBrush", "#FFFFFF")
+            btnThemeToggle.Content = "Mode clair"
+        Else
+            SetThemeColor("ThemeSurfaceBrush", "#E7EEF2")
+            SetThemeColor("ThemeCardBrush", "#FFFFFF")
+            SetThemeColor("ThemeInkBrush", "#1E293B")
+            SetThemeColor("ThemeHeadingBrush", "#00113E")
+            SetThemeColor("ThemeNavyBrush", "#00113E")
+            SetThemeColor("ThemeHeaderBrush", "#557E94")
+            SetThemeColor("ThemeAgentButtonBrush", "#D8F3EE")
+            SetThemeColor("ThemeAgentButtonTextBrush", "#123B3A")
+            SetThemeColor("ThemeAgentSelectedBrush", "#14756E")
+            SetThemeColor("ThemeAgentSelectedTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeClientButtonBrush", "#DCE9FA")
+            SetThemeColor("ThemeClientButtonTextBrush", "#18365C")
+            SetThemeColor("ThemeClientSelectedBrush", "#315B91")
+            SetThemeColor("ThemeClientSelectedTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeAccentBrush", "#00CFCB")
+            SetThemeColor("ThemeAccentSoftBrush", "#D1F9F6")
+            SetThemeColor("ThemeBorderBrush", "#B9C8D0")
+            SetThemeColor("ThemeRowBrush", "#FFFFFF")
+            SetThemeColor("ThemeAlternateRowBrush", "#E7EEF2")
+            SetThemeColor("ThemeHeaderTextBrush", "#FFFFFF")
+            btnThemeToggle.Content = "Mode sombre"
+        End If
+
+        TestConnexionDbIcon()
+    End Sub
+
+    Private Sub SetThemeColor(resourceKey As String, colorValue As String)
+        If Not System.Windows.Application.Current.Resources.Contains(resourceKey) Then
+            Throw New InvalidOperationException("Ressource de thème introuvable : " & resourceKey)
+        End If
+        Dim themeColor = CType(ColorConverter.ConvertFromString(colorValue), Color)
+        System.Windows.Application.Current.Resources(resourceKey) = New SolidColorBrush(themeColor)
+    End Sub
+
     Sub InitializeGlobal()
         TestConnexionDbIcon()
         LoadPrimSettings()
@@ -328,33 +406,6 @@ Class MainWindow
 
     Sub initRacourcisBtn()
         'initRacourcisClientBtn()
-        btnRacAbsenceAg.Height = 20
-        btnRacAffectationAg.Height = 20
-        btnRacContratAg.Height = 20
-        btnRacEntreeAg.Height = 20
-        btnRacHeureSupAg.Height = 20
-        btnRacPlanningAg.Height = 20
-        btnRacSortieAg.Height = 20
-        'btnRacCalCong.Height = 20
-
-        btnRacAbsenceAg.FontWeight = FontWeights.Normal
-        btnRacAffectationAg.FontWeight = FontWeights.Normal
-        btnRacContratAg.FontWeight = FontWeights.Normal
-        btnRacEntreeAg.FontWeight = FontWeights.Normal
-        btnRacHeureSupAg.FontWeight = FontWeights.Normal
-        btnRacPlanningAg.FontWeight = FontWeights.Normal
-        btnRacSortieAg.FontWeight = FontWeights.Normal
-        'btnRacCalCong.FontWeight = FontWeights.Normal
-
-        btnRacAbsenceAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) 'ClearValue(Button.BackgroundProperty)
-        btnRacAffectationAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
-        btnRacContratAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
-        btnRacEntreeAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
-        btnRacHeureSupAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
-        btnRacPlanningAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
-        btnRacSortieAg.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFD1F9F6")) '.ClearValue(Button.BackgroundProperty)
-        btnRacCalCong.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF557E94")) '.ClearValue(Button.BackgroundProperty)
-
         btnRacAbsenceAg.IsEnabled = True
         btnRacAffectationAg.IsEnabled = True
         btnRacContratAg.IsEnabled = True
@@ -367,30 +418,6 @@ Class MainWindow
     End Sub
     Sub initRacourcisClientBtn()
         'initRacourcisBtn()
-        btnRacEtatCl.Height = 20
-        btnRacContratCl.Height = 20
-        btnRacSiteCl.Height = 20
-        btnRacPosteCl.Height = 20
-        btnRacAgentListeCl.Height = 20
-
-        btnRacEtatCl.FontWeight = FontWeights.Normal
-        btnRacContratCl.FontWeight = FontWeights.Normal
-        btnRacSiteCl.FontWeight = FontWeights.Normal
-        btnRacPosteCl.FontWeight = FontWeights.Normal
-        btnRacAgentListeCl.FontWeight = FontWeights.Normal
-
-        btnRacEtatCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
-        btnRacContratCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
-        btnRacSiteCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
-        btnRacPosteCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
-        btnRacAgentListeCl.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF")) '.ClearValue(Button.BackgroundProperty)
-
-        btnRacEtatCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
-        btnRacContratCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
-        btnRacSiteCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
-        btnRacPosteCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
-        btnRacAgentListeCl.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00113E")) '.ClearValue(Button.BackgroundProperty)
-
         btnRacEtatCl.IsEnabled = True
         btnRacContratCl.IsEnabled = True
         btnRacSiteCl.IsEnabled = True
@@ -425,7 +452,6 @@ Class MainWindow
         initRacourcisBtn()
         myBtn.Height = 25
         'myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF58B1FF"))
-        myBtn.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FF000000")) '.ClearValue(Button.BackgroundProperty)
         myBtn.FontWeight = FontWeights.Bold
         myBtn.IsEnabled = False
     End Sub
