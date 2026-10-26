@@ -229,7 +229,7 @@ Public Class usercClientsSite
         istr += " '" & Apost(CbxClient.SelectedItem) & "', "
         istr += " '" & Trim(Apost(TbxObs.Text)) & "', "
         istr += " " & RefCrt & ")"
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewSite = SaveNewData(istr, iConnxStr)
         If SaveNewSite Then Joper("SaveNewSite for " & TbxSite.Text & " at " & RefCrt, iConnxStr)
     End Function
@@ -250,7 +250,7 @@ Public Class usercClientsSite
         istr += " Observations='" & Trim(Apost(TbxObs.Text)) & "'  "
         istr += " where IdSite=" & RefCrt & " "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveModifCtr = SaveNewData(istr, iConnxStr)
         If SaveModifCtr And NewNom <> TbxSite.Text Then
             If SaveNewData("update Affectation set SiteAffect='" & Apost(TbxSite.Text) & "' where SiteAffect='" & Apost(NewNom) & "'", iConnxStr) And SaveNewData("update Affectation set SiteAffectPrecedent='" & Apost(TbxSite.Text) & "' where SiteAffectPrecedent='" & Apost(NewNom) & "'", iConnxStr) Then
@@ -553,7 +553,7 @@ Public Class usercClientsSite
         DeleteSite = False
         Dim istr As String = " delete from siteaffectation "
         istr += " where IdSite=" & RefCrt & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         DeleteSite = SaveNewData(istr, iConnxStr)
         If DeleteSite Then Joper("DeleteSite at " & RefCrt, iConnxStr)
     End Function

@@ -171,7 +171,7 @@ Public Class usercAgentsAffectation
         'istr += " '" & Apost(TbxNumCrt.Text) & "', "
         istr += " '" & Apost(TbxObs.Text) & "') "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewAffectation = SaveNewData(istr, iConnxStr)
         If SaveNewAffectation Then Joper("SaveNewAffectation for " & CbxNom.SelectedItem, iConnxStr)
     End Function
@@ -187,7 +187,7 @@ Public Class usercAgentsAffectation
         istr += " ObsAffect='" & Apost(TbxObs.Text) & "'  "
         istr += " where IdAffec=" & RefAffect & " "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveModifAffect = SaveNewData(istr, iConnxStr)
         If SaveModifAffect Then Joper("SaveModifAffect for " & CbxNom.SelectedItem & " at " & RefAffect, iConnxStr)
     End Function

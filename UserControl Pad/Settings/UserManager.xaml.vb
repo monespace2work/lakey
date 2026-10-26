@@ -69,7 +69,7 @@ Public Class UserManager
     End Sub
 
     Private Sub BtnSave_Click(sender As Object, e As RoutedEventArgs) Handles BtnSave.Click
-        If DbPath = DbPathGeneral Then MsgBox("Vous êtes en mode LOCAL")
+        If LocalModeBb Then MsgBox("Vous êtes en mode LOCAL")
         If isNew Then
             If SaveNewUser(iConnxStr) Then
                 MsgBox("Nouvel utilisateur créé avec succès")

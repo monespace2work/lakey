@@ -221,7 +221,7 @@ Public Class usercAgentsEntree
         istr += ChbActif.IsChecked & ",'" & dtpDateEmbauche.SelectedDate.Value.ToString("yyyy-MM-dd") & "','" & Apost(TbxVille.Text) & "','" & Trim(Apost(TbxAdresse.Text)) & "','" & Apost(CbxFonction.SelectedItem) & "','" & Now.ToString("yyyy-MM-dd HH:mm:ss") & "','"
         istr += Trim(Apost(TbxPays.Text)) & "','" & Apost(CbxSituationMatrim.SelectedItem) & "','" & Trim(Apost(TbxNCNSS.Text)) & "','" & Trim(Apost(CartValue)) & "','" & Trim(Apost(TbxNunCarte.Text)) & "','" & Apost(BankValue) & "','" & Trim(Apost(TbxNunBank.Text)) & "'"
         istr += ")"
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL => " & DbPath)
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL => " & DbPath)
         SaveNewAgent = SaveNewData(istr, iConnxStr)
         If SaveNewAgent Then Joper("SaveNewAgent As " & NomPrenomAg, iConnxStr)
     End Function

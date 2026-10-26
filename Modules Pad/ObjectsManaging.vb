@@ -312,8 +312,10 @@ Module ObjectsManaging
     End Sub
     Function maj() As Boolean
         maj = False
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
-        If (DbPathGeneral = DbPath) Or (Not File.Exists(DbPathGeneral)) Then
+        If LocalModeBb Then Return False
+        Dim userDatabasePath As String = Path.Combine(UserPath, "ManA.sqlite")
+        If File.Exists(userDatabasePath) Then DbPath = userDatabasePath
+        If (DbPathGeneral = DbPath) OrElse (Not File.Exists(DbPathGeneral)) Then
             'MainFrm.Connexion_Pbx.Visible = True
             'MsgBox(DbPathGeneral)
             maj = False

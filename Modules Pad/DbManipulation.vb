@@ -248,58 +248,29 @@ Module DbManipulation
         Dim iCmdStr As String = "SELECT DBpathG "
         iCmdStr += " FROM Sets "
         iCmdStr += " WHERE IdSet=1 "
+        Dim localDatabasePath As String = Path.Combine(UserPath, "ManA.sqlite")
+        Dim configuredDatabasePath As String = Nothing
         PaphBackUp = "C:\LkyRess\ManA.sqlite"
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then PaphBackUp = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(localDatabasePath) Then PaphBackUp = localDatabasePath
         Try
             Using iconexion As New SQLiteConnection(iConnectStr)
                 iconexion.Open()
                 Using icmd As New SQLiteCommand(iCmdStr, iconexion)
-                    Dim iReader As SQLiteDataReader = icmd.ExecuteReader
-                    While iReader.Read
-                        If Not IsDBNull(iReader(0)) Then
-                            PaphBackUp = iReader(0)
-                            'MsgBox(PaphBackUp)
+                    Using iReader As SQLiteDataReader = icmd.ExecuteReader
+                        If iReader.Read() AndAlso Not IsDBNull(iReader(0)) Then
+                            configuredDatabasePath = Convert.ToString(iReader(0)).Trim()
                         End If
-                    End While
+                    End Using
                 End Using
             End Using
-
         Catch ex As Exception
-            PaphBackUp = "C:\LkyRess\ManA.sqlite"
-            If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then PaphBackUp = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+            System.Diagnostics.Debug.WriteLine("Impossible de lire le chemin de la base générale dans MySet.sqlite : " & ex)
         End Try
-        If File.Exists(PaphBackUp) Then
-            iConnectStr = "Data Source=" & PaphBackUp & ";Version=3;Pooling=False;"
-            Try
-                Using iConx As New SQLiteConnection(iConnectStr)
-                    iConx.Open()
-                End Using
-            Catch ex As Exception
-                'MsgBox(ex.Message)
-                If (ex.Message).Contains("unable to open database file") Then
-                    Dim iReseauF As New ReseauSelect
-                    Dim iFilePath As String = Path.GetDirectoryName(PaphBackUp)
-                    Dim iFileName As String = Path.GetFileName(PaphBackUp)
-                    iReseauF.tbxPathDrive.Text = iFilePath
-                    iReseauF.ShowDialog()
-                End If
-                'ShowTempMsg(ex.Message)
-            End Try
-        Else
-            PaphBackUp = "C:\LkyRess\ManA.sqlite"
-            If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then PaphBackUp = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
-            iConnectStr = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;Pooling=False;"
-        End If
+        If Not String.IsNullOrWhiteSpace(configuredDatabasePath) Then PaphBackUp = configuredDatabasePath
     End Function
 
     Public Function isLocalModeDd() As Boolean
-        isLocalModeDd = True
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
-        If DbPathGeneral = DbPath Then
-            isLocalModeDd = True
-        Else
-            isLocalModeDd = False
-        End If
+        Return LocalModeBb
     End Function
     Public Function AgentAffiche(Optional MyDateFormat As String = "yyyy-MM-dd") As DataTable
         'MyDtable.Columns.Clear()
@@ -386,7 +357,7 @@ Module DbManipulation
 
     Public Function ClientAffiche() As Boolean
 
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         iConnectStr = "Data Source=" & DbPath & ";Version=3;"
 
         MyCmdStr = "select sit.Client, count(*) as [Nb d'Agent], format(sit.DateCreation) as [début collab] "
@@ -407,7 +378,7 @@ Module DbManipulation
 
     Public Function ClientInactifAffiche() As Boolean
 
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         iConnectStr = "Data Source=" & DbPath & ";Version=3;"
 
         MyCmdStr = " select nomclient as Client, format(DateDebutCollabor) as Début, format(DateFinCollabor) as Fin, Ville "
@@ -428,7 +399,7 @@ Module DbManipulation
     Public Function ClientSearchAffiche(ByVal SearchKey As String) As DataTable
         Dim iTable As New DataTable
 
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         iConnectStr = "Data Source=" & DbPath & ";Version=3;"
 
         MyCmdStr = "select sit.Client, count(*) as [Nb d'Agent], format(sit.DateCreation) as [début collab] "
@@ -446,7 +417,7 @@ Module DbManipulation
     End Function
     Public Function ClientInactifSearchTable(ByVal SearchKey As String) As DataTable
         Dim iTable As New DataTable
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         iConnectStr = "Data Source=" & DbPath & ";Version=3;"
 
         MyCmdStr = "select c.NomClient,format(c.DateDebutCollabor) as [début collab] ,format(c.DateFinCollabor) as [fin collab] ,c.Ville  from client c "
@@ -463,7 +434,7 @@ Module DbManipulation
     End Function
 
     Public Function SturctureAffiche() As Boolean
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         iConnectStr = "Data Source=" & DbPath & ";Version=3;"
 
         MyCmdStr = "select sit.Localisation ,  count (* ) as NbrAgent "
@@ -661,9 +632,9 @@ Module DbManipulation
     End Function
     Public Function ListeSiteClient(NomClient As String, Optional ConnexStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         ListeSiteClient = ""
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Dim iStr As String = "select c.NomSite,c.Actif from siteaffectation c where c.Client like '" & Apost(NomClient) & "' order by c.Actif desc, c.NomSite"
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Using iconnx As New SQLiteConnection(ConnexStr)
             iconnx.Open()
             Using icmd As New SQLiteCommand(iStr, iconnx)
@@ -684,7 +655,7 @@ Module DbManipulation
     Public Function ListePosteSite(NomSite As String, Optional ConnexStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         ListePosteSite = ""
         Dim iStr As String = "select c.Designation,c.Actif,c.Code from Postes c where c.NomSite like '" & Apost(NomSite) & "' order by c.Actif desc, c.Designation"
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Using iconnx As New SQLiteConnection(ConnexStr)
             iconnx.Open()
             Using icmd As New SQLiteCommand(iStr, iconnx)
@@ -706,7 +677,7 @@ Module DbManipulation
         ListePosteClient = ""
         Dim iStr As String = "select c.Designation||'  ('||c.Code||')',c.Actif from Postes c join siteaffectation s on s.NomSite=c.NomSite where s.Client='" & Apost(NomClient) & "' order by c.Actif desc, c.Designation"
         Try
-            If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+            If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
             Using iconnx As New SQLiteConnection(ConnexStr)
                 iconnx.Open()
                 Using icmd As New SQLiteCommand(iStr, iconnx)
@@ -925,7 +896,7 @@ Module DbManipulation
     Public Function ComptTypeContrat(icmdst As String, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         ComptTypeContrat = ""
         'MyConxStr = "select n.IdNature, count(IdContr) from contratstbl c join contratsnature n on c.NaturContr=n.NatureContr group by n.IdNature"
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Dim mytext As String = ""
         MsgBox(icmdst)
         Try
@@ -953,7 +924,7 @@ Module DbManipulation
     End Function
     Public Function MyContratList(MyCommandString As String, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         MyContratList = "| "
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Try
             Using iconn As New SQLiteConnection(MyConxStr)
                 iconn.Open()
@@ -975,7 +946,7 @@ Module DbManipulation
     End Function
     Public Function MyAffectationVilleList(MyCommandString As String, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         MyAffectationVilleList = "| "
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Try
             Using iconn As New SQLiteConnection(MyConxStr)
                 iconn.Open()
@@ -1015,7 +986,7 @@ Module DbManipulation
         myw.Close()
     End Function
     Public Function ListeAgentFinContrat(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentFinContrat = "=== CONTRATS A ECHEANCE ==="
         Dim istr As String = "select a.NomPrenoms||' => '|| n.IdNature ||' (' ||strftime('%d-%m-%Y', c.DebutContr)|| ' - '||strftime('%d-%m-%Y',c.FinContr)||')' as [Liste des Agents] "
         istr += " from ((contratstbl c join agents a on c.NomPrenoms=a.NumMatr) join contratsnature n on n.NatureContr=c.NaturContr) join affectation af on af.AgentAffect=a.NomPrenoms  " ' FinContr=#" & MaxDateFinContrat.ToString("MM/dd/yyyy") & "#  "
@@ -1049,7 +1020,7 @@ Module DbManipulation
     End Function
     Public Function ListePosteActuel(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         ListePosteActuel = ""
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Dim istr As String = "select a.Fonction, count(*) from agents a join fonction f on a.Fonction=f.Fonction where a.Actif=1 group by a.Fonction order by f.Niveau,f.Fonction "
         Dim iWord As String = ""
         Try
@@ -1079,7 +1050,7 @@ Module DbManipulation
         End If
     End Function
     Public Function ListeAgentSortisActif(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentSortisActif = "=== AGENT ACTIF MAIS AYANT UNE DATE DE SORTIE ==="
         Dim istr As String = "select a.NomPrenoms||' => '|| a.DateSortie as [Liste des Agents] "
         istr += " from agents a  " ' FinContr=#" & MaxDateFinContrat.ToString("MM/dd/yyyy") & "#  "
@@ -1112,7 +1083,7 @@ Module DbManipulation
         End If
     End Function
     Public Function ListeAgentInActifSansDateSortie(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentInActifSansDateSortie = "=== AGENT INACTIF SANS DATE DE SORTIE ==="
         Dim istr As String = "select a.NomPrenoms as [Liste des Agents] "
         istr += " from agents a  " ' FinContr=#" & MaxDateFinContrat.ToString("MM/dd/yyyy") & "#  "
@@ -1146,7 +1117,7 @@ Module DbManipulation
     End Function
 
     Public Function StatAgent(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         StatAgent = ""
         Dim iText As String = ""
         iText = MyStatValStr("SELECT count (*) from agents a where a.Actif=1", iConxStr)
@@ -1180,7 +1151,7 @@ Module DbManipulation
 
     End Function
     Public Function StatClient(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         StatClient = ""
         Dim iText As String = ""
         iText = MyStatValStr("SELECT count (*) from client c where c.Actif=1", iConxStr)
@@ -1192,7 +1163,7 @@ Module DbManipulation
 
     End Function
     Public Function ListeAgentFinAffectation(Optional DureeLimite As Integer = 15, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentFinAffectation = "=== AFFECTATION A ECHEANCE ==="
         Dim istr As String = "select c.AgentAffect||' => (' ||strftime('%d/%m/%Y', c.DateAffect)|| ' - '||strftime('%d/%m/%Y',c.FinAffect)||')' as [Liste des Agents] "
         istr += " from AFFECTATION c  "
@@ -1229,7 +1200,7 @@ Module DbManipulation
 
 
     Public Function RappelActifs(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         RappelActifs = "=== MEMOS ==="
         Dim istr As String = "Select r.NoteRappel from rappels r "
         istr += " where r.Actif and r.Debut<=date()  "
@@ -1267,7 +1238,7 @@ Module DbManipulation
         iStr += " from ((agents a join contratstbl c on a.NumMatr=c.NomPrenoms) join affectation af on af.AgentAffect=a.NomPrenoms) join contratsnature n on n.NatureContr=c.NaturContr   "
         iStr += " where a.Actif and c.FinContr>= date() and af.FinAffect>date() "
         iStr += " and a.NomPrenoms='" & Apost(NomAgent) & "' "
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Try
 
             Using iconnx As New SQLiteConnection(iConnectStr)
@@ -1303,7 +1274,7 @@ Module DbManipulation
         Dim iCount2 As Integer = 0
         Dim iStr As String = "select SiteAffect, FinAffect,DateAffect from affectation  where "
         iStr += " AgentAffect='" & Apost(NomAgent) & "'  order by DateAffect desc"
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
 
         Using iconnx As New SQLiteConnection(iConnectStr)
             iconnx.Open()
@@ -1332,7 +1303,7 @@ Module DbManipulation
         Dim iStr As String = "SELECT natc.IdNature as Type,crt.DebutContr , crt.FinContr  "
         iStr += " FROM CONTRATSTBL crt join agents ag on ag.NumMatr=crt.NomPrenoms join contratsnature natc on crt.NaturContr=natc.NatureContr " '& Apost(NomAgent) & "'  order by DateAffect desc"
         iStr += " where ag.NomPrenoms='" & Apost(NomAgent) & "'  order by crt.DebutContr desc"
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
 
         Using iconnx As New SQLiteConnection(iConnectStr)
             iconnx.Open()
@@ -1361,7 +1332,7 @@ Module DbManipulation
         Dim iStr As String = "select DateDebut, DateFin, Motif from Absences where "
         iStr += " NomPrenom='" & Apost(NomAgent) & "'  order by DateDebut desc"
 
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Using iconnx As New SQLiteConnection(iConnectStr)
             iconnx.Open()
             Using iCmd As New SQLiteCommand(iStr, iconnx)
@@ -1389,7 +1360,7 @@ Module DbManipulation
         Dim iStr As String = "select DateHS, NbFaction, Obs from heuresup where "
         iStr += " Agent='" & Apost(NomAgent) & "'  order by DateHS desc"
 
-        If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Using iconnx As New SQLiteConnection(iConnectStr)
             iconnx.Open()
             Using iCmd As New SQLiteCommand(iStr, iconnx)
@@ -1426,7 +1397,7 @@ Module DbManipulation
             'iStr += " "
             'iStr += " Agent='" & Apost(NomAgent) & "'  order by DateHS desc"
 
-            If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+            If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
             Using iconnx As New SQLiteConnection(iConnectStr)
                 iconnx.Open()
                 Using iCmd As New SQLiteCommand(iStr, iconnx)
@@ -1467,7 +1438,7 @@ Module DbManipulation
             'iStr += " "
             'iStr += " Agent='" & Apost(NomAgent) & "'  order by DateHS desc"
 
-            If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+            If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
             Using iconnx As New SQLiteConnection(iConnectStr)
                 iconnx.Open()
                 Using iCmd As New SQLiteCommand(iStr, iconnx)
@@ -1609,7 +1580,7 @@ Module DbManipulation
         iStr &= " l.Description"
         iStr &= "  from ladawet l where l.Id=" & LevelUser
         iStr &= " "
-        ' If Directory.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        ' If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Try
             Using iConnex As New SQLiteConnection(iConxStr)
                 iConnex.Open()
@@ -1635,7 +1606,7 @@ Module DbManipulation
             End Using
         Catch ex As Exception
             MsgBox(ex.Message)
-            LoadUserProfil = True
+            LoadUserProfil = False
         End Try
     End Function
 

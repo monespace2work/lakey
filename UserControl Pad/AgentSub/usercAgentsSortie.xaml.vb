@@ -194,7 +194,7 @@ Public Class usercAgentsSortie
     End Sub
     Function SiteActuElmt(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
         SiteActuElmt = False
-        If IO.Directory.Exists(IO.Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={IO.Path.Combine(UserPath, "ManA.sqlite")}\ManA.sqlite;Version=3;"
+        If IO.File.Exists(IO.Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={IO.Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         If CbxNom.SelectedIndex >= 0 Then
             Dim istr As String = "select a.SiteAffect from  affectation a where a.AgentAffect like '" & Apost(CbxNom.SelectedItem) & "' and a.FinAffect>='" & Today.AddDays(-21).ToString("yyyy-MM-dd") & "' order by a.DateAffect desc,a.IdAffec desc limit 1"
             TbxDernierSite.Text = MyStatValStr(istr, LocalConnxStr)
@@ -294,7 +294,7 @@ Public Class usercAgentsSortie
         istr += " '" & Apost(TbxObs.Text) & "') "
         'MsgBox(istr)
 
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewSortie = SaveNewData(istr, iConnxStr)
         If SaveNewSortie Then Joper("SaveNewSortie for " & CbxNom.SelectedItem, iConnxStr)
     End Function

@@ -2,40 +2,68 @@
     Dim iConnxStr As String
     Private Sub btnLogin_Click(sender As Object, e As RoutedEventArgs) Handles btnLogin.Click
         Try
-            ' Keep the first SQLite call inside this Try so native-provider load
-            ' failures are reported with their full exception details.
-            Dim iLevel = UserTest(txtUsername.Text, txtPassword.Password, iConnxStr)
+            Dim loginDatabasePath As String = DbPathGeneral
+            Dim iLevel As Integer
+            Dim generalDatabaseError As Exception = Nothing
+            Try
+                iLevel = UserTest(txtUsername.Text, txtPassword.Password, iConnxStr)
+            Catch ex As Exception
+                generalDatabaseError = ex
+                iLevel = 1976
+
+                Dim localDatabaseChecked As Boolean = False
+                Dim localDatabaseErrors As New Collections.Generic.List(Of Exception)
+                For Each localDatabasePath As String In GetLocalDatabaseCandidates(txtUsername.Text)
+                    If Not IO.File.Exists(localDatabasePath) Then Continue For
+
+                    Try
+                        Dim localConnectionString As String = "Data Source=" & localDatabasePath & ";Version=3;"
+                        iLevel = UserTest(txtUsername.Text, txtPassword.Password, localConnectionString)
+                        localDatabaseChecked = True
+                        If iLevel <> 1976 Then
+                            loginDatabasePath = localDatabasePath
+                            iConnxStr = localConnectionString
+                            Exit For
+                        End If
+                    Catch localEx As Exception
+                        localDatabaseErrors.Add(localEx)
+                    End Try
+                Next
+
+                If iLevel = 1976 AndAlso localDatabaseChecked Then
+                    MessageBox.Show("La base générale est indisponible et ces identifiants ne sont pas présents dans la base locale.",
+                                    "Connexion locale impossible", MessageBoxButton.OK, MessageBoxImage.Warning)
+                ElseIf iLevel = 1976 Then
+                    Dim errors As New Collections.Generic.List(Of Exception) From {generalDatabaseError}
+                    errors.AddRange(localDatabaseErrors)
+                    Throw New InvalidOperationException("La base générale est indisponible et aucune base locale utilisable n'a pu être ouverte.",
+                                                        New AggregateException(errors))
+                End If
+            End Try
+
             'MsgBox(iLevel)
             If iLevel <> 1976 Then
+                UserPath = IO.Path.Combine(RootPath, UserName)
+                IO.Directory.CreateDirectory(UserPath)
+                LocalModeBb = IsLocalDatabasePath(loginDatabasePath, txtUsername.Text)
+                If LocalModeBb Then
+                    DbPath = loginDatabasePath
+                Else
+                    DbPath = IO.Path.Combine(UserPath, IO.Path.GetFileName(DbPathGeneral))
+                End If
+
                 'UserLevel = iLevel
                 If Not LoadUserProfil(iLevel, iConnxStr) Then
                     MessageBox.Show("Erreur de chargement du profil utilisateur", "ERREUR CRITIQUE", MessageBoxButton.OK, MessageBoxImage.Error)
                     Me.Close()
+                    Return
                 End If
 
                 If SessLogin(iConnxStr) Then
-                    If Not IO.Directory.Exists(IO.Path.Combine(RootPath, UserName)) Then
-                        Try
-                            IO.Directory.CreateDirectory(IO.Path.Combine(RootPath, UserName))
-                        Catch ex As Exception
-
-                        End Try
+                    If LocalModeBb Then
+                        MessageBox.Show("La base générale n'est pas accessible. Vous travaillez sur la base locale ; les modifications ne seront pas synchronisées automatiquement.",
+                                        "Mode local", MessageBoxButton.OK, MessageBoxImage.Warning)
                     End If
-                    Try
-                        UserPath = IO.Path.Combine(RootPath, UserName)
-                        'MsgBox(UserPath)
-                        If IO.File.Exists(DbPathGeneral) Then
-                            Try
-                                Dim iBaseName As String = IO.Path.GetFileName(DbPathGeneral)
-                                DbPath = IO.Path.Combine(UserPath, iBaseName)
-                                'MsgBox(DbPath)
-                            Catch ex As Exception
-
-                            End Try
-                        End If
-                    Catch ex As Exception
-
-                    End Try
                     txtPassword.Password = ""
                     Me.Hide()
                     Dim iWnd As New MainWindow
@@ -73,6 +101,26 @@
         txtUsername.Focus()
         Me.Title = "Login - LAKEY V" & My.Application.Info.Version.ToString
     End Sub
+
+    Private Function GetLocalDatabaseCandidates(username As String) As Collections.Generic.List(Of String)
+        Dim candidates As New Collections.Generic.List(Of String)
+        Dim safeUsername As String = username.Trim()
+        If safeUsername <> "" AndAlso
+           String.Equals(IO.Path.GetFileName(safeUsername), safeUsername, StringComparison.Ordinal) AndAlso
+           safeUsername <> "." AndAlso safeUsername <> ".." Then
+            candidates.Add(IO.Path.Combine(RootPath, safeUsername, "ManA.sqlite"))
+        End If
+        candidates.Add("C:\LkyRess\ManA.sqlite")
+        Return candidates.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
+    End Function
+
+    Private Function IsLocalDatabasePath(databasePath As String, username As String) As Boolean
+        Return GetLocalDatabaseCandidates(username).Any(
+            Function(localPath) String.Equals(IO.Path.GetFullPath(databasePath),
+                                                IO.Path.GetFullPath(localPath),
+                                                StringComparison.OrdinalIgnoreCase))
+    End Function
+
     Function UserTest(uName As String, uPssw As String, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Integer
         UserTest = 1976
         Dim iStr As String = "select l.UserName, l.UserPassWord, l.UserLever from lada l "

@@ -1240,13 +1240,13 @@ Class MainWindow
     End Sub
 
     Sub TestConnexionDbIcon()
-        DbPathGeneral = PaphBackUp()
-
-        If DbPath = DbPathGeneral Then
+        If LocalModeBb Then
             imgHorsConnex.Visibility = Visibility.Visible
+            tbModeConnexion.Visibility = Visibility.Visible
             bdrTitreCentre.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF6C0000"))
         Else
             imgHorsConnex.Visibility = Visibility.Collapsed
+            tbModeConnexion.Visibility = Visibility.Collapsed
             bdrTitreCentre.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF557E94"))
         End If
 

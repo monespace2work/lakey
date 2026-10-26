@@ -282,7 +282,7 @@ Public Class usercAgentsPlanning
 
     Private Sub btnValider12H_Click(sender As Object, e As RoutedEventArgs) Handles btnValider12H.Click
         elpStatus.Visibility = Visibility.Visible
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         If PlanSemaine(dtpDebut12H24H.SelectedDate.Value, dtpFin12H24H.SelectedDate.Value) = True Then
             CbxNom12H.SelectedIndex = -1
             CbxNomRemplace12H.SelectedIndex = -1
@@ -299,7 +299,7 @@ Public Class usercAgentsPlanning
 
     Private Sub btnValider24H_Click(sender As Object, e As RoutedEventArgs) Handles btnValider24H.Click
         elpStatus.Visibility = Visibility.Visible
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         If PlanF24(dtpDebut12H24H.SelectedDate.Value, dtpFin12H24H.SelectedDate.Value) Then
             CbxNom24H1.SelectedIndex = -1
             CbxNom24H2.SelectedIndex = -1
@@ -315,7 +315,7 @@ Public Class usercAgentsPlanning
 
     Private Sub btnValiderHebdo_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderHebdo.Click
         elpStatus.Visibility = Visibility.Visible
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         If PlanSemaineLibre(dtpDebutHebdo.SelectedDate.Value, dtpFinHebdo.SelectedDate.Value) = True Then
             initializ()
             initializHebdo()
@@ -570,7 +570,7 @@ Public Class usercAgentsPlanning
                 End If
             End If
             If CbxPosteRemplace.SelectedIndex > 0 And CbxAgentSortant.SelectedIndex > 0 Then
-                If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+                If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
                 If RemplaceAgentPlan(dtpDebutSubst.SelectedDate.Value, dtpFinSubst.SelectedDate.Value, ExtractPosteCode(CbxPosteRemplace.SelectedItem)) Then
                     MsgBox("DONNEES MISE A JOUR AVEC SUCCES")
                     initializ()
@@ -623,7 +623,7 @@ Public Class usercAgentsPlanning
     Private Sub btnValiderSuppr_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderSuppr.Click
         elpStatus.Visibility = Visibility.Visible
         If MessageBox.Show(MsgDelete, "ATTENTION", MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
-            If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+            If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
             If DeletePlanning(dtpDebutSubst.SelectedDate.Value, dtpFinSubst.SelectedDate.Value, CbxAgentSortant.SelectedItem, CbxPosteRemplace.SelectedItem) Then
                 MsgBox("Données supprimées avec succès")
                 initializ()

@@ -196,7 +196,7 @@ Public Class usercClientsContrat
         istr += " '" & Trim(Apost(TbxObs.Text)) & "', "
         istr += " " & RefCrt & ")"
 
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewContrat = SaveNewData(istr, iConnxStr)
         If SaveNewContrat Then Joper("SaveNewClient for " & TbxNom.Text & " at " & RefCrt, iConnxStr)
     End Function
@@ -216,7 +216,7 @@ Public Class usercClientsContrat
         istr += " DescriptionClient='" & Trim(Apost(TbxDescript.Text)) & "', "
         istr += " Obs='" & Trim(Apost(TbxObs.Text)) & "'  "
         istr += " where RefCtr=" & RefCrt & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveModifCtr = SaveNewData(istr, iConnxStr)
         If SaveModifCtr And NewNom <> TbxNom.Text Then
             SaveModifCtr = SaveNewData("update SiteAffectation set Client='" & Trim(Apost(TbxNom.Text)) & "' where Client='" & Apost(NewNom) & "'", iConnxStr) '113
@@ -500,7 +500,7 @@ Public Class usercClientsContrat
         DeleteCtr = False
         Dim istr As String = " delete from Client "
         istr += " where RefCtr=" & RefCrt & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         DeleteCtr = SaveNewData(istr, iConnxStr)
         If DeleteCtr Then Joper("DeleteCtrClient at " & RefCrt, iConnxStr)
     End Function

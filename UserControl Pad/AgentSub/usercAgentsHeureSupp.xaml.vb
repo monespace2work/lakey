@@ -173,7 +173,7 @@ Public Class usercAgentsHeureSupp
         istr += " " & CbxNbrFaction.SelectedItem & ", "
         istr += " '" & Apost(TbxObs.Text) & "') "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewHS = SaveNewData(istr, iConnxStr)
         If SaveNewHS Then Joper("SaveNewHS for " & CbxNom.SelectedItem, iConnxStr)
 
@@ -190,7 +190,7 @@ Public Class usercAgentsHeureSupp
         istr += " Obs='" & Apost(TbxObs.Text) & "'  "
         istr += " where IdHS=" & RefHS & " "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveModifHS = SaveNewData(istr, iConnxStr)
         If SaveModifHS Then Joper("SaveModifHS for " & CbxNom.SelectedItem & " at " & RefHS, iConnxStr)
 
@@ -199,7 +199,7 @@ Public Class usercAgentsHeureSupp
         DeleteHS = False
         Dim istr As String = " delete from HeureSup "
         istr += " where IdHS=" & RefHS & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         DeleteHS = SaveNewData(istr, iConnxStr)
         If DeleteHS Then Joper("DeleteAgent at " & RefHS, iConnxStr)
 

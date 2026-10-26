@@ -197,7 +197,7 @@ Public Class usercClientsPoste
         istr += " '" & Apost(CbxRepos.SelectedItem) & "', "
         istr += " '" & Apost(CbxSite.SelectedItem) & "', "
         istr += " " & RefPst & ")"
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewPoste = SaveNewData(istr, iConnxStr)
         If SaveNewPoste Then Joper("SaveNewPoste for " & TbxDesignation.Text, iConnxStr)
     End Function
@@ -211,7 +211,7 @@ Public Class usercClientsPoste
         istr += " ReposHebdo='" & Apost(CbxRepos.SelectedItem) & "', "
         istr += " NomSite='" & Apost(CbxSite.SelectedItem) & "' "
         istr += " where IdPoste=" & RefPst & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveModifPoste = SaveNewData(istr, iConnxStr)
         If SaveModifPoste And NewNom <> TbxCode.Text Then
             SaveModifPoste = SaveNewData("update PlanPoste set Poste='" & Apost(TbxCode.Text) & "' where Poste='" & Apost(NewNom) & "'", iConnxStr) '113
@@ -223,7 +223,7 @@ Public Class usercClientsPoste
         DeletePoste = False
         Dim istr As String = " delete from postes "
         istr += " where IdPoste=" & RefPst & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         DeletePoste = SaveNewData(istr, iConnxStr)
         If DeletePoste Then Joper("DeletePoste at " & RefPst, iConnxStr)
     End Function

@@ -359,7 +359,7 @@ Public Class usercAgentsAbsences
         istr += "0, " '" & Apost(TbxNumCrt.Text) & "', "
         istr += " '" & Apost(TbxObs.Text) & "') "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewAbsences = SaveNewData(istr, iConnxStr)
         If SaveNewAbsences Then Joper("SaveNewAbsences for " & CbxNom.SelectedItem, iConnxStr)
     End Function
@@ -377,7 +377,7 @@ Public Class usercAgentsAbsences
         istr += "1, " '" & Apost(TbxNumCrt.Text) & "', "
         istr += " '" & Apost(TbxObsSdb.Text) & "') "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveNewAbsencesStb = SaveNewData(istr, iConnxStr)
         If SaveNewAbsencesStb Then Joper("SaveNewAbsencesStb for " & CbxNom.SelectedItem, iConnxStr)
     End Function
@@ -393,7 +393,7 @@ Public Class usercAgentsAbsences
         'istr += " DateDmd='" & dtpDateDmdSdb.SelectedDate.Value.ToString("yyyy-MM-dd") & "', "
         istr += " Obs='" & Apost(TbxObs.Text) & "', StdBy=0 "
         istr += " where IdOp=" & RefAbs & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveModifAbs = SaveNewData(istr, iConnxStr)
         If SaveModifAbs Then Joper("SaveModifAbs for " & CbxNom.SelectedItem & " at " & RefAbs, iConnxStr)
 
@@ -409,7 +409,7 @@ Public Class usercAgentsAbsences
         istr += " Motif='" & Apost(CbxMotifSdb.SelectedItem) & "', "
         istr += " Obs='" & Apost(TbxObsSdb.Text) & "'  "
         istr += " where IdOp=" & RefAbs & " "
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL ")
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         SaveModifAbsStb = SaveNewData(istr, iConnxStr)
         If SaveModifAbsStb Then Joper("SaveModifAbsStb for " & CbxNom.SelectedItem & " at " & RefAbs, iConnxStr)
 

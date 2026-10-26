@@ -244,7 +244,7 @@ Public Class usercAgentsContrat
         istr += " '" & Apost(TbxNumCrt.Text) & "', "
         istr += " '" & Apost(TbxObs.Text) & "') "
         'MsgBox(istr)
-        If DbPath = DbPathGeneral Then MsgBox("Vous travaillez en MODE LOCAL => " & DbPath)
+        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL => " & DbPath)
         SaveNewContrat = SaveNewData(istr, iConnxStr)
         If SaveNewContrat Then Joper("SaveNewContrat for " & CbxNom.SelectedItem, iConnxStr)
     End Function
