@@ -264,7 +264,7 @@ Module DbManipulation
                 End Using
             End Using
         Catch ex As Exception
-            System.Diagnostics.Debug.WriteLine("Impossible de lire le chemin de la base générale dans MySet.sqlite : " & ex)
+            System.Diagnostics.Debug.WriteLine("Impossible de lire le chemin de la base générale dans MySet.sqlite : " & ex.Message)
         End Try
         If Not String.IsNullOrWhiteSpace(configuredDatabasePath) Then PaphBackUp = configuredDatabasePath
     End Function

@@ -84,7 +84,7 @@
                 <RowDefinition Height="Auto" MinHeight="34"/>
                 <RowDefinition Height="Auto" MinHeight="112"/>
                 <RowDefinition Height="*" MinHeight="250"/>
-                <RowDefinition Height="155" MinHeight="105" MaxHeight="230"/>
+                <RowDefinition Height="78" MinHeight="52" MaxHeight="115"/>
             </Grid.RowDefinitions>
             <Border x:Name="bdrEntete" Background="{DynamicResource ThemeCardBrush}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="0,0,0,1" CornerRadius="0">
                 <Menu >
