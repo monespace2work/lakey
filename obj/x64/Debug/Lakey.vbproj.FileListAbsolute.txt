@@ -191,7 +191,6 @@ E:\iclones\lakey\bin\x64\Debug\System.Buffers.xml
 E:\iclones\lakey\bin\x64\Debug\System.Memory.xml
 E:\iclones\lakey\bin\x64\Debug\System.Numerics.Vectors.xml
 E:\iclones\lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.xml
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.g.vb
