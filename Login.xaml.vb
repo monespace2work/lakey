@@ -1,9 +1,11 @@
 ﻿Public Class Login
     Dim iConnxStr As String
     Private Sub btnLogin_Click(sender As Object, e As RoutedEventArgs) Handles btnLogin.Click
-        Dim iLevel = UserTest(txtUsername.Text, txtPassword.Password, iConnxStr)
-        'MsgBox(iLevel)
         Try
+            ' Keep the first SQLite call inside this Try so native-provider load
+            ' failures are reported with their full exception details.
+            Dim iLevel = UserTest(txtUsername.Text, txtPassword.Password, iConnxStr)
+            'MsgBox(iLevel)
             If iLevel <> 1976 Then
                 'UserLevel = iLevel
                 If Not LoadUserProfil(iLevel, iConnxStr) Then
@@ -59,8 +61,7 @@
             End If
 
         Catch ex As Exception
-
-            Me.Close()
+            MessageBox.Show(ex.ToString(), "Erreur pendant la connexion", MessageBoxButton.OK, MessageBoxImage.Error)
         End Try
     End Sub
 
@@ -103,7 +104,11 @@
             End Using
 
         Catch ex As Exception
-            ShowTempMsg(ex.Message & Environment.NewLine & iStr, 60)
+            ' Do not turn a SQLite/native DLL load failure into the same return
+            ' value as invalid credentials; let the click handler show its trace.
+            Throw New InvalidOperationException("Échec de la vérification des identifiants dans SQLite. " &
+                                                "Base utilisée : " & iConxStr &
+                                                Environment.NewLine & "Requête : " & iStr, ex)
         End Try
         'MsgBox(UserTest)
         'UserTest = MayStatVal(iStr, iConxStr)

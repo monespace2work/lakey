@@ -1,4 +1,5 @@
 ﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.props" Condition="Exists('packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.props')" />
   <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" />
   <Import Project="packages\SQLite.3.13.0\build\net45\SQLite.props" Condition="Exists('packages\SQLite.3.13.0\build\net45\SQLite.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -625,7 +626,15 @@
     <Error Condition="!Exists('packages\SQLite.3.13.0\build\net45\SQLite.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SQLite.3.13.0\build\net45\SQLite.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.props'))" />
+    <Error Condition="!Exists('packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.targets'))" />
   </Target>
   <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" />
+  <Import Project="packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.targets" Condition="Exists('packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.targets')" />
+  <Target Name="CopySourceGearSqliteNativeForX64" AfterTargets="Build" Condition="'$(Platform)' == 'x64'">
+    <Copy SourceFiles="packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll"
+          DestinationFiles="$(TargetDir)e_sqlite3.dll"
+          Condition="Exists('packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll')" />
+  </Target>
 </Project>
