@@ -41,7 +41,14 @@
             </Grid>
         </StackPanel>
         <ScrollViewer Grid.Row="1">
-            <DataGrid x:Name="dgPointGlobal" AutoGenerateColumns="True"/>
+            <DataGrid x:Name="dgPointGlobal"
+                      AutoGenerateColumns="True"
+                      Background="{DynamicResource ThemeCardBrush}"
+                      Foreground="{DynamicResource ThemeInkBrush}"
+                      FontSize="14"
+                      RowHeight="32"
+                      RowBackground="{DynamicResource ThemeRowBrush}"
+                      AlternatingRowBackground="{DynamicResource ThemeAlternateRowBrush}"/>
         </ScrollViewer>
     </Grid>
 </Window>

@@ -1,6 +1,13 @@
-﻿Class Application
+Class Application
+    Shared Sub New()
+        EventManager.RegisterClassHandler(GetType(UserControl),
+                                          FrameworkElement.LoadedEvent,
+                                          New RoutedEventHandler(AddressOf OnUserControlLoaded),
+                                          True)
+    End Sub
 
-    ' Les événements de niveau application, par exemple Startup, Exit et DispatcherUnhandledException
-    ' peuvent être gérés dans ce fichier.
-
+    Private Shared Sub OnUserControlLoaded(sender As Object, e As RoutedEventArgs)
+        Dim mainWindow = TryCast(Current.MainWindow, MainWindow)
+        If mainWindow IsNot Nothing Then mainWindow.NotifyUserControlLoading()
+    End Sub
 End Class

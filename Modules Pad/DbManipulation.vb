@@ -269,6 +269,96 @@ Module DbManipulation
         If Not String.IsNullOrWhiteSpace(configuredDatabasePath) Then PaphBackUp = configuredDatabasePath
     End Function
 
+    Public Function IsSQLiteDatabaseHealthy(databasePath As String, ByRef errorMessage As String) As Boolean
+        errorMessage = ""
+        If String.IsNullOrWhiteSpace(databasePath) OrElse Not File.Exists(databasePath) Then
+            errorMessage = "Le fichier de base de données est introuvable."
+            Return False
+        End If
+
+        Try
+            Dim connectionString As New SQLiteConnectionStringBuilder With {
+                .DataSource = databasePath,
+                .Version = 3,
+                .ReadOnly = True
+            }
+            Using connection As New SQLiteConnection(connectionString.ToString())
+                connection.Open()
+                Using command As New SQLiteCommand("PRAGMA quick_check;", connection)
+                    Dim result As String = Convert.ToString(command.ExecuteScalar())
+                    If Not String.Equals(result, "ok", StringComparison.OrdinalIgnoreCase) Then
+                        errorMessage = If(String.IsNullOrWhiteSpace(result), "Le contrôle SQLite n'a renvoyé aucun résultat.", result)
+                        Return False
+                    End If
+                End Using
+            End Using
+            Return True
+        Catch ex As Exception
+            errorMessage = ex.Message
+            Return False
+        End Try
+    End Function
+
+    Public Sub CreateValidatedSQLiteSnapshot(sourcePath As String, destinationPath As String)
+        Dim fullSourcePath As String = Path.GetFullPath(sourcePath)
+        Dim fullDestinationPath As String = Path.GetFullPath(destinationPath)
+        If String.Equals(fullSourcePath, fullDestinationPath, StringComparison.OrdinalIgnoreCase) Then
+            Throw New InvalidOperationException("La source et la destination de la copie SQLite sont identiques.")
+        End If
+
+        Dim destinationDirectory As String = Path.GetDirectoryName(fullDestinationPath)
+        If String.IsNullOrWhiteSpace(destinationDirectory) Then
+            Throw New InvalidOperationException("Le dossier de destination de la base SQLite est invalide.")
+        End If
+        Directory.CreateDirectory(destinationDirectory)
+
+        Dim temporaryPath As String = Path.Combine(
+            destinationDirectory,
+            Path.GetFileName(fullDestinationPath) & "." & Guid.NewGuid().ToString("N") & ".tmp")
+
+        Try
+            SQLiteConnection.CreateFile(temporaryPath)
+            Dim sourceConnectionString As New SQLiteConnectionStringBuilder With {
+                .DataSource = fullSourcePath,
+                .Version = 3,
+                .ReadOnly = True
+            }
+            Using source As New SQLiteConnection(sourceConnectionString.ToString())
+                source.Open()
+                Using checkCommand As New SQLiteCommand("PRAGMA quick_check;", source)
+                    Dim checkResult As String = Convert.ToString(checkCommand.ExecuteScalar())
+                    If Not String.Equals(checkResult, "ok", StringComparison.OrdinalIgnoreCase) Then
+                        Throw New InvalidDataException("La base SQLite source est invalide : " & checkResult)
+                    End If
+                End Using
+
+                Using destination As New SQLiteConnection("Data Source=" & temporaryPath & ";Version=3;")
+                    destination.Open()
+                    source.BackupDatabase(destination, "main", "main", -1, Nothing, 1000)
+                End Using
+            End Using
+
+            Dim validationError As String = Nothing
+            If Not IsSQLiteDatabaseHealthy(temporaryPath, validationError) Then
+                Throw New InvalidDataException("La copie SQLite temporaire est invalide : " & validationError)
+            End If
+
+            If File.Exists(fullDestinationPath) Then
+                File.Replace(temporaryPath, fullDestinationPath, Nothing)
+            Else
+                File.Move(temporaryPath, fullDestinationPath)
+            End If
+        Finally
+            If File.Exists(temporaryPath) Then
+                Try
+                    File.Delete(temporaryPath)
+                Catch ex As Exception
+                    System.Diagnostics.Debug.WriteLine("Impossible de supprimer la copie SQLite temporaire : " & ex.Message)
+                End Try
+            End If
+        End Try
+    End Sub
+
     Public Function isLocalModeDd() As Boolean
         Return LocalModeBb
     End Function

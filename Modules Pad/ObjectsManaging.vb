@@ -323,33 +323,38 @@ Module ObjectsManaging
         If LocalModeBb Then Return False
         Dim userDatabasePath As String = Path.Combine(UserPath, "ManA.sqlite")
         If File.Exists(userDatabasePath) Then DbPath = userDatabasePath
-        If (DbPathGeneral = DbPath) OrElse (Not File.Exists(DbPathGeneral)) Then
-            'MainFrm.Connexion_Pbx.Visible = True
-            'MsgBox(DbPathGeneral)
-            maj = False
-        Else
-            Try
-                Try
-                    File.Copy(DbPath, BUDirPath & "\" & Path.GetFileName(DbPath), True)
-                Catch ex As Exception
-                End Try
-                Try
-                    If File.Exists(DbPath) Then File.Delete(DbPath)
-                    File.Copy(DbPathGeneral, DbPath, True)
-                    Dim Fi As New FileInfo(DbPath)
-                    Fi.Attributes = FileAttributes.Hidden
-                    maj = True
-                Catch ex As Exception
-                    'MainFrm.Connexion_Pbx.Visible = True
-                    maj = False
-                End Try
-            Catch ex As Exception
-                'MsgBox("Code 100 : " & ex.Message)
-                maj = False
-            End Try
+        If String.Equals(Path.GetFullPath(DbPathGeneral),
+                         Path.GetFullPath(DbPath),
+                         StringComparison.OrdinalIgnoreCase) Then Return False
 
-        End If
+        Try
+            If Not File.Exists(DbPathGeneral) Then
+                Throw New FileNotFoundException("La base centrale est introuvable.", DbPathGeneral)
+            End If
 
+            Dim sourceValidationError As String = Nothing
+            If Not IsSQLiteDatabaseHealthy(DbPathGeneral, sourceValidationError) Then
+                Throw New InvalidDataException("La base centrale n'est pas exploitable : " & sourceValidationError)
+            End If
+
+            If File.Exists(DbPath) AndAlso Not String.IsNullOrWhiteSpace(BUDirPath) Then
+                Dim backupPath As String = Path.Combine(BUDirPath, Path.GetFileName(DbPath))
+                If Not String.Equals(Path.GetFullPath(backupPath),
+                                     Path.GetFullPath(DbPath),
+                                     StringComparison.OrdinalIgnoreCase) Then
+                    Dim localValidationError As String = Nothing
+                    If IsSQLiteDatabaseHealthy(DbPath, localValidationError) Then
+                        CreateValidatedSQLiteSnapshot(DbPath, backupPath)
+                    End If
+                End If
+            End If
+
+            CreateValidatedSQLiteSnapshot(DbPathGeneral, DbPath)
+            File.SetAttributes(DbPath, File.GetAttributes(DbPath) Or FileAttributes.Hidden)
+            maj = True
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("Échec de la synchronisation SQLite : " & ex.ToString())
+        End Try
     End Function
 
     Public Sub StartProcess(path As String)

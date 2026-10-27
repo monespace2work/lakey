@@ -85,7 +85,20 @@
         <Style TargetType="TextBox">
             <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="8,5"/><Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInputTextBrush}"/>
+            <Setter Property="SelectionBrush" Value="{DynamicResource ThemeTextSelectionBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource ThemeInputDisabledBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeInputDisabledTextBrush}"/>
+                </Trigger>
+                <Trigger Property="IsReadOnly" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeInputDisabledBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeInputDisabledTextBrush}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid>
@@ -333,7 +346,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <Label x:Name="lblAgentSearch" Content="Agents" FontSize="11" FontWeight="Bold" Margin="1,0,0,1" Foreground="{DynamicResource ThemeSearchLabelBrush}"/>
+                                <Label x:Name="lblAgentSearch" Content="Agents" FontSize="12" FontWeight="Bold" Margin="1,0,0,2" Padding="4,1" Background="{DynamicResource ThemeSearchTitleBrush}" Foreground="{DynamicResource ThemeSearchLabelBrush}"/>
                                 <TextBox x:Name="BtnAgentSearch" Height="34" Margin="1" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
                             <DataGrid x:Name="dgAgent" Grid.Column="1" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" HeadersVisibility="None" RowBackground="{DynamicResource ThemeAlternateRowBrush}">
@@ -357,7 +370,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <Label x:Name="lblContratSearch"  Content="Contrats" FontSize="11" FontWeight="Bold" Margin="1,0,0,1" Foreground="{DynamicResource ThemeSearchLabelBrush}"/>
+                                <Label x:Name="lblContratSearch"  Content="Contrats" FontSize="12" FontWeight="Bold" Margin="1,0,0,2" Padding="4,1" Background="{DynamicResource ThemeSearchTitleBrush}" Foreground="{DynamicResource ThemeSearchLabelBrush}"/>
                                 <TextBox x:Name="BtnContratSearch" Height="34" Margin="1" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
                             <DataGrid  x:Name="dgContrat" Grid.Column="1" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" HeadersVisibility="None" RowBackground="{DynamicResource ThemeAlternateRowBrush}">
@@ -378,7 +391,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <Label x:Name="lblPlanningSearch" Content="En poste" FontSize="11" FontWeight="Bold" Margin="1,0,0,1" Foreground="{DynamicResource ThemeSearchLabelBrush}" Background="{x:Null}"/>
+                                <Label x:Name="lblPlanningSearch" Content="En poste" FontSize="12" FontWeight="Bold" Margin="1,0,0,2" Padding="4,1" Foreground="{DynamicResource ThemeSearchLabelBrush}" Background="{DynamicResource ThemeSearchTitleBrush}"/>
                                 <TextBox x:Name="BtnPlanningSearch" Height="34" Margin="1" Style="{StaticResource SearchButtonRounded}" />
                             </StackPanel>
                             <DataGrid  x:Name="dgPlanning" Grid.Column="1" AutoGenerateColumns="True" HeadersVisibility="None" RowBackground="{DynamicResource ThemeAlternateRowBrush}" Background="{DynamicResource ThemeCardBrush}">
@@ -401,7 +414,7 @@
 
                 </Grid>
             </Border>
-            <Grid x:Name="grdLoadingOverlay" Grid.Row="2" Grid.Column="2" Panel.ZIndex="1000"
+            <Grid x:Name="grdLoadingOverlay" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Panel.ZIndex="1000"
                   Background="#9900113E" Visibility="Collapsed" IsHitTestVisible="True">
                 <Grid.Resources>
                     <Storyboard x:Key="LoadingRotationStoryboard">

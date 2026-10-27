@@ -6,11 +6,18 @@ Class MainWindow
     Dim iUserC As New UserControl
     Public LocalConnxStr As String
     Private isDarkTheme As Boolean = True
+    Private ReadOnly userControlLoadingTimer As New DispatcherTimer With {
+        .Interval = TimeSpan.FromMilliseconds(500)
+    }
+    Private userControlLoadingPending As Boolean
+    Private loadingOperationCount As Integer
 
     Public Sub New()
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
+
+        AddHandler userControlLoadingTimer.Tick, AddressOf UserControlLoadingTimer_Tick
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
     End Sub
@@ -95,25 +102,62 @@ Class MainWindow
     Private Async Function RunWithLoadingAsync(loadAction As Action,
                                                Optional loadingMessage As String = "Chargement des données...",
                                                Optional minimumDisplayMilliseconds As Integer = 0) As Task
-        Dim loadingStoryboard = TryCast(grdLoadingOverlay.Resources("LoadingRotationStoryboard"),
-                                       System.Windows.Media.Animation.Storyboard)
-        tbkLoadingMessage.Text = loadingMessage
-        grdLoadingOverlay.Visibility = Visibility.Visible
+        BeginLoadingOperation(loadingMessage)
         Me.Cursor = Cursors.Wait
         Try
-            loadingStoryboard?.Begin(grdLoadingOverlay, True)
             Await Dispatcher.Yield(DispatcherPriority.Background)
             If minimumDisplayMilliseconds > 0 Then
                 Await System.Threading.Tasks.Task.Delay(minimumDisplayMilliseconds)
             End If
             loadAction()
         Finally
-            loadingStoryboard?.Stop(grdLoadingOverlay)
-            grdLoadingOverlay.Visibility = Visibility.Collapsed
-            tbkLoadingMessage.Text = "Chargement des données..."
+            EndLoadingOperation()
             Me.Cursor = Cursors.Arrow
         End Try
     End Function
+
+    Friend Sub NotifyUserControlLoading()
+        userControlLoadingPending = True
+        userControlLoadingTimer.Stop()
+        userControlLoadingTimer.Start()
+        ShowLoadingOverlay("Chargement des données...")
+    End Sub
+
+    Private Sub BeginLoadingOperation(message As String)
+        loadingOperationCount += 1
+        ShowLoadingOverlay(message)
+    End Sub
+
+    Private Sub EndLoadingOperation()
+        If loadingOperationCount > 0 Then loadingOperationCount -= 1
+        HideLoadingOverlayIfIdle()
+    End Sub
+
+    Private Sub ShowLoadingOverlay(message As String)
+        tbkLoadingMessage.Text = message
+        If grdLoadingOverlay.Visibility = Visibility.Visible Then Return
+
+        grdLoadingOverlay.Visibility = Visibility.Visible
+        Dim loadingStoryboard = TryCast(grdLoadingOverlay.Resources("LoadingRotationStoryboard"),
+                                        System.Windows.Media.Animation.Storyboard)
+        loadingStoryboard?.Begin(grdLoadingOverlay, True)
+    End Sub
+
+    Private Sub HideLoadingOverlayIfIdle()
+        If loadingOperationCount > 0 OrElse userControlLoadingPending Then Return
+
+        Dim loadingStoryboard = TryCast(grdLoadingOverlay.Resources("LoadingRotationStoryboard"),
+                                        System.Windows.Media.Animation.Storyboard)
+        loadingStoryboard?.Stop(grdLoadingOverlay)
+        grdLoadingOverlay.Visibility = Visibility.Collapsed
+        tbkLoadingMessage.Text = "Chargement des données..."
+    End Sub
+
+    Private Sub UserControlLoadingTimer_Tick(sender As Object, e As EventArgs)
+        userControlLoadingTimer.Stop()
+        userControlLoadingPending = False
+        HideLoadingOverlayIfIdle()
+    End Sub
 
     Private Async Sub btnThemeToggle_Click(sender As Object, e As RoutedEventArgs)
         Dim requestedDarkTheme = Not isDarkTheme
@@ -135,6 +179,11 @@ Class MainWindow
             SetThemeColor("ThemeContentBorderBrush", "#62778D")
             SetThemeColor("ThemeDashboardTitleBrush", "#0B1630")
             SetThemeColor("ThemeDashboardTitleTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeSearchPlanningBrush", "#082744")
+            SetThemeColor("ThemeSearchAgentBrush", "#0C365E")
+            SetThemeColor("ThemeSearchContractBrush", "#124A78")
+            SetThemeColor("ThemeSearchLabelBrush", "#FFFFFF")
+            SetThemeColor("ThemeSearchTitleBrush", "#123A5A")
             SetThemeColor("ThemeInkBrush", "#F1F5F9")
             SetThemeColor("ThemeInputBrush", "#26384B")
             SetThemeColor("ThemeInputTextBrush", "#F8FAFC")
@@ -219,6 +268,11 @@ Class MainWindow
             SetThemeColor("ThemeContentBorderBrush", "#8EA4B3")
             SetThemeColor("ThemeDashboardTitleBrush", "#D7E7F4")
             SetThemeColor("ThemeDashboardTitleTextBrush", "#0B2440")
+            SetThemeColor("ThemeSearchPlanningBrush", "#DCEAF5")
+            SetThemeColor("ThemeSearchAgentBrush", "#D3E5F4")
+            SetThemeColor("ThemeSearchContractBrush", "#C7DFF0")
+            SetThemeColor("ThemeSearchLabelBrush", "#102A43")
+            SetThemeColor("ThemeSearchTitleBrush", "#B4D2E8")
             SetThemeColor("ThemeInkBrush", "#172B3F")
             SetThemeColor("ThemeInputBrush", "#FFFFFF")
             SetThemeColor("ThemeInputTextBrush", "#172B3F")

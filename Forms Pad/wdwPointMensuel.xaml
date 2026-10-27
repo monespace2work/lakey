@@ -45,7 +45,14 @@
             <TextBlock x:Name="tbkTotal" Text="Nombre total :0 " Foreground="White" Background="#FF000042" Margin="0" Padding="10,0,0,0" />
         </StackPanel>
         <ScrollViewer  Grid.Row="1"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible">
-            <DataGrid x:Name="dgPointGlobal" AutoGenerateColumns="True" AlternatingRowBackground="#FFCCFFEF"/>
+            <DataGrid x:Name="dgPointGlobal"
+                      AutoGenerateColumns="True"
+                      Background="{DynamicResource ThemeCardBrush}"
+                      Foreground="{DynamicResource ThemeInkBrush}"
+                      FontSize="14"
+                      RowHeight="32"
+                      RowBackground="{DynamicResource ThemeRowBrush}"
+                      AlternatingRowBackground="{DynamicResource ThemeAlternateRowBrush}"/>
         </ScrollViewer>
     </Grid>
 </Window>
