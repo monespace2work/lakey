@@ -55,7 +55,7 @@ Public Class usercAgentsEntree
         maj()
         AfficheStat?.Invoke()
         NewData = True
-        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree, format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero "
+        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree, format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
         istr += " FROM  agents  where actif=1"
         istr += " and DateEntree>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
         istr += " ORDER BY actif desc, Nomprenoms "
@@ -135,6 +135,8 @@ Public Class usercAgentsEntree
         TbxAdresse.Clear()
         TbxNunBank.Clear()
         TbxNunCarte.Clear()
+        TbxLieuNaiss.Clear()
+        TbxPrefNaiss.Clear()
 
         TbxNbEnf.Text = 0
         TbxPays.Text = "TOGO"
@@ -154,7 +156,7 @@ Public Class usercAgentsEntree
         dtpDateNaiss.DisplayDateStart = Today.AddYears(-65)
 
 
-        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero "
+        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
         istr += " FROM  agents where actif=1 "
         istr += " ORDER BY actif desc, DateEntree desc, RefAgent desc, Nomprenoms "
         DgAgentListe.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
@@ -214,12 +216,12 @@ Public Class usercAgentsEntree
     End Sub
     Function SaveNewAgent() As Boolean
         Dim istr As String = " insert into agents "
-        istr += " (RefAgent,NomPrenoms,NomAgent,PrenomAgent,NumMatr,Contacts,DateNaiss,Sexe,CatEch,NbEnf,Actif,DateEntree,VilleResidence,Quartier,Fonction,OpTime,Pays,MatrimoSituation,Nsecu,CarteType,CarteNumero,Banque,NumCompte ) "
+        istr += " (RefAgent,NomPrenoms,NomAgent,PrenomAgent,NumMatr,Contacts,DateNaiss,Sexe,CatEch,NbEnf,Actif,DateEntree,VilleResidence,Quartier,Fonction,OpTime,Pays,MatrimoSituation,Nsecu,CarteType,CarteNumero,Banque,NumCompte,LieuNaiss,PrefNaiss ) "
         istr += " values "
         istr += "(" & RefAg & ",'" & Trim(Apost(NomPrenomAg)) & "','" & Trim(Apost(TbxNom.Text)) & "','" & Trim(Apost(TbxPrenom.Text)) & "','" & Trim(Apost(TbxNumMaticule.Text)) & "','"
         istr += Trim(Apost(TbxContact.Text)) & "','" & dtpDateNaiss.SelectedDate.Value.ToString("yyyy-MM-dd") & "','" & Apost(cbxSexe.SelectedItem) & "','" & Apost(TbxCSP.Text) & "'," & TbxNbEnf.Text & ","
         istr += ChbActif.IsChecked & ",'" & dtpDateEmbauche.SelectedDate.Value.ToString("yyyy-MM-dd") & "','" & Apost(TbxVille.Text) & "','" & Trim(Apost(TbxAdresse.Text)) & "','" & Apost(CbxFonction.SelectedItem) & "','" & Now.ToString("yyyy-MM-dd HH:mm:ss") & "','"
-        istr += Trim(Apost(TbxPays.Text)) & "','" & Apost(CbxSituationMatrim.SelectedItem) & "','" & Trim(Apost(TbxNCNSS.Text)) & "','" & Trim(Apost(CartValue)) & "','" & Trim(Apost(TbxNunCarte.Text)) & "','" & Apost(BankValue) & "','" & Trim(Apost(TbxNunBank.Text)) & "'"
+        istr += Trim(Apost(TbxPays.Text)) & "','" & Apost(CbxSituationMatrim.SelectedItem) & "','" & Trim(Apost(TbxNCNSS.Text)) & "','" & Trim(Apost(CartValue)) & "','" & Trim(Apost(TbxNunCarte.Text)) & "','" & Apost(BankValue) & "','" & Trim(Apost(TbxNunBank.Text)) & "','" & Apost(TbxLieuNaiss.Text) & "','" & Trim(Apost(TbxPrefNaiss.Text)) & "'"
         istr += ")"
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL => " & DbPath)
         SaveNewAgent = SaveNewData(istr, iConnxStr)
@@ -230,7 +232,8 @@ Public Class usercAgentsEntree
         istr += " NomPrenoms='" & Trim(Apost(NomPrenomAg)) & "',NomAgent='" & Trim(Apost(TbxNom.Text)) & "',PrenomAgent='" & Trim(Apost(TbxPrenom.Text)) & "',NumMatr='" & Trim(Apost(TbxNumMaticule.Text)) & "',Contacts='"
         istr += Trim(Apost(TbxContact.Text)) & "',DateNaiss='" & dtpDateNaiss.SelectedDate.Value.ToString("yyyy-MM-dd") & "',Sexe='" & Apost(cbxSexe.SelectedItem) & "',CatEch='" & Trim(Apost(TbxCSP.Text)) & "',NbEnf=" & TbxNbEnf.Text & ", Actif="
         istr += ChbActif.IsChecked & ",DateEntree='" & dtpDateEmbauche.SelectedDate.Value.ToString("yyyy-MM-dd") & "',VilleResidence='" & Apost(TbxVille.Text) & "',Quartier='" & Apost(TbxAdresse.Text) & "',Fonction='" & Apost(CbxFonction.SelectedItem) & "',OpTime='" & Now.ToString("yyyy-MM-dd HH:mm:ss") & "',Pays='"
-        istr += Trim(Apost(TbxPays.Text)) & "',MatrimoSituation='" & Apost(CbxSituationMatrim.SelectedItem) & "',Nsecu='" & Trim(Apost(TbxNCNSS.Text)) & "',CarteType='" & Trim(Apost(CartValue)) & "',CarteNumero='" & Trim(Apost(TbxNunCarte.Text)) & "',Banque='" & Trim(Apost(BankValue)) & "',NumCompte='" & Trim(Apost(TbxNunBank.Text)) & "'"
+        istr += Trim(Apost(TbxPays.Text)) & "',MatrimoSituation='" & Apost(CbxSituationMatrim.SelectedItem) & "',Nsecu='" & Trim(Apost(TbxNCNSS.Text)) & "',CarteType='" & Trim(Apost(CartValue)) & "',CarteNumero='" & Trim(Apost(TbxNunCarte.Text)) & "',Banque='" & Trim(Apost(BankValue)) & "',NumCompte='" & Trim(Apost(TbxNunBank.Text)) & "',"
+        istr += "LieuNaiss='" & Trim(Apost(TbxLieuNaiss.Text)) & "',PrefNaiss='" & Trim(Apost(TbxPrefNaiss.Text)) & "'"
         If ChbActif.IsChecked And DateSortie <> "" Then
             If MsgBox("Vous êtes sur le point de ACTIVER L'AGENT. " & DateSortie & Chr(13) & " CONTINUER ?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then istr += ", DateSortie=null "
         End If
@@ -423,7 +426,7 @@ Public Class usercAgentsEntree
         Else
             sufix = ""
         End If
-        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,Format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero "
+        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,Format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
         istr += " FROM  agents "
         istr += " where  "
         If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then istr += " DateEntree>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and DateEntree<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
@@ -436,6 +439,8 @@ Public Class usercAgentsEntree
         istr += " or Quartier  like '%" & KeyWord & "%' "
         istr += " or Fonction  like '%" & KeyWord & "%' "
         istr += " or CatEch  like '%" & KeyWord & "%' "
+        istr += " or LieuNaiss  like '%" & KeyWord & "%' "
+        istr += " or PrefNaiss  like '%" & KeyWord & "%' "
         istr += " or RefAgent  like '%" & KeyWord & "%') " & sufix ' BtnAgentListeSearch.Text
         If AffActif Then
             If iActif And Not iInActif Then
@@ -794,6 +799,14 @@ Public Class usercAgentsEntree
             AffActif = True
         End If
         If iFormLoaded Then SearchAgent(BtnAgentListeSearch.Text)
+    End Sub
+
+    Private Sub TbxLieuNaiss_TextChanged(sender As Object, e As TextChangedEventArgs) Handles TbxLieuNaiss.TextChanged
+        SaisiTbx(sender, TblIndicationLieuNaiss)
+    End Sub
+
+    Private Sub TbxNunPrefNaiss_TextChanged(sender As Object, e As TextChangedEventArgs) Handles TbxPrefNaiss.TextChanged
+        SaisiTbx(sender, TblIndicationPrefNais)
     End Sub
 
     Public Function NumMatrDefault(TypeContrat As String) As String

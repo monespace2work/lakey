@@ -8,22 +8,22 @@
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto" MinHeight="56"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
+        <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="200"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition MaxWidth="200"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="STRUCRURE" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" Grid.Column="1"/>
-                <TextBox x:Name="BtnClientSiteSearch" Width="150" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
+                <Label Content="STRUCRURE" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20" Grid.Column="1"/>
+                <TextBox x:Name="BtnClientSiteSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-            <Border BorderBrush="Black" BorderThickness="1" Background="#FF000A1D">
+            <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#FF000A1D">
                 <StackPanel>
                     <Grid >
                         <Grid.RowDefinitions>
@@ -43,51 +43,51 @@
                                     <StackPanel >
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Nom de la société" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteNom" MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteNom" MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Sigle" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteSigle"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteSigle"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Adresse siège" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteAdress"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteAdress"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Ville siège" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteVille"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteVille"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Pays siège" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxStePays"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxStePays"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="N° Tél officiel" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteTelephone"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteTelephone"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Boite postale " Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteBP"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteBP"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="N° d'identification fiscal (NIF)" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteNif"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteNif"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="N° au registre du commerce (RCCM) : " Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteRccm"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteRccm"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="N° employeur CNSS" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteCnss"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteCnss"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Adresse mail" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteMail"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteMail"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0" >
                                             <TextBlock Text="Site web" Height="14" Width="205" Foreground="White"/>
-                                            <TextBox x:Name="tbxSteWeb"  MinWidth="475" Background="#FFD9E1F9"/>
+                                            <TextBox x:Name="tbxSteWeb"  MinWidth="475" Background="{DynamicResource ThemeInputBrush}"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>

@@ -8,23 +8,23 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto" MinHeight="56"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
+        <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="200"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition MaxWidth="200"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="EMPLOYES / CONGES" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" Grid.Column="1"/>
-                <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
+                <Label Content="EMPLOYES / CONGES" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20" Grid.Column="1"/>
+                <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
 
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-            <Border BorderBrush="Black" BorderThickness="1" Background="#FF000A1D">
+            <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#FF000A1D">
                 <StackPanel>
                     <Grid >
                         <Grid.RowDefinitions>

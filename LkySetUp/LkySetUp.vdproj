@@ -2248,7 +2248,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ClosedXML, Version=0.104.2.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:ClosedXML, Version=0.105.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_11256C27BBF76003E64F89CBBB9C9CE3"
@@ -6311,15 +6311,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Lakey"
-        "ProductCode" = "8:{6EE35281-1756-4DCF-BFA5-3A322A2A05A6}"
-        "PackageCode" = "8:{A33EABCD-5E5F-4A5E-A32E-973EFFADF722}"
+        "ProductCode" = "8:{034A733F-0EC7-45AA-902C-A9C8602B8604}"
+        "PackageCode" = "8:{C5BE5ACA-2EAC-4CEB-A322-6D002DA2EDDB}"
         "UpgradeCode" = "8:{D1B189A0-DECB-4E17-9524-9BB764B10CA5}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:2.5.3"
+        "ProductVersion" = "8:3.2.1"
         "Manufacturer" = "8:JPBA"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

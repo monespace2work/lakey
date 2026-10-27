@@ -122,6 +122,10 @@ Module ObjectsManaging
             End Select
             iTempMsg.Title = iTitle
             iTempMsg.tbxMsg.Text = MsgText
+            iTempMsg.tbxMsg.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FF263238"))
+            iTempMsg.tbxMsg.FontFamily = New FontFamily("Segoe UI")
+            iTempMsg.tbxMsg.FontSize = 13
+            iTempMsg.tbxMsg.Padding = New Thickness(10)
             iTempMsg.Show()
             iTimer.Start()
         Catch ex As Exception
@@ -136,6 +140,11 @@ Module ObjectsManaging
         End If
         ColorGbColor = iRow
     End Function
+    Private Sub SetThemeDataGridRow(row As DataGridRow, backgroundResource As String, foregroundResource As String)
+        row.SetResourceReference(DataGridRow.BackgroundProperty, backgroundResource)
+        row.SetResourceReference(DataGridRow.ForegroundProperty, foregroundResource)
+    End Sub
+
     Public Sub ColorDgRowsAge(iDataGrid As DataGrid, Optional iRowOfAge As Integer = 6, Optional AgeLimit1 As Integer = 30, Optional AgeLimit2 As Integer = 45)
         Dim iTable As DataTable = TryCast(iDataGrid.ItemsSource, DataView).ToTable
         If IsNothing(iTable) Then
@@ -150,39 +159,39 @@ Module ObjectsManaging
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
 
                     If targetRow IsNot Nothing Then
-                        targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFDEFFE2"))
+                        SetThemeDataGridRow(targetRow, "ThemeTablePositiveRowBrush", "ThemeTablePositiveRowTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFDEFFE2"))
+                            SetThemeDataGridRow(targetRow, "ThemeTablePositiveRowBrush", "ThemeTablePositiveRowTextBrush")
                         End If
                     End If
                 ElseIf iAge < AgeLimit2 Then
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                     Dim targetItem = iDataGrid.Items(eTdx)
                     If targetRow IsNot Nothing Then
-                        targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFA6"))
+                        SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFA6"))
+                            SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
                         End If
                     End If
                 Else
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                     Dim targetItem = iDataGrid.Items(eTdx)
                     If targetRow IsNot Nothing Then
-                        targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFB4B4"))
+                        SetThemeDataGridRow(targetRow, "ThemeTableDangerRowBrush", "ThemeTableDangerRowTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFB4B4"))
+                            SetThemeDataGridRow(targetRow, "ThemeTableDangerRowBrush", "ThemeTableDangerRowTextBrush")
                         End If
                     End If
                 End If
@@ -207,39 +216,39 @@ Module ObjectsManaging
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
 
                     If targetRow IsNot Nothing Then
-                        targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFDEFFE2"))
+                        SetThemeDataGridRow(targetRow, "ThemeTablePositiveRowBrush", "ThemeTablePositiveRowTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFDEFFE2"))
+                            SetThemeDataGridRow(targetRow, "ThemeTablePositiveRowBrush", "ThemeTablePositiveRowTextBrush")
                         End If
                     End If
                 ElseIf iContrat.Contains(LCase(ContratKey2)) Then
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                     Dim targetItem = iDataGrid.Items(eTdx)
                     If targetRow IsNot Nothing Then
-                        targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFF3FFBF"))
+                        SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFF3FFBF"))
+                            SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
                         End If
                     End If
                 Else
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                     Dim targetItem = iDataGrid.Items(eTdx)
                     If targetRow IsNot Nothing Then
-                        targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFB4B4"))
+                        SetThemeDataGridRow(targetRow, "ThemeTableDangerRowBrush", "ThemeTableDangerRowTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFB4B4"))
+                            SetThemeDataGridRow(targetRow, "ThemeTableDangerRowBrush", "ThemeTableDangerRowTextBrush")
                         End If
                     End If
                 End If
@@ -262,15 +271,14 @@ Module ObjectsManaging
                 If LCase(ListAgentFin).Contains(LCase(iContrat)) Then
                     Dim targetItem = iDataGrid.Items(eTdx)
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
-
                     If targetRow IsNot Nothing Then
-                        targetRow.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFF0000"))
+                        targetRow.SetResourceReference(DataGridRow.ForegroundProperty, "ThemeTableAlertTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFF0000"))
+                            targetRow.SetResourceReference(DataGridRow.ForegroundProperty, "ThemeTableAlertTextBrush")
                         End If
                     End If
                 Else
@@ -293,13 +301,13 @@ Module ObjectsManaging
                     Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                     Dim targetItem = iDataGrid.Items(eTdx)
                     If targetRow IsNot Nothing Then
-                        targetRow.Background = Brushes.Yellow 'New SolidColorBrush(ColorConverter.ConvertFromString("#FFF3FFBF"))
+                        SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
                     Else
                         iDataGrid.ScrollIntoView(targetItem)
                         iDataGrid.UpdateLayout()
                         targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
                         If targetRow IsNot Nothing Then
-                            targetRow.Background = Brushes.Yellow 'New SolidColorBrush(ColorConverter.ConvertFromString("#FFF3FFBF"))
+                            SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
                         End If
                     End If
                 End If

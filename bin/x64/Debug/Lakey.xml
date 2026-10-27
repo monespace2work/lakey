@@ -149,6 +149,16 @@ LoadingWindow
 InitializeComponent
 </summary>
 </member>
+<member name="T:Lakey.HelpWindow">
+<summary>
+HelpWindow
+</summary>
+</member>
+<member name="M:Lakey.HelpWindow.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
 <member name="T:Lakey.Login">
 <summary>
 Login

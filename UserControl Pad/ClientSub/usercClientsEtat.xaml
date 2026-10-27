@@ -1,4 +1,4 @@
-<UserControl x:Class="usercClientsEtat"
+﻿<UserControl x:Class="usercClientsEtat"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,10 +8,10 @@
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto" MinHeight="56"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
+        <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="200"/>
@@ -19,14 +19,14 @@
                     <ColumnDefinition MaxWidth="200"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Label Content="CLIENTS" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" />
+                    <Label Content="CLIENTS" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20" />
                 </StackPanel>
-                <TextBox x:Name="BtnClientEtatSearch" Width="150" Height="28" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
+                <TextBox x:Name="BtnClientEtatSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
 
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-            <Border BorderBrush="Black" BorderThickness="1" Background="#FF000A1D">
+            <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#FF000A1D">
                 <StackPanel>
                     <Grid >
                         <Grid.RowDefinitions>
@@ -36,7 +36,7 @@
                         <StackPanel Grid.Row="0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Label Content="ETATS" Foreground="White"  FontSize="15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                                <Button x:Name="btnPointG" Content="Details / cient" Margin="50,5,15,5" Padding="10,1" Background="#FFF3E0FF" ToolTip="POINT POUR LE SALAIRE" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Button x:Name="btnPointG" Content="Details / cient" Margin="50,5,15,5" Padding="10,1" Background="{DynamicResource ThemeActionPointBrush}" ToolTip="POINT POUR LE SALAIRE" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ThemeActionPointTextBrush}"/>
                             </StackPanel>
                             <TextBlock x:Name="tblNbClientEtatsActifs" Text=" Nombre de contrats en cours de validité : "  Background="#FF150452" Foreground="LightSkyBlue" />
                             <DataGrid x:Name="DgClientsEtat" AutoGenerateColumns="True" />

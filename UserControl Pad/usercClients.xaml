@@ -8,10 +8,10 @@
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto" MinHeight="56"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
+        <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="200"/>
@@ -29,14 +29,14 @@
                                 <Image MaxWidth="40" Source="client2.png" Stretch="Fill"  Margin="3"/>
                             </Border>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
-                                <Label Content="CLIENTS" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" />
+                                <Label Content="CLIENTS" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20" />
                             </StackPanel> 
                             </Grid> 
                         
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right" >
-                    <TextBox x:Name="BtnClientSearch" Width="150" Height="28" Style="{StaticResource SearchButtonRounded}" KeyDown="BtnClientSearch_KeyDown"/>
+                    <TextBox x:Name="BtnClientSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" KeyDown="BtnClientSearch_KeyDown"/>
                     <Border Background="#FFF3E0FF" Margin=" 5" Width="30" >
                         <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
                             <Button.Background>
@@ -50,7 +50,7 @@
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="0">
-            <Border BorderBrush="Black" BorderThickness="1" Background="#7F000A1D">
+            <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#7F000A1D">
                 <StackPanel>
                     <Grid Background="#E52C2C2C" >
                         <Grid.ColumnDefinitions>

@@ -293,7 +293,6 @@ E:\iclones\lakey\obj\x64\Debug\Lakey.exe
 E:\iclones\lakey\obj\x64\Debug\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
 E:\iclones\lakey\bin\x64\Debug\packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
 C:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
 C:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
@@ -443,3 +442,5 @@ C:\iclones\lakey\obj\x64\Debug\WaitFrm.baml
 C:\iclones\lakey\obj\x64\Debug\Lakey.g.resources
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.Up2Date
+E:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
+E:\iclones\lakey\obj\x64\Debug\HelpWindow.g.vb

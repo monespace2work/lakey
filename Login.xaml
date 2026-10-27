@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lakey"
         mc:Ignorable="d"
-        Title="Login" Height="290" Width="470" MinHeight="290" MinWidth="470"
+        Title="Login" Height="315" Width="470" MinHeight="315" MinWidth="470"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded" Icon="MyIco.ico"
         Background="{DynamicResource ThemeSurfaceBrush}" FontFamily="Segoe UI" UseLayoutRounding="True" SnapsToDevicePixels="True">
     <Grid Background="{DynamicResource ThemeSurfaceBrush}" Margin="12">
-        <Border Background="{DynamicResource ThemeCardBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="{DynamicResource ThemeCardBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="12">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
@@ -38,10 +42,14 @@
                     </Grid>
 
                     <Button x:Name="btnLogin" Content="Se connecter" Height="38" Margin="0,16,0,0"
-                            IsDefault="True" IsEnabled="False" Background="{DynamicResource ThemeNavyBrush}" Foreground="White"
+                            IsDefault="True" IsEnabled="False"
+                            Background="{DynamicResource ThemeLoginButtonBrush}" Foreground="{DynamicResource ThemeLoginButtonTextBrush}"
                             FontSize="14" FontWeight="SemiBold"/>
                 </StackPanel>
             </Grid>
         </Border>
+        <TextBlock Grid.Row="1" Text="Développé par Julio P. Bag"
+                   Foreground="{DynamicResource ThemeInkBrush}" FontSize="11"
+                   HorizontalAlignment="Right" Margin="0,5,4,0"/>
     </Grid>
 </Window>

@@ -7,8 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Border Style="{StaticResource SectionHeaderBorder}" BorderThickness="1">
-            <Label Content="OUTILS SUPPLEMENTAIRES" Foreground="White" HorizontalContentAlignment="Center" FontSize="20"/>
+        <Border Style="{StaticResource SectionHeaderBorder}" BorderThickness="1" MinHeight="56">
+            <Label Content="OUTILS SUPPLEMENTAIRES" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20"/>
 
         </Border>
 

@@ -43,7 +43,7 @@
 
                     </StackPanel>
                 </Grid>
-                <Button x:Name="btnSaveBase"   Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="30" FontSize="14" FontWeight="Bold" Foreground="White" Background="#FF115A3D" BorderBrush="#FFC8F0FF" />
+                <Button x:Name="btnSaveBase"   Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="36" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Background="{DynamicResource ThemeSuccessButtonBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" />
 
             </StackPanel>
 
@@ -73,7 +73,7 @@
                     <StackPanel Grid.Column="1"  HorizontalAlignment="Left" Margin="10,0">
                         <StackPanel Orientation="Horizontal"  Margin="0,0,0,10">
                             <TextBlock Foreground="White" Width="150" Margin="5,0,0,0" FontSize="12" Text="Début de période :" VerticalAlignment="Center"/>
-                            <TextBox x:Name="TbxDatDebutEtatFinancierMensuel" Width="30" FontSize="12" Text="25" VerticalAlignment="Center"  TextAlignment="Right" Padding="0,0,3,0" Height="25"/>
+                            <TextBox x:Name="TbxDatDebutEtatFinancierMensuel" Width="30" FontSize="12" Text="25" VerticalAlignment="Center"  TextAlignment="Right" Padding="0,0,3,0" Height="36"/>
                             <ComboBox x:Name="cbxMoisDébut"  SelectedIndex="0"  >
                                 <ComboBoxItem Content="Mois précédent" />
                                 <ComboBoxItem Content="Mois encours"/>
@@ -81,7 +81,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"  Margin="0,0,0,10">
                             <TextBlock Foreground="White" Width="150" Margin="5,0,0,0" FontSize="12" Text="Début de période :" VerticalAlignment="Center"/>
-                            <TextBox x:Name="TbxDateFinEtatFinancierMensuel" Width="30" FontSize="12" Text="24"  TextAlignment="Right" Padding="0,0,3,0" Height="25" VerticalAlignment="Bottom"/>
+                            <TextBox x:Name="TbxDateFinEtatFinancierMensuel" Width="30" FontSize="12" Text="24"  TextAlignment="Right" Padding="0,0,3,0" Height="36" VerticalAlignment="Bottom"/>
                             <ComboBox x:Name="cbxMoisFin" SelectedIndex="1"  >
                                 <ComboBoxItem Content="Mois précédent" />
                                 <ComboBoxItem Content="Mois encours"/>
@@ -94,7 +94,7 @@
 
                     </StackPanel>
                 </Grid>
-                <Button x:Name="btnSaveDateAge"  Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="30" FontSize="14" FontWeight="Bold" Foreground="White" Background="#FF115A3D" BorderBrush="#FFC8F0FF" />
+                <Button x:Name="btnSaveDateAge"  Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="36" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Background="{DynamicResource ThemeSuccessButtonBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" />
 
             </StackPanel>
 
@@ -140,7 +140,7 @@
 
                     </StackPanel>
                 </StackPanel>
-                <Button x:Name="btnSaveSalaires"  Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="30" FontSize="14" FontWeight="Bold" Foreground="White" Background="#FF115A3D" BorderBrush="#FFC8F0FF" />
+                <Button x:Name="btnSaveSalaires"  Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="36" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Background="{DynamicResource ThemeSuccessButtonBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" />
 
             </StackPanel>
 
@@ -186,7 +186,7 @@
 
                     </StackPanel>
                 </StackPanel>
-                <Button x:Name="btnSaveFacturation"  Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="30" FontSize="14" FontWeight="Bold" Foreground="White" Background="#FF115A3D" BorderBrush="#FFC8F0FF" />
+                <Button x:Name="btnSaveFacturation"  Content="Valider les modifications" Margin="40,5,40,5" Width="250" Height="36" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Background="{DynamicResource ThemeSuccessButtonBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" />
 
             </StackPanel>
 

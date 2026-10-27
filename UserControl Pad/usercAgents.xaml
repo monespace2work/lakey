@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto" MinHeight="56"/>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Border BorderThickness="1" Grid.Row="0" ScrollViewer.CanContentScroll="True" Style="{StaticResource SectionHeaderBorder}">
@@ -18,7 +18,7 @@
                     <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label Content="ETATS DES AGENTS" Foreground="White" HorizontalContentAlignment="Center" FontSize="20"/>
+                    <Label Content="ETATS DES AGENTS" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20"/>
                     <Ellipse x:Name="elpGlobale" Height="20" Width="20" Fill="OrangeRed" Stroke="White" StrokeThickness="2" Visibility="Collapsed"/>
                 </StackPanel>
                 <Border  Grid.Column="1" Background="#FFF3E0FF" Margin=" 5" >
@@ -32,7 +32,7 @@
             </Grid>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" CanContentScroll="True" HorizontalScrollBarVisibility="Auto">
-            <Border BorderBrush="Black" BorderThickness="1" Background="#7F000A1D">
+            <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#7F000A1D">
                 <StackPanel>
                     <Grid >
                         <StackPanel >
@@ -59,7 +59,7 @@
                                                 <DatePicker  x:Name="dtpFinSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
                                             </StackPanel>
                                         </StackPanel>
-                                        <TextBox x:Name="BtnAgentSearch" Width="150" Height="28" Style="{StaticResource SearchButtonRounded}" />
+                                        <TextBox x:Name="BtnAgentSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" />
                                         <Button x:Name="btnExportExcel" MinWidth="30" MinHeight="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="White" >
                                             <Button.Background>
                                                 <ImageBrush  Stretch="Uniform" ImageSource="Logo_excel.png"/>
@@ -70,7 +70,7 @@
                                 </Grid>
                             </StackPanel >
 
-                            <DataGrid x:Name="DgEmployes" AutoGenerateColumns="True" Background="#FFFFB4B4" >
+                            <DataGrid x:Name="DgEmployes" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" >
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <!--MenuItem Header="Modifier" Name="cmiModif"/-->
