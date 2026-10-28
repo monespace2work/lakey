@@ -24,7 +24,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Border Grid.Column="0" MaxWidth="45" Background="{DynamicResource ThemeContentCardBrush}" CornerRadius="20">
-                                <Image MaxWidth="40" Source="/Lakey;component/home_1107821.png" Stretch="Fill"  Margin="3"/>
+                                <Image MaxWidth="40" Source="/Lakey;component/home_1107821.png" Stretch="Uniform" Margin="3"/>
                             </Border>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
                                 <Label Content="TABLEAU DE BORD" Foreground="{DynamicResource ThemeDashboardTitleTextBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Background="{x:Null}"/>
@@ -36,7 +36,7 @@
                     <Border  Grid.Column="1" Background="{DynamicResource ThemeAccentSoftBrush}" Margin="5" CornerRadius="6" >
                         <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
                             <Button.Background>
-                                <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" />
+                                <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" Stretch="Uniform"/>
                             </Button.Background>
                         </Button>
                     </Border>

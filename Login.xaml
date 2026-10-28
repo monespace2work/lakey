@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lakey"
         mc:Ignorable="d"
-        Title="Login" Height="315" Width="470" MinHeight="315" MinWidth="470"
+        Title="Login" Height="365" Width="470" MinHeight="365" MinWidth="470"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded" Icon="MyIco.ico"
         Background="{DynamicResource ThemeSurfaceBrush}" FontFamily="Segoe UI" UseLayoutRounding="True" SnapsToDevicePixels="True">
     <Grid Background="{DynamicResource ThemeSurfaceBrush}" Margin="12">
@@ -29,8 +29,8 @@
                 </Border>
 
                 <StackPanel Grid.Column="1" Margin="24,20,24,18" VerticalAlignment="Center">
-                    <TextBlock Text="Connexion" Foreground="{DynamicResource ThemeNavyBrush}" FontSize="21" FontWeight="SemiBold" Margin="0,0,0,3"/>
-                    <TextBlock Text="Connectez-vous à votre espace de gestion." Foreground="#60758A" FontSize="12" Margin="0,0,0,14"/>
+                    <TextBlock Text="Connexion" Foreground="{DynamicResource ThemeInkBrush}" FontSize="21" FontWeight="SemiBold" Margin="0,0,0,3"/>
+                    <TextBlock Text="Connectez-vous à votre espace de gestion." Foreground="{DynamicResource ThemeInputPlaceholderBrush}" FontSize="12" Margin="0,0,0,14"/>
 
                     <Grid Margin="0,0,0,10">
                         <TextBox Name="txtUsername" Height="38" Padding="11,6" VerticalContentAlignment="Center"/>
@@ -40,6 +40,8 @@
                         <PasswordBox Name="txtPassword" Height="38" Padding="11,6" VerticalContentAlignment="Center"/>
                         <TextBlock x:Name="tblPassword" Text="Mot de passe" Foreground="#64748B" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
                     </Grid>
+                    <CheckBox x:Name="chkUseLocalMode" Content="Utiliser la base locale" Margin="0,9,0,0"
+                              Foreground="{DynamicResource ThemeInkBrush}"/>
 
                     <Button x:Name="btnLogin" Content="Se connecter" Height="38" Margin="0,16,0,0"
                             IsDefault="True" IsEnabled="False"

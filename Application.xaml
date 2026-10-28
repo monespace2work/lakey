@@ -93,6 +93,14 @@ ShutdownMode="OnMainWindowClose">
         <SolidColorBrush x:Key="ThemePendingRowTextBrush" Color="#E8F4FF"/>
         <SolidColorBrush x:Key="ThemeSpecialTableBrush" Color="#1D2B47"/>
         <SolidColorBrush x:Key="ThemeHeaderTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeReminderHeaderBrush" Color="#5A3038"/>
+        <SolidColorBrush x:Key="ThemeReminderHeaderTextBrush" Color="#FBEAEC"/>
+        <SolidColorBrush x:Key="ThemeReminderSurfaceBrush" Color="#302329"/>
+        <SolidColorBrush x:Key="ThemeReminderTextBrush" Color="#F3E8EA"/>
+        <SolidColorBrush x:Key="ThemeReminderBorderBrush" Color="#80535C"/>
+        <Style TargetType="Image">
+            <Setter Property="Stretch" Value="Uniform"/>
+        </Style>
         <Style TargetType="Window">
             <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
@@ -418,8 +426,8 @@ ShutdownMode="OnMainWindowClose">
             </ControlTemplate.Triggers>
         </ControlTemplate>
         <Style TargetType="ScrollBar">
-            <Setter Property="Width" Value="6"/>
-            <Setter Property="Height" Value="6"/>
+            <Setter Property="Width" Value="4"/>
+            <Setter Property="Height" Value="4"/>
             <Setter Property="Opacity" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
@@ -438,11 +446,11 @@ ShutdownMode="OnMainWindowClose">
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Orientation" Value="Horizontal">
-                                <Setter Property="Height" Value="6"/>
+                                <Setter Property="Height" Value="4"/>
                                 <Setter Property="Width" Value="Auto"/>
                             </Trigger>
                             <Trigger Property="Orientation" Value="Vertical">
-                                <Setter Property="Width" Value="6"/>
+                                <Setter Property="Width" Value="4"/>
                                 <Setter Property="Height" Value="Auto"/>
                             </Trigger>
                         </ControlTemplate.Triggers>

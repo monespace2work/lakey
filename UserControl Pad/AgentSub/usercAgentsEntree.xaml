@@ -23,21 +23,21 @@
                             <ColumnDefinition MaxWidth="70" />
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" MaxWidth="45" Background="#CCFFFFFF" CornerRadius="20">
-                            <Image MaxWidth="40" Source="employee2.png" Stretch="Fill"  Margin="3"/>
+                        <Border Grid.Column="0" MaxWidth="45" MaxHeight="45" Background="#CCFFFFFF" CornerRadius="20">
+                            <Image MaxWidth="40" Source="employee2.png" Stretch="Uniform" Margin="3"/>
                         </Border>
                         <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
                             <Label Content="EMPLOYES"  Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
                             <Label Content=" / "  Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
                             <Label Content="ENTREES"  Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
-                            <Button x:Name="btnPointG" Content="Point du mois" Margin="30,10,15,15" Padding="10,1" Background="{DynamicResource ThemeActionPointBrush}" ToolTip="POINT POUR LE SALAIRE" Foreground="{DynamicResource ThemeActionPointTextBrush}"/>
+                            <Button x:Name="btnPointG" Content="Point du mois" Margin="30,10,15,15" Padding="10,1" Background="#FF3F1897" ToolTip="POINT POUR LE SALAIRE" Foreground="{DynamicResource ThemeActionPointTextBrush}"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
                 <Border  Grid.Column="1" Background="#FFF3E0FF" Margin=" 5"  >
                     <Button x:Name="btnAgrandir" Margin="2" BorderBrush="{x:Null}"  >
                         <Button.Background>
-                            <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" />
+                            <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" Stretch="Uniform"/>
                         </Button.Background>
                     </Button>
                 </Border>
@@ -74,7 +74,7 @@
                                 <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Button x:Name="btnNewAg" Content="NOUVEAU" MinWidth="100" Margin=" 8" Padding="5"/>
                                     <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}" Visibility="Collapsed"/>
-                                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="80"/>
+                                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
                                 </StackPanel>
                                 <WrapPanel Orientation="Horizontal"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
                                     <StackPanel>
@@ -205,8 +205,23 @@
                                             </StackPanel>
 
                                         </StackPanel>
-                                        <Button x:Name="btpPlus"  Content=" > " Width="5"/>
+                                        <Button x:Name="btpPlus"  Content=" > " Width="30"/>
                                         <StackPanel x:Name="stpSaisieDetails" Background="#FF00143A" >
+                                            <StackPanel Orientation ="Horizontal"  Margin="5">
+                                                <TextBlock Text="Lieu de naiss : " MinWidth="25" Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="91"/>
+                                                <Grid>
+                                                    <TextBox  x:Name="TbxLieuNaiss" MinWidth="100" Height="36" FontSize="12" VerticalAlignment="Center"  >
+                                                    </TextBox>
+                                                    <TextBlock  x:Name="TblIndicationLieuNaiss" Text=" Lieu de naissance" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,39,0"/>
+                                                </Grid>
+                                                <TextBlock Text="Préfecture : " MinWidth="25" Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="95"/>
+                                                <Grid>
+                                                    <TextBox  x:Name="TbxPrefNaiss" MinWidth="150" Height="36" FontSize="10" VerticalAlignment="Center" Text="" Width="200" />
+                                                    <TextBlock  x:Name="TblIndicationPrefNais" Text=" Préfecture de naissance" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,42,0" />
+                                                </Grid>
+
+
+                                            </StackPanel>
                                             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                                 <TextBlock Text="Pays d'origine : " MinWidth="25" Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="91"/>
                                                 <Grid>
@@ -265,21 +280,6 @@
                                                 <Grid>
                                                     <TextBox  x:Name="TbxNunBank" MinWidth="150" Height="36" FontSize="14" VerticalAlignment="Center" Text="" Width="200" />
                                                     <TextBlock  x:Name="TblIndicationNunBank" Text=" N° de compte" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,42,0" />
-                                                </Grid>
-
-
-                                            </StackPanel>
-                                            <StackPanel Orientation ="Horizontal"  Margin="5">
-                                                <TextBlock Text="Lieu de naiss : " MinWidth="25" Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="91"/>
-                                                <Grid>
-                                                    <TextBox  x:Name="TbxLieuNaiss" MinWidth="100" Height="36" FontSize="12" VerticalAlignment="Center"  >
-                                                    </TextBox>
-                                                    <TextBlock  x:Name="TblIndicationLieuNaiss" Text=" Lieu de naissance" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,39,0"/>
-                                                </Grid>
-                                                <TextBlock Text="Préfecture : " MinWidth="25" Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="95"/>
-                                                <Grid>
-                                                    <TextBox  x:Name="TbxPrefNaiss" MinWidth="150" Height="36" FontSize="10" VerticalAlignment="Center" Text="" Width="200" />
-                                                    <TextBlock  x:Name="TblIndicationPrefNais" Text=" Préfecture de naissance" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,42,0" />
                                                 </Grid>
 
 

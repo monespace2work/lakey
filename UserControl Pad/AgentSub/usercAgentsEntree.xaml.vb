@@ -55,7 +55,7 @@ Public Class usercAgentsEntree
         maj()
         AfficheStat?.Invoke()
         NewData = True
-        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree, format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
+        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree, format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le],LieuNaiss,PrefNaiss, VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero "
         istr += " FROM  agents  where actif=1"
         istr += " and DateEntree>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
         istr += " ORDER BY actif desc, Nomprenoms "
@@ -156,7 +156,7 @@ Public Class usercAgentsEntree
         dtpDateNaiss.DisplayDateStart = Today.AddYears(-65)
 
 
-        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
+        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le],LieuNaiss,PrefNaiss, VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
         istr += " FROM  agents where actif=1 "
         istr += " ORDER BY actif desc, DateEntree desc, RefAgent desc, Nomprenoms "
         DgAgentListe.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
@@ -426,7 +426,7 @@ Public Class usercAgentsEntree
         Else
             sufix = ""
         End If
-        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,Format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le], VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
+        Dim istr As String = " SELECT NomAgent, PrenomAgent, sexe, NumMatr, Contacts, format(DateEntree) as DateEntree,Format(DateSortie) as DateSortie, actif, format(DateNaiss) as [Né(e) le],LieuNaiss,PrefNaiss, VilleResidence as Ville, Quartier, Fonction, CatEch,NbEnf, RefAgent as Ref,Nsecu, Banque,NumCompte,MatrimoSituation, Pays,CarteType,CarteNumero,LieuNaiss,PrefNaiss "
         istr += " FROM  agents "
         istr += " where  "
         If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then istr += " DateEntree>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and DateEntree<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
@@ -577,36 +577,38 @@ Public Class usercAgentsEntree
                 dtpDateEmbauche.SelectedDate = rowView.Row.ItemArray(5).ToString
                 ChbActif.IsChecked = rowView.Row.ItemArray(7).ToString
                 dtpDateNaiss.SelectedDate = rowView.Row.ItemArray(8).ToString
-                TbxVille.Text = rowView.Row.ItemArray(9).ToString
-                TbxAdresse.Text = rowView.Row.ItemArray(10).ToString
-                CbxFonction.SelectedItem = rowView.Row.ItemArray(11).ToString
-                TbxCSP.Text = rowView.Row.ItemArray(12).ToString
-                'CbxTypCrt.SelectedItem = rowView.Row.ItemArray(6).ToString
-                'TbxObs.Text = rowView.Row.ItemArray(5).ToString
-                TbxNbEnf.Text = rowView.Row.ItemArray(13).ToString
-                RefAg = rowView.Row.ItemArray(14).ToString
-                TbxNCNSS.Text = rowView.Row.ItemArray(15).ToString
+                '-------------------------------
+                TbxLieuNaiss.Text = rowView.Row.ItemArray(9).ToString
+                TbxPrefNaiss.Text = rowView.Row.ItemArray(10).ToString
+                '-------------------------------
+                TbxVille.Text = rowView.Row.ItemArray(11).ToString
+                TbxAdresse.Text = rowView.Row.ItemArray(12).ToString
+                CbxFonction.SelectedItem = rowView.Row.ItemArray(13).ToString
+                TbxCSP.Text = rowView.Row.ItemArray(14).ToString
+                TbxNbEnf.Text = rowView.Row.ItemArray(15).ToString
+                RefAg = rowView.Row.ItemArray(16).ToString
+                TbxNCNSS.Text = rowView.Row.ItemArray(17).ToString
                 TbxNumMaticule.Text = rowView.Row.ItemArray(3).ToString
                 NewNutricule = rowView.Row.ItemArray(3).ToString
                 DateSortie = MyStatValStr("select a.DateSortie from agents a  where a.NumMatr='" & TbxNumMaticule.Text & "'")
-                If rowView.Row.ItemArray(16).ToString <> "" Then
-                    CbxBanque.SelectedItem = rowView.Row.ItemArray(16).ToString
+                If rowView.Row.ItemArray(18).ToString <> "" Then
+                    CbxBanque.SelectedItem = rowView.Row.ItemArray(18).ToString
                 Else
                     CbxBanque.SelectedIndex = -1
                 End If
-                TbxNunBank.Text = rowView.Row.ItemArray(17).ToString
-                If rowView.Row.ItemArray(18).ToString <> "" Then
-                    CbxSituationMatrim.SelectedItem = rowView.Row.ItemArray(18).ToString
+                TbxNunBank.Text = rowView.Row.ItemArray(19).ToString
+                If rowView.Row.ItemArray(20).ToString <> "" Then
+                    CbxSituationMatrim.SelectedItem = rowView.Row.ItemArray(20).ToString
                 Else
                     CbxSituationMatrim.SelectedIndex = -1
                 End If
-                TbxPays.Text = rowView.Row.ItemArray(19).ToString
-                If rowView.Row.ItemArray(20).ToString <> "" Then
-                    CbxTypeCarte.SelectedItem = rowView.Row.ItemArray(20).ToString
+                TbxPays.Text = rowView.Row.ItemArray(21).ToString
+                If rowView.Row.ItemArray(22).ToString <> "" Then
+                    CbxTypeCarte.SelectedItem = rowView.Row.ItemArray(22).ToString
                 Else
                     CbxTypeCarte.SelectedIndex = -1
                 End If
-                TbxNunCarte.Text = rowView.Row.ItemArray(21).ToString
+                TbxNunCarte.Text = rowView.Row.ItemArray(23).ToString
 
                 stpSaisie.Visibility = Visibility.Visible
                 btnDeleteAg.Visibility = Visibility.Visible

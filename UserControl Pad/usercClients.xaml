@@ -26,7 +26,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Border Grid.Column="0" MaxWidth="45" Background="#CCFFFFFF" CornerRadius="20">
-                                <Image MaxWidth="40" Source="client2.png" Stretch="Fill"  Margin="3"/>
+                                <Image MaxWidth="40" Source="client2.png" Stretch="Uniform" Margin="3"/>
                             </Border>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
                                 <Label Content="CLIENTS" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20" />
@@ -40,7 +40,7 @@
                     <Border Background="#FFF3E0FF" Margin=" 5" Width="30" >
                         <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
                             <Button.Background>
-                                <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" />
+                                <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" Stretch="Uniform"/>
                             </Button.Background>
                         </Button>
                     </Border>

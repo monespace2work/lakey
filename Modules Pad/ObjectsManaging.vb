@@ -325,7 +325,7 @@ Module ObjectsManaging
         If File.Exists(userDatabasePath) Then DbPath = userDatabasePath
         If String.Equals(Path.GetFullPath(DbPathGeneral),
                          Path.GetFullPath(DbPath),
-                         StringComparison.OrdinalIgnoreCase) Then Return False
+                         StringComparison.OrdinalIgnoreCase) Then Return True
 
         Try
             If Not File.Exists(DbPathGeneral) Then

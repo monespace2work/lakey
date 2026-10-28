@@ -11,6 +11,7 @@ Class MainWindow
     }
     Private userControlLoadingPending As Boolean
     Private loadingOperationCount As Integer
+    Private returnToLoginForReconnect As Boolean
 
     Public Sub New()
 
@@ -88,14 +89,14 @@ Class MainWindow
 
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         Await RunWithLoadingAsync(
-            Sub()
-                tbxVersion.Text = "V" & My.Application.Info.Version.ToString
-                tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
-                DbPathGeneral = PaphBackUp()
-                LocalConnxStr = $"Data Source={DbPath};Version=3;"
-                maj()
-                InitializeGlobal()
-            End Sub)
+        Sub()
+            tbxVersion.Text = "V" & My.Application.Info.Version.ToString
+            tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
+            DbPathGeneral = PaphBackUp()
+            If Not LocalModeBb AndAlso Not maj() Then DbPath = DbPathGeneral
+            LocalConnxStr = $"Data Source={DbPath};Version=3;"
+            InitializeGlobal()
+        End Sub)
         'If Not SessLogin() Then Me.Close()
     End Sub
 
@@ -259,6 +260,11 @@ Class MainWindow
             SetThemeColor("ThemePendingRowTextBrush", "#E8F4FF")
             SetThemeColor("ThemeSpecialTableBrush", "#1D2B47")
             SetThemeColor("ThemeHeaderTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeReminderHeaderBrush", "#5A3038")
+            SetThemeColor("ThemeReminderHeaderTextBrush", "#FBEAEC")
+            SetThemeColor("ThemeReminderSurfaceBrush", "#302329")
+            SetThemeColor("ThemeReminderTextBrush", "#F3E8EA")
+            SetThemeColor("ThemeReminderBorderBrush", "#80535C")
             btnThemeToggle.Content = "Mode clair"
         Else
             SetThemeColor("ThemeSurfaceBrush", "#E7EEF2")
@@ -348,6 +354,11 @@ Class MainWindow
             SetThemeColor("ThemePendingRowTextBrush", "#172B3F")
             SetThemeColor("ThemeSpecialTableBrush", "#FF444781")
             SetThemeColor("ThemeHeaderTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeReminderHeaderBrush", "#F4DDE0")
+            SetThemeColor("ThemeReminderHeaderTextBrush", "#713B43")
+            SetThemeColor("ThemeReminderSurfaceBrush", "#FFF7F7")
+            SetThemeColor("ThemeReminderTextBrush", "#493238")
+            SetThemeColor("ThemeReminderBorderBrush", "#D8AEB4")
             btnThemeToggle.Content = "Mode sombre"
         End If
 
@@ -513,13 +524,13 @@ Class MainWindow
         usercSociete.AfficheInfosStructure = AddressOf AfficheInfosStructure
     End Sub
     Sub RappelsMemos()
-        tbxRappel.Text = ListeAgentFinContrat()
+        tbxRappel.Text = ListeAgentFinContrat(LocalConnxStr)
         If tbxRappel.Text <> "" Then
             Dim iText As String = tbxRappel.Text
-            Dim irappel As String = RappelActifs()
-            Dim CongeRapel As String = ListePermissionCongeEnAttente("permis")
+            Dim irappel As String = RappelActifs(LocalConnxStr)
+            Dim CongeRapel As String = ListePermissionCongeEnAttente("permis", LocalConnxStr)
             If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== PERMISSIONS en attente ===" & CongeRapel
-            CongeRapel = ListePermissionCongeEnAttente("cong")
+            CongeRapel = ListePermissionCongeEnAttente("cong", LocalConnxStr)
             If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== CONGES en attente ===" & CongeRapel
             If irappel <> "" Then
                 iText += Environment.NewLine & Environment.NewLine & irappel
@@ -1442,13 +1453,90 @@ Class MainWindow
         If LocalModeBb Then
             imgHorsConnex.Visibility = Visibility.Visible
             tbModeConnexion.Visibility = Visibility.Visible
+            btnReconnecter.Visibility = Visibility.Visible
             bdrTitreCentre.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF6C0000"))
         Else
             imgHorsConnex.Visibility = Visibility.Collapsed
             tbModeConnexion.Visibility = Visibility.Collapsed
+            btnReconnecter.Visibility = Visibility.Collapsed
             bdrTitreCentre.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF426A82"))
         End If
 
+    End Sub
+
+    Private Sub btnReconnecter_Click(sender As Object, e As RoutedEventArgs)
+        If Not LocalModeBb Then Return
+
+        If MessageBox.Show(
+            "La session locale va se fermer et revenir à l'écran de connexion. " &
+            "Après authentification, vous pourrez choisir le mode connecté ; avant toute actualisation, " &
+            "une confirmation et une sauvegarde de la base locale seront effectuées. " &
+            "Les changements locaux ne seront pas envoyés à la base centrale." & Environment.NewLine & Environment.NewLine &
+            "Continuer ?",
+            "Retenter le mode connecté",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+        Try
+            If String.Equals(IO.Path.GetFullPath(DbPath),
+                             IO.Path.GetFullPath(DbPathGeneral),
+                             StringComparison.OrdinalIgnoreCase) Then
+                MessageBox.Show("La base locale est aussi configurée comme base centrale. Aucun basculement n'est possible.",
+                                "Mode connecté indisponible", MessageBoxButton.OK, MessageBoxImage.Warning)
+                Return
+            End If
+
+            Dim centralDatabaseError As String = Nothing
+            If Not IsSQLiteDatabaseHealthy(DbPathGeneral, centralDatabaseError) Then
+                MessageBox.Show("La base centrale n'est pas disponible. La session locale reste ouverte." &
+                                Environment.NewLine & centralDatabaseError,
+                                "Mode connecté indisponible", MessageBoxButton.OK, MessageBoxImage.Warning)
+                Return
+            End If
+
+            Dim centralConnectionString As String = "Data Source=" & DbPathGeneral & ";Version=3;"
+            Dim currentUserLevel As Integer = UserLevel
+            Dim centralUserLevel As Integer
+            Try
+                centralUserLevel = Login.UserTest(UserName, UserPW, centralConnectionString)
+            Finally
+                UserLevel = currentUserLevel
+            End Try
+            If centralUserLevel = 1976 Then
+                MessageBox.Show("Cet utilisateur n'est pas reconnu dans la base centrale. La session locale reste ouverte.",
+                                "Connexion centrale impossible", MessageBoxButton.OK, MessageBoxImage.Warning)
+                Return
+            End If
+
+            Dim localDatabaseError As String = Nothing
+            If Not IsSQLiteDatabaseHealthy(DbPath, localDatabaseError) Then
+                MessageBox.Show("La base locale ne peut pas être sauvegardée en toute sécurité ; la session reste ouverte." &
+                                Environment.NewLine & localDatabaseError,
+                                "Sauvegarde impossible", MessageBoxButton.OK, MessageBoxImage.Error)
+                Return
+            End If
+
+            Dim backupDirectory As String = IO.Path.Combine(UserPath, "Backups")
+            IO.Directory.CreateDirectory(backupDirectory)
+            Dim backupPath As String = IO.Path.Combine(
+                backupDirectory,
+                "ManA-local-" & DateTime.Now.ToString("yyyyMMdd-HHmmss") & "-" &
+                Guid.NewGuid().ToString("N") & ".sqlite")
+            CreateValidatedSQLiteSnapshot(DbPath, backupPath)
+
+            If Not SessLogout(LocalConnxStr) Then
+                MessageBox.Show("La session locale n'a pas pu être clôturée. La session reste ouverte.",
+                                "Déconnexion impossible", MessageBoxButton.OK, MessageBoxImage.Error)
+                Return
+            End If
+
+            returnToLoginForReconnect = True
+            Close()
+        Catch ex As Exception
+            MessageBox.Show("Impossible de retenter la connexion. La session locale reste ouverte." &
+                            Environment.NewLine & ex.Message,
+                            "Erreur de reconnexion", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Try
     End Sub
     Sub AfficheProfilUser()
         If Not CanGlobalDataManage Then
@@ -1513,14 +1601,18 @@ Class MainWindow
         Me.Close()
     End Sub
     Protected Overrides Sub OnClosing(e As ComponentModel.CancelEventArgs)
-        'Dim result = MessageBox.Show("Voulez-vous vraiment fermer ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question)
-        'If result <> MessageBoxResult.Yes Then
-        'e.Cancel = True
-        'Else
-        Me.DialogResult = True
-        StopProcess("idbuder")
-        'End If
         MyBase.OnClosing(e)
+        If e.Cancel Then Return
+
+        If Not returnToLoginForReconnect AndAlso
+           MessageBox.Show("Voulez-vous vraiment fermer l'application ?",
+                           "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) <> MessageBoxResult.Yes Then
+            e.Cancel = True
+            Return
+        End If
+
+        Me.DialogResult = Not returnToLoginForReconnect
+        StopProcess("idbuder")
     End Sub
 
     Private Async Sub Window_KeyDown(sender As Object, e As KeyEventArgs)
@@ -1528,9 +1620,7 @@ Class MainWindow
             oDeconect()
         End If
         If e.Key = Key.Q AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
-            If MessageBox.Show("Voulez-vous vraiment fermer ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
-                Me.Close()
-            End If
+            Me.Close()
         End If
         If e.Key = Key.A AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             Await RunWithLoadingAsync(Sub() InitializeGlobal())

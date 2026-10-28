@@ -25,7 +25,7 @@
                 <Border  Grid.Column="1" Background="#FFF3E0FF" >
                     <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
                         <Button.Background>
-                            <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" />
+                            <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" Stretch="Uniform"/>
                         </Button.Background>
                     </Button>
 

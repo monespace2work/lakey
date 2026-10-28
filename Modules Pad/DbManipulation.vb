@@ -1076,7 +1076,6 @@ Module DbManipulation
         myw.Close()
     End Function
     Public Function ListeAgentFinContrat(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentFinContrat = "=== CONTRATS A ECHEANCE ==="
         Dim istr As String = "select a.NomPrenoms||' => '|| n.IdNature ||' (' ||strftime('%d-%m-%Y', c.DebutContr)|| ' - '||strftime('%d-%m-%Y',c.FinContr)||')' as [Liste des Agents] "
         istr += " from ((contratstbl c join agents a on c.NomPrenoms=a.NumMatr) join contratsnature n on n.NatureContr=c.NaturContr) join affectation af on af.AgentAffect=a.NomPrenoms  " ' FinContr=#" & MaxDateFinContrat.ToString("MM/dd/yyyy") & "#  "
@@ -1140,7 +1139,6 @@ Module DbManipulation
         End If
     End Function
     Public Function ListeAgentSortisActif(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentSortisActif = "=== AGENT ACTIF MAIS AYANT UNE DATE DE SORTIE ==="
         Dim istr As String = "select a.NomPrenoms||' => '|| a.DateSortie as [Liste des Agents] "
         istr += " from agents a  " ' FinContr=#" & MaxDateFinContrat.ToString("MM/dd/yyyy") & "#  "
@@ -1173,7 +1171,6 @@ Module DbManipulation
         End If
     End Function
     Public Function ListeAgentInActifSansDateSortie(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentInActifSansDateSortie = "=== AGENT INACTIF SANS DATE DE SORTIE ==="
         Dim istr As String = "select a.NomPrenoms as [Liste des Agents] "
         istr += " from agents a  " ' FinContr=#" & MaxDateFinContrat.ToString("MM/dd/yyyy") & "#  "
@@ -1253,7 +1250,6 @@ Module DbManipulation
 
     End Function
     Public Function ListeAgentFinAffectation(Optional DureeLimite As Integer = 15, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         ListeAgentFinAffectation = "=== AFFECTATION A ECHEANCE ==="
         Dim istr As String = "select c.AgentAffect||' => (' ||strftime('%d/%m/%Y', c.DateAffect)|| ' - '||strftime('%d/%m/%Y',c.FinAffect)||')' as [Liste des Agents] "
         istr += " from AFFECTATION c  "
@@ -1290,10 +1286,9 @@ Module DbManipulation
 
 
     Public Function RappelActifs(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         RappelActifs = "=== MEMOS ==="
         Dim istr As String = "Select r.NoteRappel from rappels r "
-        istr += " where r.Actif and r.Debut<=date()  "
+        istr += " where r.Actif=1 and r.Debut<=date()  "
         Dim iWord As String = ""
         Try
             Using Iconnx As New SQLiteConnection(iConxStr)
@@ -1645,7 +1640,7 @@ Module DbManipulation
         Joper = SaveNewData(iStr, iConxStr)
     End Function
     Public Function SessLogin(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
-        maj()
+        If Not LocalModeBb AndAlso Not maj() Then Return False
         'Dim iConxStr As String = $"Data Source={PaphBackUp()};Version=3;"
         Dim iUserName As String = UCase(UserName & "@" & My.Computer.Name)
         IdSession = MayStatVal("select  max (SesId) from sesslog", iConxStr) + 1

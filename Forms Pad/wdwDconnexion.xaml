@@ -8,7 +8,7 @@
         Title="Recomnetez-vous" Height="250" Width="400" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="Window_Closing" WindowStyle="None" Icon="/Lakey;component/MyIco.ico">
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="/Lakey;component/MyIco.png"/>
+            <ImageBrush ImageSource="/Lakey;component/MyIco.png" Stretch="Uniform"/>
         </Grid.Background>
         <Rectangle Fill="#99000000" />
         <StackPanel Margin="15" Background="#59000000"  Height="220" >

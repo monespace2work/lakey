@@ -12,6 +12,5 @@ Option Strict Off
 Option Explicit On
 
 <Assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("packages/sqlite.3.13.0/runtimes/win7-x64/native/desktop.ini"),  _
- Assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("packages/sqlite.3.13.0/runtimes/win7-x64/native/sqlite3.dll"),  _
- Assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("packages/sourcegear.sqlite3.3.53.4/runtimes/win-x64/native/e_sqlite3.dll")> 
+ Assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("packages/sqlite.3.13.0/runtimes/win7-x64/native/sqlite3.dll")> 
 

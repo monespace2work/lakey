@@ -179,10 +179,14 @@
                                 <TextBlock x:Name="tbModeConnexion" Text="MODE LOCAL" Visibility="Collapsed"
                                            Margin="5,0" Padding="7,4" VerticalAlignment="Center"
                                            Background="#FFFFD166" Foreground="#FF5B2100" FontWeight="Bold"
-                                           ToolTip="La base générale est indisponible ; les données utilisées sont locales"/>
+                                           ToolTip="La base locale est utilisée ; les modifications ne sont pas synchronisées automatiquement"/>
+                                <Button x:Name="btnReconnecter" Content="Retenter la connexion" Visibility="Collapsed"
+                                        Margin="5,0" Padding="8,4" VerticalAlignment="Center"
+                                        Click="btnReconnecter_Click"
+                                        ToolTip="Tester le mode connecté ; une confirmation et une sauvegarde précéderont toute actualisation"/>
                                 <Image x:Name="imgLoogo"  Source="MyIco.png" MaxHeight="30" MinHeight="20" Margin="0,0,5,0" />
                                 <Image x:Name="imgHorsConnex"  Source="hors_connexion2.png" Width="25" Margin="0,0,5,0"
-                                       ToolTip="Mode local : base générale indisponible"/>
+                                       ToolTip="Mode local : les modifications ne sont pas synchronisées automatiquement"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -190,7 +194,7 @@
                         <Grid  >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="2.2*"/>
+                                <ColumnDefinition Width="2.2*" MaxWidth="400"/>
                             </Grid.ColumnDefinitions>
                             <Border Grid.Column="0" Margin="0,0,4,0" Padding="6,3"
                                     Background="{DynamicResource ThemeAgentGroupBrush}"
@@ -326,8 +330,22 @@
                         <Button  x:Name="btnDataSets" Content="Données de base" Style="{StaticResource btnSousStand}" Visibility="Collapsed"/>
 
                     </StackPanel>
-                    <Expander  x:Name="wrpRappel" Background="#FFA40000" Header="RAPPELS IMPORTANTS" MinHeight="5" MaxHeight="200" IsExpanded="True" Foreground="White" FontWeight="Bold" >
-                        <TextBox x:Name="tbxRappel" Background="#FFFFB8B8" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" FontWeight="Normal" />
+                    <Expander x:Name="wrpRappel"
+                              Background="{DynamicResource ThemeReminderHeaderBrush}"
+                              Header="RAPPELS IMPORTANTS"
+                              MinHeight="5"
+                              MaxHeight="200"
+                              IsExpanded="True"
+                              Foreground="{DynamicResource ThemeReminderHeaderTextBrush}"
+                              BorderBrush="{DynamicResource ThemeReminderBorderBrush}"
+                              FontWeight="Bold">
+                        <TextBox x:Name="tbxRappel"
+                                 Background="{DynamicResource ThemeReminderSurfaceBrush}"
+                                 Foreground="{DynamicResource ThemeReminderTextBrush}"
+                                 BorderBrush="{DynamicResource ThemeReminderBorderBrush}"
+                                 VerticalScrollBarVisibility="Auto"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 FontWeight="Normal" />
                     </Expander>
 
                 </StackPanel>

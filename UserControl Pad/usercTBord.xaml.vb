@@ -20,7 +20,6 @@ Public Class usercTBord
     Dim iMinAge, iMaxAge As Integer
     Dim retourDansMainWindow As Action
     Dim LocalConnxStr As String
-    Public iConnxStr As String
 
     Public Sub New(cllb As Action)
         ' Cet appel est requis par le concepteur.
@@ -34,13 +33,61 @@ Public Class usercTBord
 
     Private Sub usercTBord_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
+        DbManipulation.iConnectStr = LocalConnxStr
+
+        Dim schemaError As String = Nothing
+        If Not IsDashboardDatabaseUsable(schemaError) Then
+            MessageBox.Show(
+                "Le tableau de bord ne peut pas être chargé depuis la base sélectionnée." &
+                Environment.NewLine & "Connexion : " & LocalConnxStr &
+                Environment.NewLine & schemaError,
+                "Base de données incompatible",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error)
+            Return
+        End If
+
         ResetLoad()
     End Sub
+
+    Private Function IsDashboardDatabaseUsable(ByRef errorMessage As String) As Boolean
+        errorMessage = ""
+        Dim requiredTables As String() = {
+            "agents", "affectation", "siteaffectation", "contratstbl",
+            "contratsnature", "client", "rappels"
+        }
+
+        Try
+            Using connection As New SQLiteConnection(LocalConnxStr)
+                connection.Open()
+                Using command As New SQLiteCommand(
+                    "SELECT name FROM sqlite_master WHERE type='table';", connection)
+                    Using reader As SQLiteDataReader = command.ExecuteReader()
+                        Dim availableTables As New Collections.Generic.HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                        While reader.Read()
+                            availableTables.Add(Convert.ToString(reader("name")))
+                        End While
+
+                        Dim missingTables As String() = requiredTables.
+                            Where(Function(tableName) Not availableTables.Contains(tableName)).
+                            ToArray()
+                        If missingTables.Length > 0 Then
+                            errorMessage = "Tables manquantes : " & String.Join(", ", missingTables) & "."
+                            Return False
+                        End If
+                    End Using
+                End Using
+            End Using
+            Return True
+        Catch ex As Exception
+            errorMessage = ex.Message
+            Return False
+        End Try
+    End Function
+
     Sub ResetLoad()
         elpGlobale.Visibility = Visibility.Visible
-        maj()
         incorrection()
 
         Try
@@ -67,23 +114,29 @@ Public Class usercTBord
         inputTimerClent.Interval = TimeSpan.FromMilliseconds(1000)
         AddHandler inputTimerClent.Tick, AddressOf ClientActifOnInputTimerElapsed
         '=========================
+        Dim irappel As String = ""
         Try
-            Dim irappel As String = RappelActifs()
-            If irappel <> "" Then
-            End If
+            irappel = RappelActifs(LocalConnxStr)
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
         '========================
         isLoadedTbord = True
         elpGlobale.Visibility = Visibility.Collapsed
+        If irappel <> "" Then
+            Dispatcher.BeginInvoke(
+                DispatcherPriority.ApplicationIdle,
+                New Action(Sub()
+                               ShowTempMsg(irappel, 60, "RAPPELS IMPORTANTS", "r")
+                           End Sub))
+        End If
 
     End Sub
     Sub incorrection()
         Try
             Dim iMsg As String = ""
-            Dim msgSortiActif As String = ListeAgentSortisActif()
-            Dim msgInActif As String = ListeAgentInActifSansDateSortie()
+            Dim msgSortiActif As String = ListeAgentSortisActif(LocalConnxStr)
+            Dim msgInActif As String = ListeAgentInActifSansDateSortie(LocalConnxStr)
             If msgSortiActif <> "" And msgInActif <> "" Then
                 iMsg = msgSortiActif & Environment.NewLine & Environment.NewLine & msgInActif
             ElseIf msgSortiActif <> "" Then
@@ -113,7 +166,7 @@ Public Class usercTBord
 
     Sub LoadEvolEffectif()
         Try
-            myDtbl = EvolTrimEffectif(Today.AddMonths(-0), 12) ', iConnxStr)
+            myDtbl = EvolTrimEffectif(Today.AddMonths(-0), 12, LocalConnxStr)
             If myDtbl.Columns.Count > 0 Then
                 For iIdx As Integer = 0 To myDtbl.Columns.Count - 1
                     If iIdx > 0 Then
@@ -137,7 +190,7 @@ Public Class usercTBord
     End Sub
     Sub LoadClientSite()
         Try
-            myDtblCv = LoadDataTable("select s.Localisation, count(s.NomSite) as Nbr from siteaffectation s where  s.Actif=1 group by s.Localisation") ', LocalConnxStr)
+            myDtblCv = LoadDataTable("select s.Localisation, count(s.NomSite) as Nbr from siteaffectation s where  s.Actif=1 group by s.Localisation", LocalConnxStr)
             dgSiteVile.ItemsSource = myDtblCv.DefaultView ' EvolTrimEffectif(Today.AddMonths(-0)).DefaultView
             UpDateChartClientVile()
         Catch ex As Exception
@@ -146,7 +199,7 @@ Public Class usercTBord
     End Sub
     Sub LoadClientType()
         Try
-            myDtblType = LoadDataTable("select s.TypeSite, count(s.NomSite) as Nombre from siteaffectation s where  s.Actif=1 group by s.TypeSite") ', LocalConnxStr)
+            myDtblType = LoadDataTable("select s.TypeSite, count(s.NomSite) as Nombre from siteaffectation s where  s.Actif=1 group by s.TypeSite", LocalConnxStr)
             dgSiteType.ItemsSource = myDtblType.DefaultView ' EvolTrimEffectif(Today.AddMonths(-0)).DefaultView
             UpDateChartClientType()
         Catch ex As Exception
@@ -166,7 +219,7 @@ Public Class usercTBord
             Dim Agent2_4 As Integer = 0
             Dim Agent5_9 As Integer = 0
             Dim Agent10plus As Integer = 0
-            Using iconn As New SQLiteConnection(iConnectStr)
+            Using iconn As New SQLiteConnection(LocalConnxStr)
                 iconn.Open()
                 Using icmd As New SQLiteCommand(iStr, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -228,7 +281,7 @@ Public Class usercTBord
             Dim De51a55ans As Integer = 0
             Dim De56a60ans As Integer = 0
             Dim PusDe60ans As Integer = 0
-            Using iconn As New SQLiteConnection(iConnectStr)
+            Using iconn As New SQLiteConnection(LocalConnxStr)
                 iconn.Open()
                 Using icmd As New SQLiteCommand(iStr, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -270,7 +323,7 @@ Public Class usercTBord
             Dim iStr As String = "select c.NomClient,s.NomSite, s.RespSite, s.Localisation,s.TypeSite from client c join siteaffectation s on c.NomClient =s.Client "
             iStr += " where c.Actif=1 and s.Actif=1"
             iStr += " order by c.NomClient,s.NomSite"
-            myDtblClientActif = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblClientActif = LoadDataTable(iStr, LocalConnxStr)
             dgClientActifs.ItemsSource = myDtblClientActif.DefaultView ' EvolTrimEffectif(Today.AddMonths(-0)).DefaultView
             lblNbClentActif.Content = myDtblClientActif.Rows.Count
         Catch ex As Exception
@@ -282,10 +335,10 @@ Public Class usercTBord
             Dim iStr As String = "select a.NomPrenoms,a.Contacts,a.NumMatr,af.SiteAffect,s.Localisation,date(a.DateEntree) as DateEntree   from agents a join contratstbl c on c.NomPrenoms=a.NumMatr join affectation af on af.AgentAffect=a.NomPrenoms join siteaffectation s on s.NomSite=af.SiteAffect "
             iStr += " where c.FinContr>=date() and af.FinAffect>=date() and s.Actif=1"
             iStr += " order by a.NomPrenoms"
-            myDtblAgentsActif = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblAgentsActif = LoadDataTable(iStr, LocalConnxStr)
             dgAgentActifs.ItemsSource = myDtblAgentsActif.DefaultView ' EvolTrimEffectif(Today.AddMonths(-0)).DefaultView
-            Dim iList As String = ListeAgentFinContrat()
-            Dim ilistAff As String = ListeAgentFinAffectation()
+            Dim iList As String = ListeAgentFinContrat(LocalConnxStr)
+            Dim ilistAff As String = ListeAgentFinAffectation(15, LocalConnxStr)
             ColorDgRowsFinContratAffectation(dgAgentActifs, 0, iList, ilistAff)
             lblNbAgentActif.Content = myDtblAgentsActif.Rows.Count
         Catch ex As Exception
@@ -316,7 +369,7 @@ Public Class usercTBord
             ' iStr += " or a.NumMatr like %" & Apost(KeyWord) & "%"
             iStr += " or s.Localisation like '%" & Apost(KeyWord) & "%' )"
             iStr += " order by a.NomPrenoms"
-            myDtblAgentsActif = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblAgentsActif = LoadDataTable(iStr, LocalConnxStr)
             dgAgentActifs.ItemsSource = myDtblAgentsActif.DefaultView ' EvolTrimEffectif(Today.AddMonths(-0)).DefaultView
             lblNbAgentActif.Content = myDtblAgentsActif.Rows.Count
         Catch ex As Exception
@@ -438,7 +491,7 @@ Public Class usercTBord
             iStr += " or s.Localisation like '%" & Apost(KeyWord) & "%'"
             iStr += " or s.TypeSite like '%" & Apost(KeyWord) & "%' )"
             iStr += " order by s.NomSite, s.Localisation"
-            myDtblClientActif = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblClientActif = LoadDataTable(iStr, LocalConnxStr)
             dgClientActifs.ItemsSource = myDtblClientActif.DefaultView ' EvolTrimEffectif(Today.AddMonths(-0)).DefaultView
             lblNbClentActif.Content = myDtblClientActif.Rows.Count
         Catch ex As Exception
@@ -458,7 +511,7 @@ Public Class usercTBord
             Dim iStr As String = "select a.NomPrenoms,format(c.FinContr) as FinContr , n.IdNature as Nature,format(c.DebutContr) as DebutContr from contratstbl c  join agents a on a.NumMatr=c.NomPrenoms join contratsnature n on n.NatureContr=c.NaturContr "
             iStr += " where c.FinContr>='" & DebutDuMois(Today).ToString("yyyy-MM-dd") & "' and c.FinContr<='" & FinDuMois(Today).AddDays(15).ToString("yyyy-MM-dd") & "' and a.actif=1"
             iStr += " order by c.FinContr,a.NomPrenoms"
-            myDtblContratEch = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblContratEch = LoadDataTable(iStr, LocalConnxStr)
             dgContratEcheant.ItemsSource = myDtblContratEch.DefaultView
             lblNbContratEcheance.Content = myDtblContratEch.Rows.Count
         Catch ex As Exception
@@ -472,7 +525,7 @@ Public Class usercTBord
             Dim iStr As String = "select a.NomPrenoms, format(c.DebutContr) as Début from agents a join contratstbl c on a.NumMatr=c.NomPrenoms "
             iStr += " where c.FinContr>='" & DebutDuMois(Today).ToString("yyyy-MM-dd") & "' and a.Actif=1 and c.DebutContr>='" & DebutDuMois(Today).ToString("yyyy-MM-dd") & "'"  ' c.FinContr<='" & FinDuMois(Today).AddDays(15).ToString("yyyy-MM-dd") & "' and a.actif=1"
             iStr += " order by a.DateEntree desc, a.NomPrenoms "
-            myDtblNewAgent = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblNewAgent = LoadDataTable(iStr, LocalConnxStr)
             dgNewAgent.ItemsSource = myDtblNewAgent.DefaultView
             lblNbContratNouveau.Content = myDtblNewAgent.Rows.Count
         Catch ex As Exception
@@ -485,7 +538,7 @@ Public Class usercTBord
             Dim iStr As String = "select s.Client, count(s.Client) as NbAgent from siteaffectation s  join affectation a on a.SiteAffect=s.NomSite "
             iStr += " where s.Actif=1 and a.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "' and s.Client not like '%g2s%'"
             iStr += " group by s.Client  order by NbAgent desc limit 10"
-            myDtblClientGrand10 = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblClientGrand10 = LoadDataTable(iStr, LocalConnxStr)
             dgGrandClients.ItemsSource = myDtblClientGrand10.DefaultView
         Catch ex As Exception
             MsgBox(ex.Message)
@@ -496,7 +549,7 @@ Public Class usercTBord
             Dim iStr As String = "select c.NomClient, format(c.DateDebutCollabor) as Debut,c.MontantFacturationUnitaire as PrixUnit from client c "
             iStr += " where c.Actif=1 and  c.NomClient not like '%g2s%' and c.NomClient not like '%TOGO INTERIM%' "
             iStr += " order by c.DateDebutCollabor limit 20 "
-            myDtblClientAncien20 = LoadDataTable(iStr) ', LocalConnxStr)
+            myDtblClientAncien20 = LoadDataTable(iStr, LocalConnxStr)
             dgAnciensClients.ItemsSource = myDtblClientAncien20.DefaultView
         Catch ex As Exception
             MsgBox(ex.Message)

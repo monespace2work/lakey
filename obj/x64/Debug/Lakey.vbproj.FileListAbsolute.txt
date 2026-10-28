@@ -291,7 +291,6 @@ E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
 E:\iclones\lakey\obj\x64\Debug\Lakey.exe
 E:\iclones\lakey\obj\x64\Debug\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
-E:\iclones\lakey\bin\x64\Debug\packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
 C:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
 C:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
@@ -447,3 +446,4 @@ E:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.dll
 E:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
