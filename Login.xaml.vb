@@ -1,6 +1,13 @@
 ﻿Public Class Login
     Dim iConnxStr As String
-    Private Sub btnLogin_Click(sender As Object, e As RoutedEventArgs) Handles btnLogin.Click
+    Private Async Sub btnLogin_Click(sender As Object, e As RoutedEventArgs) Handles btnLogin.Click
+        btnLogin.IsEnabled = False
+        grdLoginLoading.Visibility = Visibility.Visible
+        Dim loadingStoryboard = TryCast(grdLoginLoading.Resources("LoginLoadingRotationStoryboard"),
+                                        System.Windows.Media.Animation.Storyboard)
+        loadingStoryboard?.Begin(grdLoginLoading, True)
+        Await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Background)
+
         Try
             Dim loginDatabasePath As String = DbPathGeneral
             iConnxStr = "Data Source=" & loginDatabasePath & ";Version=3;"
@@ -152,6 +159,10 @@
 
         Catch ex As Exception
             MessageBox.Show(ex.ToString(), "Erreur pendant la connexion", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            loadingStoryboard?.Stop(grdLoginLoading)
+            grdLoginLoading.Visibility = Visibility.Collapsed
+            activBtnOk()
         End Try
     End Sub
 
@@ -212,7 +223,7 @@
             Dim connectionString As New Data.SQLite.SQLiteConnectionStringBuilder With {
                 .DataSource = databasePath,
                 .Version = 3,
-                .ReadOnly = True
+                .ReadOnly = False
             }
             Using connection As New Data.SQLite.SQLiteConnection(connectionString.ToString())
                 connection.Open()
@@ -448,7 +459,7 @@
             Dim connectionString As New Data.SQLite.SQLiteConnectionStringBuilder With {
                 .DataSource = databasePath,
                 .Version = 3,
-                .ReadOnly = True,
+                .ReadOnly = False,
                 .DefaultTimeout = 10
             }
             Using connection As New Data.SQLite.SQLiteConnection(connectionString.ToString())
@@ -495,7 +506,7 @@
         'MsgBox(iConxStr)
         Try
             Dim authConnectionString As New Data.SQLite.SQLiteConnectionStringBuilder(iConxStr) With {
-                .ReadOnly = True
+                .ReadOnly = False
             }
             Using iConx As New Data.SQLite.SQLiteConnection(authConnectionString.ToString())
                 iConx.Open()

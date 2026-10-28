@@ -544,8 +544,8 @@ Module DbManipulation
 
 
     Public Function LoadDataTable(ByVal MyCommandString As String, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As DataTable
-        Dim myw As New WaitFrm
-        myw.Show()
+        'Dim myw As New WaitFrm
+        'myw.Show()
         Dim MyDAdapter As SQLiteDataAdapter
         MyCmdStr = MyCommandString
         Dim TempTable As New DataTable
@@ -571,7 +571,7 @@ Module DbManipulation
             'LoadDataTable = False
         End Try
         LoadDataTable = TempTable
-        myw.Close()
+        'myw.Close()
     End Function
 
     Public Function SaveNewData(ByVal iCommandString As String, Optional iConnectStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean

@@ -53,5 +53,28 @@
         <TextBlock Grid.Row="1" Text="Développé par Julio P. Bag"
                    Foreground="{DynamicResource ThemeInkBrush}" FontSize="11"
                    HorizontalAlignment="Right" Margin="0,5,4,0"/>
+        <Grid x:Name="grdLoginLoading" Grid.RowSpan="2" Panel.ZIndex="1000"
+              Background="#9900113E" Visibility="Collapsed" IsHitTestVisible="True">
+            <Grid.Resources>
+                <Storyboard x:Key="LoginLoadingRotationStoryboard">
+                    <DoubleAnimation Storyboard.TargetName="LoginLoadingRotation"
+                                     Storyboard.TargetProperty="Angle"
+                                     From="0" To="360" Duration="0:0:0.8"
+                                     RepeatBehavior="Forever"/>
+                </Storyboard>
+            </Grid.Resources>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Ellipse Width="54" Height="54" Stroke="{DynamicResource ThemeAccentBrush}"
+                         StrokeThickness="6" StrokeDashArray="2,2"
+                         RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center">
+                    <Ellipse.RenderTransform>
+                        <RotateTransform x:Name="LoginLoadingRotation"/>
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+                <TextBlock Text="Connexion en cours..."
+                           Foreground="White" FontSize="15" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,14,0,0"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

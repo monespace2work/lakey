@@ -6,6 +6,8 @@ Class MainWindow
     Dim iUserC As New UserControl
     Public LocalConnxStr As String
     Private isDarkTheme As Boolean = True
+    Private isLeftPanelCollapsed As Boolean
+    Private isRightPanelCollapsed As Boolean
     Private ReadOnly userControlLoadingTimer As New DispatcherTimer With {
         .Interval = TimeSpan.FromMilliseconds(500)
     }
@@ -21,6 +23,48 @@ Class MainWindow
         AddHandler userControlLoadingTimer.Tick, AddressOf UserControlLoadingTimer_Tick
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
+    End Sub
+
+    Private Sub btnToggleLeftPanel_Click(sender As Object, e As RoutedEventArgs)
+        isLeftPanelCollapsed = Not isLeftPanelCollapsed
+        If isLeftPanelCollapsed Then
+            colLeftPanel.MinWidth = 42
+            colLeftPanel.Width = New GridLength(42)
+            bdrColonneGauche.Padding = New Thickness(5, 0, 5, 0)
+            stpLeftPanelContent.Visibility = Visibility.Collapsed
+            tbkLeftPanelCollapsedTitle.Visibility = Visibility.Visible
+            btnToggleLeftPanel.Content = "▶"
+            btnToggleLeftPanel.ToolTip = "Développer le panneau"
+        Else
+            colLeftPanel.MinWidth = 165
+            colLeftPanel.Width = New GridLength(190)
+            bdrColonneGauche.Padding = New Thickness(8, 10, 8, 10)
+            stpLeftPanelContent.Visibility = Visibility.Visible
+            tbkLeftPanelCollapsedTitle.Visibility = Visibility.Collapsed
+            btnToggleLeftPanel.Content = "◀"
+            btnToggleLeftPanel.ToolTip = "Réduire le panneau"
+        End If
+    End Sub
+
+    Private Sub btnToggleRightPanel_Click(sender As Object, e As RoutedEventArgs)
+        isRightPanelCollapsed = Not isRightPanelCollapsed
+        If isRightPanelCollapsed Then
+            colRightPanel.MinWidth = 42
+            colRightPanel.Width = New GridLength(42)
+            bdrColonneDroit.Padding = New Thickness(5, 0, 5, 0)
+            stpRightPanelContent.Visibility = Visibility.Collapsed
+            tbkRightPanelCollapsedTitle.Visibility = Visibility.Visible
+            btnToggleRightPanel.Content = "▶"
+            btnToggleRightPanel.ToolTip = "Développer le panneau"
+        Else
+            colRightPanel.MinWidth = 210
+            colRightPanel.Width = New GridLength(245)
+            bdrColonneDroit.Padding = New Thickness(10)
+            stpRightPanelContent.Visibility = Visibility.Visible
+            tbkRightPanelCollapsedTitle.Visibility = Visibility.Collapsed
+            btnToggleRightPanel.Content = "◀"
+            btnToggleRightPanel.ToolTip = "Réduire le panneau"
+        End If
     End Sub
 
     Private Sub bdrColonneCentre_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
@@ -96,7 +140,8 @@ Class MainWindow
             If Not LocalModeBb AndAlso Not maj() Then DbPath = DbPathGeneral
             LocalConnxStr = $"Data Source={DbPath};Version=3;"
             InitializeGlobal()
-        End Sub)
+        End Sub,
+        "Ouverture de la fenêtre principale...")
         'If Not SessLogin() Then Me.Close()
     End Sub
 
@@ -1178,10 +1223,14 @@ Class MainWindow
     End Sub
 
     Private Async Sub btnRefresh_Click(sender As Object, e As RoutedEventArgs) Handles btnRefresh.Click
-        If MsgBox("Réinitialiser toutes les données de planning?" & Environment.NewLine & "CONTINUER ?", MsgBoxStyle.YesNo, "ACTUALISATION DES DONNEES") = MsgBoxResult.Yes Then
-            Await RunWithLoadingAsync(Sub() InitializeGlobal())
-        End If
-        'InitializeGlobal()
+        If MsgBox("Réinitialiser toutes les données de planning?" & Environment.NewLine & "CONTINUER ?", MsgBoxStyle.YesNo, "ACTUALISATION DES DONNEES") <> MsgBoxResult.Yes Then Return
+
+        btnRefresh.IsEnabled = False
+        Try
+            Await RunWithLoadingAsync(Sub() InitializeGlobal(), "Actualisation des données...")
+        Finally
+            btnRefresh.IsEnabled = True
+        End Try
     End Sub
     Sub ResetData()
         If tbxRappel.Text <> "" Then
