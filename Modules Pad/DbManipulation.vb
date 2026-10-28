@@ -1109,7 +1109,6 @@ Module DbManipulation
     End Function
     Public Function ListePosteActuel(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         ListePosteActuel = ""
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Dim istr As String = "select a.Fonction, count(*) from agents a join fonction f on a.Fonction=f.Fonction where a.Actif=1 group by a.Fonction order by f.Niveau,f.Fonction "
         Dim iWord As String = ""
         Try
@@ -1204,7 +1203,6 @@ Module DbManipulation
     End Function
 
     Public Function StatAgent(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         StatAgent = ""
         Dim iText As String = ""
         iText = MyStatValStr("SELECT count (*) from agents a where a.Actif=1", iConxStr)
@@ -1227,7 +1225,7 @@ Module DbManipulation
             StatAgent &= Environment.NewLine & "M : " & TMagent & " (" & Math.Round(TMagent * 100 / Tagent, 0) & "%)"
         End If
         If StatAgent <> "" Then StatAgent &= Environment.NewLine & "----"
-        StatAgent &= ListePosteActuel()
+        StatAgent &= ListePosteActuel(iConxStr)
         If StatAgent <> "" Then StatAgent &= Environment.NewLine & "----"
         iText = MyStatValStr("SELECT min( cast ((julianday('now') -julianday(a.DateNaiss))/365.25 as integer) ) from agents a where a.Actif=1", iConxStr)
         If iText <> "" Then StatAgent &= Environment.NewLine & "Age Min : " & iText
@@ -1238,7 +1236,6 @@ Module DbManipulation
 
     End Function
     Public Function StatClient(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
-        If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         StatClient = ""
         Dim iText As String = ""
         iText = MyStatValStr("SELECT count (*) from client c where c.Actif=1", iConxStr)

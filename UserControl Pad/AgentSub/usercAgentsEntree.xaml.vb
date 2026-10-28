@@ -36,8 +36,8 @@ Public Class usercAgentsEntree
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
+        iConnxStr = If(LocalModeBb, LocalConnxStr, "Data Source=" & DbPathGeneral & ";Version=3;")
         InitialLoad()
         inputTimer = New DispatcherTimer()
         inputTimer.Interval = TimeSpan.FromSeconds(3)
@@ -160,7 +160,7 @@ Public Class usercAgentsEntree
         istr += " FROM  agents where actif=1 "
         istr += " ORDER BY actif desc, DateEntree desc, RefAgent desc, Nomprenoms "
         DgAgentListe.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        tblNbAgent.Text = "Nombre d'agents actifs: " & NbAgentActif(LocalConnxStr) & " | Nombre d'agents inactifs: " & NbAgentInactif()
+        tblNbAgent.Text = "Nombre d'agents actifs: " & NbAgentActif(LocalConnxStr) & " | Nombre d'agents inactifs: " & NbAgentInactif(LocalConnxStr)
         ChangeYN = False
         AgActif.IsChecked = True
         AgInActif.IsChecked = False
