@@ -239,7 +239,8 @@ Module DbManipulation
                 End Using
             End Using
         Catch ex As Exception
-            MsgBox(ex.Message)
+            System.Diagnostics.Debug.WriteLine("Impossible de charger les paramètres : " & ex.ToString())
+            MsgBox("Les paramètres n'ont pas pu être chargés. Vérifiez la base de données ou contactez l'assistance.")
             LoadDataSettings = False
         End Try
     End Function
@@ -1687,7 +1688,7 @@ Module DbManipulation
                 End Using
             End Using
         Catch ex As Exception
-            MsgBox(ex.Message)
+            System.Diagnostics.Debug.WriteLine("Impossible de charger le profil utilisateur : " & ex.ToString())
             LoadUserProfil = False
         End Try
     End Function

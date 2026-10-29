@@ -22,16 +22,15 @@
                 If iLevel = 1976 Then
                     If localDatabaseErrors.Count > 0 Then
                         MessageBox.Show(
-                            "Aucune base locale compatible n'a pu être utilisée." &
-                            Environment.NewLine & String.Join(Environment.NewLine, localDatabaseErrors.Select(Function(dbError) dbError.Message)),
-                            "Base locale indisponible",
+                            "La connexion hors ligne n'est pas disponible. Vérifiez votre installation ou contactez l'assistance.",
+                            "Connexion impossible",
                             MessageBoxButton.OK,
                             MessageBoxImage.Warning)
                         Return
                     End If
                     Dim localMessage As String = If(localDatabaseChecked,
-                                                    "Ces identifiants ne sont pas présents dans les bases locales.",
-                                                    "Aucune base locale n'a été trouvée.")
+                                                    "Nom d'utilisateur ou mot de passe incorrect.",
+                                                    "Aucune base hors ligne n'est disponible.")
                     MessageBox.Show(localMessage, "Connexion locale impossible",
                                     MessageBoxButton.OK, MessageBoxImage.Warning)
                     Return
@@ -45,12 +44,7 @@
                         CheckGeneralDatabaseAccessibility(loginDatabasePath)
                     If accessResult.Item1 Then
                         MessageBox.Show(
-                            "La base générale est accessible, mais la vérification de la connexion a échoué." &
-                            Environment.NewLine & "Base : " & loginDatabasePath &
-                            Environment.NewLine & ex.Message &
-                            If(ex.InnerException IsNot Nothing,
-                               Environment.NewLine & "Détail SQLite : " & ex.InnerException.Message,
-                               ""),
+                            "La connexion n'a pas pu être vérifiée. Réessayez. Si le problème persiste, contactez l'assistance.",
                             "Échec de connexion",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error)
@@ -60,7 +54,6 @@
                     Dim alternativeDatabasePath As String = loginDatabasePath
                     If PromptForAlternativeGeneralDatabase(
                         loginDatabasePath,
-                        accessResult.Item2,
                         alternativeDatabasePath) Then
                         loginDatabasePath = alternativeDatabasePath
                         iConnxStr = "Data Source=" & loginDatabasePath & ";Version=3;"
@@ -75,10 +68,7 @@
 
                         If iLevel = 1976 AndAlso localDatabaseErrors.Count > 0 Then
                             MessageBox.Show(
-                                generalDatabaseError.Message &
-                                Environment.NewLine & Environment.NewLine &
-                                "Aucune base locale compatible n'a pu être utilisée." &
-                                Environment.NewLine & String.Join(Environment.NewLine, localDatabaseErrors.Select(Function(dbError) dbError.Message)),
+                                "La base principale et la connexion hors ligne sont indisponibles. Contactez l'assistance.",
                                 "Connexion impossible",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning)
@@ -90,17 +80,15 @@
                                                                 New AggregateException(errors))
                         End If
                         If iLevel = 1976 Then
-                            MessageBox.Show(generalDatabaseError.Message &
-                                            Environment.NewLine & Environment.NewLine &
-                                            "Ces identifiants ne sont pas présents dans la base locale.",
+                            MessageBox.Show("Nom d'utilisateur ou mot de passe incorrect.",
                                             "Connexion locale impossible", MessageBoxButton.OK, MessageBoxImage.Warning)
                             Return
                         End If
                         If MessageBox.Show(
-                            generalDatabaseError.Message & Environment.NewLine & Environment.NewLine &
-                            "Voulez-vous continuer en mode local ?" &
-                            Environment.NewLine & "Les modifications locales ne seront pas synchronisées automatiquement.",
-                            "Passer en mode local",
+                            "La base principale est indisponible." & Environment.NewLine &
+                            "Voulez-vous continuer hors ligne ?" & Environment.NewLine &
+                            "Les modifications hors ligne ne seront pas synchronisées automatiquement.",
+                            "Connexion hors ligne",
                             MessageBoxButton.YesNo,
                             MessageBoxImage.Warning) <> MessageBoxResult.Yes Then Return
                     End If
@@ -121,7 +109,8 @@
 
                 'UserLevel = iLevel
                 If Not LoadUserProfil(iLevel, iConnxStr) Then
-                    MessageBox.Show("Erreur de chargement du profil utilisateur", "ERREUR CRITIQUE", MessageBoxButton.OK, MessageBoxImage.Error)
+                    MessageBox.Show("Votre profil n'a pas pu être chargé. Contactez l'assistance.",
+                                    "Connexion impossible", MessageBoxButton.OK, MessageBoxImage.Error)
                     Me.Close()
                     Return
                 End If
@@ -149,7 +138,9 @@
                                     "Connexion impossible", MessageBoxButton.OK, MessageBoxImage.Error)
                 End If
             Else
-                If MsgBox("REPRENDRE ?", MsgBoxStyle.YesNo, "Indentifiants incorrects") = MsgBoxResult.Yes Then
+                If MsgBox("Nom d'utilisateur ou mot de passe incorrect. Voulez-vous réessayer ?",
+                          MsgBoxStyle.YesNo Or MsgBoxStyle.Exclamation,
+                          "Connexion impossible") = MsgBoxResult.Yes Then
                     txtUsername.SelectAll()
                     txtUsername.Focus()
                 Else
@@ -158,7 +149,9 @@
             End If
 
         Catch ex As Exception
-            MessageBox.Show(ex.ToString(), "Erreur pendant la connexion", MessageBoxButton.OK, MessageBoxImage.Error)
+            System.Diagnostics.Debug.WriteLine("Échec de la connexion : " & ex.ToString())
+            MessageBox.Show("La connexion n'a pas pu être terminée. Vérifiez la disponibilité de la base, puis réessayez.",
+                            "Connexion impossible", MessageBoxButton.OK, MessageBoxImage.Error)
         Finally
             loadingStoryboard?.Stop(grdLoginLoading)
             grdLoginLoading.Visibility = Visibility.Collapsed
@@ -247,6 +240,7 @@
             End Using
             Return True
         Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("Impossible de vérifier la base hors ligne : " & ex.ToString())
             errorMessage = ex.Message
             Return False
         End Try
@@ -263,8 +257,7 @@
         Try
             Dim localDatabaseError As String = Nothing
             If Not IsSQLiteDatabaseHealthy(localDatabasePath, localDatabaseError) Then
-                MessageBox.Show("La copie locale ne peut pas être sauvegardée en toute sécurité ; elle ne sera pas remplacée." &
-                                Environment.NewLine & localDatabaseError,
+                MessageBox.Show("Les données hors ligne n'ont pas pu être sécurisées. Elles ne seront pas remplacées. Contactez l'assistance.",
                                 "Sauvegarde impossible", MessageBoxButton.OK, MessageBoxImage.Error)
                 Return False
             End If
@@ -278,8 +271,8 @@
             CreateValidatedSQLiteSnapshot(localDatabasePath, backupPath)
             Return True
         Catch ex As Exception
-            MessageBox.Show("La copie locale n'a pas pu être sauvegardée ; elle ne sera pas remplacée." &
-                            Environment.NewLine & ex.Message,
+            System.Diagnostics.Debug.WriteLine("Impossible de sauvegarder les données hors ligne : " & ex.ToString())
+            MessageBox.Show("Les données hors ligne n'ont pas pu être sauvegardées. Elles ne seront pas remplacées. Contactez l'assistance.",
                             "Sauvegarde impossible", MessageBoxButton.OK, MessageBoxImage.Error)
             Return False
         End Try
@@ -300,7 +293,7 @@
         If accessResult.Item1 Then Return
 
         Dim selectedDatabasePath As String = DbPathGeneral
-        If PromptForAlternativeGeneralDatabase(DbPathGeneral, accessResult.Item2, selectedDatabasePath) Then
+        If PromptForAlternativeGeneralDatabase(DbPathGeneral, selectedDatabasePath) Then
             DbPathGeneral = selectedDatabasePath
             iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
             Return
@@ -311,28 +304,18 @@
         If FindUsableLocalDatabase(txtUsername.Text, localDatabasePath, localDatabaseError) Then
             Dim answer As MessageBoxResult = MessageBox.Show(
                 Me,
-                "La base générale ne peut pas être utilisée pour la connexion." & Environment.NewLine &
-                "Voulez-vous essayer de vous connecter avec une base locale ?" & Environment.NewLine &
-                "Les modifications locales ne seront pas synchronisées automatiquement." &
-                Environment.NewLine & Environment.NewLine &
-                "Base générale testée : " & DbPathGeneral & Environment.NewLine &
-                "Base locale disponible : " & localDatabasePath & Environment.NewLine &
-                accessResult.Item2,
-                "Base générale indisponible",
+                "La base principale est indisponible. Voulez-vous essayer en mode hors ligne ?" & Environment.NewLine &
+                "Les modifications hors ligne ne seront pas synchronisées automatiquement.",
+                "Connexion hors ligne",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning,
                 MessageBoxResult.No)
             If answer = MessageBoxResult.Yes Then chkUseLocalMode.IsChecked = True
         Else
             MessageBox.Show(
-                "La base générale ne peut pas être utilisée pour la connexion." & Environment.NewLine &
-                "Base testée : " & DbPathGeneral & Environment.NewLine &
-                accessResult.Item2 & Environment.NewLine & Environment.NewLine &
-                "Aucune base locale valide n'a été trouvée ; le mode local ne peut pas être proposé." &
-                Environment.NewLine & localDatabaseError &
-                Environment.NewLine & Environment.NewLine &
-                "Choisissez une autre base générale valide pour vous connecter.",
-                "Base générale indisponible",
+                "La base principale est indisponible et aucune base hors ligne n'a été trouvée." &
+                Environment.NewLine & "Choisissez une autre base ou contactez l'assistance.",
+                "Connexion impossible",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error)
         End If
@@ -351,6 +334,7 @@
                     candidates.Add(IO.Path.Combine(userDirectory, "ManA.sqlite"))
                 Next
             Catch ex As Exception
+                System.Diagnostics.Debug.WriteLine("Impossible de rechercher une base hors ligne : " & ex.ToString())
                 errorMessage = "Impossible de vérifier les bases locales : " & ex.Message
                 Return False
             End Try
@@ -375,17 +359,12 @@
     End Function
 
     Private Function PromptForAlternativeGeneralDatabase(currentDatabasePath As String,
-                                                         failureReason As String,
                                                          ByRef selectedDatabasePath As String) As Boolean
         selectedDatabasePath = currentDatabasePath
         Dim answer As MessageBoxResult = MessageBox.Show(
             Me,
-            "La base générale configurée est vide, invalide ou incompatible avec l'application." &
-            Environment.NewLine & "Base : " & currentDatabasePath &
-            Environment.NewLine & failureReason &
-            Environment.NewLine & Environment.NewLine &
-            "Voulez-vous choisir une autre base ? Cette action nécessite le code ID client (1176 par défaut).",
-            "Base générale invalide",
+            "La base principale est indisponible. Voulez-vous en choisir une autre ?",
+            "Base indisponible",
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning,
             MessageBoxResult.Yes)
@@ -394,10 +373,10 @@
         Dim clientCode As String = Microsoft.VisualBasic.Interaction.InputBox(
             "Saisissez le code ID client pour choisir une autre base générale.",
             "Validation client",
-            "1176")
+            "")
         If clientCode <> "1176" Then
             If clientCode <> "" Then
-                MessageBox.Show("Code ID client incorrect.", "Accès refusé",
+                MessageBox.Show("Code incorrect.", "Accès refusé",
                                 MessageBoxButton.OK, MessageBoxImage.Warning)
             End If
             Return False
@@ -415,10 +394,8 @@
         Dim candidateAccessResult As Tuple(Of Boolean, String) =
             CheckGeneralDatabaseAccessibility(candidatePath)
         If Not candidateAccessResult.Item1 Then
-            MessageBox.Show("La base sélectionnée n'est pas valide et n'a pas été enregistrée." &
-                            Environment.NewLine & candidatePath &
-                            Environment.NewLine & candidateAccessResult.Item2,
-                            "Base invalide", MessageBoxButton.OK, MessageBoxImage.Error)
+            MessageBox.Show("Ce fichier ne peut pas être utilisé comme base. Choisissez un autre fichier.",
+                            "Base invalide", MessageBoxButton.OK, MessageBoxImage.Warning)
             Return False
         End If
 
@@ -438,8 +415,8 @@
             DbPathGeneral = candidatePath
             Return True
         Catch ex As Exception
-            MessageBox.Show("La base sélectionnée est valide, mais son chemin n'a pas pu être enregistré." &
-                            Environment.NewLine & ex.Message,
+            System.Diagnostics.Debug.WriteLine("Impossible d'enregistrer la base sélectionnée : " & ex.ToString())
+            MessageBox.Show("La base est valide, mais votre choix n'a pas pu être enregistré. Réessayez.",
                             "Enregistrement impossible", MessageBoxButton.OK, MessageBoxImage.Error)
             Return False
         End Try
@@ -477,6 +454,7 @@
             End Using
             Return Tuple.Create(True, "")
         Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("Impossible de vérifier la base générale : " & ex.ToString())
             Return Tuple.Create(False, "La base sélectionnée est inutilisable pour l'authentification. Détail : " & ex.Message)
         End Try
     End Function
