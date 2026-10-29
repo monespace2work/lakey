@@ -15,7 +15,7 @@ Module Parameters
     Public SocieteWebSite As String = "juliobag.jpb"
     Public SocieteLogoPath As String = My.Application.Info.DirectoryPath & "\JPB\ManAps\ManAps_JPG.jpg"
     Public DbPath As String = "C:\LkyRess\ManA.sqlite"
-    Public DbPathGeneral As String = "C:\LkyRess\ManA.sqlite"
+    Public DbPathGeneral As String = ""
     Public LocalModeBb As Boolean = True
     'Public DbPath As String = "C:\Users\Public\MYDO\RM\GestAPS.accdb"
     Public RootPath As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "JPB\LKY")
@@ -23,6 +23,7 @@ Module Parameters
     Public UserName As String = "JuioBag"
     Public UserLevel As Integer = 0
     Public UserPW As String = "JPB"
+    Public SessionConnxStr As String = ""
     Public IdxSession As Integer = 0
 
     Public isLoadedTbord As Boolean = False

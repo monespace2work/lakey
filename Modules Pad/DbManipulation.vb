@@ -272,14 +272,44 @@ Module DbManipulation
         End Try
     End Function
 
+    Public Function ReadConfiguredGeneralDatabasePath() As String
+        Const settingsDatabasePath As String = "C:\LkyRess\MySet.sqlite"
+        If Not File.Exists(settingsDatabasePath) Then
+            Throw New FileNotFoundException("La base locale de paramètres est introuvable.", settingsDatabasePath)
+        End If
+
+        Using connection As New SQLiteConnection("Data Source=" & settingsDatabasePath & ";Version=3;Read Only=True;")
+            connection.Open()
+            Using command As New SQLiteCommand(
+                "SELECT s.DBpathG FROM sets s WHERE s.IdSet=1;", connection)
+                Dim configuredPath As String = Convert.ToString(command.ExecuteScalar()).Trim()
+
+                'DbPathGeneral = PaphBackUp()
+
+                If String.IsNullOrWhiteSpace(configuredPath) Then
+                    Throw New InvalidOperationException("Le chemin DBpathG n'est pas renseigné dans MySet.sqlite pour IdSet=1.")
+                End If
+                Return Path.GetFullPath(configuredPath)
+            End Using
+        End Using
+    End Function
+
     Public Function PaphBackUp(Optional iConnectStr As String = "Data Source=C:\LkyRess\MySet.sqlite;Version=3;") As String
-        Dim iCmdStr As String = "SELECT DBpathG "
-        iCmdStr += " FROM Sets "
-        iCmdStr += " WHERE IdSet=1 "
-        Dim localDatabasePath As String = Path.Combine(UserPath, "ManA.sqlite")
         Dim configuredDatabasePath As String = Nothing
-        PaphBackUp = "C:\LkyRess\ManA.sqlite"
-        If File.Exists(localDatabasePath) Then PaphBackUp = localDatabasePath
+        PaphBackUp = DbPathGeneral
+
+        If String.Equals(iConnectStr,
+                         "Data Source=C:\LkyRess\MySet.sqlite;Version=3;",
+                         StringComparison.OrdinalIgnoreCase) Then
+            Try
+                Return ReadConfiguredGeneralDatabasePath()
+            Catch ex As Exception
+                System.Diagnostics.Debug.WriteLine("Impossible de lire DBpathG dans MySet.sqlite : " & ex.Message)
+                Return PaphBackUp
+            End Try
+        End If
+
+        Dim iCmdStr As String = "SELECT s.DBpathG FROM sets s WHERE s.IdSet=1;"
         Try
             Using iconexion As New SQLiteConnection(iConnectStr)
                 iconexion.Open()
@@ -294,7 +324,9 @@ Module DbManipulation
         Catch ex As Exception
             System.Diagnostics.Debug.WriteLine("Impossible de lire le chemin de la base générale dans MySet.sqlite : " & ex.Message)
         End Try
-        If Not String.IsNullOrWhiteSpace(configuredDatabasePath) Then PaphBackUp = configuredDatabasePath
+        If Not String.IsNullOrWhiteSpace(configuredDatabasePath) Then
+            PaphBackUp = configuredDatabasePath
+        End If
     End Function
 
     Public Function IsSQLiteDatabaseHealthy(databasePath As String, ByRef errorMessage As String) As Boolean
@@ -588,37 +620,23 @@ Module DbManipulation
 
 
     Public Function LoadDataTable(ByVal MyCommandString As String, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As DataTable
-        'Dim myw As New WaitFrm
-        'myw.Show()
-        Dim MyDAdapter As SQLiteDataAdapter
-        MyCmdStr = MyCommandString
-        Dim TempTable As New DataTable
+        Dim result As New DataTable
         Dim loadingWindow = BeginDataLoadIndicator()
         Try
-            Dim TempConnection As New SQLiteConnection
-            Dim TempCommand As SQLiteCommand
-            TempConnection.ConnectionString = MyConxStr
-            TempConnection.Open()
-            TempCommand = TempConnection.CreateCommand
-            TempCommand.CommandText = MyCmdStr
-            MyDAdapter = New SQLiteDataAdapter(TempCommand)
-            TempCommand.Connection = TempConnection
-            Dim MyDSet As New DataSet
-            MyDAdapter.Fill(MyDSet, "MyP_table")
-            TempTable = MyDSet.Tables("MyP_table")
-            TempCommand.Dispose()
-            TempConnection.Close()
-            'LoadDataTable = True
-            MyDAdapter.Dispose()
-            MyDAdapter.Dispose()
+            Using connection As New SQLiteConnection(MyConxStr)
+                Using command As New SQLiteCommand(MyCommandString, connection)
+                    Using adapter As New SQLiteDataAdapter(command)
+                        connection.Open()
+                        adapter.Fill(result)
+                    End Using
+                End Using
+            End Using
         Catch ex As Exception
             MsgBox(ex.Message) ' & " => " & MyCommandString)
-            'LoadDataTable = False
         Finally
             EndDataLoadIndicator(loadingWindow)
         End Try
-        LoadDataTable = TempTable
-        'myw.Close()
+        Return result
     End Function
 
     Public Function SaveNewData(ByVal iCommandString As String, Optional iConnectStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean

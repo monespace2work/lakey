@@ -31,9 +31,30 @@
             <Setter Property="MinHeight" Value="30"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="2,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Opacity" Value="0.82"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="1"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -136,6 +157,17 @@
                     <MenuItem x:Name="mitParametres"  Header="Paramètres">
                         <MenuItem x:Name="mitPgeneraux" Header="Globaux"/>
                         <MenuItem x:Name="mitUtilisateur"  Header="Utilisateurs"/>
+                        <Separator/>
+                        <MenuItem x:Name="btnThemeToggle" Header="Mode clair"
+                                  Click="btnThemeToggle_Click"
+                                  ToolTip="Basculer entre le mode clair et le mode sombre"/>
+                        <Separator/>
+                        <MenuItem Header="Mode de connexion">
+                            <MenuItem x:Name="mitModeConnecte" Header="Mode connecté" IsCheckable="True"
+                                      Click="mitModeConnecte_Click"/>
+                            <MenuItem x:Name="mitModeLocal" Header="Mode local" IsCheckable="True"
+                                      Click="mitModeLocal_Click"/>
+                        </MenuItem>
                     </MenuItem>
                     <MenuItem x:Name="mitAide" Header="Aide">
                         <MenuItem x:Name="mitContact" Header="Contact" Click="mitContact_Click"/>
@@ -172,18 +204,14 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Right" MinHeight="35">
                                 <TextBlock x:Name="tbkSteName" Text="Ma Socité" Margin="5,0" VerticalAlignment="Center" FontSize="16" TextDecorations="{x:Null}" Foreground="{DynamicResource ThemeHeaderTextBrush}" Background="#7F000000" Padding="5,0" TextWrapping="Wrap"/>
-                                <Button x:Name="btnThemeToggle" Content="Mode clair" Click="btnThemeToggle_Click"
-                                        Margin="5,0" Padding="9,4" MinHeight="28" VerticalAlignment="Center"
-                                        Background="{DynamicResource ThemeAccentBrush}" Foreground="{DynamicResource ThemeNavyBrush}"
-                                        FontWeight="SemiBold" ToolTip="Basculer entre le mode clair et le mode sombre"/>
                                 <TextBlock x:Name="tbModeConnexion" Text="MODE LOCAL" Visibility="Collapsed"
                                            Margin="5,0" Padding="7,4" VerticalAlignment="Center"
                                            Background="#FFFFD166" Foreground="#FF5B2100" FontWeight="Bold"
                                            ToolTip="La base locale est utilisée ; les modifications ne sont pas synchronisées automatiquement"/>
-                                <Button x:Name="btnReconnecter" Content="Retenter la connexion" Visibility="Collapsed"
+                                <Button x:Name="btnReconnecter" Content="Passer en mode connecté" Visibility="Collapsed"
                                         Margin="5,0" Padding="8,4" VerticalAlignment="Center"
                                         Click="btnReconnecter_Click"
-                                        ToolTip="Tester le mode connecté ; une confirmation et une sauvegarde précéderont toute actualisation"/>
+                                        ToolTip="Sauvegarder la base locale puis passer à la base centrale sans fermer l’application"/>
                                 <Image x:Name="imgLoogo"  Source="MyIco.png" MaxHeight="30" MinHeight="20" Margin="0,0,5,0" />
                                 <Image x:Name="imgHorsConnex"  Source="hors_connexion2.png" Width="25" Margin="0,0,5,0"
                                        ToolTip="Mode local : les modifications ne sont pas synchronisées automatiquement"/>

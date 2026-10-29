@@ -57,7 +57,7 @@ ShutdownMode="OnMainWindowClose">
         <SolidColorBrush x:Key="ThemeTableHeaderTextBrush" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="ThemeAgentButtonBrush" Color="#1C6664"/>
         <SolidColorBrush x:Key="ThemeAgentButtonTextBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="ThemeAgentSelectedBrush" Color="#16877E"/>
+        <SolidColorBrush x:Key="ThemeAgentSelectedBrush" Color="#14756E"/>
         <SolidColorBrush x:Key="ThemeAgentSelectedTextBrush" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="ThemeAgentHoverBrush" Color="#23847C"/>
         <SolidColorBrush x:Key="ThemeAgentGroupBrush" Color="#123337"/>
@@ -629,6 +629,16 @@ ShutdownMode="OnMainWindowClose">
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeComboItemHoverBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeComboItemSelectedTextBrush}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeComboItemSelectedBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeComboItemSelectedTextBrush}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
@@ -821,6 +831,8 @@ ShutdownMode="OnMainWindowClose">
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="CanUserAddRows" Value="False"/>
             <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="EnableRowVirtualization" Value="True"/>
+            <Setter Property="EnableColumnVirtualization" Value="True"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
             <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
@@ -831,6 +843,9 @@ ShutdownMode="OnMainWindowClose">
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="13"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+            <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
         </Style>
         <Style TargetType="DataGridRow">
             <Setter Property="MinHeight" Value="28"/>

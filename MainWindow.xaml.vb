@@ -13,7 +13,6 @@ Class MainWindow
     }
     Private userControlLoadingPending As Boolean
     Private loadingOperationCount As Integer
-    Private returnToLoginForReconnect As Boolean
 
     Public Sub New()
 
@@ -298,7 +297,7 @@ Class MainWindow
             SetThemeColor("ThemeLoginButtonTextBrush", "#062A30")
             SetThemeColor("ThemeAgentButtonBrush", "#1C6664")
             SetThemeColor("ThemeAgentButtonTextBrush", "#FFFFFF")
-            SetThemeColor("ThemeAgentSelectedBrush", "#16877E")
+            SetThemeColor("ThemeAgentSelectedBrush", "#14756E")
             SetThemeColor("ThemeAgentSelectedTextBrush", "#FFFFFF")
             SetThemeColor("ThemeAgentHoverBrush", "#23847C")
             SetThemeColor("ThemeAgentGroupBrush", "#123337")
@@ -339,7 +338,7 @@ Class MainWindow
             SetThemeColor("ThemeReminderSurfaceBrush", "#302329")
             SetThemeColor("ThemeReminderTextBrush", "#F3E8EA")
             SetThemeColor("ThemeReminderBorderBrush", "#80535C")
-            btnThemeToggle.Content = "Mode clair"
+            btnThemeToggle.Header = "Mode clair"
         Else
             SetThemeColor("ThemeSurfaceBrush", "#E7EEF2")
             SetThemeColor("ThemeCardBrush", "#FFFFFF")
@@ -407,7 +406,7 @@ Class MainWindow
             SetThemeColor("ThemeCongesButtonBrush", "#FFF0BF")
             SetThemeColor("ThemeCongesButtonTextBrush", "#654500")
             SetThemeColor("ThemeCongesSelectedBrush", "#B7791F")
-            SetThemeColor("ThemeCongesSelectedTextBrush", "#FFFFFF")
+            SetThemeColor("ThemeCongesSelectedTextBrush", "#241700")
             SetThemeColor("ThemeCongesHoverBrush", "#FFE39A")
             SetThemeColor("ThemeAgentGroupLabelBrush", "#12665E")
             SetThemeColor("ThemeClientGroupLabelBrush", "#244F83")
@@ -433,7 +432,7 @@ Class MainWindow
             SetThemeColor("ThemeReminderSurfaceBrush", "#FFF7F7")
             SetThemeColor("ThemeReminderTextBrush", "#493238")
             SetThemeColor("ThemeReminderBorderBrush", "#D8AEB4")
-            btnThemeToggle.Content = "Mode sombre"
+            btnThemeToggle.Header = "Mode sombre"
         End If
 
         TestConnexionDbIcon()
@@ -1528,6 +1527,8 @@ Class MainWindow
     End Sub
 
     Sub TestConnexionDbIcon()
+        mitModeConnecte.IsChecked = Not LocalModeBb
+        mitModeLocal.IsChecked = LocalModeBb
         If LocalModeBb Then
             imgHorsConnex.Visibility = Visibility.Visible
             tbModeConnexion.Visibility = Visibility.Visible
@@ -1542,81 +1543,355 @@ Class MainWindow
 
     End Sub
 
-    Private Sub btnReconnecter_Click(sender As Object, e As RoutedEventArgs)
-        If Not LocalModeBb Then Return
+    Private Async Sub btnReconnecter_Click(sender As Object, e As RoutedEventArgs)
+        Await SwitchToConnectedModeFromUIAsync()
+    End Sub
 
+    Private Async Sub mitModeConnecte_Click(sender As Object, e As RoutedEventArgs)
+        Await SwitchToConnectedModeFromUIAsync()
+    End Sub
+
+    Private Async Function SwitchToConnectedModeFromUIAsync() As Task
+        If Not LocalModeBb OrElse Not btnReconnecter.IsEnabled Then Return
         If MessageBox.Show(
-            "La session locale va se fermer et revenir à l'écran de connexion. " &
-            "Après authentification, vous pourrez choisir le mode connecté ; avant toute actualisation, " &
-            "une confirmation et une sauvegarde de la base locale seront effectuées. " &
-            "Les changements locaux ne seront pas envoyés à la base centrale." & Environment.NewLine & Environment.NewLine &
+            "La base locale sera sauvegardée et conservée, mais ses modifications ne seront pas fusionnées dans la base centrale." &
+            Environment.NewLine & "L'application passera ensuite en mode connecté et rechargera les données de la centrale." &
+            Environment.NewLine & Environment.NewLine &
             "Continuer ?",
-            "Retenter le mode connecté",
+            "Passer en mode connecté",
             MessageBoxButton.YesNo,
-            MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+            MessageBoxImage.Question) <> MessageBoxResult.Yes Then
+            TestConnexionDbIcon()
+            Return
+        End If
+
+        btnReconnecter.IsEnabled = False
+        mitModeConnecte.IsEnabled = False
+        mitModeLocal.IsEnabled = False
+        Try
+            Await RunWithLoadingAsync(AddressOf SwitchToConnectedMode,
+                                      "Sauvegarde locale et connexion à la base centrale...")
+        Catch ex As Exception
+            MessageBox.Show("Le passage en mode connecté a échoué. Vérifiez que la session locale est toujours active." &
+                            Environment.NewLine & ex.Message,
+                            "Erreur de bascule", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            btnReconnecter.IsEnabled = LocalModeBb
+            mitModeConnecte.IsEnabled = True
+            mitModeLocal.IsEnabled = True
+            TestConnexionDbIcon()
+        End Try
+    End Function
+
+    Private Async Sub mitModeLocal_Click(sender As Object, e As RoutedEventArgs)
+        If LocalModeBb OrElse Not mitModeLocal.IsEnabled Then Return
+        If MessageBox.Show(
+            "La copie de travail sera sauvegardée puis utilisée en mode local. Les modifications faites en mode local ne seront pas fusionnées dans la base centrale." &
+            Environment.NewLine & Environment.NewLine & "Continuer ?",
+            "Passer en mode local",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) <> MessageBoxResult.Yes Then
+            TestConnexionDbIcon()
+            Return
+        End If
+
+        btnReconnecter.IsEnabled = False
+        mitModeConnecte.IsEnabled = False
+        mitModeLocal.IsEnabled = False
+        Try
+            Await RunWithLoadingAsync(AddressOf SwitchToLocalMode,
+                                      "Sauvegarde et passage en mode local...")
+        Catch ex As Exception
+            MessageBox.Show("Le passage en mode local a échoué." & Environment.NewLine & ex.Message,
+                            "Erreur de bascule", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            btnReconnecter.IsEnabled = LocalModeBb
+            mitModeConnecte.IsEnabled = True
+            mitModeLocal.IsEnabled = True
+            TestConnexionDbIcon()
+        End Try
+    End Sub
+
+    Private Sub SwitchToLocalMode()
+        Dim connectedDatabasePath As String = DbPath
+        Dim localConnectionString As String = LocalConnxStr
+        Dim connectedConnectionString As String =
+            If(String.IsNullOrWhiteSpace(SessionConnxStr),
+               "Data Source=" & DbPathGeneral & ";Version=3;",
+               SessionConnxStr)
+        Dim connectedUserName As String = UserName
+        Dim connectedPassword As String = UserPW
+        Dim connectedUserLevel As Integer = UserLevel
+        Dim connectedUserPath As String = connectedDatabasePath
+        Dim centralDatabasePath As String = DbPathGeneral
+
+        If String.IsNullOrWhiteSpace(localConnectionString) Then
+            localConnectionString = "Data Source=" & connectedDatabasePath & ";Version=3;"
+        End If
+        If String.Equals(IO.Path.GetFullPath(connectedDatabasePath),
+                         IO.Path.GetFullPath(centralDatabasePath),
+                         StringComparison.OrdinalIgnoreCase) Then
+            Throw New InvalidOperationException("La copie de travail désigne la base centrale ; le mode local ne peut pas être activé.")
+        End If
+
+        Dim localDatabaseError As String = Nothing
+        If Not IsSQLiteDatabaseHealthy(connectedDatabasePath, localDatabaseError) Then
+            Throw New InvalidOperationException("La copie de travail locale n'est pas exploitable : " & localDatabaseError)
+        End If
+
+        Dim backupDirectory As String = IO.Path.Combine(UserPath, "Backups")
+        IO.Directory.CreateDirectory(backupDirectory)
+        Dim backupPath As String = IO.Path.Combine(
+            backupDirectory,
+            "ManA-avant-mode-local-" & DateTime.Now.ToString("yyyyMMdd-HHmmss") & "-" &
+            Guid.NewGuid().ToString("N") & ".sqlite")
+        CreateValidatedSQLiteSnapshot(connectedDatabasePath, backupPath)
+
+        Dim localUserLevel As Integer
+        Try
+            localUserLevel = Login.UserTest(connectedUserName, connectedPassword, localConnectionString)
+        Finally
+            UserName = connectedUserName
+            UserPW = connectedPassword
+            UserLevel = connectedUserLevel
+        End Try
+        If localUserLevel = 1976 Then
+            Throw New InvalidOperationException("Cet utilisateur n'est pas reconnu dans la copie locale.")
+        End If
+        If Not LoadUserProfil(localUserLevel, localConnectionString) Then
+            LoadUserProfil(connectedUserLevel, connectedConnectionString)
+            Throw New InvalidOperationException("Le profil utilisateur n'est pas disponible dans la copie locale.")
+        End If
+
+        If Not SessLogout(connectedConnectionString) Then
+            LoadUserProfil(connectedUserLevel, connectedConnectionString)
+            Throw New InvalidOperationException("La session connectée n'a pas pu être clôturée.")
+        End If
 
         Try
-            If String.Equals(IO.Path.GetFullPath(DbPath),
-                             IO.Path.GetFullPath(DbPathGeneral),
-                             StringComparison.OrdinalIgnoreCase) Then
-                MessageBox.Show("La base locale est aussi configurée comme base centrale. Aucun basculement n'est possible.",
-                                "Mode connecté indisponible", MessageBoxButton.OK, MessageBoxImage.Warning)
-                Return
+            LocalModeBb = True
+            UserLevel = localUserLevel
+            DbPath = connectedDatabasePath
+            LocalConnxStr = localConnectionString
+            DbManipulation.iConnectStr = localConnectionString
+            If Not SessLogin(localConnectionString) Then
+                Throw New InvalidOperationException("La session locale n'a pas pu être ouverte.")
             End If
-
-            Dim centralDatabaseError As String = Nothing
-            If Not IsSQLiteDatabaseHealthy(DbPathGeneral, centralDatabaseError) Then
-                MessageBox.Show("La base centrale n'est pas disponible. La session locale reste ouverte." &
-                                Environment.NewLine & centralDatabaseError,
-                                "Mode connecté indisponible", MessageBoxButton.OK, MessageBoxImage.Warning)
-                Return
-            End If
-
-            Dim centralConnectionString As String = "Data Source=" & DbPathGeneral & ";Version=3;"
-            Dim currentUserLevel As Integer = UserLevel
-            Dim centralUserLevel As Integer
-            Try
-                centralUserLevel = Login.UserTest(UserName, UserPW, centralConnectionString)
-            Finally
-                UserLevel = currentUserLevel
-            End Try
-            If centralUserLevel = 1976 Then
-                MessageBox.Show("Cet utilisateur n'est pas reconnu dans la base centrale. La session locale reste ouverte.",
-                                "Connexion centrale impossible", MessageBoxButton.OK, MessageBoxImage.Warning)
-                Return
-            End If
-
-            Dim localDatabaseError As String = Nothing
-            If Not IsSQLiteDatabaseHealthy(DbPath, localDatabaseError) Then
-                MessageBox.Show("La base locale ne peut pas être sauvegardée en toute sécurité ; la session reste ouverte." &
-                                Environment.NewLine & localDatabaseError,
-                                "Sauvegarde impossible", MessageBoxButton.OK, MessageBoxImage.Error)
-                Return
-            End If
-
-            Dim backupDirectory As String = IO.Path.Combine(UserPath, "Backups")
-            IO.Directory.CreateDirectory(backupDirectory)
-            Dim backupPath As String = IO.Path.Combine(
-                backupDirectory,
-                "ManA-local-" & DateTime.Now.ToString("yyyyMMdd-HHmmss") & "-" &
-                Guid.NewGuid().ToString("N") & ".sqlite")
-            CreateValidatedSQLiteSnapshot(DbPath, backupPath)
-
-            If Not SessLogout(LocalConnxStr) Then
-                MessageBox.Show("La session locale n'a pas pu être clôturée. La session reste ouverte.",
-                                "Déconnexion impossible", MessageBoxButton.OK, MessageBoxImage.Error)
-                Return
-            End If
-
-            returnToLoginForReconnect = True
-            Close()
+            SessionConnxStr = localConnectionString
+            tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
+            InitializeGlobal()
         Catch ex As Exception
-            MessageBox.Show("Impossible de retenter la connexion. La session locale reste ouverte." &
-                            Environment.NewLine & ex.Message,
-                            "Erreur de reconnexion", MessageBoxButton.OK, MessageBoxImage.Error)
+            Dim rollbackIssues As New Collections.Generic.List(Of String)
+            If LocalModeBb AndAlso Not String.IsNullOrWhiteSpace(SessionConnxStr) AndAlso
+               Not String.Equals(SessionConnxStr, connectedConnectionString, StringComparison.OrdinalIgnoreCase) Then
+                If Not SessLogout(SessionConnxStr) Then
+                    rollbackIssues.Add("La session locale n'a pas pu être clôturée.")
+                End If
+            End If
+
+            LocalModeBb = False
+            UserName = connectedUserName
+            UserPW = connectedPassword
+            UserLevel = connectedUserLevel
+            DbPath = connectedUserPath
+            LocalConnxStr = "Data Source=" & connectedDatabasePath & ";Version=3;"
+            DbManipulation.iConnectStr = LocalConnxStr
+            SessionConnxStr = connectedConnectionString
+            If Not LoadUserProfil(connectedUserLevel, connectedConnectionString) Then
+                rollbackIssues.Add("Le profil connecté n'a pas pu être restauré.")
+            End If
+
+            If Not SessLogin(connectedConnectionString) Then
+                rollbackIssues.Add("La session connectée n'a pas pu être réouverte.")
+            Else
+                SessionConnxStr = connectedConnectionString
+                tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
+                Try
+                    InitializeGlobal()
+                Catch refreshException As Exception
+                    rollbackIssues.Add("L'écran n'a pas pu être actualisé après restauration : " & refreshException.Message)
+                End Try
+            End If
+
+            Dim rollbackMessage As String =
+                "La bascule a échoué ; le mode connecté a été rétabli. " & ex.Message
+            If rollbackIssues.Count > 0 Then
+                rollbackMessage &= Environment.NewLine & String.Join(Environment.NewLine, rollbackIssues)
+            End If
+            Throw New InvalidOperationException(rollbackMessage, ex)
+        End Try
+    End Sub
+
+    Private Sub SwitchToConnectedMode()
+        Dim originalDatabasePath As String = DbPath
+        Dim originalLocalConnectionString As String = LocalConnxStr
+        Dim originalSessionConnectionString As String =
+            If(String.IsNullOrWhiteSpace(SessionConnxStr), LocalConnxStr, SessionConnxStr)
+        Dim originalSessionId As Integer = IdSession
+        Dim originalUserName As String = UserName
+        Dim originalPassword As String = UserPW
+        Dim originalUserLevel As Integer = UserLevel
+        Dim centralDatabasePath As String = ReadConfiguredGeneralDatabasePath()
+        DbPathGeneral = centralDatabasePath
+        Dim centralConnectionString As String = "Data Source=" & centralDatabasePath & ";Version=3;"
+        Dim connectedDatabasePath As String = IO.Path.Combine(UserPath, "ManA.sqlite")
+        Dim localBackupPath As String = Nothing
+        Dim localSessionClosed As Boolean = False
+        Dim connectedSessionOpened As Boolean = False
+        Dim centralUserLevel As Integer
+        Dim connectedUserName As String = originalUserName
+        Dim connectedPassword As String = originalPassword
+
+        If String.Equals(IO.Path.GetFullPath(originalDatabasePath),
+                         IO.Path.GetFullPath(centralDatabasePath),
+                         StringComparison.OrdinalIgnoreCase) Then
+            Throw New InvalidOperationException("La base locale et la base centrale désignent le même fichier ; la bascule est annulée.")
+        End If
+        If String.Equals(IO.Path.GetFullPath(connectedDatabasePath),
+                         IO.Path.GetFullPath(centralDatabasePath),
+                         StringComparison.OrdinalIgnoreCase) Then
+            Throw New InvalidOperationException("Le dossier utilisateur désigne la base centrale ; la bascule est annulée.")
+        End If
+
+        Dim centralDatabaseError As String = Nothing
+        If Not IsSQLiteDatabaseHealthy(centralDatabasePath, centralDatabaseError) Then
+            Throw New InvalidOperationException("La base centrale n'est pas disponible : " & centralDatabaseError)
+        End If
+
+        Try
+            centralUserLevel = Login.UserTest(UserName, UserPW, centralConnectionString)
+            connectedUserName = UserName
+            connectedPassword = UserPW
+        Finally
+            UserName = originalUserName
+            UserPW = originalPassword
+            UserLevel = originalUserLevel
+        End Try
+        If centralUserLevel = 1976 Then
+            Throw New InvalidOperationException("Cet utilisateur n'est pas reconnu dans la base centrale.")
+        End If
+
+        Dim localDatabaseError As String = Nothing
+        If Not IsSQLiteDatabaseHealthy(originalDatabasePath, localDatabaseError) Then
+            Throw New InvalidOperationException("La base locale ne peut pas être sauvegardée en toute sécurité : " & localDatabaseError)
+        End If
+
+        Dim backupDirectory As String = IO.Path.Combine(UserPath, "Backups")
+        IO.Directory.CreateDirectory(backupDirectory)
+        localBackupPath = IO.Path.Combine(
+            backupDirectory,
+            "ManA-local-" & DateTime.Now.ToString("yyyyMMdd-HHmmss") & "-" &
+            Guid.NewGuid().ToString("N") & ".sqlite")
+        CreateValidatedSQLiteSnapshot(originalDatabasePath, localBackupPath)
+
+        If Not LoadUserProfil(centralUserLevel, centralConnectionString) Then
+            LoadUserProfil(originalUserLevel, originalLocalConnectionString)
+            Throw New InvalidOperationException("Le profil de cet utilisateur n'est pas disponible dans la base centrale.")
+        End If
+
+        If Not SessLogout(originalSessionConnectionString) Then
+            LoadUserProfil(originalUserLevel, originalLocalConnectionString)
+            Throw New InvalidOperationException("La session locale n'a pas pu être clôturée ; elle reste active.")
+        End If
+        localSessionClosed = True
+
+        Try
+            LocalModeBb = False
+            UserName = connectedUserName
+            UserPW = connectedPassword
+            UserLevel = centralUserLevel
+            DbPath = connectedDatabasePath
+            LocalConnxStr = "Data Source=" & DbPath & ";Version=3;"
+            DbManipulation.iConnectStr = LocalConnxStr
+
+            If Not SessLogin(centralConnectionString) Then
+                Throw New InvalidOperationException("La session connectée n'a pas pu être ouverte.")
+            End If
+            connectedSessionOpened = True
+            SessionConnxStr = centralConnectionString
+            tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
+
+            InitializeGlobal()
+        Catch ex As Exception
+            Dim rollbackIssues As New Collections.Generic.List(Of String)
+            If connectedSessionOpened AndAlso Not SessLogout(centralConnectionString) Then
+                rollbackIssues.Add("La session centrale n'a pas pu être clôturée.")
+            End If
+            Dim sameLocalAndConnectedPath As Boolean =
+                String.Equals(IO.Path.GetFullPath(originalDatabasePath),
+                              IO.Path.GetFullPath(connectedDatabasePath),
+                              StringComparison.OrdinalIgnoreCase)
+            Dim rollbackDatabasePath As String = originalDatabasePath
+            If sameLocalAndConnectedPath AndAlso Not String.IsNullOrWhiteSpace(localBackupPath) Then
+                Try
+                    CreateValidatedSQLiteSnapshot(localBackupPath, originalDatabasePath)
+                Catch restoreException As Exception
+                    rollbackDatabasePath = localBackupPath
+                    rollbackIssues.Add("La base locale a été conservée à l'emplacement de sauvegarde : " & restoreException.Message)
+                End Try
+            End If
+
+            LocalModeBb = True
+            UserName = originalUserName
+            UserPW = originalPassword
+            UserLevel = originalUserLevel
+            DbPath = rollbackDatabasePath
+            LocalConnxStr = If(String.Equals(rollbackDatabasePath, originalDatabasePath, StringComparison.OrdinalIgnoreCase),
+                               originalLocalConnectionString,
+                               "Data Source=" & rollbackDatabasePath & ";Version=3;")
+            DbManipulation.iConnectStr = LocalConnxStr
+            SessionConnxStr = If(String.Equals(rollbackDatabasePath, originalDatabasePath, StringComparison.OrdinalIgnoreCase),
+                                 originalSessionConnectionString,
+                                 LocalConnxStr)
+            If Not LoadUserProfil(originalUserLevel, LocalConnxStr) Then
+                rollbackIssues.Add("Le profil local n'a pas pu être rechargé.")
+            End If
+
+            If localSessionClosed Then
+                If sameLocalAndConnectedPath Then
+                    IdSession = originalSessionId
+                    If Not SessLogout(SessionConnxStr) Then
+                        rollbackIssues.Add("L'ancienne session locale restaurée n'a pas pu être clôturée.")
+                    End If
+                End If
+                If Not SessLogin(SessionConnxStr) Then
+                    rollbackIssues.Add("La session locale n'a pas pu être réouverte.")
+                End If
+            End If
+
+            Dim rollbackMessage As String =
+                "La connexion centrale a échoué ; la session locale a été rétablie. " & ex.Message
+            If rollbackIssues.Count > 0 Then
+                rollbackMessage &= Environment.NewLine & String.Join(Environment.NewLine, rollbackIssues)
+            End If
+            Throw New InvalidOperationException(
+                rollbackMessage,
+                ex)
         End Try
     End Sub
     Sub AfficheProfilUser()
+        btnGeneral.Visibility = Visibility.Visible
+        mitPgeneraux.Visibility = Visibility.Visible
+        btnSeting.Visibility = Visibility.Visible
+        btnUser.Visibility = Visibility.Visible
+        btnProfilUser.Visibility = Visibility.Visible
+        mitUtilisateur.Visibility = Visibility.Visible
+        btnStructure.Visibility = Visibility.Visible
+        mitSociete.Visibility = Visibility.Visible
+        btnCompta.Visibility = Visibility.Visible
+        btnCnss.Visibility = Visibility.Visible
+        btnAgents.Visibility = Visibility.Visible
+        btnTraitement.Visibility = Visibility.Visible
+        btnClient.Visibility = Visibility.Visible
+        btnSupplement.Visibility = Visibility.Visible
+        btnTBord.Visibility = Visibility.Visible
+        xpdAgentRaccourcis.Visibility = Visibility.Visible
+        xpdClientRaccourcis.Visibility = Visibility.Visible
+        mitParametres.Visibility = Visibility.Visible
+        mitMouvement.Visibility = Visibility.Visible
+        mitStructure.Visibility = Visibility.Visible
+        xpdPlusOp.Visibility = Visibility.Visible
+
         If Not CanGlobalDataManage Then
             btnGeneral.Visibility = Visibility.Collapsed
             mitPgeneraux.Visibility = Visibility.Collapsed
@@ -1682,14 +1957,13 @@ Class MainWindow
         MyBase.OnClosing(e)
         If e.Cancel Then Return
 
-        If Not returnToLoginForReconnect AndAlso
-           MessageBox.Show("Voulez-vous vraiment fermer l'application ?",
+        If MessageBox.Show("Voulez-vous vraiment fermer l'application ?",
                            "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) <> MessageBoxResult.Yes Then
             e.Cancel = True
             Return
         End If
 
-        Me.DialogResult = Not returnToLoginForReconnect
+        Me.DialogResult = True
         StopProcess("idbuder")
     End Sub
 

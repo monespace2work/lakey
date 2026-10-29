@@ -9,7 +9,26 @@
         Await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Background)
 
         Try
-            Dim loginDatabasePath As String = DbPathGeneral
+            Dim hasConfiguredGeneralDatabase As Boolean
+            Try
+                DbPathGeneral = ReadConfiguredGeneralDatabasePath()
+                hasConfiguredGeneralDatabase = True
+            Catch ex As Exception
+                DbPathGeneral = ""
+                System.Diagnostics.Debug.WriteLine("Impossible de relire DBpathG avant la connexion : " & ex.ToString())
+                If Not chkUseLocalMode.IsChecked.GetValueOrDefault() Then
+                    MessageBox.Show(
+                        "Le chemin de la base générale n'a pas pu être lu depuis C:\LkyRess\MySet.sqlite." &
+                        Environment.NewLine & ex.Message & Environment.NewLine &
+                        "Choisissez le mode local ou rétablissez les paramètres avant de vous connecter.",
+                        "Base générale indisponible",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error)
+                    Return
+                End If
+            End Try
+
+            Dim loginDatabasePath As String = If(hasConfiguredGeneralDatabase, DbPathGeneral, "")
             iConnxStr = "Data Source=" & loginDatabasePath & ";Version=3;"
             Dim iLevel As Integer
             Dim generalDatabaseError As Exception = Nothing
@@ -118,6 +137,7 @@
                 If Not LocalModeBb AndAlso Not PrepareLocalDatabaseForConnectedMode(DbPath) Then Return
 
                 If SessLogin(iConnxStr) Then
+                    SessionConnxStr = iConnxStr
                     If LocalModeBb Then
                         MessageBox.Show("Vous travaillez sur la base locale ; les modifications ne seront pas synchronisées automatiquement.",
                                         "Mode local", MessageBoxButton.OK, MessageBoxImage.Warning)
@@ -128,7 +148,8 @@
                     iWnd.WindowState = WindowState.Maximized
                     Dim result = iWnd.ShowDialog()
                     If result = True Then
-                        SessLogout(iConnxStr)
+                        SessLogout(If(String.IsNullOrWhiteSpace(SessionConnxStr), iConnxStr, SessionConnxStr))
+                        SessionConnxStr = ""
                         Me.Close()
                     Else
                         Me.Show()
@@ -279,7 +300,21 @@
     End Function
 
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
-        DbPathGeneral = PaphBackUp()
+        Try
+            'DbPathGeneral = PaphBackUp()
+
+            DbPathGeneral = ReadConfiguredGeneralDatabasePath()
+        Catch ex As Exception
+            DbPathGeneral = ""
+            System.Diagnostics.Debug.WriteLine("Impossible de lire DBpathG à l'ouverture de la connexion : " & ex.ToString())
+            MessageBox.Show(
+                "Le chemin de la base générale n'a pas pu être lu depuis C:\LkyRess\MySet.sqlite." &
+                Environment.NewLine & ex.Message & Environment.NewLine &
+                "Vous pouvez néanmoins essayer le mode local.",
+                "Paramètres de connexion indisponibles",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning)
+        End Try
         iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
         'Dim MyPath As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "JPB\LKY")
         If Not IO.Directory.Exists(RootPath) Then IO.Directory.CreateDirectory(RootPath)

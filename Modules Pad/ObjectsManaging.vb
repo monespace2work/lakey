@@ -332,11 +332,6 @@ Module ObjectsManaging
                 Throw New FileNotFoundException("La base centrale est introuvable.", DbPathGeneral)
             End If
 
-            Dim sourceValidationError As String = Nothing
-            If Not IsSQLiteDatabaseHealthy(DbPathGeneral, sourceValidationError) Then
-                Throw New InvalidDataException("La base centrale n'est pas exploitable : " & sourceValidationError)
-            End If
-
             If File.Exists(DbPath) AndAlso Not String.IsNullOrWhiteSpace(BUDirPath) Then
                 Dim backupPath As String = Path.Combine(BUDirPath, Path.GetFileName(DbPath))
                 If Not String.Equals(Path.GetFullPath(backupPath),
