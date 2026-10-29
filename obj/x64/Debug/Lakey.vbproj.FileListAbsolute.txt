@@ -347,7 +347,6 @@ C:\iclones\lakey\obj\x64\Debug\Lakey.Resources.resources
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.GenerateResource.cache
 C:\iclones\lakey\bin\x64\Debug\desktop.ini
 C:\iclones\lakey\bin\x64\Debug\sqlite3.dll
-C:\iclones\lakey\bin\x64\Debug\packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll
 C:\iclones\lakey\bin\x64\Debug\Lakey.exe.config
 C:\iclones\lakey\bin\x64\Debug\Lakey.exe
 C:\iclones\lakey\bin\x64\Debug\Lakey.pdb
@@ -494,3 +493,9 @@ E:\iclones\lakey\bin\x64\Verify\System.Memory.xml
 E:\iclones\lakey\bin\x64\Verify\System.Numerics.Vectors.xml
 E:\iclones\lakey\bin\x64\Verify\System.Runtime.CompilerServices.Unsafe.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
+C:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.dll
+C:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.xml
+C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.SuggestedBindingRedirects.cache
+C:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
+C:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
+C:\iclones\lakey\obj\x64\Debug\HelpWindow.g.vb
