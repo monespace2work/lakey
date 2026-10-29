@@ -67,7 +67,7 @@
 
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="11,3,91.333,3">
-                            <Button x:Name="btnNewData" Content="NOUVEAU" MinWidth="100" Margin=" 8" Padding="5"/>
+                            <Button x:Name="btnNewData" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5"/>
                             <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Visibility="Collapsed"/>
                             <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="80"/>
                         </StackPanel>

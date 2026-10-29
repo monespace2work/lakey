@@ -212,6 +212,17 @@ ShutdownMode="OnMainWindowClose">
                                      FontSize="{TemplateBinding FontSize}"
                                      IsReadOnly="{TemplateBinding IsReadOnly}"
                                      Visibility="Collapsed"/>
+                            <ToggleButton x:Name="SelectionToggle"
+                                          Grid.Column="0"
+                                          Focusable="False"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="Transparent"/>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
                             <ToggleButton x:Name="DropDownToggle"
                                           Grid.Column="1"
                                           Focusable="False"
@@ -267,6 +278,7 @@ ShutdownMode="OnMainWindowClose">
                             <Trigger Property="IsEditable" Value="True">
                                 <Setter TargetName="SelectionBox" Property="Visibility" Value="Collapsed"/>
                                 <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="SelectionToggle" Property="Visibility" Value="Collapsed"/>
                             </Trigger>
                             <Trigger Property="IsDropDownOpen" Value="True">
                                 <Setter TargetName="ComboBoxBorder" Property="BorderBrush" Value="{DynamicResource ThemeComboItemSelectedBrush}"/>
@@ -631,6 +643,26 @@ ShutdownMode="OnMainWindowClose">
                 <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource ThemeAccentSoftBrush}"/></Trigger>
                 <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.78"/></Trigger>
                 <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="NewRecordButton" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="{DynamicResource ThemeActionBrightSuccessBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeActionBrightSuccessTextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeActionSuccessBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeActionSuccessBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeActionSuccessTextBrush}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource ThemeActionBrightSuccessBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeActionPositiveBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeActionPositiveTextBrush}"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
         <Style TargetType="Button" x:Key="btnStandars" BasedOn="{StaticResource {x:Type Button}}">

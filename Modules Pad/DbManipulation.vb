@@ -19,6 +19,33 @@ Module DbManipulation
         Somme
         Moyenne
     End Enum
+
+    Private Function BeginDataLoadIndicator() As MainWindow
+        Dim app = Application.Current
+        If app Is Nothing Then Return Nothing
+
+        Dim mainWindow As MainWindow = Nothing
+        Dim findMainWindow As Action =
+            Sub()
+                For Each window As Window In app.Windows
+                    mainWindow = TryCast(window, MainWindow)
+                    If mainWindow IsNot Nothing Then Exit For
+                Next
+            End Sub
+        If app.Dispatcher.CheckAccess() Then
+            findMainWindow()
+        Else
+            app.Dispatcher.Invoke(findMainWindow)
+        End If
+
+        If mainWindow IsNot Nothing Then mainWindow.BeginDatabaseLoading()
+        Return mainWindow
+    End Function
+
+    Private Sub EndDataLoadIndicator(mainWindow As MainWindow)
+        If mainWindow IsNot Nothing Then mainWindow.EndDatabaseLoading()
+    End Sub
+
     Public Function LoadPrimSettings() As Boolean
         LoadPrimSettings = False
         DbPathGeneral = PaphBackUp()
@@ -372,6 +399,7 @@ Module DbManipulation
         MyCmdStr += " where af.FinAffect >='" & Today.ToString("yyyy-MM-dd") & "' "
         MyCmdStr += " order by ag.NomPrenoms ; "
 
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             Using MyConnect As New SQLiteConnection(iConnectStr)
                 MyConnect.Open()
@@ -404,6 +432,8 @@ Module DbManipulation
         Catch ex As Exception
             MsgBox(ex.Message)
             'AgentAffiche = False
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
         Return MyDtable
     End Function
@@ -416,6 +446,7 @@ Module DbManipulation
         iMinValue = 0
         iMaxValue = 0
 
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             Dim N, N1, N2 As Integer
             MyDtable.Rows.Add("Nb d'agents")
@@ -441,13 +472,14 @@ Module DbManipulation
             'MsgBox(iMinValue & " < " & iMaxValue)
         Catch ex As Exception
             MsgBox(ex.Message)
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
         EvolTrimEffectif = MyDtable
 
     End Function
 
     Public Function ClientAffiche() As Boolean
-
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         iConnectStr = "Data Source=" & DbPath & ";Version=3;"
 
@@ -457,6 +489,7 @@ Module DbManipulation
         MyCmdStr += " group by sit.Client  "
         MyCmdStr += " order by sit.Client  "
 
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             ClientDTable = LoadDataTable(MyCmdStr)
             ClientAffiche = True
@@ -464,11 +497,12 @@ Module DbManipulation
         Catch ex As Exception
             MsgBox(ex.Message)
             ClientAffiche = False
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
     End Function
 
     Public Function ClientInactifAffiche() As Boolean
-
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then DbPath = Path.Combine(UserPath, "ManA.sqlite") 'MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         iConnectStr = "Data Source=" & DbPath & ";Version=3;"
 
@@ -477,6 +511,7 @@ Module DbManipulation
         MyCmdStr += " WHERE actif =0 "
         MyCmdStr += " ORDER BY nomclient  "
 
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             TempTable = LoadDataTable(MyCmdStr)
             ClientInactifAffiche = True
@@ -484,6 +519,8 @@ Module DbManipulation
         Catch ex As Exception
             MsgBox(ex.Message)
             ClientInactifAffiche = False
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
     End Function
 
@@ -499,10 +536,13 @@ Module DbManipulation
         MyCmdStr += "  And  sit.Client like  '%" & SearchKey & "%'"
         MyCmdStr += " group by sit.Client "
         MyCmdStr += " order by sit.Client  "
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             iTable = LoadDataTable(MyCmdStr)
         Catch ex As Exception
             MsgBox(ex.Message)
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
         ClientSearchAffiche = iTable
     End Function
@@ -534,12 +574,15 @@ Module DbManipulation
         MyCmdStr += " group by sit.Localisation  "
         MyCmdStr += " ORDER BY sit.Localisation  "
 
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             StructureDTable = LoadDataTable(MyCmdStr)
             SturctureAffiche = True
         Catch ex As Exception
             MsgBox(ex.Message)
             SturctureAffiche = False
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
     End Function
 
@@ -550,6 +593,7 @@ Module DbManipulation
         Dim MyDAdapter As SQLiteDataAdapter
         MyCmdStr = MyCommandString
         Dim TempTable As New DataTable
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             Dim TempConnection As New SQLiteConnection
             Dim TempCommand As SQLiteCommand
@@ -570,6 +614,8 @@ Module DbManipulation
         Catch ex As Exception
             MsgBox(ex.Message) ' & " => " & MyCommandString)
             'LoadDataTable = False
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
         LoadDataTable = TempTable
         'myw.Close()
@@ -577,8 +623,7 @@ Module DbManipulation
 
     Public Function SaveNewData(ByVal iCommandString As String, Optional iConnectStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
         SaveNewData = False
-        Dim myw As New WaitFrm
-        myw.Show()
+        Dim loadingWindow = BeginDataLoadIndicator()
         Try
             Using iconnx As New SQLiteConnection(iConnectStr)
                 iconnx.Open()
@@ -591,8 +636,9 @@ Module DbManipulation
             MsgBox(ex.Message)
             'MsgBox(ex.Message)
             SaveNewData = False
+        Finally
+            EndDataLoadIndicator(loadingWindow)
         End Try
-        myw.Close()
     End Function
 
 

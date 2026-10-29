@@ -169,6 +169,35 @@ Class MainWindow
         ShowLoadingOverlay("Chargement des données...")
     End Sub
 
+    Friend Sub BeginDatabaseLoading()
+        Dim beginOnUiThread As Action =
+            Sub()
+                Dim wasVisible = grdLoadingOverlay.Visibility = Visibility.Visible
+                BeginLoadingOperation("Chargement des données...")
+                If Not wasVisible AndAlso IsLoaded AndAlso IsVisible Then
+                    Dispatcher.Invoke(
+                        New Action(
+                            Sub()
+                            End Sub),
+                        DispatcherPriority.Background)
+                End If
+            End Sub
+
+        If Dispatcher.CheckAccess() Then
+            beginOnUiThread()
+        Else
+            Dispatcher.Invoke(beginOnUiThread)
+        End If
+    End Sub
+
+    Friend Sub EndDatabaseLoading()
+        If Dispatcher.CheckAccess() Then
+            EndLoadingOperation()
+        Else
+            Dispatcher.Invoke(Sub() EndLoadingOperation())
+        End If
+    End Sub
+
     Private Sub BeginLoadingOperation(message As String)
         loadingOperationCount += 1
         ShowLoadingOverlay(message)

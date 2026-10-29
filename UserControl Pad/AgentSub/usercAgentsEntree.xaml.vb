@@ -224,37 +224,91 @@ Public Class usercAgentsEntree
         istr += Trim(Apost(TbxPays.Text)) & "','" & Apost(CbxSituationMatrim.SelectedItem) & "','" & Trim(Apost(TbxNCNSS.Text)) & "','" & Trim(Apost(CartValue)) & "','" & Trim(Apost(TbxNunCarte.Text)) & "','" & Apost(BankValue) & "','" & Trim(Apost(TbxNunBank.Text)) & "','" & Apost(TbxLieuNaiss.Text) & "','" & Trim(Apost(TbxPrefNaiss.Text)) & "'"
         istr += ")"
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL => " & DbPath)
+        'MsgBox("new - " & istr,)
         SaveNewAgent = SaveNewData(istr, iConnxStr)
         If SaveNewAgent Then Joper("SaveNewAgent As " & NomPrenomAg, iConnxStr)
     End Function
     Function SaveModifAgent() As Boolean
-        Dim istr As String = " update Agents  set "
-        istr += " NomPrenoms='" & Trim(Apost(NomPrenomAg)) & "',NomAgent='" & Trim(Apost(TbxNom.Text)) & "',PrenomAgent='" & Trim(Apost(TbxPrenom.Text)) & "',NumMatr='" & Trim(Apost(TbxNumMaticule.Text)) & "',Contacts='"
-        istr += Trim(Apost(TbxContact.Text)) & "',DateNaiss='" & dtpDateNaiss.SelectedDate.Value.ToString("yyyy-MM-dd") & "',Sexe='" & Apost(cbxSexe.SelectedItem) & "',CatEch='" & Trim(Apost(TbxCSP.Text)) & "',NbEnf=" & TbxNbEnf.Text & ", Actif="
+        Dim istr As String = " update Agents set "
+        If NewNomPremn <> NomPrenomAg Then istr += " NomPrenoms='" & Trim(Apost(NomPrenomAg)) & "',NomAgent='" & Trim(Apost(TbxNom.Text)) & "',PrenomAgent='" & Trim(Apost(TbxPrenom.Text)) & "'"
+        If NewNutricule <> TbxNumMaticule.Text Then
+            If istr = " update Agents set " Then
+                istr += "NumMatr='" & Trim(Apost(TbxNumMaticule.Text)) & "'"
+            Else
+                istr += ",NumMatr='" & Trim(Apost(TbxNumMaticule.Text)) & "'"
+            End If
+        End If
+
+        If istr = " update Agents set " Then
+            istr += "Contacts='" & Trim(Apost(TbxContact.Text)) & "',DateNaiss='" & dtpDateNaiss.SelectedDate.Value.ToString("yyyy-MM-dd") & "',Sexe='" & Apost(cbxSexe.SelectedItem) & "',CatEch='" & Trim(Apost(TbxCSP.Text)) & "',NbEnf=" & TbxNbEnf.Text & ", Actif="
+        Else
+            istr += ",Contacts='" & Trim(Apost(TbxContact.Text)) & "',DateNaiss='" & dtpDateNaiss.SelectedDate.Value.ToString("yyyy-MM-dd") & "',Sexe='" & Apost(cbxSexe.SelectedItem) & "',CatEch='" & Trim(Apost(TbxCSP.Text)) & "',NbEnf=" & TbxNbEnf.Text & ", Actif="
+        End If
         istr += ChbActif.IsChecked & ",DateEntree='" & dtpDateEmbauche.SelectedDate.Value.ToString("yyyy-MM-dd") & "',VilleResidence='" & Apost(TbxVille.Text) & "',Quartier='" & Apost(TbxAdresse.Text) & "',Fonction='" & Apost(CbxFonction.SelectedItem) & "',OpTime='" & Now.ToString("yyyy-MM-dd HH:mm:ss") & "',Pays='"
         istr += Trim(Apost(TbxPays.Text)) & "',MatrimoSituation='" & Apost(CbxSituationMatrim.SelectedItem) & "',Nsecu='" & Trim(Apost(TbxNCNSS.Text)) & "',CarteType='" & Trim(Apost(CartValue)) & "',CarteNumero='" & Trim(Apost(TbxNunCarte.Text)) & "',Banque='" & Trim(Apost(BankValue)) & "',NumCompte='" & Trim(Apost(TbxNunBank.Text)) & "',"
         istr += "LieuNaiss='" & Trim(Apost(TbxLieuNaiss.Text)) & "',PrefNaiss='" & Trim(Apost(TbxPrefNaiss.Text)) & "'"
+        'MsgBox("modif - " & istr,)
         If ChbActif.IsChecked And DateSortie <> "" Then
             If MsgBox("Vous êtes sur le point de ACTIVER L'AGENT. " & DateSortie & Chr(13) & " CONTINUER ?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then istr += ", DateSortie=null "
         End If
         istr += " where RefAgent=" & RefAg & " "
         'MsgBox(istr)
         If isLocalModeDd() Then MsgBox("Vous travaillez en MODE LOCAL => " & iConnxStr)
-        SaveModifAgent = SaveNewData(istr, iConnxStr) 'NewNomPremn = NomPrenomAg
-        If SaveModifAgent And NewNutricule <> TbxNumMaticule.Text Then
-            SaveModifAgent = SaveNewData("update contratstbl set NomPrenoms='" & Apost(TbxNumMaticule.Text) & "' where NomPrenoms='" & NewNutricule & "'", iConnxStr)
-        End If
-        If SaveModifAgent And NewNomPremn <> NomPrenomAg Then
-            'SaveModifAgent = SaveNewData("update Affectation set AgentAffect='" & Apost(TbxNumMaticule.Text) & "' where AgentAffect='" & Apost(NewNomPremn) & "'")
-            SaveModifAgent = SaveNewData("update PlanPoste set Agent='" & Apost(NomPrenomAg) & "' where Agent='" & Apost(NewNomPremn) & "'", iConnxStr)
-            'SaveModifAgent = SaveNewData("update Postes set NomSite='" & Apost(TbxSite.Text) & "' where NomSite='" & Apost(NewNom) & "'")
-            SaveModifAgent = SaveNewData("update sortie set NomsPrenoms='" & Apost(NomPrenomAg) & "' where NomsPrenoms='" & Apost(NewNomPremn) & "'", iConnxStr)
-            SaveModifAgent = SaveNewData("update HeureSup set Agent='" & Apost(NomPrenomAg) & "' where Agent='" & Apost(NewNomPremn) & "'", iConnxStr)
-            SaveModifAgent = SaveNewData("update Affectation set AgentAffect='" & Apost(NomPrenomAg) & "' where AgentAffect='" & Apost(NewNomPremn) & "'", iConnxStr)
-            SaveModifAgent = SaveNewData("update Absences set NomPrenom='" & Apost(NomPrenomAg) & "' where NomPrenom='" & Apost(NewNomPremn) & "'", iConnxStr)
-            'SaveModifAgent = SaveNewData("update Affectation set AgentAffect='" & Apost(NomPrenomAg) & "' where SiteAffect='" & Apost(NewNomPremn) & "'")
-            If SaveModifAgent Then Joper("SaveModifAgent As " & NewNomPremn & " at " & RefAg, iConnxStr)
-        End If
+        SaveModifAgent = SaveAgentModification(istr)
+        If SaveModifAgent And NewNomPremn <> NomPrenomAg Then Joper("SaveModifAgent As " & NewNomPremn & " at " & RefAg, iConnxStr)
+    End Function
+
+    Private Function SaveAgentModification(agentUpdate As String) As Boolean
+        Try
+            Using connection As New SQLiteConnection(iConnxStr)
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    Using command As New SQLiteCommand("PRAGMA defer_foreign_keys = ON", connection, transaction)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    Using command As New SQLiteCommand(agentUpdate, connection, transaction)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    If NewNutricule <> TbxNumMaticule.Text Then
+                        Dim matriculeUpdate As String = "update contratstbl set NomPrenoms='" & Apost(TbxNumMaticule.Text) & "' where NomPrenoms='" & Apost(NewNutricule) & "'"
+                        Using command As New SQLiteCommand(matriculeUpdate, connection, transaction)
+                            command.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                    If NewNomPremn <> NomPrenomAg Then
+                        Dim nameUpdates As String() = {
+                            "update PlanPoste set Agent='" & Apost(NomPrenomAg) & "' where Agent='" & Apost(NewNomPremn) & "'",
+                            "update sortie set NomsPrenoms='" & Apost(NomPrenomAg) & "' where NomsPrenoms='" & Apost(NewNomPremn) & "'",
+                            "update HeureSup set Agent='" & Apost(NomPrenomAg) & "' where Agent='" & Apost(NewNomPremn) & "'",
+                            "update Affectation set AgentAffect='" & Apost(NomPrenomAg) & "' where AgentAffect='" & Apost(NewNomPremn) & "'",
+                            "update Absences set NomPrenom='" & Apost(NomPrenomAg) & "' where NomPrenom='" & Apost(NewNomPremn) & "'"
+                        }
+                        For Each nameUpdate As String In nameUpdates
+                            Using command As New SQLiteCommand(nameUpdate, connection, transaction)
+                                command.ExecuteNonQuery()
+                            End Using
+                        Next
+
+                        Using command As New SQLiteCommand("select count(*) from sqlite_master where type='table' and lower(name)='agences'", connection, transaction)
+                            If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                                Using updateCommand As New SQLiteCommand("update Agences set Responsable='" & Apost(NomPrenomAg) & "' where Responsable='" & Apost(NewNomPremn) & "'", connection, transaction)
+                                    updateCommand.ExecuteNonQuery()
+                                End Using
+                            End If
+                        End Using
+                    End If
+
+                    transaction.Commit()
+                End Using
+            End Using
+            Return True
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return False
+        End Try
     End Function
 
     Private Sub TbxNumMaticule_TextChanged(sender As Object, e As TextChangedEventArgs) Handles TbxNumMaticule.TextChanged
@@ -430,18 +484,19 @@ Public Class usercAgentsEntree
         istr += " FROM  agents "
         istr += " where  "
         If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then istr += " DateEntree>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and DateEntree<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
-        istr += " (NomPrenoms  like '%" & KeyWord & "%' "
-        istr += " or NumMatr  like '%" & KeyWord & "%' "
-        istr += " or PrenomAgent  like '%" & KeyWord & "%' "
-        istr += " or NomAgent  like '%" & KeyWord & "%' "
-        istr += " or Contacts  like '%" & KeyWord & "%' "
-        istr += " or VilleResidence  like '%" & KeyWord & "%' "
-        istr += " or Quartier  like '%" & KeyWord & "%' "
-        istr += " or Fonction  like '%" & KeyWord & "%' "
-        istr += " or CatEch  like '%" & KeyWord & "%' "
-        istr += " or LieuNaiss  like '%" & KeyWord & "%' "
-        istr += " or PrefNaiss  like '%" & KeyWord & "%' "
-        istr += " or RefAgent  like '%" & KeyWord & "%') " & sufix ' BtnAgentListeSearch.Text
+        istr += " (NomPrenoms  like '%" & Apost(KeyWord) & "%' "
+        istr += " or NumMatr  like '%" & Apost(KeyWord) & "%' "
+        istr += " or PrenomAgent  like '%" & Apost(KeyWord) & "%' "
+        istr += " or NomAgent  like '%" & Apost(KeyWord) & "%' "
+        istr += " or Contacts  like '%" & Apost(KeyWord) & "%' "
+        istr += " or VilleResidence  like '%" & Apost(KeyWord) & "%' "
+        istr += " or Quartier  like '%" & Apost(KeyWord) & "%' "
+        istr += " or Fonction  like '%" & Apost(KeyWord) & "%' "
+        istr += " or CatEch  like '%" & Apost(KeyWord) & "%' "
+        istr += " or LieuNaiss  like '%" & Apost(KeyWord) & "%' "
+        istr += " or PrefNaiss  like '%" & Apost(KeyWord) & "%' "
+        istr += " or RefAgent  like '%" & Apost(KeyWord) & "%') " & sufix ' BtnAgentListeSearch.Text
+
         If AffActif Then
             If iActif And Not iInActif Then
                 istr += " and Actif=1"
@@ -566,10 +621,15 @@ Public Class usercAgentsEntree
     Sub LoadRowItems(rowView As DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             If rowView.Row.ItemArray(0).ToString <> "" Then
+                RefAg = Convert.ToInt32(rowView.Row.ItemArray(16))
+                NewNomPremn = MyStatValStr("select NomPrenoms from agents where RefAgent=" & RefAg, iConnxStr)
+                If String.IsNullOrWhiteSpace(NewNomPremn) Then
+                    MsgBox("Impossible de retrouver le nom de référence de cet agent.")
+                    Return
+                End If
                 iFormLoaded = True
                 TbxNom.Text = rowView.Row.ItemArray(0).ToString
                 TbxPrenom.Text = rowView.Row.ItemArray(1).ToString
-                NewNomPremn = NomPrenomAg
                 'MsgBox(rowView.Row.ItemArray(2).ToString)
                 cbxSexe.SelectedItem = rowView.Row.ItemArray(2).ToString
                 TbxContact.Text = rowView.Row.ItemArray(4).ToString
@@ -586,7 +646,6 @@ Public Class usercAgentsEntree
                 CbxFonction.SelectedItem = rowView.Row.ItemArray(13).ToString
                 TbxCSP.Text = rowView.Row.ItemArray(14).ToString
                 TbxNbEnf.Text = rowView.Row.ItemArray(15).ToString
-                RefAg = rowView.Row.ItemArray(16).ToString
                 TbxNCNSS.Text = rowView.Row.ItemArray(17).ToString
                 TbxNumMaticule.Text = rowView.Row.ItemArray(3).ToString
                 NewNutricule = rowView.Row.ItemArray(3).ToString

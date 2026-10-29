@@ -72,9 +72,9 @@
                                     </WrapPanel>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Button x:Name="btnNewAg" Content="NOUVEAU" MinWidth="100" Margin=" 8" Padding="5"/>
+                                    <Button x:Name="btnNewAg" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5" Background="#FF1FFB97"/>
                                     <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}" Visibility="Collapsed"/>
-                                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
+                                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeActionBrightSuccessTextBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
                                 </StackPanel>
                                 <WrapPanel Orientation="Horizontal"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
                                     <StackPanel>
@@ -109,12 +109,12 @@
                                                 <TextBlock Text="N° MATRICULE : " MinWidth="25" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="103"/>
                                                 <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
                                                 <Grid>
-                                                    <TextBox x:Name="TbxNumMaticule" Width="120" Height="36" FontSize="14" VerticalAlignment="Center" />
-                                                    <TextBlock  x:Name="TblIndicationNumMaticule" Text=" Numaticule" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,27,0"/>
+                                                    <TextBox x:Name="TbxNumMaticule" Width="130" Height="36" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
+                                                    <TextBlock  x:Name="TblIndicationNumMaticule" Text=" Numaticule" FontWeight="Bold" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,27,0"/>
                                                 </Grid>
-                                                <TextBlock Text="Date d'embauche : "  Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="106"/>
+                                                <TextBlock Text="Date d'entrée : "  Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="106"/>
                                                 <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
-                                                <DatePicker  x:Name="dtpDateEmbauche"  Height="36" FontSize="14" VerticalAlignment="Center" Text="" Margin="5,0,-107,0" HorizontalAlignment="Left" Width="151" />
+                                                <DatePicker  x:Name="dtpDateEmbauche"  Height="36" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Text="" Margin="5,0,-107,0" HorizontalAlignment="Left" Width="151" />
 
                                             </StackPanel>
 
@@ -141,7 +141,7 @@
                                                 <CheckBox x:Name="ChbActif" Content="Actif" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}" IsChecked="True" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="15,0,15,0" />
                                                 <TextBlock Text="Date de naissance : " MinWidth="25" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="103"/>
                                                 <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
-                                                <DatePicker x:Name="dtpDateNaiss"  FontSize="14" FontWeight="Bold"  Margin="5" Width="119"/>
+                                                <DatePicker x:Name="dtpDateNaiss"  FontSize="14" FontWeight="Bold"  Margin="5" Width="140"/>
                                                 <TextBlock Text="Sexe: " MinWidth="25" Margin="5,5,5,5" VerticalAlignment="Center" Foreground="White"/>
                                                 <TextBlock Text="* " Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
                                                 <ComboBox x:Name="cbxSexe" Width="66" Height="36" FontSize="14" VerticalAlignment="Center">
