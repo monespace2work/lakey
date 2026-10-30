@@ -492,7 +492,6 @@ E:\iclones\lakey\bin\x64\Verify\System.Buffers.xml
 E:\iclones\lakey\bin\x64\Verify\System.Memory.xml
 E:\iclones\lakey\bin\x64\Verify\System.Numerics.Vectors.xml
 E:\iclones\lakey\bin\x64\Verify\System.Runtime.CompilerServices.Unsafe.xml
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
 C:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.dll
 C:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.xml
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.SuggestedBindingRedirects.cache
@@ -500,3 +499,4 @@ C:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
 C:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
 C:\iclones\lakey\obj\x64\Debug\HelpWindow.g.vb
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
