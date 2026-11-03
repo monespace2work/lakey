@@ -2,7 +2,7 @@
     Dim iConnxStr As String
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
+        iConnxStr = "Data Source=" & DbPath & ";Version=3;"
         LoadData()
     End Sub
     Sub LoadData()
@@ -15,6 +15,16 @@
     End Sub
     Private Sub btnValid_Click(sender As Object, e As RoutedEventArgs) Handles btnValid.Click
         If MsgBox("Déactiver le client #" & cbxClent.SelectedItem, MsgBoxStyle.YesNo) = MsgBoxResult.No Then Exit Sub
+        Dim PosteActifCbx, SiteActifCbx As New ComboBox
+        FilmyCbx(" select p.Code from POSTES p join siteaffectation s on p.NomSite=s.NomSite join client c on c.NomClient=s.Client  where p.Actif=1 and c.NomClient like '" & cbxClent.SelectedItem & "'", PosteActifCbx, iConnxStr)
+        'FilmyCbx(" ", SiteActifCbx)
+        For Each elt In PosteActifCbx.Items
+            If Not SaveNewData("update POSTES set Actif=0 where Code='" & elt & "'", iConnxStr) Then
+                MsgBox("Erreur de désactivation de poste")
+                Exit Sub
+            End If
+        Next
+
         If SaveNewData("update client set Actif=0 , DateFinCollabor='" & dtpDateFin.SelectedDate.Value.ToString("yyyy-MM-dd") & "' where NomClient='" & Apost(cbxClent.SelectedItem) & "'", iConnxStr) AndAlso SaveNewData("update siteaffectation set Actif=0 , DateFermeture='" & dtpDateFin.SelectedDate.Value.ToString("yyyy-MM-dd") & "' where Client='" & Apost(cbxClent.SelectedItem) & "' and  Actif=1", iConnxStr) Then
             Joper("FinConctratClient et Site #" & cbxClent.SelectedItem, iConnxStr)
             If SaveNewData("update  postes set Actif=0  where postes.NomSite like'%" & Apost(cbxClent.SelectedItem) & "%' and postes.Actif=1", iConnxStr) Then

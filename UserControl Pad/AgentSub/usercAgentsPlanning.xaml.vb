@@ -30,7 +30,7 @@ Public Class usercAgentsPlanning
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
+        iConnxStr = "Data Source=" & DbPath & ";Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
 
         initializ()
@@ -896,7 +896,7 @@ Public Class usercAgentsPlanning
                 End If
                 iCmdStr += " And DatePlan ='" & elmt.ToString("yyyy-MM-dd") & "'"
                 Try
-                    Using iconx As New SQLiteConnection(iConxStr)
+                    Using iconx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                         iconx.Open()
                         Using iCmnd As New SQLiteCommand(iCmdStr, iconx)
                             Dim iReader As SQLiteDataReader = iCmnd.ExecuteReader
@@ -975,7 +975,7 @@ Public Class usercAgentsPlanning
                 '********************************
 
                 Try
-                    Using iconx As New SQLiteConnection(iConxStr)
+                    Using iconx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                         iconx.Open()
                         Using iCmnd As New SQLiteCommand(iCmdStr, iconx)
                             Dim iReader As SQLiteDataReader = iCmnd.ExecuteReader

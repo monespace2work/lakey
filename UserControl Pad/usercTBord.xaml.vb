@@ -20,6 +20,8 @@ Public Class usercTBord
     Dim iMinAge, iMaxAge As Integer
     Dim retourDansMainWindow As Action
     Dim LocalConnxStr As String
+    Private graphiquesCharges As Boolean
+    Private chargementGraphiquesEnCours As Boolean
 
     Public Sub New(cllb As Action)
         ' Cet appel est requis par le concepteur.
@@ -27,6 +29,7 @@ Public Class usercTBord
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = cllb
+        AddHandler DirectCast(FindName("expGraphiques"), Expander).Expanded, AddressOf expGraphiques_Expanded
 
     End Sub
 
@@ -91,17 +94,12 @@ Public Class usercTBord
         incorrection()
 
         Try
-            LoadEvolEffectif()
-            LoadClientSite()
-            LoadClientType()
             LoadAgentActifs()
             LoadClientActifs()
             LoadContratEcheance()
             LoadClientGrandT10()
             LoadClientAnciensT20()
             LoadNewAgents()
-            LoadClientNbAgent()
-            LoadTtrancheAgeAgent()
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
@@ -132,6 +130,26 @@ Public Class usercTBord
         End If
 
     End Sub
+
+    Private Async Sub expGraphiques_Expanded(sender As Object, e As RoutedEventArgs)
+        If graphiquesCharges OrElse chargementGraphiquesEnCours Then Return
+
+        chargementGraphiquesEnCours = True
+        elpGlobale.Visibility = Visibility.Visible
+        Try
+            Await Dispatcher.Yield(DispatcherPriority.Background)
+            LoadEvolEffectif()
+            LoadClientSite()
+            LoadClientType()
+            LoadClientNbAgent()
+            LoadTtrancheAgeAgent()
+            graphiquesCharges = True
+        Finally
+            chargementGraphiquesEnCours = False
+            elpGlobale.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
     Sub incorrection()
         Try
             Dim iMsg As String = ""

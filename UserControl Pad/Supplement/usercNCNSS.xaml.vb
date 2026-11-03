@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Threading
+﻿Imports System.Data
+Imports System.Windows.Threading
 Public Class usercNCNSS
     Dim inputTimer As DispatcherTimer
     Dim iConnxStr As String
@@ -6,7 +7,7 @@ Public Class usercNCNSS
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = (PaphBackUp())
-        iConnxStr = $"Data Source={DbPathGeneral};Version=3;"
+        iConnxStr = $"Data Source={DbPath};Version=3;"
 
         Initilisation()
 
@@ -19,13 +20,31 @@ Public Class usercNCNSS
     Sub Initilisation()
         Dim istr As String = " select a.NomPrenoms,a.NumMatr, a.Nsecu,  a.Contacts,a.Actif from agents a where a.Actif=1 "
         istr += " order by a.Actif desc, a.NomPrenoms "
-        Dgcnss.ItemsSource = LoadDataTable(istr).DefaultView
-        tblNbcnss.Text = "Nombre d'agents actifs ayant un N° CNSSS : " & MayStatVal("select count(*) from agents a where a.Actif=1 and  (a.Nsecu not like '' and a.Nsecu not null)") & " | Nombre d'agents actifs sans un N° CNSSS : " & MayStatVal("select count(*) from agents a where a.Actif=1 and  (a.Nsecu like '' and a.Nsecu not null)")
+        Dim agentData As DataTable = LoadDataTable(istr)
+        Dgcnss.ItemsSource = agentData.DefaultView
+        UpdateCNSSCounts(agentData, True)
         If Not FilmyCbx("select a.NomPrenoms from agents a order by a.Actif desc, a.NomPrenoms, a.NumMatr ", cbxAgent) Then cbxAgent.Items.Clear()
         If Not FilmyCbx("select a.Nsecu from agents a", iCbxNsecu) Then iCbxNsecu.Items.Clear()
         btnValidNewData.Visibility = Visibility.Collapsed
         'MsgBox(iCbxNsecu.Items.Item(0))
         'select a.Banque||a.NumCompte from agents a where a.Banque not like'' and a.NumCompte not like'' order by a.Banque 
+    End Sub
+
+    Private Sub UpdateCNSSCounts(agentData As DataTable, activeOnly As Boolean)
+        Dim withNumber As Integer = 0
+        Dim withoutNumber As Integer = 0
+        For Each row As DataRow In agentData.Rows
+            If row.IsNull("Nsecu") Then Continue For
+            If Convert.ToString(row("Nsecu")) = "" Then
+                withoutNumber += 1
+            Else
+                withNumber += 1
+            End If
+        Next
+
+        Dim label As String = If(activeOnly, "Nombre d'agents actifs", "Nombre d'agents")
+        tblNbcnss.Text = label & " ayant un N° CNSSS : " & withNumber &
+                         " | " & label & " sans un N° CNSSS : " & withoutNumber
     End Sub
 
     Private Sub OnInputTimerElapsed(sender As Object, e As EventArgs)
@@ -50,9 +69,10 @@ Public Class usercNCNSS
         istr += " or a.NumMatr  like '%" & KeyWord & "%' "
         istr += " or a.Contacts  like '%" & KeyWord & "%' )" & sufix
         istr += " order by a.Actif desc, a.NomPrenoms "
-        Dgcnss.ItemsSource = LoadDataTable(istr).DefaultView
+        Dim agentData As DataTable = LoadDataTable(istr)
+        Dgcnss.ItemsSource = agentData.DefaultView
         ShowTempMsg(istr)
-        tblNbcnss.Text = "Nombre d'agents ayant un N° CNSSS : " & MayStatVal("select count(*) from (" & istr & ")  where (Nsecu not like '' and Nsecu not null)") & " | Nombre d'agents sans un N° CNSSS : " & MayStatVal("select count(*) from (" & istr & ") where (Nsecu like '')")
+        UpdateCNSSCounts(agentData, False)
 
         elpStatus.Visibility = Visibility.Collapsed
 

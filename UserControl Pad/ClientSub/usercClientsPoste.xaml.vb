@@ -29,7 +29,7 @@ Public Class usercClientsPoste
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
-        iConnxStr = If(LocalModeBb, LocalConnxStr, "Data Source=" & DbPathGeneral & ";Version=3;")
+        iConnxStr = LocalConnxStr
         InialiseLoad()
         ChangeYN = False
         inputTimer = New DispatcherTimer()
@@ -48,8 +48,9 @@ Public Class usercClientsPoste
         Dim istr As String = " SELECT p.Designation,p.Code,p.Actif,p.Duree,p.ReposHebdo,p.NomSite,p.IdPoste "
         istr += " from postes p where actif=1 "
         istr += " order by p.Actif desc, p.Designation "
-        DgClientsPoste.ItemsSource = LoadDataTable(istr, iConnxStr).DefaultView
-        tblNbClientPostesActifs.Text = "Nombre de postes actifs: " & MayStatVal("select count(*) from postes where Actif=1 ", iConnxStr) '& " | Nombre de postes fermés: " & MayStatVal("select count(*) from postes where Actif=0 ")
+        Dim posteData = LoadDataTable(istr, iConnxStr)
+        DgClientsPoste.ItemsSource = posteData.DefaultView
+        tblNbClientPostesActifs.Text = "Nombre de postes actifs: " & posteData.Select("Actif = 1").Length '& " | Nombre de postes fermés: " & MayStatVal("select count(*) from postes where Actif=0 ")
 
         FilmyCbx("SELECT s.NomSite from siteaffectation s where s.Actif=1 order by s.Actif desc,s.NomSite ", CbxSite, iConnxStr)
         FilmyCbx("select lower(s.Code) from postes s ", iCbxPosteCode, iConnxStr)
@@ -79,7 +80,7 @@ Public Class usercClientsPoste
             istr += " from postes p "
             istr += " order by p.Actif desc, p.Designation "
             DgClientsPoste.ItemsSource = LoadDataTable(istr, iConnxStr).DefaultView
-            tblNbClientPostesActifs.Text = "Nombre de postes actifs: " & MayStatVal("select count(*) from postes where Actif=1 ", iConnxStr) '& " | Nombre de postes fermés: " & MayStatVal("select count(*) from postes where Actif=0 ")
+            tblNbClientPostesActifs.Text = "Nombre de postes actifs: " & DirectCast(DgClientsPoste.ItemsSource, System.Data.DataView).Count '& " | Nombre de postes fermés: " & MayStatVal("select count(*) from postes where Actif=0 ")
 
             FilmyCbx("select lower(s.Code) from postes s ", iCbxPosteCode, iConnxStr)
             FilmyCbx("select lower(s.Designation) from postes s ", iCbxPosteDesignation, iConnxStr)
@@ -176,8 +177,9 @@ Public Class usercClientsPoste
 
         End If
         istr += " ORDER BY Actif desc,Designation "
-        DgClientsPoste.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de postes actifs : " & MayStatVal("select count(*) from (" & istr & ") where Actif=1 ", LocalConnxStr) & " | Nombre de postes inactifs: " & MayStatVal("select count(*) from  (" & istr & ") where Actif=0 ", LocalConnxStr) 'where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")") '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim posteData = LoadDataTable(istr, LocalConnxStr)
+        DgClientsPoste.ItemsSource = posteData.DefaultView
+        Dim itext As String = "Nombre de postes actifs : " & posteData.Select("Actif = 1").Length & " | Nombre de postes inactifs: " & posteData.Select("Actif = 0").Length
         itext += Environment.NewLine
         tblNbClientPostesActifs.Text = itext '"En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")
 
@@ -366,9 +368,9 @@ Public Class usercClientsPoste
         SaisiTbx(sender, TblIndicationDesignation)
         ActivSaveBtn()
         If iCbxPosteDesignation.Items.Contains(LCase(TbxDesignation.Text)) Then
-            TbxDesignation.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFF8E8E"))
+            TbxDesignation.SetResourceReference(Control.BackgroundProperty, "ThemeInputWarningBrush")
         Else
-            TbxDesignation.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF"))
+            TbxDesignation.SetResourceReference(Control.BackgroundProperty, "ThemeInputBrush")
         End If
     End Sub
 
@@ -377,15 +379,15 @@ Public Class usercClientsPoste
         TbxCode.Text = UCase(TbxCode.Text)
         ActivSaveBtn()
         If iCbxPosteCode.Items.Contains(LCase(TbxCode.Text)) Then
-            TbxCode.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFF8E8E"))
+            TbxCode.SetResourceReference(Control.BackgroundProperty, "ThemeInputWarningBrush")
         Else
-            TbxCode.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFFFFF"))
+            TbxCode.SetResourceReference(Control.BackgroundProperty, "ThemeInputBrush")
         End If
     End Sub
     Public Function FiliCbx(MyCommandString As String, MyCbx As ComboBox, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
         FiliCbx = False
         Try
-            Using iconn As New SQLiteConnection(MyConxStr)
+            Using iconn As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconn.Open()
                 Using icmd As New SQLiteCommand(MyCommandString, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader

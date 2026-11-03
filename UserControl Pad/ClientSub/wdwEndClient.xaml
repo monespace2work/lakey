@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lakey"
         mc:Ignorable="d"
-        Title="FIN DE COLLABORATION" Height="125" Width="400" ResizeMode="NoResize" Background="#FF460000" Loaded="Window_Loaded">
+        Title="FIN DE COLLABORATION" Height="150" Width="400" ResizeMode="NoResize" Background="#FF460000" Loaded="Window_Loaded">
     <StackPanel >
         <Label Content="Fin de contrat du client" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
         <StackPanel Orientation="Horizontal">

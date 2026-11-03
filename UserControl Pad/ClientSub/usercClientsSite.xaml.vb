@@ -1,5 +1,6 @@
 ﻿Imports System.Windows.Threading
 Imports System.Data
+Imports System.Data.SQLite
 Public Class usercClientsSite
     Public iConnxStr As String
     Public LocalConnxStr As String
@@ -25,7 +26,7 @@ Public Class usercClientsSite
     End Sub
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
+        iConnxStr = "Data Source=" & DbPath & ";Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         InialiseLoad()
         ChangeYN = False
@@ -47,7 +48,7 @@ Public Class usercClientsSite
         istr += " where S.NomSite like '%' and s.Actif=1"
         istr += " order by s.Actif desc,S.NomSite "
         DgClientSite.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        tblNbClientSiteActifs.Text = "Nombre de sites actifs: " & MayStatVal("select count(*) from siteaffectation where Actif=1 ", LocalConnxStr) & " | Nombre de sites fermés: " & MayStatVal("select count(*) from siteaffectation where Actif=0 ", LocalConnxStr)
+        tblNbClientSiteActifs.Text = "Nombre de sites actifs: " & DirectCast(DgClientSite.ItemsSource, System.Data.DataView).Count & " | Nombre de sites fermés: " & MayStatVal("select count(*) from siteaffectation where Actif=0 ", LocalConnxStr)
 
         FilmyCbx("select c.NomClient from client c where c.Actif=1 order by c.Favorit desc,c.NomClient", CbxClient, LocalConnxStr)
         FilmyCbx("select lower(s.NomSite) from siteaffectation s ", iCbxSiteName, LocalConnxStr)
@@ -79,8 +80,9 @@ Public Class usercClientsSite
         istr += " from siteaffectation s "
         istr += " where S.NomSite like '%' "
         istr += " order by s.Actif desc,S.NomSite "
-        DgClientSite.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        tblNbClientSiteActifs.Text = "Nombre de sites actifs: " & MayStatVal("select count(*) from siteaffectation where Actif=1 ", LocalConnxStr) & " | Nombre de sites fermés: " & MayStatVal("select count(*) from siteaffectation where Actif=0 ", LocalConnxStr)
+        Dim siteData = LoadDataTable(istr, LocalConnxStr)
+        DgClientSite.ItemsSource = siteData.DefaultView
+        tblNbClientSiteActifs.Text = "Nombre de sites actifs: " & siteData.Select("Actif = 1").Length & " | Nombre de sites fermés: " & siteData.Select("Actif = 0").Length
 
         FilmyCbx("select lower(s.NomSite) from siteaffectation s ", iCbxSiteName, LocalConnxStr)
         RefCrt = MayStatVal("select max(c.IdSite) from siteaffectation c", LocalConnxStr) + 1
@@ -205,8 +207,9 @@ Public Class usercClientsSite
 
         End If
         istr += " ORDER BY s.Actif desc,S.NomSite "
-        DgClientSite.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de sites actifs : " & MayStatVal("select count(*) from (" & istr & ") where Actif=1 ", LocalConnxStr) & " | Nombre de sites inactifs: " & MayStatVal("select count(*) from  (" & istr & ") where Actif=0 ", LocalConnxStr) 'where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")") '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim siteData = LoadDataTable(istr, LocalConnxStr)
+        DgClientSite.ItemsSource = siteData.DefaultView
+        Dim itext As String = "Nombre de sites actifs : " & siteData.Select("Actif = 1").Length & " | Nombre de sites inactifs: " & siteData.Select("Actif = 0").Length
         itext += Environment.NewLine
         tblNbClientSiteActifs.Text = itext '"En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")
 
@@ -251,22 +254,58 @@ Public Class usercClientsSite
         istr += " where IdSite=" & RefCrt & " "
         'MsgBox(istr)
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
-        SaveModifCtr = SaveNewData(istr, iConnxStr)
-        If SaveModifCtr And NewNom <> TbxSite.Text Then
-            If SaveNewData("update Affectation set SiteAffect='" & Apost(TbxSite.Text) & "' where SiteAffect='" & Apost(NewNom) & "'", iConnxStr) And SaveNewData("update Affectation set SiteAffectPrecedent='" & Apost(TbxSite.Text) & "' where SiteAffectPrecedent='" & Apost(NewNom) & "'", iConnxStr) Then
-                SaveModifCtr = SaveNewData("update Postes set NomSite='" & Apost(TbxSite.Text) & "' where NomSite='" & Apost(NewNom) & "'", iConnxStr)
-                SaveModifCtr = SaveNewData("update sortie set SiteSortie='" & Apost(TbxSite.Text) & "' where SiteSortie='" & Apost(NewNom) & "'", iConnxStr)
-                SaveModifCtr = SaveNewData("update HeureSup set SiteHS='" & Apost(TbxSite.Text) & "' where SiteHS='" & Apost(NewNom) & "'", iConnxStr)
-                'SaveModifCtr = SaveNewData("update HeureSup set SiteHS='" & Apost(TbxSite.Text) & "' where SiteHS='" & Apost(NewNom) & "'")
-            End If
-        End If
-        If ChbActif.IsChecked = False Then
-            'MsgBox("update Postes set Actif=0 where NomSite='" & Apost(TbxSite.Text) & "'")
-            SaveModifCtr = SaveNewData("update Postes set Actif=0 where NomSite='" & Apost(TbxSite.Text) & "'", iConnxStr)
-        End If
+        SaveModifCtr = SaveSiteModification(istr)
         If SaveModifCtr Then Joper("SaveModifSite for " & TbxSite.Text & " at " & RefCrt, iConnxStr)
 
 
+    End Function
+
+    Private Function SaveSiteModification(siteUpdate As String) As Boolean
+        Try
+            Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
+            Using connection As New SQLiteConnection(writeConnectionString)
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    Using command As New SQLiteCommand("PRAGMA defer_foreign_keys = ON", connection, transaction)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    Using command As New SQLiteCommand(siteUpdate, connection, transaction)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    If NewNom <> TbxSite.Text Then
+                        Dim newSiteName As String = Apost(TbxSite.Text)
+                        Dim oldSiteName As String = Apost(NewNom)
+                        Dim siteNameUpdates As String() = {
+                            "update Affectation set SiteAffect='" & newSiteName & "' where SiteAffect='" & oldSiteName & "'",
+                            "update Affectation set SiteAffectPrecedent='" & newSiteName & "' where SiteAffectPrecedent='" & oldSiteName & "'",
+                            "update Postes set NomSite='" & newSiteName & "' where NomSite='" & oldSiteName & "'",
+                            "update sortie set SiteSortie='" & newSiteName & "' where SiteSortie='" & oldSiteName & "'",
+                            "update HeureSup set SiteHS='" & newSiteName & "' where SiteHS='" & oldSiteName & "'"
+                        }
+                        For Each nameUpdate As String In siteNameUpdates
+                            Using command As New SQLiteCommand(nameUpdate, connection, transaction)
+                                command.ExecuteNonQuery()
+                            End Using
+                        Next
+                    End If
+
+                    If ChbActif.IsChecked = False Then
+                        Using command As New SQLiteCommand("update Postes set Actif=0 where NomSite='" & Apost(TbxSite.Text) & "'", connection, transaction)
+                            command.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                    transaction.Commit()
+                End Using
+            End Using
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Return True
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return False
+        End Try
     End Function
 
     Sub ActivSaveBtn()

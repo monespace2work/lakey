@@ -25,7 +25,7 @@ Public Class usercAgentsContrat
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = PaphBackUp()
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
-        iConnxStr = If(LocalModeBb, LocalConnxStr, "Data Source=" & DbPathGeneral & ";Version=3;")
+        iConnxStr = LocalConnxStr
         InialiseLoad()
         ChangeYN = False
         inputTimer = New DispatcherTimer()
@@ -51,7 +51,7 @@ Public Class usercAgentsContrat
         istr += " and crt.DebutContr >='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
         istr += " ORDER BY crt.DebutContr desc, ag.Nomprenoms "
         DgAgentContrat.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")") '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & DirectCast(DgAgentContrat.ItemsSource, System.Data.DataView).Count '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
         itext += Environment.NewLine
         itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         tblNbAgentcONTRAT.Text = itext 'MyContratList("select n.IdNature, count(*) from contratstbl c join contratsnature n on c.NaturContr=n.NatureContr group by n.IdNature")
@@ -93,7 +93,7 @@ Public Class usercAgentsContrat
         istr += " FROM CONTRATSTBL crt join agents ag on ag.NumMatr=crt.NomPrenoms join contratsnature natc on crt.NaturContr=natc.NatureContr "
         istr += " where ag.actif=1 and crt.FinContr>='" & Today.ToString("yyyy-MM-dd") & "'"
         istr += " ORDER BY crt.DebutContr desc, ag.Nomprenoms "
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr) '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & DirectCast(DgAgentContrat.ItemsSource, System.Data.DataView).Count '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
         itext += Environment.NewLine
         tblNbAgentcONTRAT.Text = itext ' "En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid()
         DgAgentContrat.ItemsSource = LoadDataTable(istr).DefaultView
@@ -140,7 +140,7 @@ Public Class usercAgentsContrat
         istr += " ORDER BY ag.Nomprenoms, crt.DebutContr desc "
         maj()
         DgAgentContrat.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr) '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & DirectCast(DgAgentContrat.ItemsSource, System.Data.DataView).Count '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
         itext += Environment.NewLine
         itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         tblNbAgentcONTRAT.Text = itext '"En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")

@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Threading
+﻿Imports System.Data
+Imports System.Windows.Threading
 Public Class usercNBanque
     Dim inputTimer As DispatcherTimer
     Dim iConnxStr As String
@@ -8,7 +9,7 @@ Public Class usercNBanque
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = (PaphBackUp())
-        iConnxStr = $"Data Source={ DbPathGeneral};Version=3;"
+        iConnxStr = $"Data Source={DbPath};Version=3;"
 
         Initilisation()
         inputTimer = New DispatcherTimer()
@@ -30,8 +31,9 @@ Public Class usercNBanque
         Dim istr As String = " select a.NomPrenoms,a.NumMatr , a.Banque, a.NumCompte, a.Contacts,a.Actif from agents a where a.Actif=1 "
         istr += " order by a.Actif desc, a.NomPrenoms "
         'istr += " ORDER BY crt.DebutContr desc, ag.Nomprenoms "
-        DgBanque.ItemsSource = LoadDataTable(istr).DefaultView
-        tblNbBanque.Text = "Nombre d'agents actifs ayant un compte bancaire : " & MayStatVal("select count(*) from agents a where a.Actif=1 and  (a.NumCompte not like '' and a.NumCompte not null)") & " | Nombre d'agents actifs n'ayant pas de compte bancaire : " & MayStatVal("select count(*) from agents a where a.Actif=1 and  (a.NumCompte like '' and a.NumCompte not null)")
+        Dim agentData As DataTable = LoadDataTable(istr)
+        DgBanque.ItemsSource = agentData.DefaultView
+        UpdateBankCounts(agentData, True)
         If Not FilmyCbx("select a.RefBank,a.Favorit from comptbank a where a.Actif=1 order by a.Favorit desc,a.RefBank ", cbxBank) Then cbxBank.Items.Clear()
         If Not FilmyCbx("select a.NomPrenoms from agents a order by a.Actif desc, a.NomPrenoms, a.NumMatr ", cbxAgent) Then cbxAgent.Items.Clear()
         If cbxBank.Items.Count > 0 Then cbxBank.Items.Insert(0, "")
@@ -39,6 +41,23 @@ Public Class usercNBanque
         btnValidNewData.Visibility = Visibility.Collapsed
         'MsgBox(iCbxRIB.Items.Item(0))
         'select a.Banque||a.NumCompte from agents a where a.Banque not like'' and a.NumCompte not like'' order by a.Banque 
+    End Sub
+
+    Private Sub UpdateBankCounts(agentData As DataTable, activeOnly As Boolean)
+        Dim withAccount As Integer = 0
+        Dim withoutAccount As Integer = 0
+        For Each row As DataRow In agentData.Rows
+            If row.IsNull("NumCompte") Then Continue For
+            If Convert.ToString(row("NumCompte")) = "" Then
+                withoutAccount += 1
+            Else
+                withAccount += 1
+            End If
+        Next
+
+        Dim label As String = If(activeOnly, "Nombre d'agents actifs", "Nombre d'agents")
+        tblNbBanque.Text = label & " ayant un compte bancaire : " & withAccount &
+                           " | " & label & " n'ayant pas de compte bancaire : " & withoutAccount
     End Sub
     Private Sub OnInputTimerElapsed(sender As Object, e As EventArgs)
         inputTimer.Stop()
@@ -63,9 +82,10 @@ Public Class usercNBanque
         istr += " or a.Contacts  like '%" & KeyWord & "%' "
         istr += " or a.NumCompte  like '%" & KeyWord & "%' )" & sufix
         istr += " order by a.Actif desc, a.NomPrenoms "
-        DgBanque.ItemsSource = LoadDataTable(istr).DefaultView
+        Dim agentData As DataTable = LoadDataTable(istr)
+        DgBanque.ItemsSource = agentData.DefaultView
         'ShowTempMsg(istr)
-        tblNbBanque.Text = "Nombre d'agents ayant un compte bancaire : " & MayStatVal("select count(*) from (" & istr & ")  where (NumCompte not like '' and NumCompte not null)") & " | Nombre d'agents n'ayant pas de compte bancaire : " & MayStatVal("select count(*) from (" & istr & ") where (NumCompte like '' and NumCompte not null)")
+        UpdateBankCounts(agentData, False)
 
         elpStatus.Visibility = Visibility.Collapsed
     End Sub

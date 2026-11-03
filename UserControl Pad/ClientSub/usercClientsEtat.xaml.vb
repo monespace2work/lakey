@@ -7,7 +7,7 @@ Public Class usercClientsEtat
 
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
+        iConnxStr = "Data Source=" & DbPath & ";Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
 
 
@@ -40,7 +40,7 @@ Public Class usercClientsEtat
         istr += " ORDER BY s.Client, a.AgentAffect "
         maj()
         DgClientsEtat.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre d'éléments : " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr) '& " | Nombre de clients inactifs: " & MayStatVal("select count(*) from  (" & istr & ") where Actif=0 ", LocalConnxStr) 'where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")") '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim itext As String = "Nombre d'éléments : " & DirectCast(DgClientsEtat.ItemsSource, System.Data.DataView).Count
         'itext += Environment.NewLine
         tblNbClientEtatsActifs.Text = itext '"En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")
 

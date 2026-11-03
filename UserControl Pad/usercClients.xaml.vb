@@ -15,7 +15,7 @@ Public Class usercClients
         If ClientAffiche() And ClientInactifAffiche() Then
             DgClients.ItemsSource = ClientDTable.DefaultView
             DgClientsInactifs.ItemsSource = TempTable.DefaultView
-            tbxNbClientInactifs.Text = "Nombre de clients inactifs : " & NbClientInactif()
+            tbxNbClientInactifs.Text = "Nombre de clients inactifs : " & TempTable.Rows.Count
             tbxNbClientActifs.Text = "Nombre de clients actifs : " & ClientDTable.Rows.Count
         Else
             MsgBox("erreur de chargement")

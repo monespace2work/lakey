@@ -73,7 +73,7 @@ Public Class wdwConges
             Try
                 istr = "select format(c.DebutContr) as debut,format(c.FinContr) as fin from contratstbl c where c.NomPrenoms like '" & Apost(CbxNumMatr.SelectedItem) & "' "
                 Try
-                    Using iconnx As New SQLiteConnection(iConxStr)
+                    Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                         iconnx.Open()
                         Using icmd As New SQLiteCommand(istr, iconnx)
                             Dim ireader As SQLiteDataReader = icmd.ExecuteReader
@@ -122,7 +122,7 @@ Public Class wdwConges
         istr += " AND NomPrenom Like '" & Apost(CbxAgent.SelectedItem) & "' "
         istr += " GROUP BY NomPrenom "
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader

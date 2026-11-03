@@ -8,15 +8,16 @@ Public Class usercMemo
 
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = (PaphBackUp())
-        iConnxStr = $"Data Source={ DbPathGeneral};Version=3;"
+        iConnxStr = $"Data Source={DbPath};Version=3;"
         Initialization()
     End Sub
     Sub Initialization()
         Dim istr As String = "Select m.MemContent,date(m.DateMem) as Date,m.Actif,m.IdMem as Id from memos m "
         'istr += "  from events e "
         istr += " ORDER BY m.Actif desc, m.DateMem "
-        DgMemo.ItemsSource = LoadDataTable(istr).DefaultView
-        tblNbMemo.Text = "Nombre de memos en attente : " & MayStatVal("select count(*) from memos  where Actif=1") ' & " | Nombre d'agents actifs sans un N° CNSSS : " & MayStatVal("select count(*) from agents a where a.Actif=1 and  (a.Nsecu like '' and a.Nsecu not null)")
+        Dim memoData = LoadDataTable(istr)
+        DgMemo.ItemsSource = memoData.DefaultView
+        tblNbMemo.Text = "Nombre de memos en attente : " & memoData.Select("Actif = 1").Length
         CasValidation = 0
         iFrmLoaded = True
         ActivValidBtn()

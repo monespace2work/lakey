@@ -7,6 +7,17 @@ Module ObjectsManaging
     Dim iTimer As New DispatcherTimer
     Public iDureeTempMsg As Integer = 10
     Dim iTempMsg As New TempMsg
+    Private generalDatabaseWatcher As FileSystemWatcher
+    Private ReadOnly generalDatabaseSyncLock As New Object
+    Private ReadOnly generalDatabaseSyncTimer As New DispatcherTimer With {
+        .Interval = TimeSpan.FromMilliseconds(500)
+    }
+    Private ReadOnly generalDatabasePollTimer As New DispatcherTimer With {
+        .Interval = TimeSpan.FromSeconds(30)
+    }
+    Private lastSyncedLocalPath As String = ""
+    Private lastSyncedFingerprint As String = ""
+    Private generalDatabaseSyncWarningShown As Boolean
 
     Public Sub SaisiTbx(iTbx As TextBox, iTbl As TextBlock)
         Try
@@ -323,34 +334,176 @@ Module ObjectsManaging
         If LocalModeBb Then Return False
         Dim userDatabasePath As String = Path.Combine(UserPath, "ManA.sqlite")
         If File.Exists(userDatabasePath) Then DbPath = userDatabasePath
-        If String.Equals(Path.GetFullPath(DbPathGeneral),
-                         Path.GetFullPath(DbPath),
-                         StringComparison.OrdinalIgnoreCase) Then Return True
+        SyncLock generalDatabaseSyncLock
+            Try
+                Dim generalPath As String = Path.GetFullPath(DbPathGeneral)
+                Dim localPath As String = Path.GetFullPath(DbPath)
+                If String.Equals(generalPath, localPath, StringComparison.OrdinalIgnoreCase) Then Return True
+                If Not File.Exists(generalPath) Then
+                    Throw New FileNotFoundException("La base centrale est introuvable.", generalPath)
+                End If
 
-        Try
-            If Not File.Exists(DbPathGeneral) Then
-                Throw New FileNotFoundException("La base centrale est introuvable.", DbPathGeneral)
-            End If
+                If Not String.Equals(lastSyncedLocalPath, localPath, StringComparison.OrdinalIgnoreCase) Then
+                    Dim statePath As String = localPath & ".sync"
+                    Try
+                        lastSyncedFingerprint = If(File.Exists(statePath), File.ReadAllText(statePath), "")
+                    Catch stateException As Exception
+                        System.Diagnostics.Debug.WriteLine("Impossible de lire l'état de synchronisation : " & stateException.ToString())
+                        lastSyncedFingerprint = ""
+                    End Try
+                    lastSyncedLocalPath = localPath
+                End If
 
-            If File.Exists(DbPath) AndAlso Not String.IsNullOrWhiteSpace(BUDirPath) Then
-                Dim backupPath As String = Path.Combine(BUDirPath, Path.GetFileName(DbPath))
-                If Not String.Equals(Path.GetFullPath(backupPath),
-                                     Path.GetFullPath(DbPath),
-                                     StringComparison.OrdinalIgnoreCase) Then
-                    Dim localValidationError As String = Nothing
-                    If IsSQLiteDatabaseHealthy(DbPath, localValidationError) Then
-                        CreateValidatedSQLiteSnapshot(DbPath, backupPath)
+                Dim sourceFingerprint As String = GetGeneralDatabaseFingerprint(generalPath)
+                If File.Exists(localPath) AndAlso
+                   String.Equals(sourceFingerprint, lastSyncedFingerprint, StringComparison.Ordinal) Then
+                    generalDatabaseSyncWarningShown = False
+                    Return True
+                End If
+
+                If File.Exists(localPath) AndAlso Not String.IsNullOrWhiteSpace(BUDirPath) Then
+                    Dim backupPath As String = Path.Combine(BUDirPath, Path.GetFileName(localPath))
+                    If Not String.Equals(Path.GetFullPath(backupPath), localPath, StringComparison.OrdinalIgnoreCase) Then
+                        Dim localValidationError As String = Nothing
+                        If IsSQLiteDatabaseHealthy(localPath, localValidationError) Then
+                            CreateValidatedSQLiteSnapshot(localPath, backupPath)
+                        End If
                     End If
                 End If
-            End If
 
-            CreateValidatedSQLiteSnapshot(DbPathGeneral, DbPath)
-            File.SetAttributes(DbPath, File.GetAttributes(DbPath) Or FileAttributes.Hidden)
-            maj = True
-        Catch ex As Exception
-            System.Diagnostics.Debug.WriteLine("Échec de la synchronisation SQLite : " & ex.ToString())
-        End Try
+                CreateValidatedSQLiteSnapshot(generalPath, localPath)
+                File.SetAttributes(localPath, File.GetAttributes(localPath) Or FileAttributes.Hidden)
+                lastSyncedFingerprint = sourceFingerprint
+                Try
+                    File.WriteAllText(localPath & ".sync", sourceFingerprint)
+                Catch stateException As Exception
+                    System.Diagnostics.Debug.WriteLine("Impossible d'enregistrer l'état de synchronisation : " & stateException.ToString())
+                End Try
+                generalDatabaseSyncWarningShown = False
+                maj = True
+            Catch ex As Exception
+                System.Diagnostics.Debug.WriteLine("Échec de la synchronisation SQLite : " & ex.ToString())
+            End Try
+        End SyncLock
     End Function
+
+    Private Function GetGeneralDatabaseFingerprint(databasePath As String) As String
+        Return Path.GetFullPath(databasePath) & "|" &
+               GetDatabaseFileState(databasePath) & "|" &
+               GetDatabaseFileState(databasePath & "-wal")
+    End Function
+
+    Private Function GetDatabaseFileState(filePath As String) As String
+        If Not File.Exists(filePath) Then Return "missing"
+        Dim fileInfo As New FileInfo(filePath)
+        Return fileInfo.Length.ToString(Globalization.CultureInfo.InvariantCulture) & ":" &
+               fileInfo.LastWriteTimeUtc.Ticks.ToString(Globalization.CultureInfo.InvariantCulture)
+    End Function
+
+    Public Sub StartGeneralDatabaseListener()
+        If LocalModeBb Then Return
+        StopGeneralDatabaseListener()
+
+        Dim generalPath As String = Path.GetFullPath(DbPathGeneral)
+        Dim directoryPath As String = Path.GetDirectoryName(generalPath)
+        If String.IsNullOrWhiteSpace(directoryPath) OrElse Not Directory.Exists(directoryPath) Then
+            Throw New DirectoryNotFoundException("Le dossier de la base générale est introuvable : " & directoryPath)
+        End If
+
+        generalDatabaseWatcher = New FileSystemWatcher(directoryPath) With {
+            .Filter = Path.GetFileName(generalPath) & "*",
+            .NotifyFilter = NotifyFilters.FileName Or NotifyFilters.LastWrite Or NotifyFilters.Size,
+            .IncludeSubdirectories = False,
+            .EnableRaisingEvents = False
+        }
+        AddHandler generalDatabaseWatcher.Changed, AddressOf GeneralDatabaseWatcher_Changed
+        AddHandler generalDatabaseWatcher.Created, AddressOf GeneralDatabaseWatcher_Changed
+        AddHandler generalDatabaseWatcher.Deleted, AddressOf GeneralDatabaseWatcher_Changed
+        AddHandler generalDatabaseWatcher.Renamed, AddressOf GeneralDatabaseWatcher_Renamed
+        AddHandler generalDatabaseWatcher.Error, AddressOf GeneralDatabaseWatcher_Error
+        AddHandler generalDatabaseSyncTimer.Tick, AddressOf GeneralDatabaseSyncTimer_Tick
+        AddHandler generalDatabasePollTimer.Tick, AddressOf GeneralDatabasePollTimer_Tick
+        AddHandler DbManipulation.GeneralDatabaseChanged, AddressOf QueueGeneralDatabaseSync
+        generalDatabaseWatcher.EnableRaisingEvents = True
+        generalDatabasePollTimer.Start()
+    End Sub
+
+    Public Sub StopGeneralDatabaseListener()
+        generalDatabaseSyncTimer.Stop()
+        generalDatabasePollTimer.Stop()
+        RemoveHandler generalDatabaseSyncTimer.Tick, AddressOf GeneralDatabaseSyncTimer_Tick
+        RemoveHandler generalDatabasePollTimer.Tick, AddressOf GeneralDatabasePollTimer_Tick
+        RemoveHandler DbManipulation.GeneralDatabaseChanged, AddressOf QueueGeneralDatabaseSync
+        If generalDatabaseWatcher IsNot Nothing Then
+            RemoveHandler generalDatabaseWatcher.Changed, AddressOf GeneralDatabaseWatcher_Changed
+            RemoveHandler generalDatabaseWatcher.Created, AddressOf GeneralDatabaseWatcher_Changed
+            RemoveHandler generalDatabaseWatcher.Deleted, AddressOf GeneralDatabaseWatcher_Changed
+            RemoveHandler generalDatabaseWatcher.Renamed, AddressOf GeneralDatabaseWatcher_Renamed
+            RemoveHandler generalDatabaseWatcher.Error, AddressOf GeneralDatabaseWatcher_Error
+            generalDatabaseWatcher.Dispose()
+            generalDatabaseWatcher = Nothing
+        End If
+    End Sub
+
+    Private Sub GeneralDatabaseWatcher_Changed(sender As Object, e As FileSystemEventArgs)
+        If IsGeneralDatabaseFile(e.FullPath) Then QueueGeneralDatabaseSync(sender, EventArgs.Empty)
+    End Sub
+
+    Private Sub GeneralDatabaseWatcher_Renamed(sender As Object, e As RenamedEventArgs)
+        If IsGeneralDatabaseFile(e.FullPath) OrElse IsGeneralDatabaseFile(e.OldFullPath) Then
+            QueueGeneralDatabaseSync(sender, EventArgs.Empty)
+        End If
+    End Sub
+
+    Private Sub GeneralDatabaseWatcher_Error(sender As Object, e As ErrorEventArgs)
+        System.Diagnostics.Debug.WriteLine("Le suivi de la base générale a rencontré une erreur : " & e.GetException().ToString())
+        QueueGeneralDatabaseSync(sender, EventArgs.Empty)
+    End Sub
+
+    Private Function IsGeneralDatabaseFile(filePath As String) As Boolean
+        Dim basePath As String = Path.GetFullPath(DbPathGeneral)
+        Dim changedPath As String = Path.GetFullPath(filePath)
+        Return String.Equals(changedPath, basePath, StringComparison.OrdinalIgnoreCase) OrElse
+               String.Equals(changedPath, basePath & "-wal", StringComparison.OrdinalIgnoreCase)
+    End Function
+
+    Private Sub QueueGeneralDatabaseSync(sender As Object, e As EventArgs)
+        Dim dispatcher = Application.Current?.Dispatcher
+        If dispatcher Is Nothing OrElse dispatcher.HasShutdownStarted OrElse dispatcher.HasShutdownFinished Then Return
+
+        Dim queueAction As Action =
+            Sub()
+                generalDatabaseSyncTimer.Stop()
+                generalDatabaseSyncTimer.Start()
+            End Sub
+        If dispatcher.CheckAccess() Then
+            queueAction()
+        Else
+            dispatcher.BeginInvoke(queueAction)
+        End If
+    End Sub
+
+    Private Sub GeneralDatabaseSyncTimer_Tick(sender As Object, e As EventArgs)
+        generalDatabaseSyncTimer.Stop()
+        SynchronizeGeneralDatabaseIfNeeded()
+    End Sub
+
+    Private Sub GeneralDatabasePollTimer_Tick(sender As Object, e As EventArgs)
+        SynchronizeGeneralDatabaseIfNeeded()
+    End Sub
+
+    Private Sub SynchronizeGeneralDatabaseIfNeeded()
+        If LocalModeBb Then Return
+
+        If Not maj() AndAlso Not generalDatabaseSyncWarningShown Then
+            generalDatabaseSyncWarningShown = True
+            MessageBox.Show(
+                "La base locale n'a pas pu être actualisée depuis la base générale. Les dernières données locales restent disponibles.",
+                "Synchronisation en attente",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning)
+        End If
+    End Sub
 
     Public Sub StartProcess(path As String)
         If File.Exists(path) Then

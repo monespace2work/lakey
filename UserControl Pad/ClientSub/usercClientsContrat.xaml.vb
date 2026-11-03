@@ -1,5 +1,6 @@
 ﻿Imports System.Windows.Threading
 Imports System.Data
+Imports System.Data.SQLite
 Public Class usercClientsContrat
     Public iConnxStr As String
     Dim LocalConnxStr As String
@@ -27,7 +28,7 @@ Public Class usercClientsContrat
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
-        iConnxStr = If(LocalModeBb, LocalConnxStr, "Data Source=" & DbPathGeneral & ";Version=3;")
+        iConnxStr = LocalConnxStr
 
         InialiseLoad()
         ChangeYN = False
@@ -49,7 +50,7 @@ Public Class usercClientsContrat
         istr += " where c.NomClient like '%' and c.Actif=1 "
         istr += " order by c.Actif desc, c.NomClient "
         DgClientsContrats.ItemsSource = LoadDataTable(istr).DefaultView
-        tblNbClientContratActifs.Text = "Nombre de clients actifs: " & MayStatVal("select count(*) from Client where Actif=1 ") & " | Nombre de clients inactifs: " & MayStatVal("select count(*) from Client where Actif=0 ", LocalConnxStr)
+        tblNbClientContratActifs.Text = "Nombre de clients actifs: " & DirectCast(DgClientsContrats.ItemsSource, System.Data.DataView).Count & " | Nombre de clients inactifs: " & MayStatVal("select count(*) from Client where Actif=0 ", LocalConnxStr)
         AfficheStat?.Invoke()
 
         FilmyCbx("select lower(c.NomClient) from client c", iCbxClientName)
@@ -86,7 +87,7 @@ Public Class usercClientsContrat
         istr += " where c.NomClient like '%' and c.Actif=1 "
         istr += " order by c.Actif desc, c.NomClient "
         DgClientsContrats.ItemsSource = LoadDataTable(istr).DefaultView
-        tblNbClientContratActifs.Text = "Nombre de clients actifs: " & MayStatVal("select count(*) from Client where Actif=1 ") & " | Nombre de clients inactifs: " & MayStatVal("select count(*) from Client where Actif=0 ", LocalConnxStr)
+        tblNbClientContratActifs.Text = "Nombre de clients actifs: " & DirectCast(DgClientsContrats.ItemsSource, System.Data.DataView).Count & " | Nombre de clients inactifs: " & MayStatVal("select count(*) from Client where Actif=0 ", LocalConnxStr)
 
         FilmyCbx("select lower(c.NomClient) from client c", iCbxClientName)
         RefCrt = MayStatVal("select max(c.RefCtr) from client c", iConnxStr) + 1
@@ -171,8 +172,11 @@ Public Class usercClientsContrat
         istr += " ORDER BY c.Actif desc,c.NomClient "
         'ShowTempMsg(istr)
         maj()
-        DgClientsContrats.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de clients actifs : " & MayStatVal("select count(*) from (" & istr & ") where Actif=1 ", LocalConnxStr) & " | Nombre de clients inactifs: " & MayStatVal("select count(*) from  (" & istr & ") where Actif=0 ", LocalConnxStr) 'where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")") '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim searchResults = LoadDataTable(istr, LocalConnxStr)
+        DgClientsContrats.ItemsSource = searchResults.DefaultView
+        Dim activeCount As Integer = searchResults.Select("Actif = 1").Length
+        Dim inactiveCount As Integer = searchResults.Select("Actif = 0").Length
+        Dim itext As String = "Nombre de clients actifs : " & activeCount & " | Nombre de clients inactifs: " & inactiveCount
         itext += Environment.NewLine
         tblNbClientContratActifs.Text = itext '"En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")
 
@@ -217,11 +221,40 @@ Public Class usercClientsContrat
         istr += " Obs='" & Trim(Apost(TbxObs.Text)) & "'  "
         istr += " where RefCtr=" & RefCrt & " "
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
-        SaveModifCtr = SaveNewData(istr, iConnxStr)
-        If SaveModifCtr And NewNom <> TbxNom.Text Then
-            SaveModifCtr = SaveNewData("update SiteAffectation set Client='" & Trim(Apost(TbxNom.Text)) & "' where Client='" & Apost(NewNom) & "'", iConnxStr) '113
-            If SaveModifCtr Then Joper("SaveModifCtrClient for " & TbxNom.Text & " at " & RefCrt, iConnxStr)
-        End If
+        SaveModifCtr = SaveClientModification(istr)
+        If SaveModifCtr Then Joper("SaveModifCtrClient for " & TbxNom.Text & " at " & RefCrt, iConnxStr)
+    End Function
+
+    Private Function SaveClientModification(clientUpdate As String) As Boolean
+        Try
+            Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
+            Using connection As New SQLiteConnection(writeConnectionString)
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    Using command As New SQLiteCommand("PRAGMA defer_foreign_keys = ON", connection, transaction)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    Using command As New SQLiteCommand(clientUpdate, connection, transaction)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    If NewNom <> TbxNom.Text Then
+                        Dim siteUpdate As String = "update SiteAffectation set Client='" & Trim(Apost(TbxNom.Text)) & "' where Client='" & Apost(NewNom) & "'"
+                        Using command As New SQLiteCommand(siteUpdate, connection, transaction)
+                            command.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                    transaction.Commit()
+                End Using
+            End Using
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Return True
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return False
+        End Try
     End Function
 
     Private Sub BtnDataSearch_TextChanged(sender As Object, e As TextChangedEventArgs) Handles BtnDataSearch.TextChanged

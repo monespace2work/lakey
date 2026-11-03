@@ -164,11 +164,11 @@
                                                     <Button x:Name="btnAnnuleSdb" Content="Annuler" Margin="0,0,10,0" Padding="10,5"/>
                                                     <CheckBox x:Name="chbEnAttente"  Content="METTRE EN ATTENTE" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,10,0" IsChecked="True"/>
                                                     <Button x:Name="btnSaveSdb" Content="VALIDER" Margin="0,0,10,0"  Padding="10,5"/>
-                                                    <Expander  x:Name="expDecisionSdb" Header="ACCORD" Padding="5,7,10,5" Margin="20,0,0,0" Background="#FFF7FFC1" Width="150"  Visibility="Collapsed"> 
+                                                    <Expander x:Name="expDecisionSdb" Header="ACCORD" Padding="5,7,10,5" Margin="20,0,0,0" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}" Width="150" Visibility="Collapsed">
                                                         <StackPanel Orientation="Horizontal">
                                                             <CheckBox x:Name="chbAccord"  Content="Oui" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0"/>
                                                             <CheckBox x:Name="chbNonAccord"  Content="Non" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                                            <Button x:Name="btnValideDecision" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Center" Width="30" Margin="0,5" />
+                                                            <Button x:Name="btnValideDecision" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="40" Padding="2,0" Margin="0,5" />
                                                         </StackPanel>
                                                     </Expander>
                                                 </StackPanel>

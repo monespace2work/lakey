@@ -23,7 +23,7 @@ Public Class usercAgentsSortie
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;Pooling=False;"
+        iConnxStr = "Data Source=" & DbPath & ";Version=3;Pooling=False;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         InialiseLoad()
         inputTimer = New DispatcherTimer()
@@ -46,7 +46,7 @@ Public Class usercAgentsSortie
         istr += " where DateSortie>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
         istr += " order by ag.DateSortie desc, ag.NomsPrenoms "
         DgAgentSortie.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ")")
+        Dim itext As String = "En cours de validité : " & DirectCast(DgAgentSortie.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         'itext += MyAffectationVilleList("select s.Localisation as ville, count(*) as nbr from (" & istr & ") a join siteaffectation s on a.Site=s.NomSite where a.Fin>='" & Today.ToString("yyyy-MM-dd") & "' group by s.Localisation Order by nbr desc,ville")
         tblNbAgentSortie.Text = itext
@@ -76,7 +76,7 @@ Public Class usercAgentsSortie
         istr += " where DateSortie>='" & CDate("01/01/" & Today.ToString("yyyy")).ToString("yyyy-MM-dd") & "'"
         istr += " order by ag.DateSortie desc, ag.NomsPrenoms "
         DgAgentSortie.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr)
+        Dim itext As String = "En cours de validité : " & DirectCast(DgAgentSortie.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         'itext += MyAffectationVilleList("select s.Localisation as ville, count(*) as nbr from (" & istr & ") a join siteaffectation s on a.Site=s.NomSite where a.Fin>='" & Today.ToString("yyyy-MM-dd") & "' group by s.Localisation Order by nbr desc,ville")
         tblNbAgentSortie.Text = itext
@@ -137,7 +137,7 @@ Public Class usercAgentsSortie
         istr += " or ag.Obs  like '%" & KeyWord & "%' )" & sufix
         istr += " order by ag.DateSortie desc, ag.NomsPrenoms  "
         DgAgentSortie.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr)
+        Dim itext As String = "En cours de validité : " & DirectCast(DgAgentSortie.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         'itext += MyAffectationVilleList("select s.Localisation as ville, count(*) as nbr from (" & istr & ") a join siteaffectation s on a.Site=s.NomSite  group by s.Localisation Order by nbr desc,ville")
         tblNbAgentSortie.Text = itext '"En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")
@@ -202,7 +202,7 @@ Public Class usercAgentsSortie
                 If CbxNumMatr.SelectedIndex >= 0 Then
                     istr = "select format(c.DebutContr) as debut,format(c.FinContr) as fin from contratstbl c where c.NomPrenoms like '" & Apost(CbxNumMatr.SelectedItem) & "' "
                     Try
-                        Using iconnx As New SQLiteConnection(iConxStr)
+                        Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                             iconnx.Open()
                             Using icmd As New SQLiteCommand(istr, iconnx)
                                 Dim ireader As SQLiteDataReader = icmd.ExecuteReader

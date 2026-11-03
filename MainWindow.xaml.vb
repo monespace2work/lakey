@@ -136,7 +136,26 @@ Class MainWindow
             tbxVersion.Text = "V" & My.Application.Info.Version.ToString
             tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
             DbPathGeneral = PaphBackUp()
-            If Not LocalModeBb AndAlso Not maj() Then DbPath = DbPathGeneral
+            If Not LocalModeBb Then
+                Try
+                    StartGeneralDatabaseListener()
+                Catch listenerException As Exception
+                    System.Diagnostics.Debug.WriteLine("Le suivi de la base générale n'a pas pu démarrer : " & listenerException.ToString())
+                    MessageBox.Show(
+                        "Le suivi automatique de la base générale n'a pas pu démarrer." &
+                        Environment.NewLine & listenerException.Message,
+                        "Synchronisation automatique indisponible",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning)
+                End Try
+                If Not maj() Then
+                    MessageBox.Show(
+                        "La copie locale n'a pas pu être actualisée depuis la base générale. Les données affichées peuvent être anciennes.",
+                        "Synchronisation impossible",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning)
+                End If
+            End If
             LocalConnxStr = $"Data Source={DbPath};Version=3;"
             InitializeGlobal()
         End Sub,
@@ -264,6 +283,7 @@ Class MainWindow
             SetThemeColor("ThemeInputPlaceholderBrush", "#AAB8C8")
             SetThemeColor("ThemeInputDisabledBrush", "#34465A")
             SetThemeColor("ThemeInputDisabledTextBrush", "#D2DAE4")
+            SetThemeColor("ThemeInputWarningBrush", "#7F1D1D")
             SetThemeColor("ThemeComboItemHoverBrush", "#34536F")
             SetThemeColor("ThemeComboItemSelectedBrush", "#1676A5")
             SetThemeColor("ThemeComboItemSelectedTextBrush", "#FFFFFF")
@@ -297,22 +317,22 @@ Class MainWindow
             SetThemeColor("ThemeLoginButtonTextBrush", "#062A30")
             SetThemeColor("ThemeAgentButtonBrush", "#1C6664")
             SetThemeColor("ThemeAgentButtonTextBrush", "#FFFFFF")
-            SetThemeColor("ThemeAgentSelectedBrush", "#14756E")
+            SetThemeColor("ThemeAgentSelectedBrush", "#063B38")
             SetThemeColor("ThemeAgentSelectedTextBrush", "#FFFFFF")
             SetThemeColor("ThemeAgentHoverBrush", "#23847C")
             SetThemeColor("ThemeAgentGroupBrush", "#123337")
             SetThemeColor("ThemeAgentGroupBorderBrush", "#26615D")
             SetThemeColor("ThemeClientButtonBrush", "#315F9A")
             SetThemeColor("ThemeClientButtonTextBrush", "#FFFFFF")
-            SetThemeColor("ThemeClientSelectedBrush", "#416FAE")
+            SetThemeColor("ThemeClientSelectedBrush", "#10294A")
             SetThemeColor("ThemeClientSelectedTextBrush", "#FFFFFF")
             SetThemeColor("ThemeClientHoverBrush", "#477FC0")
             SetThemeColor("ThemeClientGroupBrush", "#172A45")
             SetThemeColor("ThemeClientGroupBorderBrush", "#365D8B")
             SetThemeColor("ThemeCongesButtonBrush", "#F2C14E")
             SetThemeColor("ThemeCongesButtonTextBrush", "#392A00")
-            SetThemeColor("ThemeCongesSelectedBrush", "#D99000")
-            SetThemeColor("ThemeCongesSelectedTextBrush", "#241700")
+            SetThemeColor("ThemeCongesSelectedBrush", "#4A3100")
+            SetThemeColor("ThemeCongesSelectedTextBrush", "#FFF4D6")
             SetThemeColor("ThemeCongesHoverBrush", "#FFE08A")
             SetThemeColor("ThemeAgentGroupLabelBrush", "#75E4CE")
             SetThemeColor("ThemeClientGroupLabelBrush", "#A7C9FF")
@@ -358,6 +378,7 @@ Class MainWindow
             SetThemeColor("ThemeInputPlaceholderBrush", "#60758A")
             SetThemeColor("ThemeInputDisabledBrush", "#E1E8EE")
             SetThemeColor("ThemeInputDisabledTextBrush", "#526779")
+            SetThemeColor("ThemeInputWarningBrush", "#FFFF8E8E")
             SetThemeColor("ThemeComboItemHoverBrush", "#EAF3FA")
             SetThemeColor("ThemeComboItemSelectedBrush", "#D1E6F4")
             SetThemeColor("ThemeComboItemSelectedTextBrush", "#102A43")
@@ -493,7 +514,7 @@ Class MainWindow
         End Try
         Try
             Dim iIdber As String = "C:\Program Files\JPBA\idbuder\idbuder.exe"
-            StartProcess(iIdber)
+            '--------- StartProcess(iIdber)
         Catch ex As Exception
             MsgBox(ex.Message)
             Me.Close()
@@ -1670,6 +1691,7 @@ Class MainWindow
 
         Try
             LocalModeBb = True
+            StopGeneralDatabaseListener()
             UserLevel = localUserLevel
             DbPath = connectedDatabasePath
             LocalConnxStr = localConnectionString
@@ -1690,6 +1712,7 @@ Class MainWindow
             End If
 
             LocalModeBb = False
+            StartGeneralDatabaseListener()
             UserName = connectedUserName
             UserPW = connectedPassword
             UserLevel = connectedUserLevel
@@ -1797,6 +1820,7 @@ Class MainWindow
 
         Try
             LocalModeBb = False
+            StartGeneralDatabaseListener()
             UserName = connectedUserName
             UserPW = connectedPassword
             UserLevel = centralUserLevel
@@ -1832,6 +1856,7 @@ Class MainWindow
             End If
 
             LocalModeBb = True
+            StopGeneralDatabaseListener()
             UserName = originalUserName
             UserPW = originalPassword
             UserLevel = originalUserLevel
@@ -1963,6 +1988,7 @@ Class MainWindow
             Return
         End If
 
+        StopGeneralDatabaseListener()
         Me.DialogResult = True
         StopProcess("idbuder")
     End Sub

@@ -126,15 +126,23 @@
                 End If
                 DbManipulation.iConnectStr = $"Data Source={DbPath};Version=3;"
 
-                'UserLevel = iLevel
-                If Not LoadUserProfil(iLevel, iConnxStr) Then
+                If Not LocalModeBb Then
+                    If Not PrepareLocalDatabaseForConnectedMode(DbPath) Then Return
+                    If Not maj() Then
+                        MessageBox.Show("La copie locale n'a pas pu être actualisée depuis la base générale.",
+                                        "Connexion impossible", MessageBoxButton.OK, MessageBoxImage.Error)
+                        Return
+                    End If
+                End If
+
+                Dim profileConnectionString As String =
+                    If(LocalModeBb, iConnxStr, "Data Source=" & DbPath & ";Version=3;")
+                If Not LoadUserProfil(iLevel, profileConnectionString) Then
                     MessageBox.Show("Votre profil n'a pas pu être chargé. Contactez l'assistance.",
                                     "Connexion impossible", MessageBoxButton.OK, MessageBoxImage.Error)
                     Me.Close()
                     Return
                 End If
-
-                If Not LocalModeBb AndAlso Not PrepareLocalDatabaseForConnectedMode(DbPath) Then Return
 
                 If SessLogin(iConnxStr) Then
                     SessionConnxStr = iConnxStr

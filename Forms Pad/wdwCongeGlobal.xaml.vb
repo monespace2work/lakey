@@ -15,7 +15,7 @@ Public Class wdwCongeGlobal
         istr += " and (a.NomPrenoms like '%" & TbxKeyword.Text & "%' or af.SiteAffect like '%" & TbxKeyword.Text & "%') "
         istr += "order by a.NomPrenoms  "
         Try
-            Using iConnx As New SQLiteConnection(iConxStr)
+            Using iConnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 iConnx.Open()
                 Using iCmd As New SQLiteCommand(istr, iConnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -89,7 +89,7 @@ Public Class wdwCongeGlobal
         istr += " AND NomPrenom Like '" & Apost(NomAgent) & "' "
         istr += " GROUP BY NomPrenom "
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader

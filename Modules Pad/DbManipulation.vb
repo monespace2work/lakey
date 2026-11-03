@@ -12,6 +12,45 @@ Module DbManipulation
     Public iMinValue As Integer = 120
     Public iMaxValue As Integer = 250
     Public CasValidation As Integer = 0
+    Public Event GeneralDatabaseChanged As EventHandler
+
+    Public Function ResolveMainDatabaseConnectionString(connectionString As String,
+                                                       useGeneralDatabase As Boolean) As String
+        If LocalModeBb OrElse String.IsNullOrWhiteSpace(connectionString) OrElse
+           String.IsNullOrWhiteSpace(DbPath) OrElse String.IsNullOrWhiteSpace(DbPathGeneral) Then
+            Return connectionString
+        End If
+
+        Dim builder As New SQLiteConnectionStringBuilder(connectionString)
+        Dim requestedPath As String = builder.DataSource
+        If Not IsMainDatabasePath(requestedPath) Then Return connectionString
+
+        builder.DataSource = If(useGeneralDatabase, DbPathGeneral, DbPath)
+        Return builder.ToString()
+    End Function
+
+    Public Sub NotifyGeneralDatabaseChanged()
+        RaiseEvent GeneralDatabaseChanged(Nothing, EventArgs.Empty)
+    End Sub
+
+    Private Function IsMainDatabasePath(databasePath As String) As Boolean
+        If String.IsNullOrWhiteSpace(databasePath) Then Return False
+
+        Dim knownPaths As String() = {DbPath, DbPathGeneral, "C:\LkyRess\ManA.sqlite"}
+        For Each knownPath As String In knownPaths
+            If String.IsNullOrWhiteSpace(knownPath) Then Continue For
+            Try
+                If String.Equals(Path.GetFullPath(databasePath),
+                                 Path.GetFullPath(knownPath),
+                                 StringComparison.OrdinalIgnoreCase) Then Return True
+            Catch ex As ArgumentException
+                System.Diagnostics.Debug.WriteLine("Chemin SQLite invalide pendant le routage : " & ex.Message)
+            Catch ex As NotSupportedException
+                System.Diagnostics.Debug.WriteLine("Chemin SQLite non pris en charge pendant le routage : " & ex.Message)
+            End Try
+        Next
+        Return False
+    End Function
 
     Public Enum FonctonStat
         Max
@@ -433,7 +472,7 @@ Module DbManipulation
 
         Dim loadingWindow = BeginDataLoadIndicator()
         Try
-            Using MyConnect As New SQLiteConnection(iConnectStr)
+            Using MyConnect As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
                 MyConnect.Open()
                 Using myCommand As New SQLiteCommand(MyCmdStr, MyConnect)
                     Using myReader As SQLiteDataReader = myCommand.ExecuteReader
@@ -480,28 +519,58 @@ Module DbManipulation
 
         Dim loadingWindow = BeginDataLoadIndicator()
         Try
-            Dim N, N1, N2 As Integer
             MyDtable.Rows.Add("Nb d'agents")
             MyDtable.Rows.Add("Nb d'entrées")
             MyDtable.Rows.Add("Nb de sorties")
-            Dim iidx As Integer = 0
-            For ixd As Integer = (NbMois - 1) To 0 Step -1
-                'MsgBox(ixd)
-                N = NbAgentAyantTravaillePeriode(DebutDuMois(DateReference.AddMonths(-iidx)), FinDuMois(DateReference.AddMonths(-iidx)), ConnexStr)
-                N1 = NbAgentEntreePeriode(DebutDuMois(DateReference.AddMonths(-iidx)), FinDuMois(DateReference.AddMonths(-iidx)), ConnexStr)
-                N2 = NbAgentSortiePeriode(DebutDuMois(DateReference.AddMonths(-iidx)), FinDuMois(DateReference.AddMonths(-iidx)), ConnexStr)
-                'MsgBox(ixd)
-                MyDtable.Rows(0).Item(1 + ixd) = N
-                MyDtable.Rows(1).Item(1 + ixd) = N1
-                MyDtable.Rows(2).Item(1 + ixd) = N2
-
-                iidx += 1
-
-                If iMinValue >= N Then iMinValue = N
-                If iMaxValue <= N Then iMaxValue = N
-
+            For columnIndex As Integer = 1 To NbMois
+                MyDtable.Rows(0)(columnIndex) = 0
+                MyDtable.Rows(1)(columnIndex) = 0
+                MyDtable.Rows(2)(columnIndex) = 0
             Next
-            'MsgBox(iMinValue & " < " & iMaxValue)
+
+            If NbMois > 0 Then
+                Dim query As New Text.StringBuilder("SELECT ")
+                For monthOffset As Integer = 0 To NbMois - 1
+                    If monthOffset > 0 Then query.Append(", ")
+                    query.Append(
+                        $"COUNT(CASE WHEN a.DateEntree <= @end{monthOffset} AND a.DateEntree NOT LIKE '' THEN 1 END) " &
+                        $"- COUNT(CASE WHEN a.DateSortie <= @end{monthOffset} AND a.DateSortie NOT LIKE '' THEN 1 END) " &
+                        $"+ COUNT(CASE WHEN a.DateSortie < @end{monthOffset} AND a.DateSortie >= @start{monthOffset} THEN 1 END) AS AgentCount{monthOffset}, " &
+                        $"COUNT(CASE WHEN a.DateEntree <= @end{monthOffset} AND a.DateEntree >= @start{monthOffset} THEN 1 END) AS EntryCount{monthOffset}, " &
+                        $"COUNT(CASE WHEN a.DateSortie <= @end{monthOffset} AND a.DateSortie >= @start{monthOffset} THEN 1 END) AS ExitCount{monthOffset}")
+                Next
+                query.Append(" FROM agents a")
+
+                Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
+                    connection.Open()
+                    Using command As New SQLiteCommand(query.ToString(), connection)
+                        For monthOffset As Integer = 0 To NbMois - 1
+                            Dim monthDate As Date = DateReference.AddMonths(-monthOffset)
+                            command.Parameters.AddWithValue(
+                                "@start" & monthOffset,
+                                DebutDuMois(monthDate).ToString("yyyy-MM-dd"))
+                            command.Parameters.AddWithValue(
+                                "@end" & monthOffset,
+                                FinDuMois(monthDate).ToString("yyyy-MM-dd"))
+                        Next
+
+                        Using reader As SQLiteDataReader = command.ExecuteReader()
+                            If reader.Read() Then
+                                For monthOffset As Integer = 0 To NbMois - 1
+                                    Dim columnIndex As Integer = NbMois - monthOffset
+                                    Dim agentCount As Integer = Convert.ToInt32(reader("AgentCount" & monthOffset))
+                                    MyDtable.Rows(0)(columnIndex) = agentCount
+                                    MyDtable.Rows(1)(columnIndex) = Convert.ToInt32(reader("EntryCount" & monthOffset))
+                                    MyDtable.Rows(2)(columnIndex) = Convert.ToInt32(reader("ExitCount" & monthOffset))
+
+                                    If iMinValue >= agentCount Then iMinValue = agentCount
+                                    If iMaxValue <= agentCount Then iMaxValue = agentCount
+                                Next
+                            End If
+                        End Using
+                    End Using
+                End Using
+            End If
         Catch ex As Exception
             MsgBox(ex.Message)
         Finally
@@ -623,7 +692,7 @@ Module DbManipulation
         Dim result As New DataTable
         Dim loadingWindow = BeginDataLoadIndicator()
         Try
-            Using connection As New SQLiteConnection(MyConxStr)
+            Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 Using command As New SQLiteCommand(MyCommandString, connection)
                     Using adapter As New SQLiteDataAdapter(command)
                         connection.Open()
@@ -643,13 +712,17 @@ Module DbManipulation
         SaveNewData = False
         Dim loadingWindow = BeginDataLoadIndicator()
         Try
-            Using iconnx As New SQLiteConnection(iConnectStr)
+            Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnectStr, True)
+            Using iconnx As New SQLiteConnection(writeConnectionString)
                 iconnx.Open()
                 Using icmd As New SQLiteCommand(iCommandString, iconnx)
                     icmd.ExecuteNonQuery()
                     SaveNewData = True
                 End Using
             End Using
+            If Not LocalModeBb AndAlso IsMainDatabasePath(New SQLiteConnectionStringBuilder(writeConnectionString).DataSource) Then
+                NotifyGeneralDatabaseChanged()
+            End If
         Catch ex As Exception
             MsgBox(ex.Message)
             'MsgBox(ex.Message)
@@ -663,7 +736,7 @@ Module DbManipulation
     Public Function MayStatVal(ByVal MyCommandString As String, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Decimal
         'iConnectStr = "Data Source=" & DbPath & ";Version=3;"
         Try
-            Using iconexion As New SQLiteConnection(MyConxStr)
+            Using iconexion As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconexion.Open()
                 Using icmd As New SQLiteCommand(MyCommandString, iconexion)
                     MayStatVal = icmd.ExecuteScalar()
@@ -677,7 +750,7 @@ Module DbManipulation
     Public Function MyStatValStr(ByVal MyCommandString As String, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         'iConnectStr = "Data Source=" & DbPath & ";Version=3;"
         Try
-            Using iconexion As New SQLiteConnection(MyConxStr)
+            Using iconexion As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconexion.Open()
                 Using icmd As New SQLiteCommand(MyCommandString, iconexion)
                     MyStatValStr = icmd.ExecuteScalar()
@@ -695,7 +768,7 @@ Module DbManipulation
         MyString += " FROM agents "
         MyString += " WHERE Actif=1 order by DateNaiss limit 1 "
         Try
-            Using iconexion As New SQLiteConnection(MyConxStr)
+            Using iconexion As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconexion.Open()
                 Using icmd As New SQLiteCommand(MyString, iconexion)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -722,7 +795,7 @@ Module DbManipulation
         MyString += " FROM agents "
         MyString += " WHERE Actif=1 order by DateNaiss desc limit 1 "
         Try
-            Using iconexion As New SQLiteConnection(MyConxStr)
+            Using iconexion As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconexion.Open()
                 Using icmd As New SQLiteCommand(MyString, iconexion)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -749,7 +822,7 @@ Module DbManipulation
         MyString += " FROM agents "
         MyString += " WHERE Actif=1 "
         Try
-            Using iconexion As New SQLiteConnection(MyConxStr)
+            Using iconexion As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconexion.Open()
                 Using icmd As New SQLiteCommand(MyString, iconexion)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -790,7 +863,7 @@ Module DbManipulation
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Dim iStr As String = "select c.NomSite,c.Actif from siteaffectation c where c.Client like '" & Apost(NomClient) & "' order by c.Actif desc, c.NomSite"
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
-        Using iconnx As New SQLiteConnection(ConnexStr)
+        Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
             iconnx.Open()
             Using icmd As New SQLiteCommand(iStr, iconnx)
                 Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -811,7 +884,7 @@ Module DbManipulation
         ListePosteSite = ""
         Dim iStr As String = "select c.Designation,c.Actif,c.Code from Postes c where c.NomSite like '" & Apost(NomSite) & "' order by c.Actif desc, c.Designation"
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
-        Using iconnx As New SQLiteConnection(ConnexStr)
+        Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
             iconnx.Open()
             Using icmd As New SQLiteCommand(iStr, iconnx)
                 Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -833,7 +906,7 @@ Module DbManipulation
         Dim iStr As String = "select c.Designation||'  ('||c.Code||')',c.Actif from Postes c join siteaffectation s on s.NomSite=c.NomSite where s.Client='" & Apost(NomClient) & "' order by c.Actif desc, c.Designation"
         Try
             If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then ConnexStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
-            Using iconnx As New SQLiteConnection(ConnexStr)
+            Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
                 iconnx.Open()
                 Using icmd As New SQLiteCommand(iStr, iconnx)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -911,7 +984,7 @@ Module DbManipulation
         Dim NbEt, NbSt, NbSm As Integer
         Try
             Dim icmdstr As String = "select count(*) from agents a where a.DateEntree<='" & Datefin.ToString("yyyy-MM-dd") & "' and a.DateEntree not like '' "
-            Using connx As New SQLiteConnection(ConnexStr)
+            Using connx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
                 connx.Open()
                 NbAgentAyantTravaillePeriode = 0
                 Using mycmd As New SQLiteCommand(icmdstr, connx)
@@ -925,7 +998,7 @@ Module DbManipulation
                 End Using
             End Using
             icmdstr = "select count(*) from agents a where a.DateSortie<='" & Datefin.ToString("yyyy-MM-dd") & "' and a.DateSortie not like '' "
-            Using connx As New SQLiteConnection(ConnexStr)
+            Using connx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
                 connx.Open()
                 Using mycmd As New SQLiteCommand(icmdstr, connx)
                     Try
@@ -938,7 +1011,7 @@ Module DbManipulation
             End Using
             icmdstr = "select count(*) from agents a  where a.DateSortie <'" & Datefin.ToString("yyyy-MM-dd") & "' and a.DateSortie >='" & Datedebut.ToString("yyyy-MM-dd") & "'"
             'MsgBox(icmdstr)
-            Using connx As New SQLiteConnection(ConnexStr)
+            Using connx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
                 connx.Open()
                 Using mycmd As New SQLiteCommand(icmdstr, connx)
                     Try
@@ -961,7 +1034,7 @@ Module DbManipulation
         Try
             Dim icmdstr As String = "select count(*) from agents a where a.DateEntree<='" & Datefin.ToString("yyyy-MM-dd") & "' and a.DateEntree >='" & Datedebut.ToString("yyyy-MM-dd") & "'"
             'MsgBox(icmdstr)
-            Using connx As New SQLiteConnection(ConnexStr)
+            Using connx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
                 connx.Open()
                 Using mycmd As New SQLiteCommand(icmdstr, connx)
                     Try
@@ -984,7 +1057,7 @@ Module DbManipulation
         Try
             Dim icmdstr = "select count(*) from agents a  where a.DateSortie <='" & Datefin.ToString("yyyy-MM-dd") & "' and a.DateSortie >='" & Datedebut.ToString("yyyy-MM-dd") & "'"
             ' MsgBox(icmdstr)
-            Using connx As New SQLiteConnection(ConnexStr)
+            Using connx As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
                 connx.Open()
                 Using mycmd As New SQLiteCommand(icmdstr, connx)
                     Try
@@ -1005,7 +1078,7 @@ Module DbManipulation
     Public Function FilmyCbx(MyCommandString As String, MyCbx As ComboBox, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
         FilmyCbx = False
         Try
-            Using iconn As New SQLiteConnection(MyConxStr)
+            Using iconn As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconn.Open()
                 Using icmd As New SQLiteCommand(MyCommandString, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -1028,7 +1101,7 @@ Module DbManipulation
     Public Function FilmyLbx(MyCommandString As String, MyCbx As ListBox, Optional MyConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
         FilmyLbx = False
         Try
-            Using iconn As New SQLiteConnection(MyConxStr)
+            Using iconn As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconn.Open()
                 Using icmd As New SQLiteCommand(MyCommandString, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -1055,7 +1128,7 @@ Module DbManipulation
         Dim mytext As String = ""
         MsgBox(icmdst)
         Try
-            Using iconn As New SQLiteConnection(MyConxStr)
+            Using iconn As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconn.Open()
                 Using icmd As New SQLiteCommand(icmdst, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -1081,7 +1154,7 @@ Module DbManipulation
         MyContratList = "| "
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Try
-            Using iconn As New SQLiteConnection(MyConxStr)
+            Using iconn As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconn.Open()
                 Using icmd As New SQLiteCommand(MyCommandString, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -1103,7 +1176,7 @@ Module DbManipulation
         MyAffectationVilleList = "| "
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then MyConxStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Try
-            Using iconn As New SQLiteConnection(MyConxStr)
+            Using iconn As New SQLiteConnection(ResolveMainDatabaseConnectionString(MyConxStr, False))
                 iconn.Open()
                 Using icmd As New SQLiteCommand(MyCommandString, iconn)
                     Dim iReader As SQLiteDataReader = icmd.ExecuteReader
@@ -1127,13 +1200,18 @@ Module DbManipulation
         Dim myw As New WaitFrm
         myw.Show()
         Try
-            Using iconnx As New SQLiteConnection(iConnectStr)
+            Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnectStr, True)
+            Using iconnx As New SQLiteConnection(writeConnectionString)
                 iconnx.Open()
                 Using icmd As New SQLiteCommand(iCommandString, iconnx)
                     icmd.ExecuteNonQuery()
                     DeleteData = True
                 End Using
             End Using
+            If DeleteData AndAlso Not LocalModeBb AndAlso
+               IsMainDatabasePath(New SQLiteConnectionStringBuilder(writeConnectionString).DataSource) Then
+                NotifyGeneralDatabaseChanged()
+            End If
         Catch ex As Exception
             MsgBox(ex.Message)
             DeleteData = False
@@ -1147,7 +1225,7 @@ Module DbManipulation
         istr += " where a.Actif=1 and c.FinContr>=date() and c.FinContr<=date('now','+1 month','-1 day') and af.FinAffect>=date() order by a.NomPrenoms "
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1177,7 +1255,7 @@ Module DbManipulation
         Dim istr As String = "select a.Fonction, count(*) from agents a join fonction f on a.Fonction=f.Fonction where a.Actif=1 group by a.Fonction order by f.Niveau,f.Fonction "
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1209,7 +1287,7 @@ Module DbManipulation
         istr += " where a.actif =1 and ( a.DateSortie not null or a.DateSortie not like '' ) order by a.NomPrenoms "
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1241,7 +1319,7 @@ Module DbManipulation
         istr += " where a.actif =0 and ( a.DateSortie is null or a.DateSortie like '' ) order by a.NomPrenoms "
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1320,7 +1398,7 @@ Module DbManipulation
         'istr += " GROUP BY NomPrenom "
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1353,7 +1431,7 @@ Module DbManipulation
         istr += " where r.Actif=1 and r.Debut<=date()  "
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1388,7 +1466,7 @@ Module DbManipulation
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
         Try
 
-            Using iconnx As New SQLiteConnection(iConnectStr)
+            Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
                 iconnx.Open()
                 Using iCmd As New SQLiteCommand(iStr, iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1423,7 +1501,7 @@ Module DbManipulation
         iStr += " AgentAffect='" & Apost(NomAgent) & "'  order by DateAffect desc"
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
 
-        Using iconnx As New SQLiteConnection(iConnectStr)
+        Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
             iconnx.Open()
             Using iCmd As New SQLiteCommand(iStr, iconnx)
                 Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1452,7 +1530,7 @@ Module DbManipulation
         iStr += " where ag.NomPrenoms='" & Apost(NomAgent) & "'  order by crt.DebutContr desc"
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
 
-        Using iconnx As New SQLiteConnection(iConnectStr)
+        Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
             iconnx.Open()
             Using iCmd As New SQLiteCommand(iStr, iconnx)
                 Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1480,7 +1558,7 @@ Module DbManipulation
         iStr += " NomPrenom='" & Apost(NomAgent) & "'  order by DateDebut desc"
 
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
-        Using iconnx As New SQLiteConnection(iConnectStr)
+        Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
             iconnx.Open()
             Using iCmd As New SQLiteCommand(iStr, iconnx)
                 Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1508,7 +1586,7 @@ Module DbManipulation
         iStr += " Agent='" & Apost(NomAgent) & "'  order by DateHS desc"
 
         If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
-        Using iconnx As New SQLiteConnection(iConnectStr)
+        Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
             iconnx.Open()
             Using iCmd As New SQLiteCommand(iStr, iconnx)
                 Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1545,7 +1623,7 @@ Module DbManipulation
             'iStr += " Agent='" & Apost(NomAgent) & "'  order by DateHS desc"
 
             If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
-            Using iconnx As New SQLiteConnection(iConnectStr)
+            Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
                 iconnx.Open()
                 Using iCmd As New SQLiteCommand(iStr, iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1586,7 +1664,7 @@ Module DbManipulation
             'iStr += " Agent='" & Apost(NomAgent) & "'  order by DateHS desc"
 
             If File.Exists(Path.Combine(UserPath, "ManA.sqlite")) Then iConnectStr = $"Data Source={Path.Combine(UserPath, "ManA.sqlite")};Version=3;"
-            Using iconnx As New SQLiteConnection(iConnectStr)
+            Using iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnectStr, False))
                 iconnx.Open()
                 Using iCmd As New SQLiteCommand(iStr, iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1630,7 +1708,7 @@ Module DbManipulation
         'istr += " GROUP BY NomPrenom "
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
@@ -1670,7 +1748,7 @@ Module DbManipulation
         End If
         Dim iWord As String = ""
         Try
-            Using Iconnx As New SQLiteConnection(iConxStr)
+            Using Iconnx As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 Iconnx.Open()
                 Using iCmd As New SQLiteCommand(istr, Iconnx)
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader

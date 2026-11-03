@@ -41,6 +41,7 @@ ShutdownMode="OnMainWindowClose">
         <SolidColorBrush x:Key="ThemeInputPlaceholderBrush" Color="#AAB8C8"/>
         <SolidColorBrush x:Key="ThemeInputDisabledBrush" Color="#34465A"/>
         <SolidColorBrush x:Key="ThemeInputDisabledTextBrush" Color="#D2DAE4"/>
+        <SolidColorBrush x:Key="ThemeInputWarningBrush" Color="#7F1D1D"/>
         <SolidColorBrush x:Key="ThemeComboItemHoverBrush" Color="#34536F"/>
         <SolidColorBrush x:Key="ThemeComboItemSelectedBrush" Color="#1676A5"/>
         <SolidColorBrush x:Key="ThemeComboItemSelectedTextBrush" Color="#FFFFFF"/>
@@ -57,22 +58,22 @@ ShutdownMode="OnMainWindowClose">
         <SolidColorBrush x:Key="ThemeTableHeaderTextBrush" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="ThemeAgentButtonBrush" Color="#1C6664"/>
         <SolidColorBrush x:Key="ThemeAgentButtonTextBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="ThemeAgentSelectedBrush" Color="#14756E"/>
+        <SolidColorBrush x:Key="ThemeAgentSelectedBrush" Color="#063B38"/>
         <SolidColorBrush x:Key="ThemeAgentSelectedTextBrush" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="ThemeAgentHoverBrush" Color="#23847C"/>
         <SolidColorBrush x:Key="ThemeAgentGroupBrush" Color="#123337"/>
         <SolidColorBrush x:Key="ThemeAgentGroupBorderBrush" Color="#26615D"/>
         <SolidColorBrush x:Key="ThemeClientButtonBrush" Color="#315F9A"/>
         <SolidColorBrush x:Key="ThemeClientButtonTextBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="ThemeClientSelectedBrush" Color="#416FAE"/>
+        <SolidColorBrush x:Key="ThemeClientSelectedBrush" Color="#10294A"/>
         <SolidColorBrush x:Key="ThemeClientSelectedTextBrush" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="ThemeClientHoverBrush" Color="#477FC0"/>
         <SolidColorBrush x:Key="ThemeClientGroupBrush" Color="#172A45"/>
         <SolidColorBrush x:Key="ThemeClientGroupBorderBrush" Color="#365D8B"/>
         <SolidColorBrush x:Key="ThemeCongesButtonBrush" Color="#F2C14E"/>
         <SolidColorBrush x:Key="ThemeCongesButtonTextBrush" Color="#392A00"/>
-        <SolidColorBrush x:Key="ThemeCongesSelectedBrush" Color="#D99000"/>
-        <SolidColorBrush x:Key="ThemeCongesSelectedTextBrush" Color="#241700"/>
+        <SolidColorBrush x:Key="ThemeCongesSelectedBrush" Color="#4A3100"/>
+        <SolidColorBrush x:Key="ThemeCongesSelectedTextBrush" Color="#FFF4D6"/>
         <SolidColorBrush x:Key="ThemeCongesHoverBrush" Color="#FFE08A"/>
         <SolidColorBrush x:Key="ThemeAgentGroupLabelBrush" Color="#75E4CE"/>
         <SolidColorBrush x:Key="ThemeClientGroupLabelBrush" Color="#A7C9FF"/>
@@ -426,9 +427,21 @@ ShutdownMode="OnMainWindowClose">
         <ControlTemplate x:Key="SlimScrollBarThumbTemplate" TargetType="Thumb">
             <Border x:Name="ThumbBorder"
                     Background="{TemplateBinding Background}"
-                    CornerRadius="3"
+                    Width="2"
+                    Height="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    CornerRadius="1"
                     SnapsToDevicePixels="True"/>
             <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
+                    <Setter TargetName="ThumbBorder" Property="Width" Value="Auto"/>
+                    <Setter TargetName="ThumbBorder" Property="Height" Value="2"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Vertical">
+                    <Setter TargetName="ThumbBorder" Property="Width" Value="2"/>
+                    <Setter TargetName="ThumbBorder" Property="Height" Value="Auto"/>
+                </DataTrigger>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
                 </Trigger>
@@ -437,9 +450,57 @@ ShutdownMode="OnMainWindowClose">
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <ControlTemplate x:Key="SlimScrollBarDecreaseButtonTemplate" TargetType="RepeatButton">
+            <Grid Background="Transparent" SnapsToDevicePixels="True">
+                <Path x:Name="ArrowGlyph"
+                      Data="M 0,4 L 4,0 L 8,4 Z"
+                      Fill="{DynamicResource ThemeInkBrush}"
+                      Width="8"
+                      Height="4"
+                      Stretch="Fill"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
+                    <Setter TargetName="ArrowGlyph" Property="RenderTransform">
+                        <Setter.Value>
+                            <RotateTransform Angle="-90"/>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="ArrowGlyph" Property="Fill" Value="{DynamicResource ThemeAccentBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="SlimScrollBarIncreaseButtonTemplate" TargetType="RepeatButton">
+            <Grid Background="Transparent" SnapsToDevicePixels="True">
+                <Path x:Name="ArrowGlyph"
+                      Data="M 0,0 L 4,4 L 8,0 Z"
+                      Fill="{DynamicResource ThemeInkBrush}"
+                      Width="8"
+                      Height="4"
+                      Stretch="Fill"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
+                    <Setter TargetName="ArrowGlyph" Property="RenderTransform">
+                        <Setter.Value>
+                            <RotateTransform Angle="-90"/>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="ArrowGlyph" Property="Fill" Value="{DynamicResource ThemeAccentBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         <Style TargetType="ScrollBar">
-            <Setter Property="Width" Value="4"/>
-            <Setter Property="Height" Value="4"/>
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="Height" Value="12"/>
             <Setter Property="Opacity" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
@@ -449,20 +510,36 @@ ShutdownMode="OnMainWindowClose">
                               SnapsToDevicePixels="True">
                             <Track x:Name="PART_Track"
                                    Orientation="{TemplateBinding Orientation}">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton x:Name="DecreaseButton"
+                                                  Command="{x:Static ScrollBar.LineUpCommand}"
+                                                  Focusable="False"
+                                                  IsTabStop="False"
+                                                  Template="{StaticResource SlimScrollBarDecreaseButtonTemplate}"/>
+                                </Track.DecreaseRepeatButton>
                                 <Track.Thumb>
                                     <Thumb x:Name="ScrollThumb"
                                            Background="{DynamicResource ThemeBorderBrush}"
                                            Template="{StaticResource SlimScrollBarThumbTemplate}"/>
                                 </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton x:Name="IncreaseButton"
+                                                  Command="{x:Static ScrollBar.LineDownCommand}"
+                                                  Focusable="False"
+                                                  IsTabStop="False"
+                                                  Template="{StaticResource SlimScrollBarIncreaseButtonTemplate}"/>
+                                </Track.IncreaseRepeatButton>
                             </Track>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Orientation" Value="Horizontal">
-                                <Setter Property="Height" Value="4"/>
+                                <Setter Property="Height" Value="12"/>
                                 <Setter Property="Width" Value="Auto"/>
+                                <Setter TargetName="DecreaseButton" Property="Command" Value="{x:Static ScrollBar.LineLeftCommand}"/>
+                                <Setter TargetName="IncreaseButton" Property="Command" Value="{x:Static ScrollBar.LineRightCommand}"/>
                             </Trigger>
                             <Trigger Property="Orientation" Value="Vertical">
-                                <Setter Property="Width" Value="4"/>
+                                <Setter Property="Width" Value="12"/>
                                 <Setter Property="Height" Value="Auto"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -848,10 +925,10 @@ ShutdownMode="OnMainWindowClose">
             <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
         </Style>
         <Style TargetType="DataGridRow">
-            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="MinHeight" Value="24"/>
         </Style>
         <Style TargetType="DataGridCell">
-            <Setter Property="Padding" Value="4,3"/>
+            <Setter Property="Padding" Value="4,2"/>
         </Style>
     </Application.Resources>
 </Application>

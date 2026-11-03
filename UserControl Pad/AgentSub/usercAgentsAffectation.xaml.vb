@@ -27,7 +27,7 @@ Public Class usercAgentsAffectation
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = PaphBackUp()
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
-        iConnxStr = If(LocalModeBb, LocalConnxStr, "Data Source=" & DbPathGeneral & ";Version=3;")
+        iConnxStr = LocalConnxStr
         InialiseLoad()
         inputTimer = New DispatcherTimer()
         inputTimer.Interval = TimeSpan.FromSeconds(5)
@@ -66,7 +66,7 @@ Public Class usercAgentsAffectation
         istr += " and af.DateAffect>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
         istr += " order by  ag.Actif desc, af.AgentAffect, af.DateAffect desc  "
         DgAgentAffectation.ItemsSource = LoadDataTable(istr, iConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ")", iConnxStr)
+        Dim itext As String = "En cours de validité : " & DirectCast(DgAgentAffectation.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         itext += MyAffectationVilleList("select s.Localisation as ville, count(*) as nbr from (" & istr & ") a join siteaffectation s on a.Site=s.NomSite where a.Fin>='" & Today.ToString("yyyy-MM-dd") & "' group by s.Localisation Order by nbr desc,ville", LocalConnxStr)
         tblNbAgentAffectation.Text = itext
@@ -111,7 +111,7 @@ Public Class usercAgentsAffectation
         istr += " or af.ObsAffect  like '%" & Apost(KeyWord) & "%' )" & Apost(sufix)
         istr += " order by  ag.Actif desc, af.AgentAffect, af.DateAffect desc  "
         DgAgentAffectation.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr) '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & DirectCast(DgAgentAffectation.ItemsSource, System.Data.DataView).Count '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
         itext += Environment.NewLine
         itext += MyAffectationVilleList("select s.Localisation as ville, count(*) as nbr from (" & istr & ") a join siteaffectation s on a.Site=s.NomSite  group by s.Localisation Order by nbr desc,ville", LocalConnxStr)
         tblNbAgentAffectation.Text = itext '"En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")
@@ -134,7 +134,7 @@ Public Class usercAgentsAffectation
         istr += " where ag.Actif=1 and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "'"
         istr += " order by  ag.Actif desc, af.AgentAffect, af.DateAffect desc  "
         DgAgentAffectation.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr)
+        Dim itext As String = "En cours de validité : " & DirectCast(DgAgentAffectation.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         itext += MyAffectationVilleList("select s.Localisation as ville, count(*) as nbr from (" & istr & ") a join siteaffectation s on a.Site=s.NomSite where a.Fin>='2025/03/20' group by s.Localisation Order by nbr desc,ville", LocalConnxStr)
         tblNbAgentAffectation.Text = itext
@@ -277,7 +277,7 @@ Public Class usercAgentsAffectation
         SiteDernierAffectation = "(Nouveau)"
         DateFinDernierAffectation = DateCreationSociete
         Try
-            Using iconn As New SQLiteConnection(iConxStr)
+            Using iconn As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConxStr, False))
                 iconn.Open()
                 Using icmdstr As New SQLiteCommand(istr, iconn)
                     Dim iReader As SQLiteDataReader = icmdstr.ExecuteReader

@@ -20,7 +20,7 @@ Public Class usercAgentsHeureSupp
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = PaphBackUp()
-        iConnxStr = "Data Source=" & DbPathGeneral & ";Version=3;"
+        iConnxStr = "Data Source=" & DbPath & ";Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         Me.Cursor = Cursors.Wait
         InialiseLoad()
@@ -48,12 +48,18 @@ Public Class usercAgentsHeureSupp
         istr += " where ag.Actif=1 and h.DateHS>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "' "
         istr += " order by ag.Actif desc, h.DateHS desc,  h.Agent "
         DgAgentHeureSupp.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de ligne: " & MayStatVal("select count(*) from (" & istr & ")") ' & CDate("01/01/" & Today.Year).ToString("yyyy-MM-dd") & "'") '") '& " | Nombre d'agents actif: " & NbAgentInactif()
+        Dim itext As String = "Nombre de ligne: " & DirectCast(DgAgentHeureSupp.ItemsSource, System.Data.DataView).Count ' & CDate("01/01/" & Today.Year).ToString("yyyy-MM-dd") & "'") '") '& " | Nombre d'agents actif: " & NbAgentInactif()
         itext += Environment.NewLine
         'itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         Dim iMin, iMax, TxtResult As String
-        iMax = MyStatValStr("select DateHS from (" & istr & ") order by DateHS  desc limit 1", LocalConnxStr)
-        iMin = MyStatValStr("select DateHS from (" & istr & ") order by DateHS  limit 1", LocalConnxStr)
+        Dim loadedRows As DataView = TryCast(DgAgentHeureSupp.ItemsSource, DataView)
+        If loadedRows IsNot Nothing AndAlso loadedRows.Count > 0 Then
+            iMax = Convert.ToString(loadedRows(0)("DateHS"))
+            iMin = Convert.ToString(loadedRows(loadedRows.Count - 1)("DateHS"))
+        Else
+            iMax = ""
+            iMin = ""
+        End If
         If IsDate(iMax) AndAlso IsDate(iMin) Then
             TxtResult = "(Période du " & CDate(iMin).ToString("dd/MM/yyyy") & " au " & CDate(iMax).ToString("dd/MM/yyyy") & ")"
         Else
@@ -100,12 +106,18 @@ Public Class usercAgentsHeureSupp
         istr += " where ag.Actif=1 and h.DateHS>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "' "
         istr += " order by ag.Actif desc, h.DateHS desc,  h.Agent "
         DgAgentHeureSupp.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de ligne: " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr) ' & CDate("01/01/" & Today.Year).ToString("yyyy-MM-dd") & "'") '") '& " | Nombre d'agents actif: " & NbAgentInactif()
+        Dim itext As String = "Nombre de ligne: " & DirectCast(DgAgentHeureSupp.ItemsSource, System.Data.DataView).Count ' & CDate("01/01/" & Today.Year).ToString("yyyy-MM-dd") & "'") '") '& " | Nombre d'agents actif: " & NbAgentInactif()
         itext += Environment.NewLine
         'itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         Dim iMin, iMax, TxtResult As String
-        iMax = MyStatValStr("select DateHS from (" & istr & ") order by DateHS  desc limit 1", LocalConnxStr)
-        iMin = MyStatValStr("select DateHS from (" & istr & ") order by DateHS  limit 1", LocalConnxStr)
+        Dim loadedRows As DataView = TryCast(DgAgentHeureSupp.ItemsSource, DataView)
+        If loadedRows IsNot Nothing AndAlso loadedRows.Count > 0 Then
+            iMax = Convert.ToString(loadedRows(0)("DateHS"))
+            iMin = Convert.ToString(loadedRows(loadedRows.Count - 1)("DateHS"))
+        Else
+            iMax = ""
+            iMin = ""
+        End If
         If IsDate(iMax) AndAlso IsDate(iMin) Then
             TxtResult = "(Période du " & CDate(iMin).ToString("dd/MM/yyyy") & " au " & CDate(iMax).ToString("dd/MM/yyyy") & ")"
         Else
@@ -146,12 +158,18 @@ Public Class usercAgentsHeureSupp
         istr += " or h.Obs  like '%" & KeyWord & "%' )" & sufix
         istr += " order by ag.Actif desc, h.DateHS desc,  h.Agent "
         DgAgentHeureSupp.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de ligne: " & MayStatVal("select count(*) from (" & istr & ") ") 'where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")") '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim itext As String = "Nombre de ligne: " & DirectCast(DgAgentHeureSupp.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         'itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         Dim iMin, iMax, TxtResult As String
-        iMax = MyStatValStr("select DateHS from (" & istr & ") order by DateHS  desc limit 1", LocalConnxStr)
-        iMin = MyStatValStr("select DateHS from (" & istr & ") order by DateHS  limit 1", LocalConnxStr)
+        Dim loadedRows As DataView = TryCast(DgAgentHeureSupp.ItemsSource, DataView)
+        If loadedRows IsNot Nothing AndAlso loadedRows.Count > 0 Then
+            iMax = Convert.ToString(loadedRows(0)("DateHS"))
+            iMin = Convert.ToString(loadedRows(loadedRows.Count - 1)("DateHS"))
+        Else
+            iMax = ""
+            iMin = ""
+        End If
         If IsDate(iMax) AndAlso IsDate(iMin) Then
             TxtResult = "(Recherche du " & CDate(iMin).ToString("dd/MM/yyyy") & " au " & CDate(iMax).ToString("dd/MM/yyyy") & ")"
         Else

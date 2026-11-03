@@ -24,7 +24,7 @@ Public Class usercAgentsAbsences
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = (PaphBackUp())
-        iConnxStr = $"Data Source={DbPathGeneral};Version=3;"
+        iConnxStr = $"Data Source={DbPath};Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         'MsgBox(iConnxStr)
         InialiseLoad()
@@ -193,7 +193,7 @@ Public Class usercAgentsAbsences
         istr += " or ab.Obs  like '%" & KeyWord & "%' )" & sufix
         istr += " order by ag.Actif desc, ab.DateDebut desc, ab.NomPrenom "
         DgAgentAbsence.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de ligne: " & MayStatVal("select count(*) from (" & istr & ") ", LocalConnxStr) 'where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")") '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
+        Dim itext As String = "Nombre de ligne: " & DirectCast(DgAgentAbsence.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         'itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         tblNbAgentAbsence.Text = itext ' "Nombre de ligne:  : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'") & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")")

@@ -86,7 +86,7 @@ Public Class ProfilUser
 
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = (PaphBackUp())
-        iConnxStr = $"Data Source={ DbPathGeneral};Version=3;"
+        iConnxStr = $"Data Source={DbPath};Version=3;"
         initalLoad()
     End Sub
 

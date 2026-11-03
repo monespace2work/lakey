@@ -88,15 +88,16 @@ Public Class usercFonction
 
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = (PaphBackUp())
-        iConnxStr = $"Data Source={ DbPathGeneral};Version=3;"
+        iConnxStr = $"Data Source={DbPath};Version=3;"
         InitialLoad()
         stpAddNewFonction.Visibility = Visibility.Visible
     End Sub
     Sub InitialLoad()
         Dim istr As String = " SELECT Fonction, Niveau, Actif, Description,Id FROM Fonction ORDER BY Actif desc, Niveau, Fonction "
         maj()
-        DgFonction.ItemsSource = LoadDataTable(istr).DefaultView
-        tblNbFonction.Text = "Nombre de fonctions actives: " & MayStatVal("select count(*) from Fonction where Actif=1 ") & " | Nombre de fonctions désactivées: " & MayStatVal("select count(*) from Fonction where Actif=0 ")
+        Dim fonctionData = LoadDataTable(istr)
+        DgFonction.ItemsSource = fonctionData.DefaultView
+        tblNbFonction.Text = "Nombre de fonctions actives: " & fonctionData.Select("Actif = 1").Length & " | Nombre de fonctions désactivées: " & fonctionData.Select("Actif = 0").Length
         FilmyCbx("SELECT TRIM(LOWER(Fonction)) FROM Fonction ORDER BY Fonction", iCbxFonction) 'Then MsgBox(iCbxFonction.Items.Count)
         tbxFonctionName.Text = ""
         tbxFonctionDescription.Text = ""

@@ -7,7 +7,7 @@ Public Class usercRappel
     Public iConnxStr As String
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = (PaphBackUp())
-        iConnxStr = $"Data Source={ DbPathGeneral};Version=3;"
+        iConnxStr = $"Data Source={DbPath};Version=3;"
         DtpDebut.SelectedDate = Today
         DtpFin.SelectedDate = Today
         Initialization()
@@ -19,8 +19,9 @@ Public Class usercRappel
         maj()
         Dim istr As String = " select r.NoteRappel,format(r.Debut) as Debut,format(r.Fin) as Fin,r.Obs,r.Actif,r.Id from rappels r "
         istr += " ORDER BY r.Actif desc, r.Debut "
-        DgRappels.ItemsSource = LoadDataTable(istr).DefaultView
-        tblNbRappels.Text = "Nombre de rappels actifs : " & MayStatVal("select count(*) from rappels  where Actif=1") ' & " | Nombre d'agents actifs sans un N° CNSSS : " & MayStatVal("select count(*) from agents a where a.Actif=1 and  (a.Nsecu like '' and a.Nsecu not null)")
+        Dim rappelData = LoadDataTable(istr)
+        DgRappels.ItemsSource = rappelData.DefaultView
+        tblNbRappels.Text = "Nombre de rappels actifs : " & rappelData.Select("Actif = 1").Length
         CasValidation = 0
         iFrmLoaded = True
         ActivValidBtn()

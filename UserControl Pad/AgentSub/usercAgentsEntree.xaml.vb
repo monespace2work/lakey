@@ -37,7 +37,7 @@ Public Class usercAgentsEntree
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = PaphBackUp()
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
-        iConnxStr = If(LocalModeBb, LocalConnxStr, "Data Source=" & DbPathGeneral & ";Version=3;")
+        iConnxStr = LocalConnxStr
         InitialLoad()
         inputTimer = New DispatcherTimer()
         inputTimer.Interval = TimeSpan.FromSeconds(3)
@@ -59,8 +59,9 @@ Public Class usercAgentsEntree
         istr += " FROM  agents  where actif=1"
         istr += " and DateEntree>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
         istr += " ORDER BY actif desc, Nomprenoms "
-        DgAgentListe.ItemsSource = LoadDataTable(istr, iConnxStr).DefaultView
-        tblNbAgent.Text = "Agents actifs: " & MayStatVal("select count(*) from (" & istr & ") where actif=1", iConnxStr) & " | Agents inactifs: " & MayStatVal("select count(*) from (" & istr & ")  where actif=0", iConnxStr) & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")", iConnxStr)
+        Dim agentData = LoadDataTable(istr, iConnxStr)
+        DgAgentListe.ItemsSource = agentData.DefaultView
+        tblNbAgent.Text = "Agents actifs: " & agentData.Select("actif = 1").Length & " | Agents inactifs: " & agentData.Select("actif = 0").Length & " | TOTAL: " & agentData.Rows.Count
 
         If FilmyCbx("select a.NumMatr from agents a ", icbxNumMatricul, iConnxStr) And FilmyCbx("select a.RefAgent  from agents a order by a.RefAgent desc ", icbxRef, iConnxStr) Then
             If FilmyCbx("select f.Fonction  from fonction f where f.Actif=1 order by f.Fonction", CbxFonction, iConnxStr) Then
@@ -260,7 +261,8 @@ Public Class usercAgentsEntree
 
     Private Function SaveAgentModification(agentUpdate As String) As Boolean
         Try
-            Using connection As New SQLiteConnection(iConnxStr)
+            Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
+            Using connection As New SQLiteConnection(writeConnectionString)
                 connection.Open()
                 Using transaction As SQLiteTransaction = connection.BeginTransaction()
                     Using command As New SQLiteCommand("PRAGMA defer_foreign_keys = ON", connection, transaction)
@@ -304,6 +306,7 @@ Public Class usercAgentsEntree
                     transaction.Commit()
                 End Using
             End Using
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
             Return True
         Catch ex As Exception
             MsgBox(ex.Message)
@@ -507,8 +510,9 @@ Public Class usercAgentsEntree
             End If
         End If
         istr += " ORDER BY actif desc, Nomprenoms " '& sufix
-        DgAgentListe.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        tblNbAgent.Text = "Agents actifs: " & MayStatVal("select count(*) from (" & istr & ") where actif=1", LocalConnxStr) & " | Agents inactifs: " & MayStatVal("select count(*) from (" & istr & ") where actif=0", LocalConnxStr) & " | TOTAL: " & MayStatVal("select count(*) from (" & istr & ")", LocalConnxStr)
+        Dim agentData = LoadDataTable(istr, LocalConnxStr)
+        DgAgentListe.ItemsSource = agentData.DefaultView
+        tblNbAgent.Text = "Agents actifs: " & agentData.Select("actif = 1").Length & " | Agents inactifs: " & agentData.Select("actif = 0").Length & " | TOTAL: " & agentData.Rows.Count
         iFormLoaded = True
         elpStatus.Visibility = Visibility.Collapsed
     End Sub
