@@ -32,7 +32,7 @@
                             <Label Content=" / "  Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
                             <Label Content="PLANNING"  Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
                             <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
-                            <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin="30,12,12,12"  Width="80"/>
+                            <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin="30,12,12,12"  Width="100"/>
                         </StackPanel>
                         </Grid>
                 </StackPanel>

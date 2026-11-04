@@ -50,7 +50,7 @@
                         <RowDefinition MinHeight="200"/>
                         <RowDefinition MinHeight="100"/>
                     </Grid.RowDefinitions>
-                    <Expander x:Name="expGraphiques" Grid.Row="0" IsExpanded="False" HorizontalContentAlignment="Stretch" Background="#FF382A00">
+                    <Expander x:Name="expGraphiques" Grid.Row="0" IsExpanded="False" HorizontalContentAlignment="Stretch" Background="#FF5D4800">
                         <Expander.Header>
                             <TextBlock Text="Graphiques"
                                        Foreground="{DynamicResource ThemeHeadingBrush}"

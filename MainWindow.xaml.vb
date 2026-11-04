@@ -680,12 +680,12 @@ Class MainWindow
     End Sub
 
     Sub initPrincipalBtn()
-        btnTraitement.Height = 30
-        btnAgents.Height = 30
-        btnClient.Height = 30
-        btnStructure.Height = 30
-        btnSupplement.Height = 30
-        btnSeting.Height = 30
+        btnTraitement.Height = 40
+        btnAgents.Height = 40
+        btnClient.Height = 40
+        btnStructure.Height = 40
+        btnSupplement.Height = 40
+        btnSeting.Height = 40
         btnTBord.Height = 30
 
         btnTraitement.IsEnabled = True
@@ -803,10 +803,10 @@ Class MainWindow
             End Sub)
     End Sub
     Sub initSetingsBtn()
-        btnGeneral.Height = 20
-        btnUser.Height = 20
-        btnDataSets.Height = 20
-        btnProfilUser.Height = 20
+        btnGeneral.Height = 40
+        btnUser.Height = 40
+        btnDataSets.Height = 40
+        btnProfilUser.Height = 40
 
         btnGeneral.FontWeight = FontWeights.Normal
         btnUser.FontWeight = FontWeights.Normal
@@ -827,10 +827,10 @@ Class MainWindow
 
     Sub initAgentBtn()
         TestConnexionDbIcon()
-        btnEntree.Height = 20
-        btnContrat.Height = 20
-        btnAffectation.Height = 20
-        btnPlanning.Height = 20
+        btnEntree.Height = 40
+        btnContrat.Height = 40
+        btnAffectation.Height = 40
+        btnPlanning.Height = 40
         btnSortie.FontWeight = FontWeights.Normal
         btnEntree.FontWeight = FontWeights.Normal
         btnContrat.FontWeight = FontWeights.Normal
@@ -852,10 +852,10 @@ Class MainWindow
     End Sub
     Sub initTraitementBtn()
 
-        btnAbsence.Height = 20
-        btnHeureSupp.Height = 20
-        btnConges.Height = 20
-        btnEvenement.Height = 20
+        btnAbsence.Height = 40
+        btnHeureSupp.Height = 40
+        btnConges.Height = 40
+        btnEvenement.Height = 40
 
         btnAbsence.FontWeight = FontWeights.Normal
         btnHeureSupp.FontWeight = FontWeights.Normal
@@ -878,10 +878,10 @@ Class MainWindow
     End Sub
     Sub initClientBtn()
 
-        btnClientEtat.Height = 20
-        btnSite.Height = 20
-        btnPoste.Height = 20
-        btnClientContrat.Height = 20
+        btnClientEtat.Height = 40
+        btnSite.Height = 40
+        btnPoste.Height = 40
+        btnClientContrat.Height = 40
 
         btnClientEtat.FontWeight = FontWeights.Normal
         btnSite.FontWeight = FontWeights.Normal
@@ -904,11 +904,11 @@ Class MainWindow
     End Sub
     Sub initSupplementBtn()
 
-        btnCompta.Height = 20
-        btnCnss.Height = 20
-        btnRappel.Height = 20
-        btnMemo.Height = 20
-        btnEvenement.Height = 20
+        btnCompta.Height = 40
+        btnCnss.Height = 40
+        btnRappel.Height = 40
+        btnMemo.Height = 40
+        btnEvenement.Height = 40
 
         btnCompta.FontWeight = FontWeights.Normal
         btnCnss.FontWeight = FontWeights.Normal
@@ -930,9 +930,9 @@ Class MainWindow
     End Sub
     Sub initStructureBtn()
 
-        btnFonction.Height = 20
-        btnSociety.Height = 20
-        btnAgency.Height = 20
+        btnFonction.Height = 40
+        btnSociety.Height = 40
+        btnAgency.Height = 40
 
         btnFonction.FontWeight = FontWeights.Normal
         btnSociety.FontWeight = FontWeights.Normal
@@ -953,7 +953,7 @@ Class MainWindow
         bdrColonneCentre.ScrollToTop()
         initRacourcisBtn()
         initRacourcisClientBtn()
-        myBtn.Height = 30
+        myBtn.Height = 40
         myBtn.FontWeight = FontWeights.Bold
         myBtn.Foreground = Brushes.White
         myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
@@ -962,7 +962,7 @@ Class MainWindow
         initRacourcisBtn()
         initRacourcisClientBtn()
         initTraitementBtn()
-        myBtn.Height = 30
+        myBtn.Height = 40
         myBtn.FontWeight = FontWeights.Bold
         myBtn.Foreground = Brushes.White
         myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
@@ -970,7 +970,7 @@ Class MainWindow
     Sub SelectClientBtn(myBtn As Button)
         initialzTousBtnRcourcis()
         initClientBtn()
-        myBtn.Height = 30
+        myBtn.Height = 40
         myBtn.FontWeight = FontWeights.Bold
         myBtn.Foreground = Brushes.White
         myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
@@ -978,7 +978,7 @@ Class MainWindow
     Sub SelectSupplement(myBtn As Button)
         initialzTousBtnRcourcis()
         initSupplementBtn()
-        myBtn.Height = 30
+        myBtn.Height = 40
         myBtn.FontWeight = FontWeights.Bold
         myBtn.Foreground = Brushes.White
         myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))
@@ -986,7 +986,7 @@ Class MainWindow
     Sub SelectStructure(myBtn As Button)
         initialzTousBtnRcourcis()
         initStructureBtn()
-        myBtn.Height = 30
+        myBtn.Height = 40
         myBtn.FontWeight = FontWeights.Bold
         myBtn.Foreground = Brushes.White
         myBtn.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FF00549C"))

@@ -274,16 +274,16 @@
                         </TextBlock>
                         <StackPanel x:Name="stpLeftPanelContent">
                         <Button x:Name="btnTBord" Content="Tableau de bord" Height="30" FontSize="14" FontWeight="ExtraBold" Foreground="{DynamicResource ThemeNavyBrush}"  Background="{DynamicResource ThemeCardBrush}" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
-                        <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="{DynamicResource ThemeCardBrush}" Height="30" FontSize="14" FontWeight="Bold"/>
-                        <Button x:Name="btnTraitement"  Content="Traitements"  Style="{StaticResource  btnStandars}" Click="btnTraitement_Click"  Height="30" FontWeight="Bold" FontSize="14"/>
-                        <Button x:Name="btnClient"  Content="Clients" Style="{StaticResource  btnStandars}" Click="btnClient_Click"  Height="30" FontSize="14" FontWeight="Bold"/>
+                        <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="{DynamicResource ThemeCardBrush}" Height="40" FontSize="14" FontWeight="Bold"/>
+                        <Button x:Name="btnTraitement"  Content="Traitements"  Style="{StaticResource  btnStandars}" Click="btnTraitement_Click"  Height="40" FontWeight="Bold" FontSize="14"/>
+                        <Button x:Name="btnClient"  Content="Clients" Style="{StaticResource  btnStandars}" Click="btnClient_Click"  Height="40" FontSize="14" FontWeight="Bold"/>
 
                         <!--Separator Margin="20,5"/-->
                         <Expander x:Name="xpdPlusOp" Header="PLUS D'OPTIONS" Foreground="White">
                             <StackPanel>
-                                <Button x:Name="btnSupplement"  Content="Suppléments" Click="Button_Click" Style="{StaticResource  btnStandars}"  Height="30" FontSize="14" FontWeight="Bold"/>
-                                <Button x:Name="btnStructure" Content="Structure" Style="{StaticResource  btnStandars}" Click="btnStructure_Click"  Height="30" FontWeight="Bold" FontSize="14"/>
-                                <Button x:Name="btnSeting"  Content="Settings" Style="{StaticResource btnStandars}" Height="30" FontWeight="Bold" FontSize="14"/>
+                                <Button x:Name="btnSupplement"  Content="Suppléments" Click="Button_Click" Style="{StaticResource  btnStandars}"  Height="40" FontSize="14" FontWeight="Bold"/>
+                                <Button x:Name="btnStructure" Content="Structure" Style="{StaticResource  btnStandars}" Click="btnStructure_Click"  Height="40" FontWeight="Bold" FontSize="14"/>
+                                <Button x:Name="btnSeting"  Content="Settings" Style="{StaticResource btnStandars}" Height="40" FontWeight="Bold" FontSize="14"/>
                             </StackPanel>
                         </Expander>
                         <StackPanel Margin="10">

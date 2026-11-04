@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lakey"
         mc:Ignorable="d"
-        Title="ACTIVATION D'UN ANCIEN CLIENT" Height="125" Width="400" ResizeMode="NoResize" Background="#FF004603" Loaded="Window_Loaded" >
+        Title="ACTIVATION D'UN ANCIEN CLIENT" Height="150" Width="400" ResizeMode="NoResize" Background="#FF004603" Loaded="Window_Loaded" >
     <StackPanel >
         <Label Content="Activation de client" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
         <StackPanel Orientation="Horizontal">
