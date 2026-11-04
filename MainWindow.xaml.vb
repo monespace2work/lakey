@@ -1666,7 +1666,7 @@ Class MainWindow
             Throw New InvalidOperationException("La copie de travail locale n'est pas exploitable : " & localDatabaseError)
         End If
 
-        Dim backupDirectory As String = IO.Path.Combine(UserPath, "Backups")
+        Dim backupDirectory As String = GetConfiguredBackupDirectory()
         IO.Directory.CreateDirectory(backupDirectory)
         Dim backupPath As String = IO.Path.Combine(
             backupDirectory,
@@ -1805,7 +1805,7 @@ Class MainWindow
             Throw New InvalidOperationException("La base locale ne peut pas être sauvegardée en toute sécurité : " & localDatabaseError)
         End If
 
-        Dim backupDirectory As String = IO.Path.Combine(UserPath, "Backups")
+        Dim backupDirectory As String = GetConfiguredBackupDirectory()
         IO.Directory.CreateDirectory(backupDirectory)
         localBackupPath = IO.Path.Combine(
             backupDirectory,

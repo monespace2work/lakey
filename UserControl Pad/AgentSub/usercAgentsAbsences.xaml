@@ -41,7 +41,7 @@
                         </Grid>
                 </StackPanel>
                 <Border  Grid.Column="1" Background="#FFF3E0FF" Margin=" 5" >
-                    <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
+                    <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}" Style="{StaticResource FlatAgrandirButton}">
                         <Button.Background>
                             <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" Stretch="Uniform"/>
                         </Button.Background>

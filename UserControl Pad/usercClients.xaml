@@ -38,7 +38,7 @@
                 <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right" >
                     <TextBox x:Name="BtnClientSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" KeyDown="BtnClientSearch_KeyDown"/>
                     <Border Background="#FFF3E0FF" Margin=" 5" Width="30" >
-                        <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
+                        <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}" Style="{StaticResource FlatAgrandirButton}">
                             <Button.Background>
                                 <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" Stretch="Uniform"/>
                             </Button.Background>

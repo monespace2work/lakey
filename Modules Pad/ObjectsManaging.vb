@@ -361,8 +361,10 @@ Module ObjectsManaging
                     Return True
                 End If
 
-                If File.Exists(localPath) AndAlso Not String.IsNullOrWhiteSpace(BUDirPath) Then
-                    Dim backupPath As String = Path.Combine(BUDirPath, Path.GetFileName(localPath))
+                If File.Exists(localPath) Then
+                    Dim backupDirectory As String = GetConfiguredBackupDirectory()
+                    Directory.CreateDirectory(backupDirectory)
+                    Dim backupPath As String = Path.Combine(backupDirectory, Path.GetFileName(localPath))
                     If Not String.Equals(Path.GetFullPath(backupPath), localPath, StringComparison.OrdinalIgnoreCase) Then
                         Dim localValidationError As String = Nothing
                         If IsSQLiteDatabaseHealthy(localPath, localValidationError) Then

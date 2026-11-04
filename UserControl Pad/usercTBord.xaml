@@ -34,7 +34,7 @@
                         </Grid>
                     </StackPanel>
                     <Border  Grid.Column="1" Background="{DynamicResource ThemeAccentSoftBrush}" Margin="5" CornerRadius="6" >
-                        <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}"  >
+                        <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}" Style="{StaticResource FlatAgrandirButton}">
                             <Button.Background>
                                 <ImageBrush ImageSource="/Lakey;component/UserControl Pad/AgentSub/btnAgrandir.png" Stretch="Uniform"/>
                             </Button.Background>
@@ -50,7 +50,7 @@
                         <RowDefinition MinHeight="200"/>
                         <RowDefinition MinHeight="100"/>
                     </Grid.RowDefinitions>
-                    <Expander x:Name="expGraphiques" Grid.Row="0" IsExpanded="False" HorizontalContentAlignment="Stretch" Background="#FF5D4800">
+                    <Expander x:Name="expGraphiques" Grid.Row="0" IsExpanded="False" HorizontalContentAlignment="Stretch" Background="#FF001D81">
                         <Expander.Header>
                             <TextBlock Text="Graphiques"
                                        Foreground="{DynamicResource ThemeHeadingBrush}"
@@ -79,7 +79,7 @@
                                     <StackPanel Margin="5" Background="{DynamicResource ThemeContentCardBrush}" >
                                         <TextBlock Text="Évolution des effectifs" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="18" FontWeight="Bold"/>
                                         <!-- Graphique avec LiveCharts -->
-                                        <lvc:CartesianChart Grid.Row="1" Name="chartVentes" Margin="5" Height="120" Background="{DynamicResource ThemeChartsBackgroundBrush}" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartVentes" Margin="5" Height="120" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
                                             <lvc:CartesianChart.Series>
                                                 <lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}" Stroke="{DynamicResource ThemeHeaderBrush}" Fill="Transparent" PointGeometrySize="8"/>
                                                 <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
@@ -127,7 +127,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  >
                                                 <StackPanel >
-                                                    <lvc:PieChart Name="PiechartClientType" Margin="5,0" MinWidth="138" MinHeight="138" Background="{DynamicResource ThemeChartsBackgroundBrush}" Foreground="{DynamicResource ThemeChartsForegroundBrush}"/>
+                                                    <lvc:PieChart Name="PiechartClientType" Margin="5,0" MinWidth="138" MinHeight="138" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}"/>
                                                     <TextBlock Text="client / type" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeInkBrush}"/>
                                                 </StackPanel>
                                                 <Expander Header="Détails" IsExpanded="False" Foreground="{DynamicResource ThemeInkBrush}">
@@ -138,7 +138,7 @@
                                             <Expander  Header="+Villes" IsExpanded="True" Margin="5,0,0,0" >
                                                 <StackPanel Margin="0,0,5,5" Background="{DynamicResource ThemeContentSurfaceBrush}" >
                                                     <!-- Diagramme à secteurs (PieChart) -->
-                                                    <lvc:CartesianChart Grid.Row="1" Name="chartClientVile" Margin="5" Height="116" MinWidth="238" Background="{DynamicResource ThemeChartsBackgroundBrush}" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                                    <lvc:CartesianChart Grid.Row="1" Name="chartClientVile" Margin="5" Height="116" MinWidth="238" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
                                                         <lvc:CartesianChart.Series>
                                                             <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbSiteSeries}" Stroke="{DynamicResource ThemeHeaderBrush}" Fill="{DynamicResource ThemeHeaderBrush}" />
                                                             <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
@@ -173,7 +173,7 @@
                                     </Border>
                                     <StackPanel Background="{DynamicResource ThemeContentCardBrush}" Grid.Row="1">
                                         <!-- Diagramme à secteurs (PieChart) -->
-                                        <lvc:CartesianChart Grid.Row="1" Name="chartClientType" Margin="5" Height="116" MinWidth="138" Background="{DynamicResource ThemeChartsBackgroundBrush}" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartClientType" Margin="5" Height="116" MinWidth="138" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
                                             <lvc:CartesianChart.Series>
                                                 <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbTypeSiteSeries}" Fill="{DynamicResource ThemeHeaderBrush}" />
                                                 <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->

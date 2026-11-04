@@ -333,6 +333,27 @@ Module DbManipulation
         End Using
     End Function
 
+    Public Function GetConfiguredBackupDirectory() As String
+        Const settingsDatabasePath As String = "C:\LkyRess\MySet.sqlite"
+        If Not File.Exists(settingsDatabasePath) Then
+            Throw New FileNotFoundException("La base locale de paramètres est introuvable.", settingsDatabasePath)
+        End If
+
+        Using connection As New SQLiteConnection("Data Source=" & settingsDatabasePath & ";Version=3;Read Only=True;")
+            connection.Open()
+            Using command As New SQLiteCommand(
+                "SELECT s.BckUpDir FROM sets s WHERE s.IdSet=1;", connection)
+                Dim configuredDirectory As String = Convert.ToString(command.ExecuteScalar()).Trim()
+                If String.IsNullOrWhiteSpace(configuredDirectory) Then
+                    Throw New InvalidOperationException("Le dossier BckUpDir n'est pas renseigné dans MySet.sqlite pour IdSet=1.")
+                End If
+
+                BUDirPath = Path.GetFullPath(configuredDirectory)
+                Return BUDirPath
+            End Using
+        End Using
+    End Function
+
     Public Function PaphBackUp(Optional iConnectStr As String = "Data Source=C:\LkyRess\MySet.sqlite;Version=3;") As String
         Dim configuredDatabasePath As String = Nothing
         PaphBackUp = DbPathGeneral

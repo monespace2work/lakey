@@ -291,7 +291,7 @@
                 Return False
             End If
 
-            Dim backupDirectory As String = IO.Path.Combine(UserPath, "Backups")
+            Dim backupDirectory As String = GetConfiguredBackupDirectory()
             IO.Directory.CreateDirectory(backupDirectory)
             Dim backupPath As String = IO.Path.Combine(
                 backupDirectory,
