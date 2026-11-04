@@ -7,21 +7,6 @@
         mc:Ignorable="d"
         Title="Lakey" Height="850" Width="1440" MinHeight="620" MinWidth="980" WindowStartupLocation="CenterScreen" WindowState="Maximized" Loaded="Window_Loaded" KeyDown="Window_KeyDown" Background="{DynamicResource ThemeSurfaceBrush}" FontFamily="Segoe UI" UseLayoutRounding="True" SnapsToDevicePixels="True" Icon="/Lakey;component/MyIco.ico">
     <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
-            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
-            <Setter Property="MinHeight" Value="32"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource ThemeAccentSoftBrush}"/></Trigger>
-                <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.78"/></Trigger>
-                <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
-            </Style.Triggers>
-        </Style>
         <Style x:Key="QuickAccessButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -31,24 +16,6 @@
             <Setter Property="MinHeight" Value="30"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="2,2"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4"
-                                SnapsToDevicePixels="True">
-                            <ContentPresenter Margin="{TemplateBinding Padding}"
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              RecognizesAccessKey="True"
-                                              TextElement.Foreground="{TemplateBinding Foreground}"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Opacity" Value="0.82"/>

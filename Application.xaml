@@ -11,6 +11,11 @@ ShutdownMode="OnMainWindowClose">
         <SolidColorBrush x:Key="ThemeContentSurfaceBrush" Color="#101A28"/>
         <SolidColorBrush x:Key="ThemeContentCardBrush" Color="#2A3A4E"/>
         <SolidColorBrush x:Key="ThemeContentBorderBrush" Color="#62778D"/>
+        <SolidColorBrush x:Key="ThemeButtonEdgeBrush" Color="#FF52677C"/>
+        <SolidColorBrush x:Key="ThemeButtonHighlightBrush" Color="#77FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeButtonShadowBrush" Color="#FF0B1119"/>
+        <SolidColorBrush x:Key="ThemeChartsBackgroundBrush" Color="#806000"/>
+        <SolidColorBrush x:Key="ThemeChartsForegroundBrush" Color="#FFF4D6"/>
         <SolidColorBrush x:Key="ThemeDashboardTitleBrush" Color="#0B1630"/>
         <SolidColorBrush x:Key="ThemeDashboardTitleTextBrush" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="ThemeSearchPlanningBrush" Color="#082744"/>
@@ -720,15 +725,59 @@ ShutdownMode="OnMainWindowClose">
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeButtonEdgeBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
             <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid SnapsToDevicePixels="True">
+                            <Border x:Name="ButtonShadow"
+                                    Background="{DynamicResource ThemeButtonShadowBrush}"
+                                    CornerRadius="4"
+                                    Margin="0,1,0,0"/>
+                            <Border x:Name="ButtonFace"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4"
+                                    Margin="0,0,0,2">
+                                <Grid>
+                                    <Border Height="1"
+                                            VerticalAlignment="Top"
+                                            Background="{DynamicResource ThemeButtonHighlightBrush}"
+                                            CornerRadius="4,4,0,0"
+                                            IsHitTestVisible="False"/>
+                                    <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                      RecognizesAccessKey="True"
+                                                      Content="{TemplateBinding Content}"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                      TextElement.Foreground="{TemplateBinding Foreground}"
+                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonFace" Property="Margin" Value="0,1,0,0"/>
+                                <Setter TargetName="ButtonShadow" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource ThemeAccentSoftBrush}"/></Trigger>
-                <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.78"/></Trigger>
                 <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
             </Style.Triggers>
         </Style>
@@ -869,6 +918,12 @@ ShutdownMode="OnMainWindowClose">
                         Background="Transparent"
                         BorderBrush="Transparent"
                         Focusable="False">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
                     <Path Data="M15.5,14H14.71l-.26-.27A6.471,6.471,0,0,0,16,9.5,6.5,6.5,0,1,0,9.5,16,6.471,6.471,0,0,0,13.73,14.45l.27.26V15.5l4.25,4.25A1,1,0,0,0,19.5,18.5ZM9.5,14A4.5,4.5,0,1,1,14,9.5,4.5,4.5,0,0,1,9.5,14Z"
                           Fill="Gray" />
                 </Button>

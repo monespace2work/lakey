@@ -499,4 +499,3 @@ C:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
 C:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
 C:\iclones\lakey\obj\x64\Debug\HelpWindow.g.vb
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
