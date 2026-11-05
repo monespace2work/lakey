@@ -240,7 +240,7 @@
 
             <Grid x:Name="grdBody" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="colLeftPanel" Width="190" MinWidth="165" MaxWidth="230"/>
+                    <ColumnDefinition x:Name="colLeftPanel" Width="230" MinWidth="210" MaxWidth="240"/>
                     <ColumnDefinition x:Name="colRightPanel" Width="245" MinWidth="210" MaxWidth="300"/>
                     <ColumnDefinition Width="*" MinWidth="420"/>
                 </Grid.ColumnDefinitions>
@@ -273,7 +273,7 @@
                             </TextBlock.LayoutTransform>
                         </TextBlock>
                         <StackPanel x:Name="stpLeftPanelContent">
-                        <Button x:Name="btnTBord" Content="Tableau de bord" Height="30" FontSize="14" FontWeight="ExtraBold" Foreground="{DynamicResource ThemeNavyBrush}"  Background="{DynamicResource ThemeCardBrush}" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
+                        <Button x:Name="btnTBord" Content="Tableau de bord" Height="40" FontSize="14" FontWeight="ExtraBold" Foreground="{DynamicResource ThemeNavyBrush}"  Background="{DynamicResource ThemeCardBrush}" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
                         <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="{DynamicResource ThemeCardBrush}" Height="40" FontSize="14" FontWeight="Bold"/>
                         <Button x:Name="btnTraitement"  Content="Traitements"  Style="{StaticResource  btnStandars}" Click="btnTraitement_Click"  Height="40" FontWeight="Bold" FontSize="14"/>
                         <Button x:Name="btnClient"  Content="Clients" Style="{StaticResource  btnStandars}" Click="btnClient_Click"  Height="40" FontSize="14" FontWeight="Bold"/>
@@ -416,7 +416,7 @@
                     <Border Grid.Column="1" Background="{DynamicResource ThemeSearchAgentBrush}" BorderBrush="{DynamicResource ThemeSearchLabelBrush}" BorderThickness="1" Padding="3" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition MaxWidth="80"/>
+                                <ColumnDefinition MaxWidth="110"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
@@ -440,7 +440,7 @@
                     <Border Grid.Column="2" Background="{DynamicResource ThemeSearchContractBrush}" BorderBrush="{DynamicResource ThemeSearchLabelBrush}" BorderThickness="1" Padding="3" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition MaxWidth="80"/>
+                                <ColumnDefinition MaxWidth="110"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
@@ -461,7 +461,7 @@
                     <Border Grid.Column="0" Background="{DynamicResource ThemeSearchPlanningBrush}" BorderBrush="{DynamicResource ThemeSearchLabelBrush}" BorderThickness="1" Padding="3" Margin="3" CornerRadius="5">
                         <Grid >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition MaxWidth="80"/>
+                                <ColumnDefinition MaxWidth="120"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">

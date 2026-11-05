@@ -210,13 +210,13 @@
                                             <StackPanel Orientation ="Horizontal"  Margin="5">
                                                 <TextBlock Text="Lieu de naiss : " MinWidth="25" Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="91"/>
                                                 <Grid>
-                                                    <TextBox  x:Name="TbxLieuNaiss" MinWidth="100" Height="36" FontSize="12" VerticalAlignment="Center"  >
+                                                    <TextBox  x:Name="TbxLieuNaiss" MinWidth="100" Height="36" FontSize="14" VerticalAlignment="Center"  >
                                                     </TextBox>
                                                     <TextBlock  x:Name="TblIndicationLieuNaiss" Text=" Lieu de naissance" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,39,0"/>
                                                 </Grid>
                                                 <TextBlock Text="Préfecture : " MinWidth="25" Margin="7,5,5,5" VerticalAlignment="Center" Foreground="White" Width="95"/>
                                                 <Grid>
-                                                    <TextBox  x:Name="TbxPrefNaiss" MinWidth="150" Height="36" FontSize="10" VerticalAlignment="Center" Text="" Width="200" />
+                                                    <TextBox  x:Name="TbxPrefNaiss" MinWidth="150" Height="36" FontSize="14" VerticalAlignment="Center" Text="" Width="200" />
                                                     <TextBlock  x:Name="TblIndicationPrefNais" Text=" Préfecture de naissance" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" Margin="0,0,42,0" />
                                                 </Grid>
 
