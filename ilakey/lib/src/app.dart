@@ -51,6 +51,23 @@ class IlakeyApp extends StatelessWidget {
         scaffoldBackgroundColor: canvas,
         colorScheme: ColorScheme.fromSeed(seedColor: teal, primary: teal),
         fontFamily: 'Segoe UI',
+        scrollbarTheme: ScrollbarThemeData(
+          thumbVisibility: WidgetStateProperty.all(true),
+          trackVisibility: WidgetStateProperty.all(true),
+          thickness: WidgetStateProperty.all(12),
+          radius: const Radius.circular(2),
+          thumbColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.dragged) ||
+                states.contains(WidgetState.hovered)) {
+              return const Color(0xFF6F7982);
+            }
+            return const Color(0xFF929BA3);
+          }),
+          trackColor: WidgetStateProperty.all(const Color(0xFFF0F2F4)),
+          trackBorderColor: WidgetStateProperty.all(
+            const Color(0xFFD7DCE0),
+          ),
+        ),
       ),
       home: Home(light: light, databaseService: databaseService),
     );

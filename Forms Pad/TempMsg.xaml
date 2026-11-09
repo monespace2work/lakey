@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="TempMsg" MaxHeight="250" MaxWidth="450" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded" Background="White" Icon="/Lakey;component/MyIco.ico" >
     <Grid>
-        <TextBox x:Name="tbxMsg" Text="Text" TextWrapping="Wrap" IsReadOnly="True" Background="{x:Null}"/>        
+        <TextBox x:Name="tbxMsg" Text="Text" TextWrapping="Wrap" IsReadOnly="True" Background="{x:Null}" VerticalAlignment="Top"/>        
     </Grid>
 </Window>

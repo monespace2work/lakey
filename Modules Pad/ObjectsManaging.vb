@@ -2,6 +2,7 @@
 Imports System.Windows.Threading
 Imports System.IO
 Imports System.Data
+Imports System.Threading.Tasks
 Module ObjectsManaging
     Public DocsDir As String = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\LkyDocs"
     Dim iTimer As New DispatcherTimer
@@ -18,6 +19,47 @@ Module ObjectsManaging
     Private lastSyncedLocalPath As String = ""
     Private lastSyncedFingerprint As String = ""
     Private generalDatabaseSyncWarningShown As Boolean
+    Private Const FinContratAffectationRowColorHandlerKey As String = "FinContratAffectationRowColorHandler"
+
+    Public Async Function RefreshAfterDatabaseMutationAsync(refreshAction As Action) As Task
+        Dim mainWindow As MainWindow = TryCast(Application.Current?.MainWindow, MainWindow)
+        mainWindow?.BeginDatabaseLoading()
+        Try
+            Try
+                Dim synchronized As Boolean = Await Task.Run(
+                    Function()
+                        Return LocalModeBb OrElse maj()
+                    End Function)
+                If Not synchronized Then
+                    MessageBox.Show(
+                        "L'opération est enregistrée, mais la copie locale n'a pas pu être actualisée. Les données affichées peuvent être anciennes.",
+                        "Actualisation en attente",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning)
+                End If
+            Catch ex As Exception
+                System.Diagnostics.Debug.WriteLine("Échec de l'actualisation après une modification : " & ex.ToString())
+                MessageBox.Show(
+                    "L'opération est enregistrée, mais l'actualisation de la base locale a échoué : " & ex.Message,
+                    "Actualisation impossible",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning)
+            End Try
+
+            Try
+                refreshAction()
+            Catch ex As Exception
+                System.Diagnostics.Debug.WriteLine("Échec du rechargement de l'interface après une modification : " & ex.ToString())
+                MessageBox.Show(
+                    "L'opération est enregistrée, mais l'actualisation de l'écran a échoué : " & ex.Message,
+                    "Actualisation impossible",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning)
+            End Try
+        Finally
+            mainWindow?.EndDatabaseLoading()
+        End Try
+    End Function
 
     Public Sub SaisiTbx(iTbx As TextBox, iTbl As TextBlock)
         Try
@@ -271,63 +313,44 @@ Module ObjectsManaging
 
     End Sub
     Public Sub ColorDgRowsFinContratAffectation(iDataGrid As DataGrid, Optional iRowOfType As Integer = 6, Optional ListAgentFin As String = "fin", Optional ListAgentAffectation As String = "aff")
-        Dim iTable As DataTable = TryCast(iDataGrid.ItemsSource, DataView).ToTable
-        If IsNothing(iTable) Then
-            Exit Sub
-        Else
+        If iDataGrid Is Nothing OrElse Not TypeOf iDataGrid.ItemsSource Is DataView Then Return
+
+        If iDataGrid.Resources.Contains(FinContratAffectationRowColorHandlerKey) Then
+            Dim previousHandler = TryCast(iDataGrid.Resources(FinContratAffectationRowColorHandlerKey), EventHandler(Of DataGridRowEventArgs))
+            If previousHandler IsNot Nothing Then RemoveHandler iDataGrid.LoadingRow, previousHandler
         End If
-        For eTdx As Integer = 0 To iTable.Rows.Count - 1
-            Try
-                Dim iContrat As String = LCase((iTable.Rows(eTdx).Item(iRowOfType)))
-                If LCase(ListAgentFin).Contains(LCase(iContrat)) Then
-                    Dim targetItem = iDataGrid.Items(eTdx)
-                    Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
-                    If targetRow IsNot Nothing Then
-                        targetRow.SetResourceReference(DataGridRow.ForegroundProperty, "ThemeTableAlertTextBrush")
-                    Else
-                        iDataGrid.ScrollIntoView(targetItem)
-                        iDataGrid.UpdateLayout()
-                        targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
-                        If targetRow IsNot Nothing Then
-                            targetRow.SetResourceReference(DataGridRow.ForegroundProperty, "ThemeTableAlertTextBrush")
-                        End If
-                    End If
-                Else
-                    Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
-                    Dim targetItem = iDataGrid.Items(eTdx)
-                    If targetRow IsNot Nothing Then
-                        'targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFB4B4"))
-                    Else
-                        iDataGrid.ScrollIntoView(targetItem)
-                        iDataGrid.UpdateLayout()
-                        targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
-                        If targetRow IsNot Nothing Then
-                            'targetRow.Background = New SolidColorBrush(ColorConverter.ConvertFromString("#FFFFB4B4"))
-                        End If
-                    End If
-                End If
 
-                If LCase(ListAgentAffectation).Contains(LCase(iContrat)) Then
-                    'MsgBox("ok")
-                    Dim targetRow As DataGridRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
-                    Dim targetItem = iDataGrid.Items(eTdx)
-                    If targetRow IsNot Nothing Then
-                        SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
-                    Else
-                        iDataGrid.ScrollIntoView(targetItem)
-                        iDataGrid.UpdateLayout()
-                        targetRow = CType(iDataGrid.ItemContainerGenerator.ContainerFromIndex(eTdx), DataGridRow)
-                        If targetRow IsNot Nothing Then
-                            SetThemeDataGridRow(targetRow, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
-                        End If
-                    End If
-                End If
-            Catch ex As Exception
-                MsgBox(ex.Message)
-            End Try
+        Dim rowColorHandler As EventHandler(Of DataGridRowEventArgs) =
+            Sub(sender, e)
+                ApplyFinContratAffectationRowColor(e.Row, iRowOfType, ListAgentFin, ListAgentAffectation)
+            End Sub
+        iDataGrid.Resources(FinContratAffectationRowColorHandlerKey) = rowColorHandler
+        AddHandler iDataGrid.LoadingRow, rowColorHandler
 
+        For rowIndex As Integer = 0 To iDataGrid.Items.Count - 1
+            Dim row As DataGridRow = TryCast(iDataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex), DataGridRow)
+            If row IsNot Nothing Then
+                ApplyFinContratAffectationRowColor(row, iRowOfType, ListAgentFin, ListAgentAffectation)
+            End If
         Next
+    End Sub
 
+    Private Sub ApplyFinContratAffectationRowColor(row As DataGridRow, rowIndex As Integer, ListAgentFin As String, ListAgentAffectation As String)
+        Dim rowView As DataRowView = TryCast(row.Item, DataRowView)
+        If rowView Is Nothing OrElse rowIndex < 0 OrElse rowIndex >= rowView.Row.ItemArray.Length Then Return
+
+        row.ClearValue(DataGridRow.BackgroundProperty)
+        row.ClearValue(DataGridRow.ForegroundProperty)
+
+        Dim agentName As String = Convert.ToString(rowView.Row.Item(rowIndex))
+        If Not String.IsNullOrEmpty(ListAgentFin) AndAlso
+           ListAgentFin.IndexOf(agentName, StringComparison.OrdinalIgnoreCase) >= 0 Then
+            row.SetResourceReference(DataGridRow.ForegroundProperty, "ThemeTableAlertTextBrush")
+        End If
+        If Not String.IsNullOrEmpty(ListAgentAffectation) AndAlso
+           ListAgentAffectation.IndexOf(agentName, StringComparison.OrdinalIgnoreCase) >= 0 Then
+            SetThemeDataGridRow(row, "ThemeTableWarningRowBrush", "ThemeTableWarningRowTextBrush")
+        End If
     End Sub
     Function maj() As Boolean
         maj = False
@@ -494,10 +517,18 @@ Module ObjectsManaging
         SynchronizeGeneralDatabaseIfNeeded()
     End Sub
 
-    Private Sub SynchronizeGeneralDatabaseIfNeeded()
+    Private Async Sub SynchronizeGeneralDatabaseIfNeeded()
         If LocalModeBb Then Return
 
-        If Not maj() AndAlso Not generalDatabaseSyncWarningShown Then
+        Dim synchronized As Boolean
+        Try
+            synchronized = Await Task.Run(Function() maj())
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("Échec de la synchronisation SQLite en arrière-plan : " & ex.ToString())
+            synchronized = False
+        End Try
+
+        If Not synchronized AndAlso Not generalDatabaseSyncWarningShown Then
             generalDatabaseSyncWarningShown = True
             MessageBox.Show(
                 "La base locale n'a pas pu être actualisée depuis la base générale. Les dernières données locales restent disponibles.",

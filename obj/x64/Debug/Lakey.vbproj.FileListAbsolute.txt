@@ -498,4 +498,17 @@ C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.SuggestedBindingRedirects.cache
 C:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
 C:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
 C:\iclones\lakey\obj\x64\Debug\HelpWindow.g.vb
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-verify-build\desktop.ini
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-verify-build\sqlite3.dll
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-verify-build\Lakey.exe.config
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-verify-build\Lakey.exe
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-verify-build\Lakey.pdb
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-verify-build\Lakey.xml
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\desktop.ini
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\sqlite3.dll
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.exe.config
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.exe
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.pdb
+C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete

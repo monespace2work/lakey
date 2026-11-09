@@ -85,6 +85,10 @@ ShutdownMode="OnMainWindowClose">
         <SolidColorBrush x:Key="ThemeAccentBrush" Color="#00CFCB"/>
         <SolidColorBrush x:Key="ThemeAccentSoftBrush" Color="#29434B"/>
         <SolidColorBrush x:Key="ThemeBorderBrush" Color="#60758A"/>
+        <SolidColorBrush x:Key="ThemeScrollBarTrackBrush" Color="#1A2635"/>
+        <SolidColorBrush x:Key="ThemeScrollBarTrackBorderBrush" Color="#2D4154"/>
+        <SolidColorBrush x:Key="ThemeScrollBarThumbBrush" Color="#62788D"/>
+        <SolidColorBrush x:Key="ThemeScrollBarThumbHoverBrush" Color="#8299AD"/>
         <SolidColorBrush x:Key="ThemeRowBrush" Color="#26364A"/>
         <SolidColorBrush x:Key="ThemeAlternateRowBrush" Color="#35485E"/>
         <SolidColorBrush x:Key="ThemeTablePositiveRowBrush" Color="#174A3A"/>
@@ -432,26 +436,26 @@ ShutdownMode="OnMainWindowClose">
         <ControlTemplate x:Key="SlimScrollBarThumbTemplate" TargetType="Thumb">
             <Border x:Name="ThumbBorder"
                     Background="{TemplateBinding Background}"
-                    Width="2"
-                    Height="2"
+                    Width="6"
+                    Height="6"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    CornerRadius="1"
+                    CornerRadius="3"
                     SnapsToDevicePixels="True"/>
             <ControlTemplate.Triggers>
                 <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
                     <Setter TargetName="ThumbBorder" Property="Width" Value="Auto"/>
-                    <Setter TargetName="ThumbBorder" Property="Height" Value="2"/>
+                    <Setter TargetName="ThumbBorder" Property="Height" Value="6"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Vertical">
-                    <Setter TargetName="ThumbBorder" Property="Width" Value="2"/>
+                    <Setter TargetName="ThumbBorder" Property="Width" Value="6"/>
                     <Setter TargetName="ThumbBorder" Property="Height" Value="Auto"/>
                 </DataTrigger>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
+                    <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ThemeScrollBarThumbHoverBrush}"/>
                 </Trigger>
                 <Trigger Property="IsDragging" Value="True">
-                    <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
+                    <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ThemeScrollBarThumbHoverBrush}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -459,7 +463,7 @@ ShutdownMode="OnMainWindowClose">
             <Grid Background="Transparent" SnapsToDevicePixels="True">
                 <Path x:Name="ArrowGlyph"
                       Data="M 0,4 L 4,0 L 8,4 Z"
-                      Fill="{DynamicResource ThemeInkBrush}"
+                      Fill="{DynamicResource ThemeScrollBarThumbBrush}"
                       Width="8"
                       Height="4"
                       Stretch="Fill"
@@ -483,7 +487,7 @@ ShutdownMode="OnMainWindowClose">
             <Grid Background="Transparent" SnapsToDevicePixels="True">
                 <Path x:Name="ArrowGlyph"
                       Data="M 0,0 L 4,4 L 8,0 Z"
-                      Fill="{DynamicResource ThemeInkBrush}"
+                      Fill="{DynamicResource ThemeScrollBarThumbBrush}"
                       Width="8"
                       Height="4"
                       Stretch="Fill"
@@ -503,28 +507,38 @@ ShutdownMode="OnMainWindowClose">
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <Style TargetType="ScrollViewer">
+            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+        </Style>
         <Style TargetType="ScrollBar">
             <Setter Property="Width" Value="12"/>
             <Setter Property="Height" Value="12"/>
-            <Setter Property="Opacity" Value="0"/>
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeScrollBarTrackBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ScrollBar">
-                        <Grid Background="{TemplateBinding Background}"
-                              SnapsToDevicePixels="True">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{DynamicResource ThemeScrollBarTrackBorderBrush}"
+                                BorderThickness="1"
+                                SnapsToDevicePixels="True">
                             <Track x:Name="PART_Track"
-                                   Orientation="{TemplateBinding Orientation}">
+                                   Orientation="{TemplateBinding Orientation}"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                   ViewportSize="{TemplateBinding ViewportSize}">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton x:Name="DecreaseButton"
                                                   Command="{x:Static ScrollBar.LineUpCommand}"
                                                   Focusable="False"
                                                   IsTabStop="False"
+                                                  MinWidth="0"
+                                                  MinHeight="0"
                                                   Template="{StaticResource SlimScrollBarDecreaseButtonTemplate}"/>
                                 </Track.DecreaseRepeatButton>
                                 <Track.Thumb>
                                     <Thumb x:Name="ScrollThumb"
-                                           Background="{DynamicResource ThemeBorderBrush}"
+                                           Background="{DynamicResource ThemeScrollBarThumbBrush}"
                                            Template="{StaticResource SlimScrollBarThumbTemplate}"/>
                                 </Track.Thumb>
                                 <Track.IncreaseRepeatButton>
@@ -532,34 +546,40 @@ ShutdownMode="OnMainWindowClose">
                                                   Command="{x:Static ScrollBar.LineDownCommand}"
                                                   Focusable="False"
                                                   IsTabStop="False"
+                                                  MinWidth="0"
+                                                  MinHeight="0"
                                                   Template="{StaticResource SlimScrollBarIncreaseButtonTemplate}"/>
                                 </Track.IncreaseRepeatButton>
                             </Track>
-                        </Grid>
+                        </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Orientation" Value="Horizontal">
                                 <Setter Property="Height" Value="12"/>
                                 <Setter Property="Width" Value="Auto"/>
+                                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
+                                <Setter TargetName="DecreaseButton" Property="MinWidth" Value="0"/>
+                                <Setter TargetName="DecreaseButton" Property="MinHeight" Value="0"/>
+                                <Setter TargetName="IncreaseButton" Property="MinWidth" Value="0"/>
+                                <Setter TargetName="IncreaseButton" Property="MinHeight" Value="0"/>
                                 <Setter TargetName="DecreaseButton" Property="Command" Value="{x:Static ScrollBar.LineLeftCommand}"/>
                                 <Setter TargetName="IncreaseButton" Property="Command" Value="{x:Static ScrollBar.LineRightCommand}"/>
                             </Trigger>
                             <Trigger Property="Orientation" Value="Vertical">
                                 <Setter Property="Width" Value="12"/>
                                 <Setter Property="Height" Value="Auto"/>
+                                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="True"/>
+                                <Setter TargetName="DecreaseButton" Property="MinWidth" Value="0"/>
+                                <Setter TargetName="DecreaseButton" Property="MinHeight" Value="0"/>
+                                <Setter TargetName="IncreaseButton" Property="MinWidth" Value="0"/>
+                                <Setter TargetName="IncreaseButton" Property="MinHeight" Value="0"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.9"/>
-                </Trigger>
-                <Trigger Property="IsMouseCaptureWithin" Value="True">
-                    <Setter Property="Opacity" Value="0.9"/>
-                </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="Opacity" Value="0.55"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

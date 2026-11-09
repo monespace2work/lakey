@@ -40,7 +40,6 @@ Public Class usercAgentsPlanning
     End Sub
     Sub initializ()
         elpStatus.Visibility = Visibility.Visible
-        maj()
         Dim istr As String = " select format(pl.DatePlan) as [Date],pl.Agent,po.Designation,pl.Poste from planposte pl join postes po on pl.Poste=po.Code"
         istr += " where pl.DatePlan='" & Today.ToString("yyyy-MM-dd") & "'"
         'istr += " ORDER BY crt.DebutContr desc, ag.Nomprenoms "
@@ -69,7 +68,6 @@ Public Class usercAgentsPlanning
     End Sub
     Sub SearchPlanning(KeyWord As String)
         elpStatus.Visibility = Visibility.Visible
-        maj()
         Try
             Dim istr As String = " select format(pl.DatePlan) as [Date],pl.Agent,po.Designation,pl.Poste from planposte pl join postes po on pl.Poste=po.Code"
             If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then
@@ -101,7 +99,6 @@ Public Class usercAgentsPlanning
 
     Function LoadPlan12h() As Boolean
         LoadPlan12h = False
-        maj()
 
         If cbxSite.SelectedIndex >= 0 And Not is12Hloaded Then
             If FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() and a.SiteAffect ='" & Apost(cbxSite.SelectedItem) & "' order by a.AgentAffect", CbxNom12H, LocalConnxStr) Then
@@ -115,7 +112,6 @@ Public Class usercAgentsPlanning
         btnValider12H.Visibility = Visibility.Collapsed
     End Function
     Function LoadPlan24h() As Boolean
-        maj()
         LoadPlan24h = False
         If cbxSite.SelectedIndex >= 0 And Not is24Hloaded Then
             If FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() and a.SiteAffect ='" & Apost(cbxSite.SelectedItem) & "' order by a.AgentAffect", CbxNom24H1, LocalConnxStr) And FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() and a.SiteAffect ='" & cbxSite.SelectedItem & "' order by a.AgentAffect", CbxNom24H2, LocalConnxStr) Then
@@ -127,7 +123,6 @@ Public Class usercAgentsPlanning
         btnValider24H.Visibility = Visibility.Collapsed
     End Function
     Function LoadPlanHebdo() As Boolean
-        maj()
         LoadPlanHebdo = False
         If Not isHebdoloaded Then
             If FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() order by a.AgentAffect", CbxNomHebdo, LocalConnxStr) Then
@@ -143,7 +138,6 @@ Public Class usercAgentsPlanning
 
     Function LoadPlanSubst() As Boolean
         elpStatus.Visibility = Visibility.Visible
-        maj()
         LoadPlanSubst = False
         If Not isSubstitloaded Then
             Dim iStrSortant As String = "select p.Agent from  planposte p where p.DatePlan>='" & dtpDebutSubst.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and  p.DatePlan<='" & dtpFinSubst.SelectedDate.Value.ToString("yyyy-MM-dd") & "' group by p.Agent  order by p.Agent"
@@ -164,7 +158,6 @@ Public Class usercAgentsPlanning
     End Function
     Function LoadPlan12H24H() As Boolean
         elpStatus.Visibility = Visibility.Visible
-        maj()
         LoadPlan12H24H = False
         If Not isSubstitloaded Then
             If FilmyCbx("select s.NomSite from siteaffectation s join postes p on p.NomSite=s.NomSite where s.Actif and p.Actif group by s.NomSite order by s.NomSite ", cbxSite, LocalConnxStr) Then
@@ -280,7 +273,7 @@ Public Class usercAgentsPlanning
         End If
     End Sub
 
-    Private Sub btnValider12H_Click(sender As Object, e As RoutedEventArgs) Handles btnValider12H.Click
+    Private Async Sub btnValider12H_Click(sender As Object, e As RoutedEventArgs) Handles btnValider12H.Click
         elpStatus.Visibility = Visibility.Visible
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         If PlanSemaine(dtpDebut12H24H.SelectedDate.Value, dtpFin12H24H.SelectedDate.Value) = True Then
@@ -291,13 +284,13 @@ Public Class usercAgentsPlanning
             dtpFin12H24H.SelectedDate = CDate("31/12/" & Today.Year) ' FinDuMois(Today)
             cbxSite.SelectedIndex = -1
             lbxNumPoste.Items.Clear()
-            initializ()
+            Await RefreshAfterDatabaseMutationAsync(Sub() initializ())
 
         End If
         elpStatus.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnValider24H_Click(sender As Object, e As RoutedEventArgs) Handles btnValider24H.Click
+    Private Async Sub btnValider24H_Click(sender As Object, e As RoutedEventArgs) Handles btnValider24H.Click
         elpStatus.Visibility = Visibility.Visible
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         If PlanF24(dtpDebut12H24H.SelectedDate.Value, dtpFin12H24H.SelectedDate.Value) Then
@@ -308,17 +301,20 @@ Public Class usercAgentsPlanning
             dtpFin12H24H.SelectedDate = CDate("31/12/" & Today.Year) 'FinDuMois(Today)
             cbxSite.SelectedIndex = -1
             lbxNumPoste.Items.Clear()
-            initializ()
+            Await RefreshAfterDatabaseMutationAsync(Sub() initializ())
         End If
         elpStatus.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnValiderHebdo_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderHebdo.Click
+    Private Async Sub btnValiderHebdo_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderHebdo.Click
         elpStatus.Visibility = Visibility.Visible
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         If PlanSemaineLibre(dtpDebutHebdo.SelectedDate.Value, dtpFinHebdo.SelectedDate.Value) = True Then
-            initializ()
-            initializHebdo()
+            Await RefreshAfterDatabaseMutationAsync(
+                Sub()
+                    initializ()
+                    initializHebdo()
+                End Sub)
         End If
         elpStatus.Visibility = Visibility.Collapsed
 
@@ -559,13 +555,13 @@ Public Class usercAgentsPlanning
         'stpSubstContent.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnValiderSubstitution_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderSubstitution.Click
+    Private Async Sub btnValiderSubstitution_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderSubstitution.Click
         elpStatus.Visibility = Visibility.Visible
         If MessageBox.Show("Procéder au remplacement ?", "REMPLACEMENT", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
             If CbxPosteRemplace.SelectedIndex = 0 And CbxAgentSortant.SelectedIndex > 0 Then
                 If RemplaceAgentInPlanning(dtpDebutSubst.SelectedDate.Value, dtpFinSubst.SelectedDate.Value) Then
                     MsgBox("DONNEES MISE A JOUR AVEC SUCCES")
-                    initializ()
+                    Await RefreshAfterDatabaseMutationAsync(Sub() initializ())
                     stpSubstContent.Visibility = Visibility.Collapsed
                 End If
             End If
@@ -573,7 +569,7 @@ Public Class usercAgentsPlanning
                 If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
                 If RemplaceAgentPlan(dtpDebutSubst.SelectedDate.Value, dtpFinSubst.SelectedDate.Value, ExtractPosteCode(CbxPosteRemplace.SelectedItem)) Then
                     MsgBox("DONNEES MISE A JOUR AVEC SUCCES")
-                    initializ()
+                    Await RefreshAfterDatabaseMutationAsync(Sub() initializ())
                     stpSubstContent.Visibility = Visibility.Collapsed
                 End If
             End If
@@ -620,26 +616,29 @@ Public Class usercAgentsPlanning
 
     End Sub
 
-    Private Sub btnValiderSuppr_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderSuppr.Click
+    Private Async Sub btnValiderSuppr_Click(sender As Object, e As RoutedEventArgs) Handles btnValiderSuppr.Click
         elpStatus.Visibility = Visibility.Visible
         If MessageBox.Show(MsgDelete, "ATTENTION", MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
             If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
             If DeletePlanning(dtpDebutSubst.SelectedDate.Value, dtpFinSubst.SelectedDate.Value, CbxAgentSortant.SelectedItem, CbxPosteRemplace.SelectedItem) Then
                 MsgBox("Données supprimées avec succès")
-                initializ()
-                CbxAgentSortant.SelectedIndex = -1
-                CbxPosteRemplace.SelectedIndex = -1
-                CbxAgentEntrant.SelectedIndex = -1
-                isSubstitloaded = False
-                If LoadPlanSubst() Then
-                    stpSubstContent.Visibility = Visibility.Visible
-                Else
-                    stpSubstContent.Visibility = Visibility.Collapsed
-                End If
-                ActivValidSubst()
-                dtpDebutSubst.SelectedDate = DebutDuMois(Today)
-                dtpFinSubst.SelectedDate = CDate("31/12/" & Today.Year)
-                stpSubstContent.Visibility = Visibility.Collapsed
+                Await RefreshAfterDatabaseMutationAsync(
+                    Sub()
+                        initializ()
+                        CbxAgentSortant.SelectedIndex = -1
+                        CbxPosteRemplace.SelectedIndex = -1
+                        CbxAgentEntrant.SelectedIndex = -1
+                        isSubstitloaded = False
+                        If LoadPlanSubst() Then
+                            stpSubstContent.Visibility = Visibility.Visible
+                        Else
+                            stpSubstContent.Visibility = Visibility.Collapsed
+                        End If
+                        ActivValidSubst()
+                        dtpDebutSubst.SelectedDate = DebutDuMois(Today)
+                        dtpFinSubst.SelectedDate = CDate("31/12/" & Today.Year)
+                        stpSubstContent.Visibility = Visibility.Collapsed
+                    End Sub)
             End If
         End If
         elpStatus.Visibility = Visibility.Collapsed

@@ -43,7 +43,7 @@
                 </Border>
             </Grid>
         </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.Row="1">
             <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#66000A1D">
                 <StackPanel>
                     <Grid >
@@ -295,7 +295,10 @@
 
 
                                 </StackPanel>
-                                <DataGrid x:Name="DgAgentListe" AutoGenerateColumns="True" >
+                                <DataGrid x:Name="DgAgentListe"
+                                          AutoGenerateColumns="True"
+                                          MaxHeight="500"
+                                          VerticalScrollBarVisibility="Visible">
                                     <DataGrid.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Modifier" Name="cmiModif"/>

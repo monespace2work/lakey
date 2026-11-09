@@ -120,7 +120,6 @@ Public Class usercAgentsEntree
         NewData = True
         iFormLoaded = False
 
-        maj()
         AfficheStat?.Invoke()
 
         FilmyCbx("select a.NumMatr from agents a ", icbxNumMatricul, iConnxStr)
@@ -169,7 +168,7 @@ Public Class usercAgentsEntree
         elpStatus.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
+    Private Async Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
         If dtpDateEmbauche.SelectedDate.HasValue AndAlso dtpDateEmbauche.SelectedDate = Today Then
             If MsgBox("La date <" & dtpDateEmbauche.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
                 dtpDateEmbauche.Focus()
@@ -181,7 +180,10 @@ Public Class usercAgentsEntree
                 Try
                     If SaveNewAgent() Then
                         MsgBox("Données enregistrer avec succès")
-                        InitializeMyFields()
+                        Await RefreshAfterDatabaseMutationAsync(Sub()
+                                                                    InitializeMyFields()
+                                                                    SearchAgent(BtnAgentListeSearch.Text)
+                                                                End Sub)
                         stpSaisie.Visibility = Visibility.Collapsed
                         btnNewAg.Visibility = Visibility.Visible
                     Else
@@ -198,7 +200,10 @@ Public Class usercAgentsEntree
                 Try
                     If SaveModifAgent() Then
                         MsgBox("Données modifiées avec succès")
-                        InitializeMyFields()
+                        Await RefreshAfterDatabaseMutationAsync(Sub()
+                                                                    InitializeMyFields()
+                                                                    SearchAgent(BtnAgentListeSearch.Text)
+                                                                End Sub)
                         stpSaisie.Visibility = Visibility.Collapsed
                         btnNewAg.Visibility = Visibility.Visible
                     Else
@@ -517,7 +522,7 @@ Public Class usercAgentsEntree
         elpStatus.Visibility = Visibility.Collapsed
     End Sub
 
-    Private Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
+    Private Async Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
         If dtpDateEmbauche.SelectedDate.HasValue AndAlso dtpDateEmbauche.SelectedDate = Today Then
             If MsgBox("La date <" & dtpDateEmbauche.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
                 dtpDateEmbauche.Focus()
@@ -529,7 +534,10 @@ Public Class usercAgentsEntree
                 Try
                     If SaveNewAgent() Then
                         MsgBox("Données enregistrer avec succès")
-                        InitializeMyFields()
+                        Await RefreshAfterDatabaseMutationAsync(Sub()
+                                                                    InitializeMyFields()
+                                                                    SearchAgent(BtnAgentListeSearch.Text)
+                                                                End Sub)
                         'stpSaisie.Visibility = Visibility.Collapsed
                         AfficheStat?.Invoke()
                     Else
@@ -546,7 +554,10 @@ Public Class usercAgentsEntree
                 Try
                     If SaveModifAgent() Then
                         MsgBox("Données modifiées avec succès")
-                        InitializeMyFields()
+                        Await RefreshAfterDatabaseMutationAsync(Sub()
+                                                                    InitializeMyFields()
+                                                                    SearchAgent(BtnAgentListeSearch.Text)
+                                                                End Sub)
                         'stpSaisie.Visibility = Visibility.Collapsed
                         'btnNewAg.Visibility = Visibility.Visible
                     Else
@@ -696,14 +707,17 @@ Public Class usercAgentsEntree
 
     End Sub
 
-    Private Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
+    Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgAgentListe.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             RefAg = rowView.Row.ItemArray(14).ToString
             If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " " & rowView.Row.ItemArray(1).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
                 If DeleteAgent() Then
                     MsgBox("Donnée supprimées avec succès ")
-                    InitializeMyFields()
+                    Await RefreshAfterDatabaseMutationAsync(Sub()
+                                                                InitializeMyFields()
+                                                                SearchAgent(BtnAgentListeSearch.Text)
+                                                            End Sub)
                 Else
                     MsgBox("Erreur de suppression")
                 End If
@@ -728,13 +742,16 @@ Public Class usercAgentsEntree
         End If
     End Sub
 
-    Private Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
+    Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
         'If SaveNewData("delete from Agents  where RefAgent=" & RefAg) Then InitialLoad()
         If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & NomPrenomAg & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
             If DeleteAgent() Then
                 MsgBox("Donnée supprimées avec succès ")
                 AfficheStat?.Invoke()
-                InitializeMyFields()
+                Await RefreshAfterDatabaseMutationAsync(Sub()
+                                                            InitializeMyFields()
+                                                            SearchAgent(BtnAgentListeSearch.Text)
+                                                        End Sub)
             Else
                 MsgBox("Erreur de suppression")
             End If

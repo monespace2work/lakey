@@ -1458,8 +1458,10 @@ Module DbManipulation
                     Dim iReader As SQLiteDataReader = iCmd.ExecuteReader
                     Dim iNb As Integer = 1
                     Do While iReader.Read
-                        iWord += Right("000" & iNb, 3) & ". " & iReader(0) & Environment.NewLine
-                        iNb += 1
+                        If iReader(0) <> "" Then
+                            iWord += Right("000" & iNb, 3) & ". " & iReader(0) & Environment.NewLine
+                            iNb += 1
+                        End If
                     Loop
                 End Using
             End Using

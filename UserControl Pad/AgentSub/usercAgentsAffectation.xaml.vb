@@ -1,6 +1,7 @@
 ﻿Imports System.Windows.Threading
 Imports System.Data.SQLite
 Imports System.Data
+Imports System.Threading.Tasks
 
 Public Class usercAgentsAffectation
     Public iConnxStr As String
@@ -12,6 +13,7 @@ Public Class usercAgentsAffectation
     Dim iFormLoaded As Boolean = False
     Dim RefAffect As Integer = 0
     Dim ChangeYN As Boolean = False
+    Dim IsSaving As Boolean = False
     Dim inputTimer As DispatcherTimer
     Dim retourDansMainWindow As Action
     Public Shared AfficheStat As Action
@@ -127,7 +129,6 @@ Public Class usercAgentsAffectation
         btnDeleteAg.Visibility = Visibility.Collapsed
         AfficheProfilUser()
         NewData = True
-        maj()
         AfficheStat?.Invoke()
         Dim istr As String = " select af.AgentAffect, format(af.DateAffect) as Début, format(af.FinAffect) as Fin, af.SiteAffect as Site, af.SiteAffectPrecedent, af.ObsAffect, af.IdAffec "
         istr += " from affectation af join agents ag on ag.NomPrenoms=af.AgentAffect "
@@ -158,38 +159,140 @@ Public Class usercAgentsAffectation
         ChangeYN = False
         elpStatus.Visibility = Visibility.Collapsed
     End Sub
-    Function SaveNewAffectation() As Boolean
-        'SaveNewAffectation = False
-        Dim istr As String = " insert into Affectation "
-        istr += "(IdAffec, AgentAffect, DateAffect, FinAffect, SiteAffectPrecedent,SiteAffect, ObsAffect) values "
-        istr += " ('" & RefAffect & "', "
-        istr += " '" & Apost(CbxNom.SelectedItem) & "', "
-        istr += " '" & dtpDebutAffect.SelectedDate.Value.ToString("yyyy-MM-dd") & "', "
-        istr += " '" & dtpFinAffect.SelectedDate.Value.ToString("yyyy-MM-dd") & "', "
-        istr += " '" & Apost(TbxAncienSite.Text) & "', "
-        istr += " '" & Apost(CbxNouveauSite.SelectedItem) & "', "
-        'istr += " '" & Apost(TbxNumCrt.Text) & "', "
-        istr += " '" & Apost(TbxObs.Text) & "') "
-        'MsgBox(istr)
-        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
-        SaveNewAffectation = SaveNewData(istr, iConnxStr)
-        If SaveNewAffectation Then Joper("SaveNewAffectation for " & CbxNom.SelectedItem, iConnxStr)
-    End Function
-    Function SaveModifAffect() As Boolean
-        SaveModifAffect = False
-        Dim istr As String = " update Affectation  set "
-        'istr += "(IdHS, Agent, SiteHS, DateHS, NbFaction, Obs) values "
-        istr += " AgentAffect='" & Apost(CbxNom.SelectedItem) & "', "
-        istr += " DateAffect='" & dtpDebutAffect.SelectedDate.Value.ToString("yyyy-MM-dd") & "', "
-        istr += " FinAffect='" & dtpFinAffect.SelectedDate.Value.ToString("yyyy-MM-dd") & "', "
-        istr += " SiteAffectPrecedent='" & Apost(TbxAncienSite.Text) & "', "
-        istr += " SiteAffect='" & Apost(CbxNouveauSite.SelectedItem) & "', "
-        istr += " ObsAffect='" & Apost(TbxObs.Text) & "'  "
-        istr += " where IdAffec=" & RefAffect & " "
-        'MsgBox(istr)
-        If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
-        SaveModifAffect = SaveNewData(istr, iConnxStr)
-        If SaveModifAffect Then Joper("SaveModifAffect for " & CbxNom.SelectedItem & " at " & RefAffect, iConnxStr)
+    Private Sub SaveAffectationTransaction(isNew As Boolean,
+                                           affectationId As Integer,
+                                           agentName As String,
+                                           startDate As Date,
+                                           endDate As Date,
+                                           previousSite As String,
+                                           newSite As String,
+                                           observations As String,
+                                           previousAffectationId As Integer,
+                                           closePreviousAffectation As Boolean)
+        Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
+        Using connection As New SQLiteConnection(writeConnectionString)
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                If isNew AndAlso closePreviousAffectation AndAlso previousAffectationId > 0 Then
+                    Using command As New SQLiteCommand(
+                        "UPDATE Affectation SET FinAffect = @endDate WHERE IdAffec = @id",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@endDate", startDate.AddDays(-1).ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@id", previousAffectationId)
+                        command.ExecuteNonQuery()
+                    End Using
+                End If
+
+                If isNew Then
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO Affectation (IdAffec, AgentAffect, DateAffect, FinAffect, SiteAffectPrecedent, SiteAffect, ObsAffect) " &
+                        "VALUES (@id, @agent, @startDate, @endDate, @previousSite, @newSite, @observations)",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@id", affectationId)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@startDate", startDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@endDate", endDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@previousSite", previousSite)
+                        command.Parameters.AddWithValue("@newSite", newSite)
+                        command.Parameters.AddWithValue("@observations", observations)
+                        command.ExecuteNonQuery()
+                    End Using
+                Else
+                    Using command As New SQLiteCommand(
+                        "UPDATE Affectation SET AgentAffect = @agent, DateAffect = @startDate, FinAffect = @endDate, " &
+                        "SiteAffectPrecedent = @previousSite, SiteAffect = @newSite, ObsAffect = @observations WHERE IdAffec = @id",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@startDate", startDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@endDate", endDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@previousSite", previousSite)
+                        command.Parameters.AddWithValue("@newSite", newSite)
+                        command.Parameters.AddWithValue("@observations", observations)
+                        command.Parameters.AddWithValue("@id", affectationId)
+                        command.ExecuteNonQuery()
+                    End Using
+                End If
+
+                Dim operation As String = If(isNew,
+                                             "SaveNewAffectation for " & agentName,
+                                             "SaveModifAffect for " & agentName & " at " & affectationId)
+                Using command As New SQLiteCommand(
+                    "INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)",
+                    connection,
+                    transaction)
+                    command.Parameters.AddWithValue("@operation", operation)
+                    command.Parameters.AddWithValue("@operator", UserName)
+                    command.ExecuteNonQuery()
+                End Using
+
+                transaction.Commit()
+            End Using
+        End Using
+
+        If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+    End Sub
+
+    Private Sub DeleteAffectationTransaction(affectationId As Integer)
+        Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
+        Using connection As New SQLiteConnection(writeConnectionString)
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Using command As New SQLiteCommand(
+                    "DELETE FROM Affectation WHERE IdAffec = @id",
+                    connection,
+                    transaction)
+                    command.Parameters.AddWithValue("@id", affectationId)
+                    command.ExecuteNonQuery()
+                End Using
+
+                Using command As New SQLiteCommand(
+                    "INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)",
+                    connection,
+                    transaction)
+                    command.Parameters.AddWithValue("@operation", "DeleteAff at " & affectationId)
+                    command.Parameters.AddWithValue("@operator", UserName)
+                    command.ExecuteNonQuery()
+                End Using
+
+                transaction.Commit()
+            End Using
+        End Using
+
+        If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+    End Sub
+
+    Private Async Function RefreshAfterMutationAsync() As Task
+        Dim mainWindow As MainWindow = TryCast(Application.Current?.MainWindow, MainWindow)
+        mainWindow?.BeginDatabaseLoading()
+        Try
+            Try
+                Dim synchronized As Boolean = Await Task.Run(
+                    Function()
+                        If LocalModeBb Then Return True
+                        Return maj()
+                    End Function)
+                If Not synchronized Then
+                    MessageBox.Show(
+                        "L'opération est enregistrée, mais la copie locale n'a pas pu être actualisée. Les données affichées peuvent être anciennes.",
+                        "Actualisation en attente",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning)
+                End If
+            Catch ex As Exception
+                MessageBox.Show(
+                    "L'opération est enregistrée, mais l'actualisation de la base locale a échoué : " & ex.Message,
+                    "Actualisation impossible",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning)
+            End Try
+
+            ResetValues()
+        Finally
+            mainWindow?.EndDatabaseLoading()
+        End Try
     End Function
 
 
@@ -294,15 +397,6 @@ Public Class usercAgentsAffectation
             MsgBox(ex.Message)
         End Try
     End Function
-    Public Function SaveFinAffectation(ByVal IdAffectation As Integer, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
-        SaveFinAffectation = False
-        Dim istr As String = ""
-        If dtpDebutAffect.SelectedDate.HasValue Then istr += "update affectation set FinAffect='" & dtpDebutAffect.SelectedDate.Value.AddDays(-1).ToString("yyyy-MM-dd") & "' where IdAffec like '" & IdAffectation & "' "
-        If istr <> "" Then
-            SaveFinAffectation = SaveNewData(istr, iConnxStr)
-        End If
-    End Function
-
     Private Sub btnNewData_Click(sender As Object, e As RoutedEventArgs) Handles btnNewData.Click
         stpSaisie.Visibility = Visibility.Visible
         btnNewData.Visibility = Visibility.Collapsed
@@ -326,54 +420,88 @@ Public Class usercAgentsAffectation
 
     End Sub
 
-    Private Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
-        If dtpDebutAffect.SelectedDate.HasValue AndAlso dtpDebutAffect.SelectedDate = Today Then
-            If MsgBox("La date <" & dtpDebutAffect.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
-                dtpDebutAffect.Focus()
-                Exit Sub
-            End If
-        End If
-        If MsgBox("Enregister ces données ?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-            If NewData Then
-                Try
-                    If dtpDebutAffect.SelectedDate.HasValue And dtpDebutAffect.SelectedDate.Value < DateFinDernierAffectation Then
-                        SaveFinAffectation(IdDernierAffectation, iConnxStr)
-                    End If
-                    If SaveNewAffectation() Then
-                        MsgBox("Données enregistrer avec succès")
-                        ResetValues()
-                        'stpSaisie.Visibility = Visibility.Collapsed
-                        'btnNewData.Visibility = Visibility.Visible
-                    Else
-                        MsgBox("Echec d'enregistrement de données")
-                        'stpSaisie.Visibility = Visibility.Visible
-                        'btnNewData.Visibility = Visibility.Collapsed
-                    End If
-
-                Catch ex As Exception
-                    MsgBox(ex.Message)
-                End Try
-            Else
-                Try
-                    If SaveModifAffect() Then
-                        MsgBox("Données modifier avec succès")
-                        'stpSaisie.Visibility = Visibility.Collapsed
-                        'btnNewData.Visibility = Visibility.Visible
-                        ResetValues()
-                    Else
-                        MsgBox("Erreur d'enregistrement")
-                        'stpSaisie.Visibility = Visibility.Visible
-                        'btnNewData.Visibility = Visibility.Collapsed
-                    End If
-                Catch ex As Exception
-                    MsgBox(ex.Message)
-                End Try
-
-            End If
-
-        End If
-
+    Private Async Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
+        Await SaveAffectationAsync(False)
     End Sub
+
+    Private Async Function SaveAffectationAsync(closeAfterSave As Boolean) As Task
+        If IsSaving Then Return
+
+        If Not dtpDebutAffect.SelectedDate.HasValue OrElse Not dtpFinAffect.SelectedDate.HasValue OrElse
+           CbxNom.SelectedItem Is Nothing OrElse CbxNumMatr.SelectedItem Is Nothing OrElse
+           CbxNouveauSite.SelectedItem Is Nothing OrElse String.IsNullOrWhiteSpace(TbxAncienSite.Text) Then
+            MessageBox.Show("Veuillez renseigner tous les champs obligatoires.")
+            Return
+        End If
+
+        Dim startDate As Date = dtpDebutAffect.SelectedDate.Value
+        Dim endDate As Date = dtpFinAffect.SelectedDate.Value
+        If endDate <= startDate Then
+            MessageBox.Show("La date de fin doit être postérieure à la date de début.")
+            Return
+        End If
+        If startDate = Today AndAlso
+           MsgBox("La date <" & startDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
+            dtpDebutAffect.Focus()
+            Return
+        End If
+        If MsgBox("Enregister ces données ?", MsgBoxStyle.YesNo) <> MsgBoxResult.Yes Then Return
+        If LocalModeBb Then MessageBox.Show("Vous travaillez en MODE LOCAL.")
+
+        Dim isNew As Boolean = NewData
+        Dim affectationId As Integer = RefAffect
+        Dim agentName As String = CbxNom.SelectedItem.ToString()
+        Dim previousSite As String = TbxAncienSite.Text
+        Dim newSite As String = CbxNouveauSite.SelectedItem.ToString()
+        Dim observations As String = TbxObs.Text
+        Dim previousAffectationId As Integer = IdDernierAffectation
+        Dim closePreviousAffectation As Boolean =
+            isNew AndAlso previousAffectationId > 0 AndAlso startDate < DateFinDernierAffectation
+        Dim mainWindow As MainWindow = TryCast(Application.Current?.MainWindow, MainWindow)
+
+        IsSaving = True
+        btnSave.IsEnabled = False
+        btnSaveContinue.IsEnabled = False
+        Try
+            Try
+                mainWindow?.BeginDatabaseLoading()
+                Await Task.Run(
+                    Sub()
+                        SaveAffectationTransaction(
+                            isNew,
+                            affectationId,
+                            agentName,
+                            startDate,
+                            endDate,
+                            previousSite,
+                            newSite,
+                            observations,
+                            previousAffectationId,
+                            closePreviousAffectation)
+                    End Sub)
+            Catch ex As Exception
+                MessageBox.Show("Échec de l'enregistrement de l'affectation : " & ex.Message)
+                Return
+            Finally
+                mainWindow?.EndDatabaseLoading()
+            End Try
+
+            MessageBox.Show(If(isNew, "Données enregistrées avec succès.", "Données modifiées avec succès."))
+            Try
+                Await RefreshAfterMutationAsync()
+                If closeAfterSave Then
+                    stpSaisie.Visibility = Visibility.Collapsed
+                    btnNewData.Visibility = Visibility.Visible
+                End If
+            Catch ex As Exception
+                MessageBox.Show("L'affectation a été enregistrée, mais l'actualisation de l'écran a échoué : " & ex.Message)
+            End Try
+        Finally
+            btnSave.IsEnabled = True
+            btnSaveContinue.IsEnabled = True
+            IsSaving = False
+        End Try
+    End Function
 
     Private Sub BtnAgentListeSearch_TextChanged(sender As Object, e As TextChangedEventArgs) Handles BtnAgentListeSearch.TextChanged
         inputTimer.Stop()
@@ -430,40 +558,42 @@ Public Class usercAgentsAffectation
 
     End Sub
 
-    Private Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
+    Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
         If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & CbxNom.SelectedItem & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
-            If DeleteAff() Then
-                MsgBox("Donnée supprimées avec succès ")
-                ResetValues()
-            Else
-                MsgBox("Erreur de suppression")
-            End If
+            Await DeleteAffectationAsync(RefAffect)
         End If
     End Sub
-    Function DeleteAff() As Boolean
-        DeleteAff = False
-        Dim istr As String = " delete from affectation "
-        istr += " where IdAffec=" & RefAffect & " "
-        DeleteAff = SaveNewData(istr, iConnxStr)
-        If DeleteAff Then Joper("DeleteAff at " & RefAffect, iConnxStr)
-    End Function
 
-    Private Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
+    Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgAgentAffectation.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            RefAffect = rowView.Row.ItemArray(6).ToString
+            Dim affectationId As Integer = Convert.ToInt32(rowView.Row.ItemArray(6))
             If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
-                If DeleteAff() Then
-                    MsgBox("Donnée supprimées avec succès ")
-                    ResetValues()
-                Else
-                    MsgBox("Erreur de suppression")
-                End If
+                Await DeleteAffectationAsync(affectationId)
             End If
-
         End If
-
     End Sub
+
+    Private Async Function DeleteAffectationAsync(affectationId As Integer) As Task
+        If IsSaving Then Return
+
+        IsSaving = True
+        btnSave.IsEnabled = False
+        btnSaveContinue.IsEnabled = False
+        btnDeleteAg.IsEnabled = False
+        Try
+            Await Task.Run(Sub() DeleteAffectationTransaction(affectationId))
+            MessageBox.Show("Donnée supprimée avec succès.")
+            Await RefreshAfterMutationAsync()
+        Catch ex As Exception
+            MessageBox.Show("Échec de la suppression de l'affectation : " & ex.Message)
+        Finally
+            btnSave.IsEnabled = True
+            btnSaveContinue.IsEnabled = True
+            btnDeleteAg.IsEnabled = True
+            IsSaving = False
+        End Try
+    End Function
 
     Private Sub BtnAgentListeSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles BtnAgentListeSearch.KeyDown
         If e.Key = Key.Enter Then
@@ -488,53 +618,8 @@ Public Class usercAgentsAffectation
         InialiseLoad()
     End Sub
 
-    Private Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
-        If dtpDebutAffect.SelectedDate.HasValue AndAlso dtpDebutAffect.SelectedDate = Today Then
-            If MsgBox("La date <" & dtpDebutAffect.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
-                dtpDebutAffect.Focus()
-                Exit Sub
-            End If
-        End If
-        If MsgBox("Enregister ces données ?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-            If NewData Then
-                Try
-                    If dtpDebutAffect.SelectedDate.HasValue And dtpDebutAffect.SelectedDate.Value < DateFinDernierAffectation Then
-                        SaveFinAffectation(IdDernierAffectation, iConnxStr)
-                    End If
-                    If SaveNewAffectation() Then
-                        MsgBox("Données enregistrer avec succès")
-                        ResetValues()
-                        stpSaisie.Visibility = Visibility.Collapsed
-                        btnNewData.Visibility = Visibility.Visible
-                    Else
-                        MsgBox("Echec d'enregistrement de données")
-                        stpSaisie.Visibility = Visibility.Visible
-                        btnNewData.Visibility = Visibility.Collapsed
-                    End If
-
-                Catch ex As Exception
-                    MsgBox(ex.Message)
-                End Try
-            Else
-                Try
-                    If SaveModifAffect() Then
-                        MsgBox("Données modifier avec succès")
-                        stpSaisie.Visibility = Visibility.Collapsed
-                        btnNewData.Visibility = Visibility.Visible
-                        ResetValues()
-                    Else
-                        MsgBox("Erreur d'enregistrement")
-                        stpSaisie.Visibility = Visibility.Visible
-                        btnNewData.Visibility = Visibility.Collapsed
-                    End If
-                Catch ex As Exception
-                    MsgBox(ex.Message)
-                End Try
-
-            End If
-
-        End If
-
+    Private Async Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
+        Await SaveAffectationAsync(True)
     End Sub
 
     Private Sub CbxNom_LostFocus(sender As Object, e As RoutedEventArgs) Handles CbxNom.LostFocus

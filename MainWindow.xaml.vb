@@ -342,6 +342,10 @@ Class MainWindow
             SetThemeColor("ThemeAccentBrush", "#00CFCB")
             SetThemeColor("ThemeAccentSoftBrush", "#29434B")
             SetThemeColor("ThemeBorderBrush", "#60758A")
+            SetThemeColor("ThemeScrollBarTrackBrush", "#1A2635")
+            SetThemeColor("ThemeScrollBarTrackBorderBrush", "#2D4154")
+            SetThemeColor("ThemeScrollBarThumbBrush", "#62788D")
+            SetThemeColor("ThemeScrollBarThumbHoverBrush", "#8299AD")
             SetThemeColor("ThemeRowBrush", "#26364A")
             SetThemeColor("ThemeAlternateRowBrush", "#35485E")
             SetThemeColor("ThemeTablePositiveRowBrush", "#174A3A")
@@ -440,6 +444,10 @@ Class MainWindow
             SetThemeColor("ThemeAccentBrush", "#00CFCB")
             SetThemeColor("ThemeAccentSoftBrush", "#D1F9F6")
             SetThemeColor("ThemeBorderBrush", "#8DA2B1")
+            SetThemeColor("ThemeScrollBarTrackBrush", "#F1F3F5")
+            SetThemeColor("ThemeScrollBarTrackBorderBrush", "#CBD1D6")
+            SetThemeColor("ThemeScrollBarThumbBrush", "#858E96")
+            SetThemeColor("ThemeScrollBarThumbHoverBrush", "#667987")
             SetThemeColor("ThemeRowBrush", "#FFFFFF")
             SetThemeColor("ThemeAlternateRowBrush", "#D9E4EC")
             SetThemeColor("ThemeTablePositiveRowBrush", "#FFDEFFE2")
@@ -629,9 +637,23 @@ Class MainWindow
             Dim iText As String = tbxRappel.Text
             Dim irappel As String = RappelActifs(LocalConnxStr)
             Dim CongeRapel As String = ListePermissionCongeEnAttente("permis", LocalConnxStr)
-            If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== PERMISSIONS en attente ===" & CongeRapel
+            'If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== PERMISSIONS en attente ===" & CongeRapel
             CongeRapel = ListePermissionCongeEnAttente("cong", LocalConnxStr)
-            If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== CONGES en attente ===" & CongeRapel
+            'If CongeRapel <> "" Then irappel += Environment.NewLine & Environment.NewLine & "=== CONGES en attente ===" & CongeRapel
+            If irappel <> "" Then
+                If CongeRapel <> "" Then
+                    irappel += Environment.NewLine & Environment.NewLine & "=== CONGES en attente ===" & CongeRapel
+                Else
+                    'irappel += Environment.NewLine & Environment.NewLine & "=== CONGES en attente ===" & CongeRapel
+                End If
+            Else
+                If CongeRapel <> "" Then
+                    irappel = "=== CONGES en attente ===" & CongeRapel
+                Else
+
+                End If
+
+            End If
             If irappel <> "" Then
                 iText += Environment.NewLine & Environment.NewLine & irappel
                 Try

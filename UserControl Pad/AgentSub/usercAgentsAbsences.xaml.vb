@@ -117,7 +117,6 @@ Public Class usercAgentsAbsences
         CbxNom.SelectedIndex = -1
         'CbxNom.Text = ""
         AfficheMemos?.Invoke()
-        maj()
         Dim istr As String = " select ab.NomPrenom, format(ab.DateDebut) as Début,format(ab.DateFin) as Fin, (julianday(ab.DateFin) - julianday(ab.DateDebut) + 1) as Durée,ab.Motif,ab.Obs,ab.IdOp  "
         istr += " from absences ab join agents ag on ag.NomPrenoms=ab.NomPrenom where ab.DateDebut>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "'"
         istr += " order by ag.Actif desc, ab.DateDebut desc, ab.NomPrenom "
@@ -156,7 +155,6 @@ Public Class usercAgentsAbsences
 
         AfficheMemos?.Invoke()
 
-        maj()
         Dim istr As String = "SELECT A.NomPrenom,A.Motif,date(A.DebutDmd) Debut,date(A.FinDmd) Fin ,date(A.DateDmd) DateDmd,A.Obs,A.IdOp Ref FROM ABSENCES A WHERE A.StdBy=1 "
         istr += " ORDER BY A.Motif,A.DateDmd,  A.NomPrenom"
         dgEnAttente.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
@@ -297,7 +295,7 @@ Public Class usercAgentsAbsences
         TbxDuree.Text = NbJrs(dtpDebut, dtpFin)
     End Sub
 
-    Private Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
+    Private Async Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
         If dtpDebut.SelectedDate.HasValue AndAlso dtpDebut.SelectedDate = Today Then
             If MsgBox("La date <" & dtpDebut.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
                 dtpDebut.Focus()
@@ -310,7 +308,7 @@ Public Class usercAgentsAbsences
                 Try
                     If SaveNewAbsences() Then
                         MsgBox("Données enregistrer avec succès")
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                         stpSaisie.Visibility = Visibility.Collapsed
                         btnNewData.Visibility = Visibility.Visible
                         btnReduir.Visibility = Visibility.Collapsed
@@ -330,7 +328,7 @@ Public Class usercAgentsAbsences
                         MsgBox("Données modifier avec succès")
                         stpSaisie.Visibility = Visibility.Collapsed
                         btnNewData.Visibility = Visibility.Visible
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                     Else
                         MsgBox("Erreur d'enregistrement")
                         stpSaisie.Visibility = Visibility.Visible
@@ -416,7 +414,7 @@ Public Class usercAgentsAbsences
     End Function
 
 
-    Private Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
+    Private Async Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
         If dtpDebut.SelectedDate.HasValue AndAlso dtpDebut.SelectedDate = Today Then
             If MsgBox("La date <" & dtpDebut.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
                 dtpDebut.Focus()
@@ -429,7 +427,7 @@ Public Class usercAgentsAbsences
                 Try
                     If SaveNewAbsences() Then
                         MsgBox("Données enregistrer avec succès")
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                         'stpSaisie.Visibility = Visibility.Collapsed
                         'btnNewData.Visibility = Visibility.Visible
                     Else
@@ -447,7 +445,7 @@ Public Class usercAgentsAbsences
                         MsgBox("Données modifier avec succès")
                         'stpSaisie.Visibility = Visibility.Collapsed
                         'btnNewData.Visibility = Visibility.Visible
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                     Else
                         MsgBox("Erreur d'enregistrement")
                         'stpSaisie.Visibility = Visibility.Visible
@@ -570,11 +568,11 @@ Public Class usercAgentsAbsences
 
     End Sub
 
-    Private Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
+    Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
         If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & CbxNom.SelectedItem & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
             If DeleteAbs() Then
                 MsgBox("Donnée supprimées avec succès ")
-                ResetValues()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             Else
                 MsgBox("Erreur de suppression")
             End If
@@ -589,14 +587,14 @@ Public Class usercAgentsAbsences
         If DeleteAbs Then Joper("DeleteAbs for " & CbxNom.SelectedItem & " at " & RefAbs, iConnxStr)
     End Function
 
-    Private Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
+    Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgAgentAbsence.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             RefAbs = rowView.Row.ItemArray(5).ToString
             If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
                 If DeleteAbs() Then
                     MsgBox("Donnée supprimées avec succès ")
-                    ResetValues()
+                    Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                 Else
                     MsgBox("Erreur de suppression")
                 End If
@@ -818,22 +816,22 @@ Public Class usercAgentsAbsences
         End If
     End Sub
 
-    Private Sub btnSaveSdb_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveSdb.Click
+    Private Async Sub btnSaveSdb_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveSdb.Click
         If chbEnAttente.IsChecked And NewData Then
             If SaveNewAbsencesStb() Then
                 MsgBox("Succès d'enregistrement ")
-                ResetValuesSdb()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValuesSdb())
             End If
         ElseIf chbEnAttente.IsChecked And Not NewData Then
             If SaveModifAbsStb() Then
                 MsgBox("Succès de modification ")
-                ResetValuesSdb()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValuesSdb())
             End If
 
         End If
     End Sub
 
-    Private Sub btnValideDecision_Click(sender As Object, e As RoutedEventArgs) Handles btnValideDecision.Click
+    Private Async Sub btnValideDecision_Click(sender As Object, e As RoutedEventArgs) Handles btnValideDecision.Click
         If chbAccord.IsChecked Then
             If dtpDebut.SelectedDate.HasValue AndAlso dtpDebut.SelectedDate = Today Then
                 If MsgBox("La date <" & dtpDebut.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
@@ -847,7 +845,7 @@ Public Class usercAgentsAbsences
                     Try
                         If SaveNewAbsences() Then
                             MsgBox("Données enregistrer avec succès")
-                            ResetValues()
+                            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                             stpSaisie.Visibility = Visibility.Collapsed
                             btnNewData.Visibility = Visibility.Visible
                             btnReduir.Visibility = Visibility.Collapsed
@@ -867,7 +865,7 @@ Public Class usercAgentsAbsences
                             MsgBox("Données modifier avec succès")
                             stpSaisie.Visibility = Visibility.Collapsed
                             btnNewData.Visibility = Visibility.Visible
-                            ResetValues()
+                            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                         Else
                             MsgBox("Erreur d'enregistrement")
                             stpSaisie.Visibility = Visibility.Visible
@@ -895,7 +893,7 @@ Public Class usercAgentsAbsences
             If MsgBox("Enregister ces données ?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
                 If SaveNewData("update Absences  set  StdBy=0 where IdOp=" & RefAbs, iConnxStr) Then
                     MsgBox("Succès d'enregistrement")
-                    ResetValuesSdb()
+                    Await RefreshAfterDatabaseMutationAsync(Sub() ResetValuesSdb())
                 Else
                     MsgBox("Echec d'enregistrement")
                 End If

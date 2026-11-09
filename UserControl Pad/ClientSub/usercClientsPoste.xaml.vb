@@ -69,7 +69,6 @@ Public Class usercClientsPoste
 
     Sub ResetValues()
         elpStatus.Visibility = Visibility.Visible
-        maj()
 
         Try
             btnSave.Content = "Enregistrer et fermer"
@@ -438,13 +437,13 @@ Public Class usercClientsPoste
         ActivSaveBtn()
     End Sub
 
-    Private Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
+    Private Async Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
         If NewData Then
             If MsgBox("Enregister ces données ?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
                 Try
                     If SaveNewPoste() Then
                         MsgBox("Données enregistrer avec succès")
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                         stpSaisie.Visibility = Visibility.Collapsed
                         btnNewData.Visibility = Visibility.Visible
                     Else
@@ -462,7 +461,7 @@ Public Class usercClientsPoste
                 MsgBox("Données modifier avec succès")
                 stpSaisie.Visibility = Visibility.Collapsed
                 btnNewData.Visibility = Visibility.Visible
-                ResetValues()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             Else
                 MsgBox("Erreur d'enregistrement")
                 stpSaisie.Visibility = Visibility.Visible
@@ -472,13 +471,13 @@ Public Class usercClientsPoste
 
     End Sub
 
-    Private Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
+    Private Async Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
         If NewData Then
             If MsgBox("Enregister ces données ?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
                 Try
                     If SaveNewPoste() Then
                         MsgBox("Données enregistrer avec succès")
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                         'stpSaisie.Visibility = Visibility.Collapsed
                         'btnNewData.Visibility = Visibility.Visible
                     Else
@@ -496,7 +495,7 @@ Public Class usercClientsPoste
                 MsgBox("Données modifier avec succès")
                 'stpSaisie.Visibility = Visibility.Collapsed
                 'btnNewData.Visibility = Visibility.Visible
-                ResetValues()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             Else
                 MsgBox("Erreur d'enregistrement")
                 'stpSaisie.Visibility = Visibility.Visible
@@ -561,14 +560,14 @@ Public Class usercClientsPoste
         LoadRowItems(rowView)
     End Sub
 
-    Private Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
+    Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgClientsPoste.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             RefPst = rowView.Row.ItemArray(6).ToString
             If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
                 If DeletePoste() Then
                     MsgBox("Donnée supprimées avec succès ")
-                    ResetValues()
+                    Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                 Else
                     MsgBox("Erreur de suppression")
                 End If
@@ -577,11 +576,11 @@ Public Class usercClientsPoste
 
     End Sub
 
-    Private Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
+    Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
         If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & TbxDesignation.Text & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
             If DeletePoste() Then
                 MsgBox("Donnée supprimées avec succès ")
-                ResetValues()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             Else
                 MsgBox("Erreur de suppression")
             End If

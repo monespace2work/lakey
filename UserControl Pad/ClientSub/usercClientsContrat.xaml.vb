@@ -80,7 +80,6 @@ Public Class usercClientsContrat
         btnDeleteAg.Visibility = Visibility.Collapsed
         AfficheProfilUser()
 
-        maj()
         AfficheStat?.Invoke()
         Dim istr As String = " SELECT c.NomClient, c.Actif,c.TypeClient, c.MontantFacturationUnitaire as MontantUnit, c.TypeFacturation,c.Ville,c.Adresse, format(c.DateDebutCollabor) as DateDebut,format(c.DateFinCollabor) as DateFin,c.DescriptionClient,c.Obs,c.RefCtr "
         istr += " from Client c "
@@ -397,7 +396,7 @@ Public Class usercClientsContrat
 
     End Sub
 
-    Private Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
+    Private Async Sub btnSave_Click(sender As Object, e As RoutedEventArgs) Handles btnSave.Click
         If dtpDebut.SelectedDate.HasValue AndAlso dtpDebut.SelectedDate = Today Then
             If MsgBox("La date <" & dtpDebut.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
                 dtpDebut.Focus()
@@ -409,7 +408,7 @@ Public Class usercClientsContrat
                 Try
                     If SaveNewContrat() Then
                         MsgBox("Données enregistrer avec succès")
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                         stpSaisie.Visibility = Visibility.Collapsed
                         btnNewData.Visibility = Visibility.Visible
                     Else
@@ -427,7 +426,7 @@ Public Class usercClientsContrat
                 MsgBox("Données modifier avec succès")
                 stpSaisie.Visibility = Visibility.Collapsed
                 btnNewData.Visibility = Visibility.Visible
-                ResetValues()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             Else
                 MsgBox("Erreur d'enregistrement")
                 stpSaisie.Visibility = Visibility.Visible
@@ -438,7 +437,7 @@ Public Class usercClientsContrat
 
     End Sub
 
-    Private Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
+    Private Async Sub btnSaveContinue_Click(sender As Object, e As RoutedEventArgs) Handles btnSaveContinue.Click
         If dtpDebut.SelectedDate.HasValue AndAlso dtpDebut.SelectedDate = Today Then
             If MsgBox("La date <" & dtpDebut.SelectedDate & "> est elle correcte ?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
                 dtpDebut.Focus()
@@ -450,7 +449,7 @@ Public Class usercClientsContrat
                 Try
                     If SaveNewContrat() Then
                         MsgBox("Données enregistrer avec succès")
-                        ResetValues()
+                        Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                         'stpSaisie.Visibility = Visibility.Collapsed
                         'btnNewData.Visibility = Visibility.Visible
                     Else
@@ -468,7 +467,7 @@ Public Class usercClientsContrat
                 MsgBox("Données modifier avec succès")
                 'stpSaisie.Visibility = Visibility.Collapsed
                 'btnNewData.Visibility = Visibility.Visible
-                ResetValues()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             Else
                 MsgBox("Erreur d'enregistrement")
                 'stpSaisie.Visibility = Visibility.Visible
@@ -539,25 +538,25 @@ Public Class usercClientsContrat
     End Function
 
 
-    Private Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
+    Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
         If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & TbxNom.Text & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
             If DeleteCtr() Then
                 MsgBox("Donnée supprimées avec succès ")
-                InialiseLoad()
+                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             Else
                 MsgBox("Erreur de suppression")
             End If
         End If
     End Sub
 
-    Private Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
+    Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgClientsContrats.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             RefCrt = rowView.Row.ItemArray(11).ToString
             If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
                 If DeleteCtr() Then
                     MsgBox("Donnée supprimées avec succès ")
-                    ResetValues()
+                    Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
                 Else
                     MsgBox("Erreur de suppression")
                 End If

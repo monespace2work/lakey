@@ -223,20 +223,31 @@
 
                                     </Grid>
 
-                                    <ScrollViewer x:Name="scrAgentsActifs"  MinHeight="150"  MaxHeight="250" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                        <DataGrid x:Name="dgAgentActifs" AutoGenerateColumns="True" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}">
-                                            <DataGrid.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Resumé" Name="cmiResume" />
-                                                    <MenuItem Header="Contrat" Name="cmiContrat" />
-                                                    <MenuItem Header="Affectation" Name="cmiAffectation"/>
-                                                    <MenuItem Header="Absences/Permissions" Name="cmiAbsence"/>
-                                                    <MenuItem Header="Heures supplémentaire" Name="cmiHeureSup"/>
-                                                    <MenuItem Header="Congés dus" Name="cmiCongés" IsEnabled="False"/>
-                                                </ContextMenu>
-                                            </DataGrid.ContextMenu>
-                                        </DataGrid>
-                                    </ScrollViewer>
+                                    <DataGrid x:Name="dgAgentActifs" MinHeight="150" MaxHeight="250"
+                                              AutoGenerateColumns="False"
+                                              VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Auto"
+                                              Background="{DynamicResource ThemeCardBrush}"
+                                              Foreground="{DynamicResource ThemeInkBrush}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Nom et prénoms" Binding="{Binding NomPrenoms}" Width="2*" MinWidth="140"/>
+                                            <DataGridTextColumn Header="Contacts" Binding="{Binding Contacts}" Width="*" MinWidth="100"/>
+                                            <DataGridTextColumn Header="Matricule" Binding="{Binding NumMatr}" Width="*" MinWidth="90"/>
+                                            <DataGridTextColumn Header="Site" Binding="{Binding SiteAffect}" Width="*" MinWidth="110"/>
+                                            <DataGridTextColumn Header="Localisation" Binding="{Binding Localisation}" Width="*" MinWidth="110"/>
+                                            <DataGridTextColumn Header="Date d'entrée" Binding="{Binding DateEntree}" Width="*" MinWidth="100"/>
+                                        </DataGrid.Columns>
+                                        <DataGrid.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Resumé" Name="cmiResume" />
+                                                <MenuItem Header="Contrat" Name="cmiContrat" />
+                                                <MenuItem Header="Affectation" Name="cmiAffectation"/>
+                                                <MenuItem Header="Absences/Permissions" Name="cmiAbsence"/>
+                                                <MenuItem Header="Heures supplémentaire" Name="cmiHeureSup"/>
+                                                <MenuItem Header="Congés dus" Name="cmiCongés" IsEnabled="False"/>
+                                            </ContextMenu>
+                                        </DataGrid.ContextMenu>
+                                    </DataGrid>
 
                                 </StackPanel>
                             </Border>
