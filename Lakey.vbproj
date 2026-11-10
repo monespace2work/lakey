@@ -644,8 +644,6 @@
   <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" />
   <Import Project="packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.targets" Condition="Exists('packages\SourceGear.sqlite3.3.53.4\build\net471\SourceGear.sqlite3.targets')" />
   <Target Name="CopySourceGearSqliteNativeForX64" AfterTargets="Build" Condition="'$(Platform)' == 'x64'">
-    <Copy SourceFiles="packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll"
-          DestinationFiles="$(TargetDir)e_sqlite3.dll"
-          Condition="Exists('packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll')" />
+    <Copy SourceFiles="packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll" DestinationFiles="$(TargetDir)e_sqlite3.dll" Condition="Exists('packages\SourceGear.sqlite3.3.53.4\runtimes\win-x64\native\e_sqlite3.dll')" />
   </Target>
 </Project>

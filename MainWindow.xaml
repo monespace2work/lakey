@@ -170,7 +170,7 @@
                                 <ColumnDefinition MinWidth="90"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Right" MinHeight="35">
-                                <TextBlock x:Name="tbkSteName" Text="Ma Socité" Margin="5,0" VerticalAlignment="Center" FontSize="16" TextDecorations="{x:Null}" Foreground="{DynamicResource ThemeHeaderTextBrush}" Background="#7F000000" Padding="5,0" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="tbkSteName" Text="Ma Société" Margin="5,0" VerticalAlignment="Center" FontSize="16" TextDecorations="{x:Null}" Foreground="{DynamicResource ThemeHeaderTextBrush}" Background="#7F000000" Padding="5,0" TextWrapping="Wrap"/>
                                 <TextBlock x:Name="tbModeConnexion" Text="MODE LOCAL" Visibility="Collapsed"
                                            Margin="5,0" Padding="7,4" VerticalAlignment="Center"
                                            Background="#FFFFD166" Foreground="#FF5B2100" FontWeight="Bold"
@@ -206,7 +206,7 @@
                                             <Button x:Name="btnRacPlanningAg" Content="Planning" Style="{StaticResource AgentQuickAccessButton}"/>
                                             <Button x:Name="btnRacAbsenceAg" Content="Absence/Permission/Congé" Style="{StaticResource AgentQuickAccessButton}"/>
                                             <Button x:Name="btnRacHeureSupAg" Content="HeuresSup" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacCalCong" Content="Point - Congés" Style="{StaticResource CongesQuickAccessButton}"/>
+                                            <Button x:Name="btnRacCalCong" Content="Point - Congés" Style="{StaticResource CongesQuickAccessButton}" Background="#FF170A3A" Foreground="White"/>
                                             <Button x:Name="btnRacSortieAg" Content="Sortie" Style="{StaticResource AgentQuickAccessButton}"/>
                                         </StackPanel>
                                     </ScrollViewer>
