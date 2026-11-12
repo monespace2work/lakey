@@ -46,9 +46,9 @@
         </Border>
 
         <Border  BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="1" >
-
-            <StackPanel   >
-                <StackPanel >
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <StackPanel>
                     <Grid Background="#FF150452">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition MaxWidth="350"/>
@@ -163,10 +163,11 @@
 
                     </StackPanel>
                     
-                    <DataGrid x:Name="DgAgentSortie" AutoGenerateColumns="True" ScrollViewer.CanContentScroll="True" />
-                </StackPanel>
+                        <DataGrid x:Name="DgAgentSortie" AutoGenerateColumns="True" MaxHeight="500" VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" />
+                    </StackPanel>
 
-            </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
     </Grid>

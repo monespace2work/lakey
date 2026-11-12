@@ -43,7 +43,7 @@
                 </Border>
             </Grid>
         </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.Row="1">
             <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#FF000A1D">
                 <StackPanel>
                     <Grid >
@@ -59,7 +59,7 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition MaxWidth="550" Width="299*"/>
-                                    <ColumnDefinition Width="80*"/>
+                                    <ColumnDefinition Width="20*"/>
                                     <ColumnDefinition Width="218*"/>
                                     <ColumnDefinition MinWidth="200" Width="200*"/>
                                 </Grid.ColumnDefinitions>

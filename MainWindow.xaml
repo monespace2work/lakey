@@ -306,10 +306,10 @@
             <Border Grid.Column="2">
                 <!--TextBlock x:Name="tblTitrCentral" Text="TITRE CENTRAL" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontFamily="Lucida Bright" FontWeight="Bold" /-->
                 <ScrollViewer x:Name="bdrColonneCentre" Background="{DynamicResource ThemeContentSurfaceBrush}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="12" PreviewMouseWheel="bdrColonneCentre_PreviewMouseWheel">
-                    <StackPanel>
+                    <Grid>
                         <Ellipse x:Name="elpsLoadingCentral" Width="10" Height="10" Fill="Orange" Visibility="Collapsed"/>
                         <ContentControl x:Name="cctrlCentral" Background="Transparent"/>
-                    </StackPanel>
+                    </Grid>
                 </ScrollViewer>
 
             </Border>

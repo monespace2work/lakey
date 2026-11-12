@@ -1,5 +1,7 @@
 ﻿Imports System.Windows.Threading
 Imports System.Data
+Imports System.ComponentModel
+Imports System.Windows.Data
 
 Class MainWindow
     'Dim iUsrcEnntree As New usercAgentsEntree(AddressOf LoadEntree)
@@ -18,6 +20,9 @@ Class MainWindow
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
+
+        Dim contentDescriptor = DependencyPropertyDescriptor.FromProperty(ContentControl.ContentProperty, GetType(ContentControl))
+        contentDescriptor.AddValueChanged(cctrlCentral, AddressOf CentralContentChanged)
 
         AddHandler userControlLoadingTimer.Tick, AddressOf UserControlLoadingTimer_Tick
 
@@ -131,6 +136,8 @@ Class MainWindow
     End Function
 
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+        CentralContentChanged(cctrlCentral, EventArgs.Empty)
+
         Await RunWithLoadingAsync(
         Sub()
             tbxVersion.Text = "V" & My.Application.Info.Version.ToString
@@ -161,6 +168,30 @@ Class MainWindow
         End Sub,
         "Ouverture de la fenêtre principale...")
         'If Not SessLogin() Then Me.Close()
+    End Sub
+
+    Private Sub CentralContentChanged(sender As Object, e As EventArgs)
+        Dim keepHeaderVisible =
+            TypeOf cctrlCentral.Content Is usercAgentsAbsences OrElse
+            TypeOf cctrlCentral.Content Is usercAgentsAffectation OrElse
+            TypeOf cctrlCentral.Content Is usercAgentsConges OrElse
+            TypeOf cctrlCentral.Content Is usercAgentsContrat OrElse
+            TypeOf cctrlCentral.Content Is usercAgentsEntree OrElse
+            TypeOf cctrlCentral.Content Is usercAgentsHeureSupp OrElse
+            TypeOf cctrlCentral.Content Is usercAgentsPlanning OrElse
+            TypeOf cctrlCentral.Content Is usercAgentsSortie
+
+        If keepHeaderVisible Then
+            bdrColonneCentre.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled
+            BindingOperations.SetBinding(
+                cctrlCentral,
+                FrameworkElement.HeightProperty,
+                New Binding(NameOf(ScrollViewer.ViewportHeight)) With {.Source = bdrColonneCentre})
+        Else
+            BindingOperations.ClearBinding(cctrlCentral, FrameworkElement.HeightProperty)
+            bdrColonneCentre.VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+        End If
+        bdrColonneCentre.ScrollToTop()
     End Sub
 
     Private Async Function RunWithLoadingAsync(loadAction As Action,
