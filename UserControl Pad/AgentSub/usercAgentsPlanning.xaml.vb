@@ -97,6 +97,136 @@ Public Class usercAgentsPlanning
         Dispatcher.Invoke(Sub() SearchPlanning(BtnAgentListeSearch.Text))
     End Sub
 
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer le planning depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            If Not CsvHasColumn(table, "Agent", "NomPrenoms") OrElse
+               Not CsvHasColumn(table, "Date", "DatePlan") OrElse
+               Not CsvHasColumn(table, "Poste", "Code") Then
+                Throw New FormatException("Colonnes obligatoires : Agent, Date et Poste (code ou désignation).")
+            End If
+            If table.Rows.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+            If MessageBox.Show(
+                "Importer " & table.Rows.Count & " affectation(s) au planning ? Toute l'opération sera annulée si une ligne est invalide ou en doublon.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            Await Task.Run(Sub() ImportPlanningCsv(table))
+            Await RefreshAfterDatabaseMutationAsync(Sub() initializ())
+            MessageBox.Show(table.Rows.Count & " affectation(s) au planning importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV du planning a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Sub ImportPlanningCsv(table As DataTable)
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim seenEntries As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                For index As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(index)
+                    Dim rowNumber As Integer = index + 2
+                    Dim agentInput As String = CsvValue(row, "Agent", "NomPrenoms")
+                    Dim planDate As DateTime = CsvDateValue(CsvValue(row, "Date", "DatePlan"), rowNumber, "Date")
+                    Dim postInput As String = CsvValue(row, "Poste", "Code")
+                    If String.IsNullOrWhiteSpace(agentInput) OrElse String.IsNullOrWhiteSpace(postInput) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : l'agent et le poste sont obligatoires.")
+                    End If
+
+                    Dim agentName As String
+                    Using command As New SQLiteCommand(
+                        "SELECT NomPrenoms FROM agents WHERE Actif = 1 AND (NomPrenoms = @agent COLLATE NOCASE OR NumMatr = @agent COLLATE NOCASE) LIMIT 1",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentInput)
+                        agentName = Convert.ToString(command.ExecuteScalar())
+                    End Using
+                    If String.IsNullOrWhiteSpace(agentName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
+                    End If
+
+                    Dim postCode As String = Nothing
+                    Dim postSite As String = Nothing
+                    Using command As New SQLiteCommand(
+                        "SELECT Code, NomSite FROM postes WHERE Actif = 1 AND " &
+                        "(Code = @poste COLLATE NOCASE OR Designation = @poste COLLATE NOCASE OR Code || '# ' || Designation = @poste COLLATE NOCASE) LIMIT 1",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@poste", postInput)
+                        Using reader As SQLiteDataReader = command.ExecuteReader()
+                            If reader.Read() Then
+                                postCode = Convert.ToString(reader("Code"))
+                                postSite = Convert.ToString(reader("NomSite"))
+                            End If
+                        End Using
+                    End Using
+                    If String.IsNullOrWhiteSpace(postCode) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : poste actif introuvable (« " & postInput & " »).")
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM Affectation WHERE AgentAffect = @agent AND SiteAffect = @site AND DateAffect <= @date AND FinAffect >= @date",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@site", postSite)
+                        command.Parameters.AddWithValue("@date", planDate.ToString("yyyy-MM-dd"))
+                        If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
+                            Throw New InvalidOperationException("Ligne " & rowNumber & " : « " & agentName & " » n'est pas affecté au site « " & postSite & " » à cette date.")
+                        End If
+                    End Using
+
+                    Dim duplicateKey As String = String.Join("|", agentName, planDate.ToString("yyyy-MM-dd"), postCode)
+                    If Not seenEntries.Add(duplicateKey) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : entrée de planning répétée dans le fichier CSV.")
+                    End If
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM PlanPoste WHERE Agent = @agent AND DatePlan = @date AND Poste = @post",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@date", planDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@post", postCode)
+                        If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                            Throw New InvalidOperationException("Ligne " & rowNumber & " : cette affectation existe déjà au planning.")
+                        End If
+                    End Using
+
+                    Using command As New SQLiteCommand("INSERT INTO PlanPoste (Agent, DatePlan, Poste) VALUES (@agent, @date, @post)", connection, transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@date", planDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@post", postCode)
+                        command.ExecuteNonQuery()
+                    End Using
+                Next
+
+                Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
+                    command.Parameters.AddWithValue("@operation", "ImportCsvPlanning (" & table.Rows.Count & " entrées)")
+                    command.Parameters.AddWithValue("@operator", UserName)
+                    command.ExecuteNonQuery()
+                End Using
+                transaction.Commit()
+            End Using
+        End Using
+        If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+    End Sub
+
     Function LoadPlan12h() As Boolean
         LoadPlan12h = False
 

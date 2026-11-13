@@ -2,6 +2,7 @@
 Imports System.Data.SQLite
 Imports System.Data
 Imports System.Threading.Tasks
+Imports System.Globalization
 
 Public Class usercAgentsAffectation
     Public iConnxStr As String
@@ -232,6 +233,173 @@ Public Class usercAgentsAffectation
             End Using
         End Using
 
+        If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+    End Sub
+
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer des affectations depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            If Not CsvHasColumn(table, "Agent", "AgentAffect", "NomPrenoms", "Matricule") OrElse
+               Not CsvHasColumn(table, "Nouveau site", "Site", "SiteAffect") OrElse
+               Not CsvHasColumn(table, "Début", "DateAffect") OrElse
+               Not CsvHasColumn(table, "Fin", "FinAffect") Then
+                Throw New FormatException("Colonnes obligatoires : Agent, Nouveau site, Début et Fin.")
+            End If
+            If table.Rows.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+            If MessageBox.Show(
+                "Importer " & table.Rows.Count & " affectation(s) ? Toute l'opération sera annulée si une ligne est invalide, en conflit ou en doublon.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            Await Task.Run(Sub() ImportAffectationsCsv(table))
+            Await RefreshAfterMutationAsync()
+            MessageBox.Show(table.Rows.Count & " affectation(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV des affectations a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Sub ImportAffectationsCsv(table As DataTable)
+        Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
+        Using connection As New SQLiteConnection(writeConnectionString)
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim nextId As Integer
+                Using command As New SQLiteCommand("SELECT COALESCE(MAX(IdAffec), 0) + 1 FROM Affectation", connection, transaction)
+                    nextId = Convert.ToInt32(command.ExecuteScalar())
+                End Using
+
+                Dim seenEntries As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                For index As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(index)
+                    Dim rowNumber As Integer = index + 2
+                    Dim agentInput As String = CsvValue(row, "Agent", "AgentAffect", "NomPrenoms", "Matricule")
+                    Dim newSite As String = CsvValue(row, "Nouveau site", "Site", "SiteAffect")
+                    Dim startDate As DateTime = CsvDateValue(CsvValue(row, "Début", "DateAffect"), rowNumber, "Début")
+                    Dim endDate As DateTime = CsvDateValue(CsvValue(row, "Fin", "FinAffect"), rowNumber, "Fin")
+                    If String.IsNullOrWhiteSpace(agentInput) OrElse String.IsNullOrWhiteSpace(newSite) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : l'agent et le nouveau site sont obligatoires.")
+                    End If
+                    If endDate <= startDate Then Throw New FormatException("Ligne " & rowNumber & " : la fin doit être postérieure au début.")
+
+                    Dim agentName As String
+                    Using command As New SQLiteCommand(
+                        "SELECT a.NomPrenoms FROM agents a WHERE a.Actif = 1 AND (a.NomPrenoms = @agent COLLATE NOCASE OR a.NumMatr = @agent COLLATE NOCASE) " &
+                        "AND EXISTS (SELECT 1 FROM contratstbl c WHERE c.NomPrenoms = a.NumMatr AND c.FinContr >= @start) LIMIT 1",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentInput)
+                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
+                        agentName = Convert.ToString(command.ExecuteScalar())
+                    End Using
+                    If String.IsNullOrWhiteSpace(agentName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif ayant un contrat valide introuvable (« " & agentInput & " »).")
+                    End If
+
+                    Using command As New SQLiteCommand("SELECT COUNT(*) FROM siteaffectation WHERE NomSite = @site COLLATE NOCASE AND Actif = 1", connection, transaction)
+                        command.Parameters.AddWithValue("@site", newSite)
+                        If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
+                            Throw New InvalidOperationException("Ligne " & rowNumber & " : nouveau site inactif ou inconnu (« " & newSite & " »).")
+                        End If
+                    End Using
+
+                    Dim duplicateKey As String = String.Join("|", agentName, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), newSite)
+                    If Not seenEntries.Add(duplicateKey) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : affectation répétée dans le fichier CSV.")
+                    End If
+
+                    Dim previousId As Integer = 0
+                    Dim previousStart As DateTime = Date.MinValue
+                    Dim previousEnd As DateTime = Date.MinValue
+                    Dim previousSite As String = ""
+                    Using command As New SQLiteCommand(
+                        "SELECT IdAffec, DateAffect, FinAffect, SiteAffect FROM Affectation " &
+                        "WHERE AgentAffect = @agent AND DateAffect <= @end AND FinAffect >= @start " &
+                        "ORDER BY DateAffect DESC, IdAffec DESC",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@end", endDate.ToString("yyyy-MM-dd"))
+                        Using reader As SQLiteDataReader = command.ExecuteReader()
+                            If reader.Read() Then
+                                previousId = Convert.ToInt32(reader("IdAffec"))
+                                previousStart = DateTime.Parse(Convert.ToString(reader("DateAffect"), CultureInfo.InvariantCulture), CultureInfo.InvariantCulture)
+                                previousEnd = DateTime.Parse(Convert.ToString(reader("FinAffect"), CultureInfo.InvariantCulture), CultureInfo.InvariantCulture)
+                                previousSite = Convert.ToString(reader("SiteAffect"))
+                                If reader.Read() Then
+                                    Throw New InvalidOperationException("Ligne " & rowNumber & " : plusieurs affectations existantes chevauchent la période de « " & agentName & " ».")
+                                End If
+                            End If
+                        End Using
+                    End Using
+
+                    If previousId > 0 AndAlso previousStart >= startDate Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : une affectation existante de « " & agentName & " » commence pendant ou après la date de début.")
+                    End If
+
+                    If previousId = 0 Then
+                        Using command As New SQLiteCommand(
+                            "SELECT SiteAffect FROM Affectation WHERE AgentAffect = @agent AND DateAffect < @start ORDER BY DateAffect DESC, IdAffec DESC LIMIT 1",
+                            connection,
+                            transaction)
+                            command.Parameters.AddWithValue("@agent", agentName)
+                            command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
+                            previousSite = Convert.ToString(command.ExecuteScalar())
+                        End Using
+                    End If
+                    If String.IsNullOrWhiteSpace(previousSite) Then previousSite = "(Nouveau)"
+                    Dim suppliedPreviousSite As String = CsvValue(row, "Ancien site", "SiteAffectPrecedent")
+                    If Not String.IsNullOrWhiteSpace(suppliedPreviousSite) Then previousSite = suppliedPreviousSite
+
+                    If previousId > 0 AndAlso previousEnd >= startDate Then
+                        Using command As New SQLiteCommand("UPDATE Affectation SET FinAffect = @end WHERE IdAffec = @id", connection, transaction)
+                            command.Parameters.AddWithValue("@end", startDate.AddDays(-1).ToString("yyyy-MM-dd"))
+                            command.Parameters.AddWithValue("@id", previousId)
+                            command.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO Affectation (IdAffec, AgentAffect, DateAffect, FinAffect, SiteAffectPrecedent, SiteAffect, ObsAffect) " &
+                        "VALUES (@id, @agent, @start, @end, @previousSite, @newSite, @observations)",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@id", nextId)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@end", endDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@previousSite", previousSite)
+                        command.Parameters.AddWithValue("@newSite", newSite)
+                        command.Parameters.AddWithValue("@observations", CsvValue(row, "Observations", "ObsAffect", "Obs"))
+                        command.ExecuteNonQuery()
+                    End Using
+                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
+                        command.Parameters.AddWithValue("@operation", "ImportCsvAffectation for " & agentName)
+                        command.Parameters.AddWithValue("@operator", UserName)
+                        command.ExecuteNonQuery()
+                    End Using
+                    nextId += 1
+                Next
+
+                transaction.Commit()
+            End Using
+        End Using
         If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
     End Sub
 

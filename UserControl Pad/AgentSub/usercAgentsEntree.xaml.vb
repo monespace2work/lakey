@@ -1,8 +1,42 @@
 ﻿Imports System.Windows.Threading
 Imports System.Data.SQLite
 Imports System.Data
+Imports System.Globalization
+Imports System.Text
+Imports Microsoft.VisualBasic.FileIO
 
 Public Class usercAgentsEntree
+    Private Class AgentCsvRecord
+        Public Property NomAgent As String
+        Public Property PrenomAgent As String
+        Public Property Sexe As String
+        Public Property NumMatr As String
+        Public Property Contacts As String
+        Public Property DateNaiss As DateTime
+        Public Property CatEch As String
+        Public Property NbEnf As Integer
+        Public Property Actif As Boolean
+        Public Property DateEntree As DateTime
+        Public Property VilleResidence As String
+        Public Property Quartier As String
+        Public Property Fonction As String
+        Public Property Pays As String
+        Public Property MatrimoSituation As String
+        Public Property Nsecu As String
+        Public Property CarteType As String
+        Public Property CarteNumero As String
+        Public Property Banque As String
+        Public Property NumCompte As String
+        Public Property LieuNaiss As String
+        Public Property PrefNaiss As String
+
+        Public ReadOnly Property NomPrenoms As String
+            Get
+                Return NomAgent.Trim().ToUpperInvariant() & " " & PrenomAgent.Trim()
+            End Get
+        End Property
+    End Class
+
     Public iConnxStr As String
     Public LocalConnxStr As String
     Dim RefAg As Integer = 0
@@ -234,6 +268,338 @@ Public Class usercAgentsEntree
         SaveNewAgent = SaveNewData(istr, iConnxStr)
         If SaveNewAgent Then Joper("SaveNewAgent As " & NomPrenomAg, iConnxStr)
     End Function
+
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer des agents depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim records As List(Of AgentCsvRecord) = ReadAgentCsv(dialog.FileName)
+            If records.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+
+            If MessageBox.Show(
+                "Importer " & records.Count & " agent(s) depuis ce fichier ? L'import sera annulé si une donnée est invalide ou existe déjà.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            ImportAgentRecords(records)
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Await RefreshAfterDatabaseMutationAsync(Sub()
+                                                        SearchAgent(BtnAgentListeSearch.Text)
+                                                        AfficheStat?.Invoke()
+                                                    End Sub)
+            MessageBox.Show(records.Count & " agent(s) importé(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Function ReadAgentCsv(filePath As String) As List(Of AgentCsvRecord)
+        Dim delimiter As String
+        Using reader As New IO.StreamReader(filePath, Encoding.UTF8, True)
+            Dim firstLine As String = reader.ReadLine()
+            If firstLine Is Nothing Then Return New List(Of AgentCsvRecord)()
+            Dim semicolonCount As Integer = CountUnquotedDelimiters(firstLine, ";"c)
+            Dim commaCount As Integer = CountUnquotedDelimiters(firstLine, ","c)
+            delimiter = If(semicolonCount > commaCount, ";", ",")
+        End Using
+
+        Dim aliases As Dictionary(Of String, String) = CreateCsvHeaderAliases()
+        Dim records As New List(Of AgentCsvRecord)()
+        Dim errors As New List(Of String)()
+        Dim matricules As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Dim noms As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+        Using parser As New TextFieldParser(filePath, Encoding.UTF8, True)
+            parser.TextFieldType = FieldType.Delimited
+            parser.SetDelimiters(delimiter)
+            parser.HasFieldsEnclosedInQuotes = True
+            parser.TrimWhiteSpace = False
+
+            If parser.EndOfData Then Return records
+            Dim headers As String() = parser.ReadFields()
+            Dim columnIndexes As New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+            For index As Integer = 0 To headers.Length - 1
+                Dim normalizedHeader As String = NormalizeCsvHeader(headers(index))
+                Dim targetColumn As String = Nothing
+                If aliases.TryGetValue(normalizedHeader, targetColumn) Then
+                    If columnIndexes.ContainsKey(targetColumn) Then
+                        Throw New FormatException("L'en-tête CSV contient plusieurs colonnes pour « " & targetColumn & " ».")
+                    End If
+                    columnIndexes.Add(targetColumn, index)
+                End If
+            Next
+
+            Dim requiredColumns As String() = {
+                "NomAgent", "PrenomAgent", "NumMatr", "Contacts", "DateNaiss", "Sexe",
+                "CatEch", "DateEntree", "VilleResidence", "Quartier", "Fonction"
+            }
+            Dim missingColumns = requiredColumns.Where(Function(column) Not columnIndexes.ContainsKey(column)).ToArray()
+            If missingColumns.Length > 0 Then
+                Throw New FormatException("Colonnes obligatoires manquantes : " & String.Join(", ", missingColumns) & ".")
+            End If
+
+            Dim recordNumber As Integer = 1
+            While Not parser.EndOfData
+                Dim fields As String() = parser.ReadFields()
+                recordNumber += 1
+                If fields Is Nothing OrElse fields.All(Function(field) String.IsNullOrWhiteSpace(field)) Then Continue While
+
+                Dim rowErrorCount As Integer = errors.Count
+                If fields.Length > headers.Length Then
+                    errors.Add("Enregistrement " & recordNumber & " : il contient plus de champs que l'en-tête.")
+                    Continue While
+                End If
+
+                Dim record As New AgentCsvRecord With {
+                    .NomAgent = GetCsvValue(fields, columnIndexes, "NomAgent"),
+                    .PrenomAgent = GetCsvValue(fields, columnIndexes, "PrenomAgent"),
+                    .NumMatr = GetCsvValue(fields, columnIndexes, "NumMatr"),
+                    .Contacts = GetCsvValue(fields, columnIndexes, "Contacts"),
+                    .CatEch = GetCsvValue(fields, columnIndexes, "CatEch"),
+                    .VilleResidence = GetCsvValue(fields, columnIndexes, "VilleResidence"),
+                    .Quartier = GetCsvValue(fields, columnIndexes, "Quartier"),
+                    .Fonction = GetCsvValue(fields, columnIndexes, "Fonction"),
+                    .Pays = If(String.IsNullOrWhiteSpace(GetCsvValue(fields, columnIndexes, "Pays")), "TOGO", GetCsvValue(fields, columnIndexes, "Pays")),
+                    .MatrimoSituation = If(String.IsNullOrWhiteSpace(GetCsvValue(fields, columnIndexes, "MatrimoSituation")), "Celibataire", GetCsvValue(fields, columnIndexes, "MatrimoSituation")),
+                    .Nsecu = GetCsvValue(fields, columnIndexes, "Nsecu"),
+                    .CarteType = GetCsvValue(fields, columnIndexes, "CarteType"),
+                    .CarteNumero = GetCsvValue(fields, columnIndexes, "CarteNumero"),
+                    .Banque = GetCsvValue(fields, columnIndexes, "Banque"),
+                    .NumCompte = GetCsvValue(fields, columnIndexes, "NumCompte"),
+                    .LieuNaiss = GetCsvValue(fields, columnIndexes, "LieuNaiss"),
+                    .PrefNaiss = GetCsvValue(fields, columnIndexes, "PrefNaiss")
+                }
+
+                If record.NomAgent.Length = 0 OrElse record.PrenomAgent.Length = 0 Then
+                    errors.Add("Enregistrement " & recordNumber & " : le nom et le prénom sont obligatoires.")
+                End If
+                If record.NumMatr.Length < 5 Then errors.Add("Enregistrement " & recordNumber & " : le matricule doit contenir au moins 5 caractères.")
+                If String.IsNullOrWhiteSpace(record.Contacts) OrElse String.IsNullOrWhiteSpace(record.CatEch) OrElse
+                   String.IsNullOrWhiteSpace(record.VilleResidence) OrElse String.IsNullOrWhiteSpace(record.Quartier) OrElse
+                   String.IsNullOrWhiteSpace(record.Fonction) Then
+                    errors.Add("Enregistrement " & recordNumber & " : contact, catégorie, ville, quartier et fonction sont obligatoires.")
+                End If
+
+                Dim rawDate As String = GetCsvValue(fields, columnIndexes, "DateNaiss")
+                If Not TryParseCsvDate(rawDate, record.DateNaiss) Then
+                    errors.Add("Enregistrement " & recordNumber & " : date de naissance invalide (« " & rawDate & " »).")
+                End If
+                rawDate = GetCsvValue(fields, columnIndexes, "DateEntree")
+                If Not TryParseCsvDate(rawDate, record.DateEntree) Then
+                    errors.Add("Enregistrement " & recordNumber & " : date d'embauche invalide (« " & rawDate & " »).")
+                End If
+
+                Dim rawSexe As String = GetCsvValue(fields, columnIndexes, "Sexe").ToUpperInvariant()
+                Select Case rawSexe
+                    Case "M", "H", "HOMME"
+                        record.Sexe = "M"
+                    Case "F", "FEMME"
+                        record.Sexe = "F"
+                    Case Else
+                        errors.Add("Enregistrement " & recordNumber & " : le sexe doit être M ou F.")
+                End Select
+
+                Dim rawNbEnf As String = GetCsvValue(fields, columnIndexes, "NbEnf")
+                If String.IsNullOrWhiteSpace(rawNbEnf) Then
+                    record.NbEnf = 0
+                ElseIf Not Integer.TryParse(rawNbEnf, record.NbEnf) OrElse record.NbEnf < 0 Then
+                    errors.Add("Enregistrement " & recordNumber & " : le nombre de personnes à charge doit être un entier positif.")
+                End If
+
+                Dim rawActif As String = GetCsvValue(fields, columnIndexes, "Actif").ToLowerInvariant()
+                Select Case rawActif
+                    Case "", "1", "oui", "true", "actif"
+                        record.Actif = True
+                    Case "0", "non", "false", "inactif"
+                        record.Actif = False
+                    Case Else
+                        errors.Add("Enregistrement " & recordNumber & " : la colonne Actif doit valoir 1/0, oui/non ou actif/inactif.")
+                End Select
+
+                If errors.Count = rowErrorCount Then
+                    If Not matricules.Add(record.NumMatr) Then
+                        errors.Add("Enregistrement " & recordNumber & " : le matricule « " & record.NumMatr & " » apparaît plusieurs fois dans le fichier.")
+                    ElseIf Not noms.Add(record.NomPrenoms) Then
+                        errors.Add("Enregistrement " & recordNumber & " : le nom complet « " & record.NomPrenoms & " » apparaît plusieurs fois dans le fichier.")
+                    Else
+                        records.Add(record)
+                    End If
+                End If
+            End While
+        End Using
+
+        If errors.Count > 0 Then
+            Throw New FormatException("Corrigez les erreurs suivantes avant de relancer l'import :" & Environment.NewLine & String.Join(Environment.NewLine, errors))
+        End If
+        Return records
+    End Function
+
+    Private Function CreateCsvHeaderAliases() As Dictionary(Of String, String)
+        Dim aliases As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
+        AddCsvHeaderAliases(aliases, "NomAgent", "NomAgent", "Nom")
+        AddCsvHeaderAliases(aliases, "PrenomAgent", "PrenomAgent", "Prenom", "Prénom")
+        AddCsvHeaderAliases(aliases, "NumMatr", "NumMatr", "Matricule", "Numero matricule")
+        AddCsvHeaderAliases(aliases, "Contacts", "Contacts", "Contact", "Telephone", "Téléphone")
+        AddCsvHeaderAliases(aliases, "DateNaiss", "DateNaiss", "Date naissance", "Date de naissance")
+        AddCsvHeaderAliases(aliases, "Sexe", "Sexe")
+        AddCsvHeaderAliases(aliases, "CatEch", "CatEch", "Categorie", "Catégorie")
+        AddCsvHeaderAliases(aliases, "DateEntree", "DateEntree", "Date entree", "Date embauche", "Date d'embauche")
+        AddCsvHeaderAliases(aliases, "VilleResidence", "VilleResidence", "Ville", "Ville residence")
+        AddCsvHeaderAliases(aliases, "Quartier", "Quartier", "Adresse")
+        AddCsvHeaderAliases(aliases, "Fonction", "Fonction")
+        AddCsvHeaderAliases(aliases, "NbEnf", "NbEnf", "Nombre enfants", "Enfants a charge")
+        AddCsvHeaderAliases(aliases, "Actif", "Actif", "Statut")
+        AddCsvHeaderAliases(aliases, "Pays", "Pays")
+        AddCsvHeaderAliases(aliases, "MatrimoSituation", "MatrimoSituation", "Situation matrimoniale")
+        AddCsvHeaderAliases(aliases, "Nsecu", "Nsecu", "CNSS", "Numero CNSS")
+        AddCsvHeaderAliases(aliases, "CarteType", "CarteType", "Type carte")
+        AddCsvHeaderAliases(aliases, "CarteNumero", "CarteNumero", "Numero carte")
+        AddCsvHeaderAliases(aliases, "Banque", "Banque")
+        AddCsvHeaderAliases(aliases, "NumCompte", "NumCompte", "Numero compte")
+        AddCsvHeaderAliases(aliases, "LieuNaiss", "LieuNaiss", "Lieu naissance")
+        AddCsvHeaderAliases(aliases, "PrefNaiss", "PrefNaiss", "Prefecture naissance")
+        Return aliases
+    End Function
+
+    Private Sub AddCsvHeaderAliases(aliases As Dictionary(Of String, String), targetColumn As String, ParamArray headerNames As String())
+        For Each headerName As String In headerNames
+            aliases(NormalizeCsvHeader(headerName)) = targetColumn
+        Next
+    End Sub
+
+    Private Function NormalizeCsvHeader(value As String) As String
+        Dim normalized As String = value.Normalize(NormalizationForm.FormD)
+        Dim result As New StringBuilder()
+        For Each character As Char In normalized
+            If CharUnicodeInfo.GetUnicodeCategory(character) <> UnicodeCategory.NonSpacingMark AndAlso Char.IsLetterOrDigit(character) Then
+                result.Append(Char.ToLowerInvariant(character))
+            End If
+        Next
+        Return result.ToString()
+    End Function
+
+    Private Function GetCsvValue(fields As String(), columnIndexes As Dictionary(Of String, Integer), columnName As String) As String
+        Dim index As Integer
+        If columnIndexes.TryGetValue(columnName, index) AndAlso index < fields.Length Then
+            Return fields(index).Trim()
+        End If
+        Return ""
+    End Function
+
+    Private Function TryParseCsvDate(value As String, ByRef parsedDate As DateTime) As Boolean
+        Dim formats As String() = {"yyyy-MM-dd", "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy"}
+        Return DateTime.TryParseExact(value.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, parsedDate) OrElse
+               DateTime.TryParse(value, CultureInfo.GetCultureInfo("fr-FR"), DateTimeStyles.None, parsedDate)
+    End Function
+
+    Private Function CountUnquotedDelimiters(value As String, delimiter As Char) As Integer
+        Dim count As Integer = 0
+        Dim insideQuotes As Boolean = False
+        Dim index As Integer = 0
+        While index < value.Length
+            If value(index) = """"c Then
+                If insideQuotes AndAlso index + 1 < value.Length AndAlso value(index + 1) = """"c Then
+                    index += 1
+                Else
+                    insideQuotes = Not insideQuotes
+                End If
+            ElseIf value(index) = delimiter AndAlso Not insideQuotes Then
+                count += 1
+            End If
+            index += 1
+        End While
+        Return count
+    End Function
+
+    Private Sub ImportAgentRecords(records As List(Of AgentCsvRecord))
+        Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
+        Using connection As New SQLiteConnection(writeConnectionString)
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim nextRef As Integer
+                Using command As New SQLiteCommand("SELECT COALESCE(MAX(RefAgent), 0) + 1 FROM agents", connection, transaction)
+                    nextRef = Convert.ToInt32(command.ExecuteScalar())
+                End Using
+
+                Using duplicateCommand As New SQLiteCommand(
+                    "SELECT COUNT(*) FROM agents WHERE NumMatr = @NumMatr COLLATE NOCASE OR NomPrenoms = @NomPrenoms COLLATE NOCASE",
+                    connection,
+                    transaction)
+                    duplicateCommand.Parameters.Add("@NumMatr", DbType.String)
+                    duplicateCommand.Parameters.Add("@NomPrenoms", DbType.String)
+                    Using functionCommand As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM fonction WHERE Fonction = @Fonction COLLATE NOCASE AND Actif = 1",
+                        connection,
+                        transaction)
+                        functionCommand.Parameters.Add("@Fonction", DbType.String)
+
+                        For Each record As AgentCsvRecord In records
+                            functionCommand.Parameters("@Fonction").Value = record.Fonction
+                            If Convert.ToInt32(functionCommand.ExecuteScalar()) = 0 Then
+                                Throw New InvalidOperationException("La fonction « " & record.Fonction & " » de l'agent « " & record.NomPrenoms & " » n'existe pas ou n'est pas active.")
+                            End If
+
+                            duplicateCommand.Parameters("@NumMatr").Value = record.NumMatr
+                            duplicateCommand.Parameters("@NomPrenoms").Value = record.NomPrenoms
+                            If Convert.ToInt32(duplicateCommand.ExecuteScalar()) > 0 Then
+                                Throw New InvalidOperationException("Le matricule ou le nom complet « " & record.NomPrenoms & " / " & record.NumMatr & " » existe déjà dans la base.")
+                            End If
+
+                            Using insertCommand As New SQLiteCommand(
+                                "INSERT INTO agents (RefAgent, NomPrenoms, NomAgent, PrenomAgent, NumMatr, Contacts, DateNaiss, Sexe, CatEch, NbEnf, Actif, DateEntree, VilleResidence, Quartier, Fonction, OpTime, Pays, MatrimoSituation, Nsecu, CarteType, CarteNumero, Banque, NumCompte, LieuNaiss, PrefNaiss) " &
+                                "VALUES (@RefAgent, @NomPrenoms, @NomAgent, @PrenomAgent, @NumMatr, @Contacts, @DateNaiss, @Sexe, @CatEch, @NbEnf, @Actif, @DateEntree, @VilleResidence, @Quartier, @Fonction, @OpTime, @Pays, @MatrimoSituation, @Nsecu, @CarteType, @CarteNumero, @Banque, @NumCompte, @LieuNaiss, @PrefNaiss)",
+                                connection,
+                                transaction)
+                                insertCommand.Parameters.AddWithValue("@RefAgent", nextRef)
+                                insertCommand.Parameters.AddWithValue("@NomPrenoms", record.NomPrenoms)
+                                insertCommand.Parameters.AddWithValue("@NomAgent", record.NomAgent)
+                                insertCommand.Parameters.AddWithValue("@PrenomAgent", record.PrenomAgent)
+                                insertCommand.Parameters.AddWithValue("@NumMatr", record.NumMatr)
+                                insertCommand.Parameters.AddWithValue("@Contacts", record.Contacts)
+                                insertCommand.Parameters.AddWithValue("@DateNaiss", record.DateNaiss.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                                insertCommand.Parameters.AddWithValue("@Sexe", record.Sexe)
+                                insertCommand.Parameters.AddWithValue("@CatEch", record.CatEch)
+                                insertCommand.Parameters.AddWithValue("@NbEnf", record.NbEnf)
+                                insertCommand.Parameters.AddWithValue("@Actif", If(record.Actif, 1, 0))
+                                insertCommand.Parameters.AddWithValue("@DateEntree", record.DateEntree.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                                insertCommand.Parameters.AddWithValue("@VilleResidence", record.VilleResidence)
+                                insertCommand.Parameters.AddWithValue("@Quartier", record.Quartier)
+                                insertCommand.Parameters.AddWithValue("@Fonction", record.Fonction)
+                                insertCommand.Parameters.AddWithValue("@OpTime", Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
+                                insertCommand.Parameters.AddWithValue("@Pays", record.Pays)
+                                insertCommand.Parameters.AddWithValue("@MatrimoSituation", record.MatrimoSituation)
+                                insertCommand.Parameters.AddWithValue("@Nsecu", record.Nsecu)
+                                insertCommand.Parameters.AddWithValue("@CarteType", record.CarteType)
+                                insertCommand.Parameters.AddWithValue("@CarteNumero", record.CarteNumero)
+                                insertCommand.Parameters.AddWithValue("@Banque", record.Banque)
+                                insertCommand.Parameters.AddWithValue("@NumCompte", record.NumCompte)
+                                insertCommand.Parameters.AddWithValue("@LieuNaiss", record.LieuNaiss)
+                                insertCommand.Parameters.AddWithValue("@PrefNaiss", record.PrefNaiss)
+                                insertCommand.ExecuteNonQuery()
+                            End Using
+                            nextRef += 1
+                        Next
+                    End Using
+                End Using
+
+                transaction.Commit()
+            End Using
+        End Using
+    End Sub
+
     Function SaveModifAgent() As Boolean
         Dim istr As String = " update Agents set "
         If NewNomPremn <> NomPrenomAg Then istr += " NomPrenoms='" & Trim(Apost(NomPrenomAg)) & "',NomAgent='" & Trim(Apost(TbxNom.Text)) & "',PrenomAgent='" & Trim(Apost(TbxPrenom.Text)) & "'"

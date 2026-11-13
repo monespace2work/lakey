@@ -3,6 +3,9 @@ Imports System.Windows.Threading
 Imports System.IO
 Imports System.Data
 Imports System.Threading.Tasks
+Imports System.Globalization
+Imports System.Text
+Imports Microsoft.VisualBasic.FileIO
 Module ObjectsManaging
     Public DocsDir As String = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\LkyDocs"
     Dim iTimer As New DispatcherTimer
@@ -579,4 +582,97 @@ Module ObjectsManaging
             MsgBox(ex.Message)
         End Try
     End Sub
+
+    Public Function ReadCsvTable(filePath As String) As DataTable
+        Dim delimiter As String
+        Using reader As New StreamReader(filePath, Encoding.UTF8, True)
+            Dim firstLine As String = reader.ReadLine()
+            If firstLine Is Nothing Then Return New DataTable()
+            delimiter = If(CountCsvDelimiters(firstLine, ";"c) > CountCsvDelimiters(firstLine, ","c), ";", ",")
+        End Using
+
+        Dim table As New DataTable()
+        Using parser As New TextFieldParser(filePath, Encoding.UTF8, True)
+            parser.TextFieldType = FieldType.Delimited
+            parser.SetDelimiters(delimiter)
+            parser.HasFieldsEnclosedInQuotes = True
+            parser.TrimWhiteSpace = False
+
+            If parser.EndOfData Then Return table
+            Dim headers As String() = parser.ReadFields()
+            For Each header As String In headers
+                Dim normalizedHeader As String = NormalizeCsvHeader(header)
+                If normalizedHeader.Length = 0 Then Throw New FormatException("Une colonne du CSV ne possède pas d'en-tête.")
+                If table.Columns.Contains(normalizedHeader) Then Throw New FormatException("L'en-tête CSV contient plusieurs colonnes « " & header & " ».")
+                table.Columns.Add(normalizedHeader, GetType(String))
+            Next
+
+            Dim recordNumber As Integer = 1
+            While Not parser.EndOfData
+                Dim fields As String() = parser.ReadFields()
+                recordNumber += 1
+                If fields Is Nothing OrElse fields.All(Function(field) String.IsNullOrWhiteSpace(field)) Then Continue While
+                If fields.Length <> headers.Length Then
+                    Throw New FormatException("L'enregistrement " & recordNumber & " contient " & fields.Length & " champ(s), au lieu de " & headers.Length & ".")
+                End If
+                table.Rows.Add(fields.Select(Function(field) field.Trim()).ToArray())
+            End While
+        End Using
+        Return table
+    End Function
+
+    Public Function CsvHasColumn(table As DataTable, ParamArray headerNames As String()) As Boolean
+        Return table.Columns.Cast(Of DataColumn)().Any(
+            Function(column) headerNames.Any(Function(header) column.ColumnName = NormalizeCsvHeader(header)))
+    End Function
+
+    Public Function CsvValue(row As DataRow, ParamArray headerNames As String()) As String
+        For Each header As String In headerNames
+            Dim columnName As String = NormalizeCsvHeader(header)
+            If row.Table.Columns.Contains(columnName) AndAlso Not row.IsNull(columnName) Then
+                Return Convert.ToString(row(columnName)).Trim()
+            End If
+        Next
+        Return ""
+    End Function
+
+    Public Function CsvDateValue(value As String, rowNumber As Integer, fieldName As String) As DateTime
+        Dim parsedDate As DateTime
+        Dim formats As String() = {"yyyy-MM-dd", "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy"}
+        If DateTime.TryParseExact(value.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, parsedDate) OrElse
+           DateTime.TryParse(value, CultureInfo.GetCultureInfo("fr-FR"), DateTimeStyles.None, parsedDate) Then
+            Return parsedDate
+        End If
+        Throw New FormatException("Ligne " & rowNumber & " : la date « " & fieldName & " » est invalide (« " & value & " »).")
+    End Function
+
+    Private Function NormalizeCsvHeader(value As String) As String
+        Dim normalized As String = value.Normalize(NormalizationForm.FormD)
+        Dim result As New StringBuilder()
+        For Each character As Char In normalized
+            If CharUnicodeInfo.GetUnicodeCategory(character) <> UnicodeCategory.NonSpacingMark AndAlso Char.IsLetterOrDigit(character) Then
+                result.Append(Char.ToLowerInvariant(character))
+            End If
+        Next
+        Return result.ToString()
+    End Function
+
+    Private Function CountCsvDelimiters(value As String, delimiter As Char) As Integer
+        Dim count As Integer = 0
+        Dim insideQuotes As Boolean = False
+        Dim index As Integer = 0
+        While index < value.Length
+            If value(index) = """"c Then
+                If insideQuotes AndAlso index + 1 < value.Length AndAlso value(index + 1) = """"c Then
+                    index += 1
+                Else
+                    insideQuotes = Not insideQuotes
+                End If
+            ElseIf value(index) = delimiter AndAlso Not insideQuotes Then
+                count += 1
+            End If
+            index += 1
+        End While
+        Return count
+    End Function
 End Module

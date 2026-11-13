@@ -247,6 +247,147 @@ Public Class usercAgentsContrat
         SaveNewContrat = SaveNewData(istr, iConnxStr)
         If SaveNewContrat Then Joper("SaveNewContrat for " & CbxNom.SelectedItem, iConnxStr)
     End Function
+
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer des contrats depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            If Not CsvHasColumn(table, "Agent", "NomPrenoms", "Matricule") OrElse
+               Not CsvHasColumn(table, "Type", "TypeExt", "TypContr") OrElse
+               Not CsvHasColumn(table, "Nature", "NaturContr") OrElse
+               Not CsvHasColumn(table, "Début", "DebutContr") OrElse
+               Not CsvHasColumn(table, "Fin", "FinContr") Then
+                Throw New FormatException("Colonnes obligatoires : Agent, Type (ou TypeExt), Nature, Début et Fin.")
+            End If
+            If table.Rows.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+            If MessageBox.Show(
+                "Importer " & table.Rows.Count & " contrat(s) ? Toute l'opération sera annulée si une ligne est invalide ou en doublon.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            ImportContratsCsv(table)
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
+            MessageBox.Show(table.Rows.Count & " contrat(s) importé(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV des contrats a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Sub ImportContratsCsv(table As DataTable)
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim nextId As Integer
+                Using command As New SQLiteCommand("SELECT COALESCE(MAX(IdContr), 0) + 1 FROM contratstbl", connection, transaction)
+                    nextId = Convert.ToInt32(command.ExecuteScalar())
+                End Using
+
+                Dim seenContracts As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                For index As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(index)
+                    Dim rowNumber As Integer = index + 2
+                    Dim agentInput As String = CsvValue(row, "Agent", "NomPrenoms", "Matricule", "NumMatr")
+                    Dim contractType As String = CsvValue(row, "TypeExt", "TypContr", "Type")
+                    Dim contractNature As String = CsvValue(row, "Nature", "NaturContr")
+                    Dim startDate As DateTime = CsvDateValue(CsvValue(row, "Début", "DebutContr", "Date début"), rowNumber, "Début")
+                    Dim endDate As DateTime = CsvDateValue(CsvValue(row, "Fin", "FinContr", "Date fin"), rowNumber, "Fin")
+                    If String.IsNullOrWhiteSpace(agentInput) OrElse String.IsNullOrWhiteSpace(contractType) OrElse String.IsNullOrWhiteSpace(contractNature) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : l'agent, le type et la nature du contrat sont obligatoires.")
+                    End If
+                    If endDate < startDate Then Throw New FormatException("Ligne " & rowNumber & " : la fin du contrat précède son début.")
+
+                    Dim agentMatricule As String
+                    Using command As New SQLiteCommand(
+                        "SELECT NumMatr FROM agents WHERE Actif = 1 AND (NomPrenoms = @agent COLLATE NOCASE OR NumMatr = @agent COLLATE NOCASE) LIMIT 1",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentInput)
+                        agentMatricule = Convert.ToString(command.ExecuteScalar())
+                    End Using
+                    If String.IsNullOrWhiteSpace(agentMatricule) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
+                    End If
+
+                    For Each reference As KeyValuePair(Of String, String) In {
+                        New KeyValuePair(Of String, String)("contratstype", contractType),
+                        New KeyValuePair(Of String, String)("contratsnature", contractNature)
+                    }
+                        Dim query As String = If(reference.Key = "contratstype",
+                                                 "SELECT COUNT(*) FROM contratstype WHERE TypContr = @value COLLATE NOCASE AND Actif = 1",
+                                                 "SELECT COUNT(*) FROM contratsnature WHERE NatureContr = @value COLLATE NOCASE AND Actif = 1")
+                        Using command As New SQLiteCommand(query, connection, transaction)
+                            command.Parameters.AddWithValue("@value", reference.Value)
+                            If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
+                                Throw New InvalidOperationException("Ligne " & rowNumber & " : type ou nature de contrat inactif/inconnu (« " & reference.Value & " »).")
+                            End If
+                        End Using
+                    Next
+
+                    Dim contractNumber As String = CsvValue(row, "N° contrat", "N°", "NumContrat", "Numero contrat")
+                    Dim observations As String = CsvValue(row, "Observations", "Obs")
+                    Dim duplicateKey As String = String.Join("|", agentMatricule, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), contractType, contractNature, contractNumber)
+                    If Not seenContracts.Add(duplicateKey) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : contrat répété dans le fichier CSV.")
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM contratstbl WHERE NomPrenoms = @agent AND DebutContr = @start AND FinContr = @finish AND TypContr = @type AND NaturContr = @nature AND NumContrat = @number",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentMatricule)
+                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@finish", endDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@type", contractType)
+                        command.Parameters.AddWithValue("@nature", contractNature)
+                        command.Parameters.AddWithValue("@number", contractNumber)
+                        If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                            Throw New InvalidOperationException("Ligne " & rowNumber & " : ce contrat existe déjà pour « " & agentInput & " ».")
+                        End If
+                    End Using
+
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO contratstbl (IdContr, NomPrenoms, DebutContr, FinContr, TypContr, NaturContr, NumContrat, Obs) " &
+                        "VALUES (@id, @agent, @start, @finish, @type, @nature, @number, @observations)",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@id", nextId)
+                        command.Parameters.AddWithValue("@agent", agentMatricule)
+                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@finish", endDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@type", contractType)
+                        command.Parameters.AddWithValue("@nature", contractNature)
+                        command.Parameters.AddWithValue("@number", contractNumber)
+                        command.Parameters.AddWithValue("@observations", observations)
+                        command.ExecuteNonQuery()
+                    End Using
+                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
+                        command.Parameters.AddWithValue("@operation", "ImportCsvContrat for " & agentInput)
+                        command.Parameters.AddWithValue("@operator", UserName)
+                        command.ExecuteNonQuery()
+                    End Using
+                    nextId += 1
+                Next
+
+                transaction.Commit()
+            End Using
+        End Using
+    End Sub
+
     Function SaveModifCtr() As Boolean
         SaveModifCtr = False
         Dim istr As String = " update contratstbl  set "

@@ -1,5 +1,6 @@
 ﻿Imports System.Windows.Threading
 Imports System.Data
+Imports System.Data.SQLite
 Public Class usercAgentsHeureSupp
     Public iConnxStr As String
     Public LocalConnxStr As String
@@ -196,6 +197,130 @@ Public Class usercAgentsHeureSupp
         If SaveNewHS Then Joper("SaveNewHS for " & CbxNom.SelectedItem, iConnxStr)
 
     End Function
+
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer des heures supplémentaires depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            If Not CsvHasColumn(table, "Agent", "Matricule") OrElse
+               Not CsvHasColumn(table, "Site", "SiteHS") OrElse
+               Not CsvHasColumn(table, "Date", "DateHS") OrElse
+               Not CsvHasColumn(table, "Nombre de vacations", "NbFaction") Then
+                Throw New FormatException("Colonnes obligatoires : Agent, Site, Date et Nombre de vacations (1 ou 2).")
+            End If
+            If table.Rows.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+            If MessageBox.Show(
+                "Importer " & table.Rows.Count & " ligne(s) d'heures supplémentaires ? Toute l'opération sera annulée si une ligne est invalide ou en doublon.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            ImportHeuresSuppCsv(table)
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
+            MessageBox.Show(table.Rows.Count & " ligne(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV des heures supplémentaires a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Sub ImportHeuresSuppCsv(table As DataTable)
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim nextId As Integer
+                Using command As New SQLiteCommand("SELECT COALESCE(MAX(IdHS), 0) + 1 FROM heuresup", connection, transaction)
+                    nextId = Convert.ToInt32(command.ExecuteScalar())
+                End Using
+
+                Dim seenEntries As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                For index As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(index)
+                    Dim rowNumber As Integer = index + 2
+                    Dim agentInput As String = CsvValue(row, "Agent", "Matricule")
+                    Dim siteName As String = CsvValue(row, "Site", "SiteHS")
+                    Dim dateHS As DateTime = CsvDateValue(CsvValue(row, "Date", "DateHS"), rowNumber, "Date")
+                    Dim factionCount As Integer
+                    Dim rawFactionCount As String = CsvValue(row, "Nombre de vacations", "NbFaction")
+                    If String.IsNullOrWhiteSpace(agentInput) OrElse String.IsNullOrWhiteSpace(siteName) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : l'agent et le site sont obligatoires.")
+                    End If
+                    If Not Integer.TryParse(rawFactionCount, factionCount) OrElse (factionCount <> 1 AndAlso factionCount <> 2) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : le nombre de vacations doit être 1 ou 2.")
+                    End If
+
+                    Dim agentName As String
+                    Using command As New SQLiteCommand(
+                        "SELECT NomPrenoms FROM agents WHERE Actif = 1 AND (NomPrenoms = @agent COLLATE NOCASE OR NumMatr = @agent COLLATE NOCASE) LIMIT 1",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentInput)
+                        agentName = Convert.ToString(command.ExecuteScalar())
+                    End Using
+                    If String.IsNullOrWhiteSpace(agentName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
+                    End If
+
+                    Using command As New SQLiteCommand("SELECT COUNT(*) FROM siteaffectation WHERE NomSite = @site COLLATE NOCASE AND Actif = 1", connection, transaction)
+                        command.Parameters.AddWithValue("@site", siteName)
+                        If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
+                            Throw New InvalidOperationException("Ligne " & rowNumber & " : site inactif ou inconnu (« " & siteName & " »).")
+                        End If
+                    End Using
+
+                    Dim duplicateKey As String = String.Join("|", agentName, dateHS.ToString("yyyy-MM-dd"), siteName)
+                    If Not seenEntries.Add(duplicateKey) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : entrée répétée dans le fichier CSV.")
+                    End If
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM heuresup WHERE Agent = @agent AND DateHS = @date AND SiteHS = @site",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@date", dateHS.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@site", siteName)
+                        If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                            Throw New InvalidOperationException("Ligne " & rowNumber & " : une entrée existe déjà pour « " & agentName & " » à cette date et sur ce site.")
+                        End If
+                    End Using
+
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO heuresup (IdHS, Agent, SiteHS, DateHS, NbFaction, Obs) VALUES (@id, @agent, @site, @date, @factions, @observations)",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@id", nextId)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.Parameters.AddWithValue("@site", siteName)
+                        command.Parameters.AddWithValue("@date", dateHS.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@factions", factionCount)
+                        command.Parameters.AddWithValue("@observations", CsvValue(row, "Observations", "Obs"))
+                        command.ExecuteNonQuery()
+                    End Using
+                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
+                        command.Parameters.AddWithValue("@operation", "ImportCsvHS for " & agentName)
+                        command.Parameters.AddWithValue("@operator", UserName)
+                        command.ExecuteNonQuery()
+                    End Using
+                    nextId += 1
+                Next
+
+                transaction.Commit()
+            End Using
+        End Using
+    End Sub
 
     Function SaveModifHS() As Boolean
         SaveModifHS = False
