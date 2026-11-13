@@ -511,4 +511,3 @@ C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.exe
 C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.pdb
 C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache

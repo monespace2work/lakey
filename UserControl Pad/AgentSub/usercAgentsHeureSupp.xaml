@@ -9,6 +9,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="56"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border  Grid.Row="0"  Style="{StaticResource SectionHeaderBorder}">
@@ -43,54 +44,56 @@
                 </Border>
             </Grid>
         </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        <Border Grid.Row="1" Background="#FF150452" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
+            <Grid  Background="#FF150452" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="350"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="200"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Visible">
+                        <Label Content="HEURES SUP." Foreground="#FF9DFF87"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
+                        <Label Content=" / " Foreground="LightSkyBlue"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                        <Label Content="H. S." Foreground="White"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}"  />
+                        <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
+                    </WrapPanel>
+                    <TextBlock x:Name="tblNbAgentHeureSupp" Text=" Nombre d'heure sup. : "  Background="#FF150452" Foreground="LightSkyBlue" />
+
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnNewData" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5"/>
+                    <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Visibility="Collapsed" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}"/>
+                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
+                </StackPanel>
+                <WrapPanel Orientation="Horizontal"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Début :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
+                            <DatePicker  x:Name="dtpDebutSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Fin :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
+                            <DatePicker  x:Name="dtpFinSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
+                        </StackPanel>
+                    </StackPanel>
+                    <TextBox x:Name="BtnAgentAbsenceSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" />
+                    <Button x:Name="btnExportExcel" MinWidth="30" MinHeight="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="White" >
+                        <Button.Background>
+                            <ImageBrush ImageSource="Logo_excel.png" Stretch="Uniform"/>
+                        </Button.Background>
+                    </Button>
+
+                </WrapPanel>
+            </Grid>
+        </Border>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">
             <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#FF000A1D">
                 <StackPanel>
                     <Grid >
                         <StackPanel >
                             <StackPanel >
-                                <Grid  Background="#FF150452" >
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition MaxWidth="350"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition MinWidth="200"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Visible">
-                                            <Label Content="HEURES SUP." Foreground="#FF9DFF87"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
-                                            <Label Content=" / " Foreground="LightSkyBlue"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                                            <Label Content="H. S." Foreground="White"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}"  />
-                                            <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
-                                        </WrapPanel>
-                                        <TextBlock x:Name="tblNbAgentHeureSupp" Text=" Nombre d'heure sup. : "  Background="#FF150452" Foreground="LightSkyBlue" />
-
-
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Button x:Name="btnNewData" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5"/>
-                                        <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Visibility="Collapsed" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}"/>
-                                        <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
-                                    </StackPanel>
-                                    <WrapPanel Orientation="Horizontal"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="Début :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
-                                                <DatePicker  x:Name="dtpDebutSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="Fin :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
-                                                <DatePicker  x:Name="dtpFinSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <TextBox x:Name="BtnAgentAbsenceSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" />
-                                        <Button x:Name="btnExportExcel" MinWidth="30" MinHeight="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="White" >
-                                            <Button.Background>
-                                                <ImageBrush ImageSource="Logo_excel.png" Stretch="Uniform"/>
-                                            </Button.Background>
-                                        </Button>
-
-                                    </WrapPanel>
-                                </Grid>
 
                             </StackPanel >
                             <StackPanel x:Name="stpSaisie" Visibility="Collapsed"   >

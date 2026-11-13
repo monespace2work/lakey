@@ -9,6 +9,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="56"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="0" Style="{StaticResource SectionHeaderBorder}">
@@ -45,55 +46,54 @@
 
         </Border>
 
-        <Border  BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="1" >
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <StackPanel>
-                    <Grid Background="#FF150452">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition MaxWidth="350"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition  MinWidth=" 150"/>
-                        </Grid.ColumnDefinitions>
-                        <!--Label Content="EMPLOYES / AGENTS" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" Grid.Column="1"/-->
-                        <StackPanel Grid.Column="0"  Grid.ColumnSpan="2" HorizontalAlignment="Left"  >
-                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                                <Label Content="SORTIES" Foreground="#FF9DFF87"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" />
-                                <Label Content=" / " Foreground="LightSkyBlue"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                                <Label Content="FINS DE SERVICE" Foreground="White"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                                <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
-                            </WrapPanel>
-                            <TextBlock x:Name="tblNbAgentSortie" Text=" Nombre d'agents : "  Background="#FF150452" Foreground="LightSkyBlue" />
-
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="11,3,91.333,3">
-                            <Button x:Name="btnNewData" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5"/>
-                            <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Visibility="Collapsed"/>
-                            <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
-                        </StackPanel>
-                        <WrapPanel Orientation="Horizontal"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Début :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
-                                    <DatePicker  x:Name="dtpDebutSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Fin :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
-                                    <DatePicker  x:Name="dtpFinSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
-                                </StackPanel>
-                            </StackPanel>
-                            <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" />
-                            <Button x:Name="btnExportExcel" MinWidth="30" MinHeight="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="White" >
-                                <Button.Background>
-                                    <ImageBrush ImageSource="Logo_excel.png" Stretch="Uniform"/>
-                                </Button.Background>
-                            </Button>
-
-                        </WrapPanel>
-
-                    </Grid>
+        <Border Grid.Row="1" Background="#FF150452" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
+            <Grid Background="#FF150452">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="350"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition  MinWidth=" 150"/>
+                </Grid.ColumnDefinitions>
+            <!--Label Content="EMPLOYES / AGENTS" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" Grid.Column="1"/-->
+                <StackPanel Grid.Column="0"  Grid.ColumnSpan="2" HorizontalAlignment="Left"  >
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                        <Label Content="SORTIES" Foreground="#FF9DFF87"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" />
+                        <Label Content=" / " Foreground="LightSkyBlue"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                        <Label Content="FINS DE SERVICE" Foreground="White"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                        <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
+                    </WrapPanel>
+                    <TextBlock x:Name="tblNbAgentSortie" Text=" Nombre d'agents : "  Background="#FF150452" Foreground="LightSkyBlue" />
 
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="11,3,91.333,3">
+                    <Button x:Name="btnNewData" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5"/>
+                    <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Visibility="Collapsed"/>
+                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
+                </StackPanel>
+                <WrapPanel Orientation="Horizontal"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Début :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
+                            <DatePicker  x:Name="dtpDebutSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Fin :"  Margin="0,5,5,5" VerticalAlignment="Center" Foreground="White" Width="40"/>
+                            <DatePicker  x:Name="dtpFinSearch" FontSize="12" VerticalAlignment="Center" Text=""  Width="100" />
+                        </StackPanel>
+                    </StackPanel>
+                    <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" />
+                    <Button x:Name="btnExportExcel" MinWidth="30" MinHeight="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="White" >
+                        <Button.Background>
+                            <ImageBrush ImageSource="Logo_excel.png" Stretch="Uniform"/>
+                        </Button.Background>
+                    </Button>
+
+                </WrapPanel>
+
+            </Grid>
+        </Border>
+        <Border  BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Grid.Row="2" >
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
                 <StackPanel Background="#FF140144"  >
                     <StackPanel x:Name="stpSaisie" Margin="5" Visibility="Collapsed" >
                         <StackPanel Orientation="Horizontal" Margin="5,10,5,5">
