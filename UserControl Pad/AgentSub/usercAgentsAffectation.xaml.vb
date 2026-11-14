@@ -13,18 +13,20 @@ Public Class usercAgentsAffectation
     Dim NewData As Boolean = True
     Dim iFormLoaded As Boolean = False
     Dim RefAffect As Integer = 0
+    Private selectedAgentRef As Integer
     Dim ChangeYN As Boolean = False
     Dim IsSaving As Boolean = False
     Dim inputTimer As DispatcherTimer
     Dim retourDansMainWindow As Action
     Public Shared AfficheStat As Action
-    Public Sub New(callback As Action)
+    Public Sub New(callback As Action, Optional agentRef As Integer = 0)
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = callback
+        selectedAgentRef = agentRef
     End Sub
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
@@ -65,8 +67,12 @@ Public Class usercAgentsAffectation
         maj()
         Dim istr As String = " select af.AgentAffect, format(af.DateAffect) as Début, format(af.FinAffect) as Fin, af.SiteAffect as Site, af.SiteAffectPrecedent, af.ObsAffect, af.IdAffec "
         istr += " from affectation af join agents ag on ag.NomPrenoms=af.AgentAffect "
-        istr += " where ag.Actif=1 and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "'"
-        istr += " and af.DateAffect>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
+        If selectedAgentRef > 0 Then
+            istr += " where ag.RefAgent = " & selectedAgentRef
+        Else
+            istr += " where ag.Actif=1 and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "'"
+            istr += " and af.DateAffect>='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
+        End If
         istr += " order by  ag.Actif desc, af.AgentAffect, af.DateAffect desc  "
         DgAgentAffectation.ItemsSource = LoadDataTable(istr, iConnxStr).DefaultView
         Dim itext As String = "En cours de validité : " & DirectCast(DgAgentAffectation.ItemsSource, System.Data.DataView).Count
@@ -96,7 +102,7 @@ Public Class usercAgentsAffectation
         myw.Show()
         Dim sufix As String = ""
         If KeyWord = "" Then
-            sufix = " and (ag.actif=1)" ' and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "')"
+            If selectedAgentRef = 0 Then sufix = " and (ag.actif=1)" ' and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "')"
         ElseIf KeyWord = "*" Or KeyWord = "%" Then
             KeyWord = "%"
             sufix = " "
@@ -107,11 +113,12 @@ Public Class usercAgentsAffectation
         Dim istr As String = " select af.AgentAffect, format(af.DateAffect) as Début, format(af.FinAffect) as Fin, af.SiteAffect as Site, af.SiteAffectPrecedent, af.ObsAffect, af.IdAffec "
         istr += " from affectation af join agents ag on ag.NomPrenoms=af.AgentAffect where "
         'istr += " where (ag.Actif=1 and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "')"
-        If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then istr += " Début>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and Début<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
+        If selectedAgentRef = 0 AndAlso dtpDebutSearch.SelectedDate.HasValue AndAlso dtpFinSearch.SelectedDate.HasValue Then istr += " Début>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and Début<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
         istr += " (af.AgentAffect  like '%" & Apost(KeyWord) & "%' " 'af.SiteAffectPrecedent
         istr += " or af.SiteAffect  like '%" & Apost(KeyWord) & "%' "
         istr += " or af.SiteAffectPrecedent  like '%" & Apost(KeyWord) & "%' "
         istr += " or af.ObsAffect  like '%" & Apost(KeyWord) & "%' )" & Apost(sufix)
+        If selectedAgentRef > 0 Then istr += " and ag.RefAgent = " & selectedAgentRef
         istr += " order by  ag.Actif desc, af.AgentAffect, af.DateAffect desc  "
         DgAgentAffectation.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
         Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & DirectCast(DgAgentAffectation.ItemsSource, System.Data.DataView).Count '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
@@ -133,7 +140,11 @@ Public Class usercAgentsAffectation
         AfficheStat?.Invoke()
         Dim istr As String = " select af.AgentAffect, format(af.DateAffect) as Début, format(af.FinAffect) as Fin, af.SiteAffect as Site, af.SiteAffectPrecedent, af.ObsAffect, af.IdAffec "
         istr += " from affectation af join agents ag on ag.NomPrenoms=af.AgentAffect "
-        istr += " where ag.Actif=1 and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "'"
+        If selectedAgentRef > 0 Then
+            istr += " where ag.RefAgent = " & selectedAgentRef
+        Else
+            istr += " where ag.Actif=1 and af.FinAffect>='" & Today.ToString("yyyy-MM-dd") & "'"
+        End If
         istr += " order by  ag.Actif desc, af.AgentAffect, af.DateAffect desc  "
         DgAgentAffectation.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
         Dim itext As String = "En cours de validité : " & DirectCast(DgAgentAffectation.ItemsSource, System.Data.DataView).Count
@@ -741,6 +752,10 @@ Public Class usercAgentsAffectation
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub DgAgentAffectation_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgAgentAffectation.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgAgentAffectation, e)
+    End Sub
+
     Private Sub cmiResume_Click(sender As Object, e As RoutedEventArgs) Handles cmiResume.Click
         Dim rowView As DataRowView = TryCast(DgAgentAffectation.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
@@ -748,6 +763,14 @@ Public Class usercAgentsAffectation
             If iWrd <> "" Then MsgBox(iWrd)
         End If
 
+    End Sub
+
+    Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentAffectation, "AgentAffect", MainWindow.AgentRelatedView.Contract)
+    End Sub
+
+    Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentAffectation, "AgentAffect", MainWindow.AgentRelatedView.Absence)
     End Sub
 
     Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
@@ -800,7 +823,7 @@ Public Class usercAgentsAffectation
 
     Private Sub btnExportExcel_Click(sender As Object, e As RoutedEventArgs) Handles btnExportExcel.Click
         Dim iTitre As String = "Affectation"
-        If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then
+        If selectedAgentRef = 0 AndAlso dtpDebutSearch.SelectedDate.HasValue AndAlso dtpFinSearch.SelectedDate.HasValue Then
             iTitre = "Affectation du " & dtpDebutSearch.SelectedDate.Value.ToString("dd/MM/yy") & " au " & dtpFinSearch.SelectedDate.Value.ToString("dd/MM/yy")
         End If
         ExportDGtoExcel(DgAgentAffectation, "Point_Affectation", iTitre) '"Point_Entrees"

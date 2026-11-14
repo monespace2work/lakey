@@ -107,6 +107,8 @@
                     <MenuItem x:Name="mitActions"  Header="Actions">
                         <MenuItem x:Name="mitActual"  Header="_Actualiser" InputGestureText="Ctrl+Shift+A" ></MenuItem>
                         <MenuItem x:Name="mitBackup"  Header="_BackUp" InputGestureText="Ctrl+Shift+U" ></MenuItem>
+                        <Separator/>
+                        <MenuItem x:Name="mitChangerUtilisateur" Header="Changer d'utilisateur..." InputGestureText="Ctrl+Alt+U" Click="mitChangerUtilisateur_Click"/>
                         <MenuItem x:Name="mitDConexion"  Header="Déonne_xion" InputGestureText="Ctrl+Shift+X" ></MenuItem>
                         <MenuItem x:Name="mitQuit"  Header="_Quitter" InputGestureText="Ctrl+Shift+Q" ></MenuItem>
                     </MenuItem>

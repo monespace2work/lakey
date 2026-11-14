@@ -1,9 +1,16 @@
 ﻿Imports System.Windows.Threading
 Imports System.Data
+Imports System.Data.SQLite
 Imports System.ComponentModel
 Imports System.Windows.Data
 
 Class MainWindow
+    Public Enum AgentRelatedView
+        Contract
+        Affectation
+        Absence
+    End Enum
+
     'Dim iUsrcEnntree As New usercAgentsEntree(AddressOf LoadEntree)
     Dim iUserC As New UserControl
     Public LocalConnxStr As String
@@ -15,6 +22,7 @@ Class MainWindow
     }
     Private userControlLoadingPending As Boolean
     Private loadingOperationCount As Integer
+    Private isSwitchingUser As Boolean
 
     Public Sub New()
 
@@ -28,6 +36,119 @@ Class MainWindow
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
     End Sub
+
+    Public Shared Sub SelectContextMenuRow(dataGrid As DataGrid, e As MouseButtonEventArgs)
+        Dim element As DependencyObject = TryCast(e.OriginalSource, DependencyObject)
+        While element IsNot Nothing AndAlso Not TypeOf element Is DataGridRow
+            element = VisualTreeHelper.GetParent(element)
+        End While
+
+        Dim row As DataGridRow = TryCast(element, DataGridRow)
+        If row Is Nothing Then Return
+
+        dataGrid.SelectedItem = row.Item
+        If dataGrid.Columns.Count > 0 Then
+            dataGrid.CurrentCell = New DataGridCellInfo(row.Item, dataGrid.Columns(0))
+        End If
+    End Sub
+
+    Public Shared Sub OpenAgentContextMenuView(dataGrid As DataGrid,
+                                               agentNameColumn As String,
+                                               target As AgentRelatedView,
+                                               Optional matriculeColumn As String = Nothing)
+        Dim rowView As DataRowView = TryCast(dataGrid.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+        If Not rowView.Row.Table.Columns.Contains(agentNameColumn) Then
+            MessageBox.Show("La ligne sélectionnée ne contient pas le nom de l'agent.",
+                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+
+        Dim mainWindow As MainWindow = TryCast(Window.GetWindow(dataGrid), MainWindow)
+        If mainWindow Is Nothing Then mainWindow = FindOpenMainWindow()
+        If mainWindow Is Nothing Then
+            MessageBox.Show("La fenêtre principale est introuvable.",
+                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+
+        Dim agentName As String = Convert.ToString(rowView.Row(agentNameColumn))
+        Dim matricule As String = Nothing
+        If Not String.IsNullOrWhiteSpace(matriculeColumn) AndAlso
+           rowView.Row.Table.Columns.Contains(matriculeColumn) Then
+            matricule = Convert.ToString(rowView.Row(matriculeColumn))
+        End If
+        mainWindow.OpenAgentRelatedView(agentName, target, matricule)
+    End Sub
+
+    Public Sub OpenAgentRelatedView(agentName As String,
+                                    target As AgentRelatedView,
+                                    Optional matricule As String = Nothing)
+        If String.IsNullOrWhiteSpace(agentName) Then Return
+
+        Dim lookupColumn As String = If(String.IsNullOrWhiteSpace(matricule), "NomPrenoms", "NumMatr")
+        Dim lookupValue As String = If(String.IsNullOrWhiteSpace(matricule), agentName, matricule)
+        Dim agentRef As Integer = 0
+        Try
+            Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(LocalConnxStr, False))
+                connection.Open()
+                Using command As New SQLiteCommand(
+                    "SELECT RefAgent FROM Agents WHERE " & lookupColumn & " = @value",
+                    connection)
+                    command.Parameters.AddWithValue("@value", lookupValue)
+                    Using reader As SQLiteDataReader = command.ExecuteReader()
+                        If Not reader.Read() Then
+                            MessageBox.Show("L'agent sélectionné est introuvable.",
+                                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Warning)
+                            Return
+                        End If
+                        agentRef = Convert.ToInt32(reader("RefAgent"))
+                        If reader.Read() Then
+                            MessageBox.Show("Plusieurs agents correspondent à la ligne sélectionnée. L'ouverture est annulée.",
+                                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Warning)
+                            Return
+                        End If
+                    End Using
+                End Using
+            End Using
+        Catch ex As SQLiteException
+            MessageBox.Show("Impossible d'identifier l'agent : " & ex.Message,
+                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        Catch ex As ArgumentException
+            MessageBox.Show("Impossible d'identifier l'agent : " & ex.Message,
+                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End Try
+
+        OpenAgentRelatedView(agentRef, target)
+    End Sub
+
+    Public Sub OpenAgentRelatedView(agentRef As Integer, target As AgentRelatedView)
+        Select Case target
+            Case AgentRelatedView.Contract
+                LoadContrat(agentRef)
+            Case AgentRelatedView.Affectation
+                LoadAffectation(agentRef)
+            Case AgentRelatedView.Absence
+                LoadAbsence(agentRef)
+            Case Else
+                MessageBox.Show("La vue sélectionnée n'est pas prise en charge.",
+                                "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Select
+    End Sub
+
+    Private Shared Function FindOpenMainWindow() As MainWindow
+        If Application.Current Is Nothing Then Return Nothing
+        Dim mainWindow As MainWindow = TryCast(Application.Current.MainWindow, MainWindow)
+        If mainWindow IsNot Nothing Then Return mainWindow
+
+        For Each window As Window In Application.Current.Windows
+            mainWindow = TryCast(window, MainWindow)
+            If mainWindow IsNot Nothing Then Return mainWindow
+        Next
+        Return Nothing
+    End Function
 
     Private Sub btnToggleLeftPanel_Click(sender As Object, e As RoutedEventArgs)
         isLeftPanelCollapsed = Not isLeftPanelCollapsed
@@ -1065,12 +1186,12 @@ Class MainWindow
                 cctrlCentral.Content = iUserC
             End Sub)
     End Sub
-    Sub LoadContrat()
+    Public Sub LoadContrat(Optional agentRef As Integer = 0)
         elpsLoading.Visibility = Visibility.Visible
         SelectAgentBtn(btnContrat)
         iUserC = New usercAgentsContrat(Sub()
                                             cctrlCentral.Content = iUserC
-                                        End Sub)
+                                        End Sub, agentRef)
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
@@ -1083,12 +1204,12 @@ Class MainWindow
                 LoadAffectation()
             End Sub)
     End Sub
-    Sub LoadAffectation()
+    Public Sub LoadAffectation(Optional agentRef As Integer = 0)
         elpsLoading.Visibility = Visibility.Visible
         SelectAgentBtn(btnAffectation)
         iUserC = New usercAgentsAffectation(Sub()
                                                 cctrlCentral.Content = iUserC
-                                            End Sub)
+                                            End Sub, agentRef)
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
@@ -1136,12 +1257,12 @@ Class MainWindow
                 LoadAbsence()
             End Sub)
     End Sub
-    Sub LoadAbsence()
+    Public Sub LoadAbsence(Optional agentRef As Integer = 0)
         elpsLoading.Visibility = Visibility.Visible
         SelectAgentBtn(btnAbsence)
         iUserC = New usercAgentsAbsences(Sub()
                                              cctrlCentral.Content = iUserC
-                                         End Sub)
+                                         End Sub, agentRef)
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
@@ -1528,28 +1649,20 @@ Class MainWindow
         End If
     End Sub
 
+    Private Sub dgAgent_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles dgAgent.PreviewMouseRightButtonDown
+        SelectContextMenuRow(dgAgent, e)
+    End Sub
+
     Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
-        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeCtr(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then ShowTempMsg(iWrd,, "CONTRAT - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        OpenAgentContextMenuView(dgAgent, "AgentAffect", AgentRelatedView.Contract, "NumMatr")
     End Sub
 
     Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
-        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeAffect(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then ShowTempMsg(iWrd,, "AFFFECTATIONS - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        OpenAgentContextMenuView(dgAgent, "AgentAffect", AgentRelatedView.Affectation, "NumMatr")
     End Sub
 
     Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
-        Dim rowView As DataRowView = TryCast(dgAgent.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeAbs(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then ShowTempMsg(iWrd,, "ABSENCES/PERMISSIONS/CONGES - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        OpenAgentContextMenuView(dgAgent, "AgentAffect", AgentRelatedView.Absence, "NumMatr")
     End Sub
 
     Private Sub cmiHeureSup_Click(sender As Object, e As RoutedEventArgs) Handles cmiHeureSup.Click
@@ -2025,6 +2138,51 @@ Class MainWindow
     Private Sub mitDConexion_Click(sender As Object, e As RoutedEventArgs) Handles mitDConexion.Click
         oDeconect()
     End Sub
+
+    Private Sub mitChangerUtilisateur_Click(sender As Object, e As RoutedEventArgs)
+        ChangerUtilisateur()
+    End Sub
+
+    Private Sub ChangerUtilisateur()
+        If MessageBox.Show(
+            "La session actuelle sera fermée et l'écran de connexion s'ouvrira. L'application restera ouverte." &
+            Environment.NewLine & Environment.NewLine & "Continuer ?",
+            "Changer d'utilisateur",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+        Dim sessionConnectionString As String =
+            If(String.IsNullOrWhiteSpace(SessionConnxStr), LocalConnxStr, SessionConnxStr)
+        If String.IsNullOrWhiteSpace(sessionConnectionString) Then
+            MessageBox.Show("La session actuelle n'a pas pu être identifiée et reste ouverte.",
+                            "Changement d'utilisateur impossible",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error)
+            Return
+        End If
+
+        Try
+            If Not SessLogout(sessionConnectionString) Then
+                MessageBox.Show("La session actuelle n'a pas pu être fermée. Vous restez connecté.",
+                                "Changement d'utilisateur impossible",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error)
+                Return
+            End If
+        Catch ex As Exception
+            MessageBox.Show("La session actuelle n'a pas pu être fermée. Vous restez connecté." &
+                            Environment.NewLine & ex.Message,
+                            "Changement d'utilisateur impossible",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error)
+            Return
+        End Try
+
+        SessionConnxStr = ""
+        isSwitchingUser = True
+        Me.Close()
+    End Sub
+
     Sub oDeconect()
         Dim iwDecnx As New wdwDconnexion
         Dim Resultat As Boolean? = iwDecnx.ShowDialog()
@@ -2040,6 +2198,12 @@ Class MainWindow
     Protected Overrides Sub OnClosing(e As ComponentModel.CancelEventArgs)
         MyBase.OnClosing(e)
         If e.Cancel Then Return
+
+        If isSwitchingUser Then
+            StopGeneralDatabaseListener()
+            Me.DialogResult = False
+            Return
+        End If
 
         If MessageBox.Show("Voulez-vous vraiment fermer l'application ?",
                            "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) <> MessageBoxResult.Yes Then
@@ -2061,6 +2225,11 @@ Class MainWindow
         End If
         If e.Key = Key.A AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             Await RunWithLoadingAsync(Sub() InitializeGlobal())
+        End If
+        Dim pressedKey As Key = If(e.Key = Key.System, e.SystemKey, e.Key)
+        If pressedKey = Key.U AndAlso Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Alt) Then
+            ChangerUtilisateur()
+            e.Handled = True
         End If
     End Sub
 

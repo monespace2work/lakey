@@ -553,6 +553,10 @@ Public Class usercAgentsHeureSupp
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub DgAgentHeureSupp_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgAgentHeureSupp.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgAgentHeureSupp, e)
+    End Sub
+
     Private Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
         If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & CbxNom.SelectedItem & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
             If DeleteHS() Then
@@ -623,6 +627,18 @@ Public Class usercAgentsHeureSupp
             If iWrd <> "" Then MsgBox(iWrd)
         End If
 
+    End Sub
+
+    Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentHeureSupp, "Agent", MainWindow.AgentRelatedView.Contract)
+    End Sub
+
+    Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentHeureSupp, "Agent", MainWindow.AgentRelatedView.Affectation)
+    End Sub
+
+    Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentHeureSupp, "Agent", MainWindow.AgentRelatedView.Absence)
     End Sub
 
     Private Sub BtnAgentAbsenceSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles BtnAgentAbsenceSearch.KeyDown

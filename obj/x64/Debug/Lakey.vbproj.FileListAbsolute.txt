@@ -511,3 +511,9 @@ C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.exe
 C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.pdb
 C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
+C:\Users\JPB\AppData\Local\Temp\LakeyBuild\desktop.ini
+C:\Users\JPB\AppData\Local\Temp\LakeyBuild\sqlite3.dll
+C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.exe.config
+C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.exe
+C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.pdb
+C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.xml

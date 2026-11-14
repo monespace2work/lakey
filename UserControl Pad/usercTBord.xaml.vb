@@ -406,28 +406,43 @@ Public Class usercTBord
     End Sub
 
     Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
-        Dim rowView As DataRowView = TryCast(dgAgentActifs.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeCtr(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then MsgBox(iWrd, MsgBoxStyle.OkOnly, "CONTRAT - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        MainWindow.OpenAgentContextMenuView(dgAgentActifs, "NomPrenoms", MainWindow.AgentRelatedView.Contract, "NumMatr")
     End Sub
 
     Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
-        Dim rowView As DataRowView = TryCast(dgAgentActifs.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeAffect(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then MsgBox(iWrd, MsgBoxStyle.OkOnly, "AFFFECTATIONS - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        MainWindow.OpenAgentContextMenuView(dgAgentActifs, "NomPrenoms", MainWindow.AgentRelatedView.Affectation, "NumMatr")
     End Sub
 
     Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
-        Dim rowView As DataRowView = TryCast(dgAgentActifs.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeAbs(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then MsgBox(iWrd, MsgBoxStyle.OkOnly, "ABSENCES/PERMISSIONS/CONGES - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        MainWindow.OpenAgentContextMenuView(dgAgentActifs, "NomPrenoms", MainWindow.AgentRelatedView.Absence, "NumMatr")
+    End Sub
 
+    Private Sub dgAgentActifs_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles dgAgentActifs.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(dgAgentActifs, e)
+    End Sub
+
+    Private Sub cmiContratEcheant_Click(sender As Object, e As RoutedEventArgs) Handles cmiContratEcheant.Click
+        MainWindow.OpenAgentContextMenuView(dgContratEcheant, "NomPrenoms", MainWindow.AgentRelatedView.Contract)
+    End Sub
+
+    Private Sub cmiAffectationEcheant_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectationEcheant.Click
+        MainWindow.OpenAgentContextMenuView(dgContratEcheant, "NomPrenoms", MainWindow.AgentRelatedView.Affectation)
+    End Sub
+
+    Private Sub dgContratEcheant_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles dgContratEcheant.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(dgContratEcheant, e)
+    End Sub
+
+    Private Sub cmiContratNewAgent_Click(sender As Object, e As RoutedEventArgs) Handles cmiContratNewAgent.Click
+        MainWindow.OpenAgentContextMenuView(dgNewAgent, "NomPrenoms", MainWindow.AgentRelatedView.Contract)
+    End Sub
+
+    Private Sub cmiAffectationNewAgent_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectationNewAgent.Click
+        MainWindow.OpenAgentContextMenuView(dgNewAgent, "NomPrenoms", MainWindow.AgentRelatedView.Affectation)
+    End Sub
+
+    Private Sub dgNewAgent_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles dgNewAgent.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(dgNewAgent, e)
     End Sub
 
     Private Sub cmiHeureSup_Click(sender As Object, e As RoutedEventArgs) Handles cmiHeureSup.Click

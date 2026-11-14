@@ -6,6 +6,7 @@ Public Class usercAgentsContrat
     Dim LocalConnxStr As String
     Dim ChangeYN As Boolean = False
     Dim RefCrt As Integer = 0
+    Private selectedAgentRef As Integer
     Dim inputTimer As DispatcherTimer
     Dim NewData As Boolean = True
     Dim iFormLoaded As Boolean = False
@@ -13,13 +14,14 @@ Public Class usercAgentsContrat
     Public Shared AfficheStat As Action
     Public Shared AfficheMemos As Action
 
-    Public Sub New(callback As Action)
+    Public Sub New(callback As Action, Optional agentRef As Integer = 0)
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = callback
+        selectedAgentRef = agentRef
     End Sub
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
@@ -47,8 +49,12 @@ Public Class usercAgentsContrat
         maj()
         Dim istr As String = " SELECT ag.NomPrenoms, natc.IdNature as Type,format(crt.DebutContr) as [Début], format(crt.FinContr) as [Fin],  crt.IdContr as Ref, crt.Obs,crt.TypContr as TypeExt,crt.NaturContr as Nature,crt.NumContrat as [N°]"
         istr += " FROM CONTRATSTBL crt join agents ag on ag.NumMatr=crt.NomPrenoms join contratsnature natc on crt.NaturContr=natc.NatureContr "
-        istr += " where ag.actif=1 and crt.FinContr>='" & Today.ToString("yyyy-MM-dd") & "'"
-        istr += " and crt.DebutContr >='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
+        If selectedAgentRef > 0 Then
+            istr += " where ag.RefAgent = " & selectedAgentRef
+        Else
+            istr += " where ag.actif=1 and crt.FinContr>='" & Today.ToString("yyyy-MM-dd") & "'"
+            istr += " and crt.DebutContr >='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
+        End If
         istr += " ORDER BY crt.DebutContr desc, ag.Nomprenoms "
         DgAgentContrat.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
         Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'") & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & DirectCast(DgAgentContrat.ItemsSource, System.Data.DataView).Count '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
@@ -90,7 +96,11 @@ Public Class usercAgentsContrat
         AfficheMemos?.Invoke()
         Dim istr As String = " SELECT ag.NomPrenoms, natc.IdNature as Type,format(crt.DebutContr) as [Début], format(crt.FinContr) as [Fin],  crt.IdContr as Ref, crt.Obs,crt.TypContr as TypeExt,crt.NaturContr as Nature,crt.NumContrat as [N°]"
         istr += " FROM CONTRATSTBL crt join agents ag on ag.NumMatr=crt.NomPrenoms join contratsnature natc on crt.NaturContr=natc.NatureContr "
-        istr += " where ag.actif=1 and crt.FinContr>='" & Today.ToString("yyyy-MM-dd") & "'"
+        If selectedAgentRef > 0 Then
+            istr += " where ag.RefAgent = " & selectedAgentRef
+        Else
+            istr += " where ag.actif=1 and crt.FinContr>='" & Today.ToString("yyyy-MM-dd") & "'"
+        End If
         istr += " ORDER BY crt.DebutContr desc, ag.Nomprenoms "
         Dim itext As String = "En cours de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin>='" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | Hors de validité : " & MayStatVal("select count(*) from (" & istr & ") where Fin<'" & Today.ToString("yyyy-MM-dd") & "'", LocalConnxStr) & " | TOTAL: " & DirectCast(DgAgentContrat.ItemsSource, System.Data.DataView).Count '"En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & " | Total : " & MayStatVal("select count (*) from CONTRATSTBL") ' (" & istr & ")")
         itext += Environment.NewLine
@@ -123,7 +133,7 @@ Public Class usercAgentsContrat
         elpStatus.Visibility = Visibility.Visible
         Dim sufix As String = ""
         If KeyWord = "" Then
-            sufix = " and (ag.actif=1 and crt.FinContr>='" & Today.ToString("yyyy-MM-dd") & "')"
+            If selectedAgentRef = 0 Then sufix = " and (ag.actif=1 and crt.FinContr>='" & Today.ToString("yyyy-MM-dd") & "')"
         ElseIf KeyWord = "*" Or KeyWord = "%" Then
             KeyWord = "%"
             sufix = " "
@@ -132,10 +142,11 @@ Public Class usercAgentsContrat
         End If
         Dim istr As String = " SELECT ag.NomPrenoms, natc.IdNature as Type,format(crt.DebutContr) as [Début], format(crt.FinContr) as [Fin],  crt.IdContr as Ref, crt.Obs,crt.TypContr as TypeExt,crt.NaturContr as Nature,crt.NumContrat as [N°] "
         istr += " FROM CONTRATSTBL crt join agents ag on ag.NumMatr=crt.NomPrenoms join contratsnature natc on crt.NaturContr=natc.NatureContr where "
-        If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then istr += " Début>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and Début<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
+        If selectedAgentRef = 0 AndAlso dtpDebutSearch.SelectedDate.HasValue AndAlso dtpFinSearch.SelectedDate.HasValue Then istr += " Début>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and Début<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
         istr += " (ag.NomPrenoms  like '%" & KeyWord & "%' "
         istr += " or natc.IdNature  like '%" & KeyWord & "%' "
         istr += " or crt.Obs  like '%" & KeyWord & "%' )" & sufix
+        If selectedAgentRef > 0 Then istr += " and ag.RefAgent = " & selectedAgentRef
         istr += " ORDER BY ag.Nomprenoms, crt.DebutContr desc "
         maj()
         DgAgentContrat.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
@@ -608,6 +619,10 @@ Public Class usercAgentsContrat
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub DgAgentContrat_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgAgentContrat.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgAgentContrat, e)
+    End Sub
+
     Private Sub cmiResume_Click(sender As Object, e As RoutedEventArgs) Handles cmiResume.Click
         Dim rowView As DataRowView = TryCast(DgAgentContrat.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
@@ -615,6 +630,14 @@ Public Class usercAgentsContrat
             If iWrd <> "" Then MsgBox(iWrd)
         End If
 
+    End Sub
+
+    Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentContrat, "NomPrenoms", MainWindow.AgentRelatedView.Affectation)
+    End Sub
+
+    Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentContrat, "NomPrenoms", MainWindow.AgentRelatedView.Absence)
     End Sub
 
     Private Sub BtnAgentListeSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles BtnAgentListeSearch.KeyDown
@@ -630,7 +653,7 @@ Public Class usercAgentsContrat
 
     Private Sub btnExportExcel_Click(sender As Object, e As RoutedEventArgs) Handles btnExportExcel.Click
         Dim iTitre As String = "Contrats "
-        If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then
+        If selectedAgentRef = 0 AndAlso dtpDebutSearch.SelectedDate.HasValue AndAlso dtpFinSearch.SelectedDate.HasValue Then
             iTitre = "Contrats du " & dtpDebutSearch.SelectedDate.Value.ToString("dd/MM/yy") & " au " & dtpFinSearch.SelectedDate.Value.ToString("dd/MM/yy")
         End If
         ExportDGtoExcel(DgAgentContrat, "Point_Contrats", iTitre) '"Point_Entrees"

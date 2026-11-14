@@ -160,7 +160,11 @@
                         SessionConnxStr = ""
                         Me.Close()
                     Else
+                        txtUsername.Clear()
+                        txtPassword.Clear()
+                        chkUseLocalMode.IsChecked = LocalModeBb
                         Me.Show()
+                        txtUsername.Focus()
                     End If
                 Else
                     MessageBox.Show("La session n'a pas pu être ouverte. Vérifiez la disponibilité de la base et réessayez.",

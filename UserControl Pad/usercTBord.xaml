@@ -306,8 +306,8 @@
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Modifier" />
-                                                    <MenuItem Header="Contrat" />
-                                                    <MenuItem Header="Affectation" />
+                                                    <MenuItem Header="Contrat" Name="cmiContratEcheant" />
+                                                    <MenuItem Header="Affectation" Name="cmiAffectationEcheant" />
                                                     <MenuItem Header="Sortie" />
                                                 </ContextMenu>
                                             </DataGrid.ContextMenu>
@@ -327,8 +327,8 @@
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Modifier" />
-                                                    <MenuItem Header="Contrat" />
-                                                    <MenuItem Header="Affectation" />
+                                                    <MenuItem Header="Contrat" Name="cmiContratNewAgent" />
+                                                    <MenuItem Header="Affectation" Name="cmiAffectationNewAgent" />
                                                     <MenuItem Header="Sortie" />
                                                 </ContextMenu>
                                             </DataGrid.ContextMenu>

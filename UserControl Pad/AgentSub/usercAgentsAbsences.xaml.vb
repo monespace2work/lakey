@@ -8,19 +8,21 @@ Public Class usercAgentsAbsences
     Dim ChangeYN As Boolean = False
     Dim ChangeYNsbb As Boolean = False
     Dim RefAbs As Integer = 0
+    Private selectedAgentRef As Integer
     Dim inputTimer As DispatcherTimer
     Dim NewData As Boolean = True
     Dim iFormLoaded As Boolean = False
     Dim iTrue As Boolean = True
     Dim retourDansMainWindow As Action
     Public Shared AfficheMemos As Action
-    Public Sub New(cllb As Action)
+    Public Sub New(cllb As Action, Optional agentRef As Integer = 0)
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = cllb
+        selectedAgentRef = agentRef
     End Sub
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
@@ -50,16 +52,22 @@ Public Class usercAgentsAbsences
         AfficheMemos?.Invoke()
 
         Dim istr As String = " select ab.NomPrenom, date(ab.DateDebut) as Début,date(ab.DateFin) as Fin, (julianday(ab.DateFin) - julianday(ab.DateDebut) + 1) as Durée,ab.Motif,ab.Obs,ab.IdOp  "
-        istr += " from absences ab join agents ag on ag.NomPrenoms=ab.NomPrenom where ab.DateDebut>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "'"
-        istr += " and ab.DateDebut >='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
+        istr += " from absences ab join agents ag on ag.NomPrenoms=ab.NomPrenom"
+        If selectedAgentRef > 0 Then
+            istr += " where ag.RefAgent = " & selectedAgentRef
+        Else
+            istr += " where ab.DateDebut>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "'"
+            istr += " and ab.DateDebut >='" & CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy")).ToString("yyyy-MM-dd") & "'"
+        End If
         istr += " order by ag.Actif desc, ab.DateDebut desc, ab.NomPrenom "
         DgAgentAbsence.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de ligne: " & MayStatVal("select count(*) from absences ab where ab.DateDebut>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "'") '") '& " | Nombre d'agents actif: " & NbAgentInactif()
+        Dim itext As String = "Nombre de ligne: " & DirectCast(DgAgentAbsence.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         'itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         tblNbAgentAbsence.Text = itext 'MyContratList("select n.IdNature, count(*) from contratstbl c join contratsnature n on c.NaturContr=n.NatureContr group by n.IdNature")
         'tblNbAgentcONTRAT.Text = "En cours de validité : " & NbContatEnCoursValid() & " | Hors de validité : " & NbContatEnCoursNonValid() & Environment.NewLine & ComptTypeContrat("select Type, count(*) from (" & istr & ") group by Type") & "ok"
         istr = "SELECT A.NomPrenom,A.Motif,date(A.DebutDmd) Debut,date(A.FinDmd) Fin ,date(A.DateDmd) DateDmd,A.Obs,A.IdOp Ref FROM ABSENCES A WHERE A.StdBy=1 "
+        If selectedAgentRef > 0 Then istr &= " AND A.NomPrenom IN (SELECT ag.NomPrenoms FROM agents ag WHERE ag.RefAgent = " & selectedAgentRef & ")"
         istr += " ORDER BY A.Motif,A.DateDmd,  A.NomPrenom"
         dgEnAttente.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
         FilmyCbx("select a.NomPrenoms from agents a  where Actif=1 order by a.NomPrenoms", CbxNom, LocalConnxStr)
@@ -119,10 +127,15 @@ Public Class usercAgentsAbsences
         'CbxNom.Text = ""
         AfficheMemos?.Invoke()
         Dim istr As String = " select ab.NomPrenom, format(ab.DateDebut) as Début,format(ab.DateFin) as Fin, (julianday(ab.DateFin) - julianday(ab.DateDebut) + 1) as Durée,ab.Motif,ab.Obs,ab.IdOp  "
-        istr += " from absences ab join agents ag on ag.NomPrenoms=ab.NomPrenom where ab.DateDebut>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "'"
+        istr += " from absences ab join agents ag on ag.NomPrenoms=ab.NomPrenom"
+        If selectedAgentRef > 0 Then
+            istr += " where ag.RefAgent = " & selectedAgentRef
+        Else
+            istr += " where ab.DateDebut>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "'"
+        End If
         istr += " order by ag.Actif desc, ab.DateDebut desc, ab.NomPrenom "
         DgAgentAbsence.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
-        Dim itext As String = "Nombre de ligne: " & MayStatVal("select count(*) from absences ab where ab.DateDebut>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "'", LocalConnxStr) '& " | Nombre d'agents actif: " & NbAgentInactif()
+        Dim itext As String = "Nombre de ligne: " & DirectCast(DgAgentAbsence.ItemsSource, System.Data.DataView).Count
         itext += Environment.NewLine
         'itext += MyContratList("select Type,count(*) from (" & istr & ") group by Type")
         tblNbAgentAbsence.Text = itext 'MyContratList("select n.IdNature, count(*) from contratstbl c join contratsnature n on c.NaturContr=n.NatureContr group by n.IdNature")
@@ -157,6 +170,7 @@ Public Class usercAgentsAbsences
         AfficheMemos?.Invoke()
 
         Dim istr As String = "SELECT A.NomPrenom,A.Motif,date(A.DebutDmd) Debut,date(A.FinDmd) Fin ,date(A.DateDmd) DateDmd,A.Obs,A.IdOp Ref FROM ABSENCES A WHERE A.StdBy=1 "
+        If selectedAgentRef > 0 Then istr &= " AND A.NomPrenom IN (SELECT ag.NomPrenoms FROM agents ag WHERE ag.RefAgent = " & selectedAgentRef & ")"
         istr += " ORDER BY A.Motif,A.DateDmd,  A.NomPrenom"
         dgEnAttente.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
 
@@ -176,7 +190,7 @@ Public Class usercAgentsAbsences
         myw.Show()
         Dim sufix As String = ""
         If KeyWord = "" Then
-            sufix = " and ab.DateDebut>='" & CDate("01/01/" & Today.Year).ToString("yyyy-MM-dd") & "'"
+            If selectedAgentRef = 0 Then sufix = " and ab.DateDebut>='" & CDate("01/01/" & Today.Year).ToString("yyyy-MM-dd") & "'"
         ElseIf KeyWord = "*" Or KeyWord = "%" Then
             KeyWord = "%"
             sufix = " "
@@ -186,10 +200,11 @@ Public Class usercAgentsAbsences
         maj()
         Dim istr As String = " select ab.NomPrenom, format(ab.DateDebut) as Début,format(ab.DateFin) as Fin, (julianday(ab.DateFin) - julianday(ab.DateDebut) + 1) as Durée,ab.Motif,ab.Obs,ab.IdOp  "
         istr += " from absences ab join agents ag on ag.NomPrenoms=ab.NomPrenom where "
-        If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then istr += " Début>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and Début<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
+        If selectedAgentRef = 0 AndAlso dtpDebutSearch.SelectedDate.HasValue AndAlso dtpFinSearch.SelectedDate.HasValue Then istr += " Début>='" & dtpDebutSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and Début<='" & dtpFinSearch.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and "
         istr += " (ab.NomPrenom  like '%" & KeyWord & "%' "
         istr += " or ab.Motif  like '%" & KeyWord & "%' "
         istr += " or ab.Obs  like '%" & KeyWord & "%' )" & sufix
+        If selectedAgentRef > 0 Then istr += " and ag.RefAgent = " & selectedAgentRef
         istr += " order by ag.Actif desc, ab.DateDebut desc, ab.NomPrenom "
         DgAgentAbsence.ItemsSource = LoadDataTable(istr, LocalConnxStr).DefaultView
         Dim itext As String = "Nombre de ligne: " & DirectCast(DgAgentAbsence.ItemsSource, System.Data.DataView).Count
@@ -755,6 +770,22 @@ Public Class usercAgentsAbsences
 
     End Sub
 
+    Private Sub DgAgentAbsence_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgAgentAbsence.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgAgentAbsence, e)
+    End Sub
+
+    Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentAbsence, "NomPrenom", MainWindow.AgentRelatedView.Contract)
+    End Sub
+
+    Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentAbsence, "NomPrenom", MainWindow.AgentRelatedView.Affectation)
+    End Sub
+
+    Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
+        MainWindow.OpenAgentContextMenuView(DgAgentAbsence, "NomPrenom", MainWindow.AgentRelatedView.Absence)
+    End Sub
+
     Private Sub cmiModif_Click(sender As Object, e As RoutedEventArgs) Handles cmiModif.Click
         Dim rowView As DataRowView = TryCast(DgAgentAbsence.CurrentItem, DataRowView)
         LoadRowItems(rowView)
@@ -773,7 +804,7 @@ Public Class usercAgentsAbsences
 
     Private Sub btnExportExcel_Click(sender As Object, e As RoutedEventArgs) Handles btnExportExcel.Click
         Dim iTitre As String = "Absences/premissions"
-        If dtpDebutSearch.SelectedDate.HasValue And dtpFin.SelectedDate.HasValue Then
+        If selectedAgentRef = 0 AndAlso dtpDebutSearch.SelectedDate.HasValue AndAlso dtpFin.SelectedDate.HasValue Then
             iTitre = "Absences/premissions du " & dtpDebutSearch.SelectedDate.Value.ToString("dd/MM/yy") & " au " & dtpFinSearch.SelectedDate.Value.ToString("dd/MM/yy")
         End If
         ExportDGtoExcel(DgAgentAbsence, "Point_Entrée-permissions", iTitre) '"Point_Entrees"

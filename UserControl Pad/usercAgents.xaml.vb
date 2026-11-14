@@ -28,28 +28,19 @@ Public Class usercAgents
     End Sub
 
     Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
-        Dim rowView As DataRowView = TryCast(DgEmployes.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeCtr(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then MsgBox(iWrd, MsgBoxStyle.OkOnly, "CONTRAT - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
-
+        MainWindow.OpenAgentContextMenuView(DgEmployes, "NomPrenoms", MainWindow.AgentRelatedView.Contract)
     End Sub
 
     Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
-        Dim rowView As DataRowView = TryCast(DgEmployes.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeAffect(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then MsgBox(iWrd, MsgBoxStyle.OkOnly, "AFFFECTATIONS - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        MainWindow.OpenAgentContextMenuView(DgEmployes, "NomPrenoms", MainWindow.AgentRelatedView.Affectation)
     End Sub
 
     Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
-        Dim rowView As DataRowView = TryCast(DgEmployes.CurrentItem, DataRowView)
-        If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            Dim iWrd As String = ResumeAbs(rowView.Row.ItemArray(0).ToString)
-            If iWrd <> "" Then MsgBox(iWrd, MsgBoxStyle.OkOnly, "ABSENCES/PERMISSIONS/CONGES - " & UCase(rowView.Row.ItemArray(0).ToString))
-        End If
+        MainWindow.OpenAgentContextMenuView(DgEmployes, "NomPrenoms", MainWindow.AgentRelatedView.Absence)
+    End Sub
+
+    Private Sub DgEmployes_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgEmployes.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgEmployes, e)
     End Sub
     Private Sub AgentActifOnInputTimerElapsed(sender As Object, e As EventArgs)
         inputTimerAgent.Stop()

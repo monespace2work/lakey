@@ -4,6 +4,7 @@ Imports System.Data
 Imports System.Globalization
 Imports System.Text
 Imports Microsoft.VisualBasic.FileIO
+Imports System.Windows.Media
 
 Public Class usercAgentsEntree
     Private Class AgentCsvRecord
@@ -1000,6 +1001,22 @@ Public Class usercAgentsEntree
         Dim rowView As DataRowView = TryCast(DgAgentListe.CurrentItem, DataRowView)
         LoadRowItems(rowView)
     End Sub
+
+    Private Sub DgAgentListe_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgAgentListe.PreviewMouseRightButtonDown
+        Dim element As DependencyObject = TryCast(e.OriginalSource, DependencyObject)
+        While element IsNot Nothing AndAlso Not TypeOf element Is DataGridRow
+            element = VisualTreeHelper.GetParent(element)
+        End While
+
+        Dim row As DataGridRow = TryCast(element, DataGridRow)
+        If row IsNot Nothing Then
+            DgAgentListe.SelectedItem = row.Item
+            If DgAgentListe.Columns.Count > 0 Then
+                DgAgentListe.CurrentCell = New DataGridCellInfo(row.Item, DgAgentListe.Columns(0))
+            End If
+        End If
+    End Sub
+
     Sub LoadRowItems(rowView As DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             If rowView.Row.ItemArray(0).ToString <> "" Then
@@ -1077,7 +1094,7 @@ Public Class usercAgentsEntree
     Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgAgentListe.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
-            RefAg = rowView.Row.ItemArray(14).ToString
+            RefAg = Convert.ToInt32(rowView.Row("Ref"))
             If MessageBox.Show("Voulez supprimer définitivement l'agent « " & rowView.Row.ItemArray(0).ToString & " " & rowView.Row.ItemArray(1).ToString & " » ainsi que ses contrats, affectations, absences, heures supplémentaires, sorties, plannings et références d'événements ? Une agence dont il est responsable devra d'abord être réaffectée.",
                                "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
                 If Not ConfirmAdminPassword(System.Windows.Window.GetWindow(Me),
@@ -1238,6 +1255,51 @@ Public Class usercAgentsEntree
     Private Sub cmiModif_Click(sender As Object, e As RoutedEventArgs) Handles cmiModif.Click
         Dim rowView As DataRowView = TryCast(DgAgentListe.CurrentItem, DataRowView)
         LoadRowItems(rowView)
+    End Sub
+
+    Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
+        OpenSelectedAgentView(Sub(mainWindow, agentRef)
+                                  mainWindow.LoadContrat(agentRef)
+                              End Sub)
+    End Sub
+
+    Private Sub cmiAffectation_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectation.Click
+        OpenSelectedAgentView(Sub(mainWindow, agentRef)
+                                  mainWindow.LoadAffectation(agentRef)
+                              End Sub)
+    End Sub
+
+    Private Sub cmiAbsence_Click(sender As Object, e As RoutedEventArgs) Handles cmiAbsence.Click
+        OpenSelectedAgentView(Sub(mainWindow, agentRef)
+                                  mainWindow.LoadAbsence(agentRef)
+                              End Sub)
+    End Sub
+
+    Private Sub OpenSelectedAgentView(navigate As Action(Of MainWindow, Integer))
+        Dim rowView As DataRowView = TryCast(DgAgentListe.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+
+        Dim agentRef As Integer
+        If Not Integer.TryParse(Convert.ToString(rowView.Row("Ref")), agentRef) OrElse agentRef <= 0 Then
+            MessageBox.Show("L'identifiant de l'agent sélectionné est invalide.",
+                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+
+        Dim mainWindow As MainWindow = TryCast(Window.GetWindow(Me), MainWindow)
+        If mainWindow Is Nothing AndAlso Application.Current IsNot Nothing Then
+            For Each window As Window In Application.Current.Windows
+                mainWindow = TryCast(window, MainWindow)
+                If mainWindow IsNot Nothing Then Exit For
+            Next
+        End If
+        If mainWindow Is Nothing Then
+            MessageBox.Show("La fenêtre principale est introuvable.",
+                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+
+        navigate(mainWindow, agentRef)
     End Sub
 
     Private Sub btnExportExcel_Click(sender As Object, e As RoutedEventArgs) Handles btnExportExcel.Click
