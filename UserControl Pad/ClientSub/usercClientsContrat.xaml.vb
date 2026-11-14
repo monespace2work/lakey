@@ -788,6 +788,32 @@ Public Class usercClientsContrat
 
     End Sub
 
+    Private Sub cmiSites_Click(sender As Object, e As RoutedEventArgs) Handles cmiSites.Click
+        ShowClientAssignmentSummary("SITES", Function(clientName) ListeSiteClient(clientName, iConnxStr))
+    End Sub
+
+    Private Sub cmiPostes_Click(sender As Object, e As RoutedEventArgs) Handles cmiPostes.Click
+        ShowClientAssignmentSummary("POSTES", Function(clientName) ListePosteClient(clientName, iConnxStr))
+    End Sub
+
+    Private Sub cmiAgents_Click(sender As Object, e As RoutedEventArgs) Handles cmiAgents.Click
+        ShowClientAssignmentSummary("AGENTS AFFECTÉS", Function(clientName) ListeAgentClient(clientName, iConnxStr))
+    End Sub
+
+    Private Sub ShowClientAssignmentSummary(title As String, getSummary As Func(Of String, String))
+        Dim rowView As DataRowView = TryCast(DgClientsContrats.CurrentItem, DataRowView)
+        If rowView Is Nothing OrElse rowView.Row.ItemArray.Length = 0 Then Return
+
+        Dim clientName As String = rowView.Row.ItemArray(0).ToString()
+        Dim summary As String = getSummary(clientName)
+        If String.IsNullOrWhiteSpace(summary) Then summary = "Aucun élément affecté."
+        MsgBox(summary, MsgBoxStyle.OkOnly, title & " - " & UCase(clientName))
+    End Sub
+
+    Private Sub DgClientsContrats_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgClientsContrats.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgClientsContrats, e)
+    End Sub
+
     Private Sub btnExportExcel_Click(sender As Object, e As RoutedEventArgs) Handles btnExportExcel.Click
         Dim iTitre As String = "Contrat clients "
         If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then

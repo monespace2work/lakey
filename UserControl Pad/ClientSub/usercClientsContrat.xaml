@@ -188,9 +188,9 @@
                                             <Separator/>
                                             <MenuItem Header="Copier"/>
                                             <Separator/>
-                                            <MenuItem Header="Contrat" Name="cmiContrat" />
-                                            <MenuItem Header="Affectation" Name="cmiAffectation" />
-                                            <MenuItem Header="Abence/Permission" Name="cmiAbsence" />
+                                            <MenuItem Header="Sites" Name="cmiSites" />
+                                            <MenuItem Header="Postes" Name="cmiPostes" />
+                                            <MenuItem Header="Agents" Name="cmiAgents" />
                                             <Separator/>
                                             <MenuItem Header="Résumé" Name="cmiResume" />
 
