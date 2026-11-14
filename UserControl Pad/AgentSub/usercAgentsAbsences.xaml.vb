@@ -373,7 +373,22 @@ Public Class usercAgentsAbsences
         If dialog.ShowDialog() <> True Then Return
 
         Try
-            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            Dim table As DataTable = Nothing
+            Dim hasHeader As Boolean = False
+            Dim noHeaderColumns As String() = {"NomPrenom", "DateDebut", "DateFin", "Motif", "Obs"}
+            Try
+                table = ReadCsvTable(dialog.FileName)
+                hasHeader =
+                    CsvHasColumn(table, "Agent", "NomPrenom", "Matricule") AndAlso
+                    CsvHasColumn(table, "Motif") AndAlso
+                    CsvHasColumn(table, "Début", "DateDebut") AndAlso
+                    CsvHasColumn(table, "Fin", "DateFin")
+            Catch ex As FormatException
+                ' Un CSV sans en-tête peut être interprété comme des en-têtes invalides.
+            End Try
+            If Not hasHeader Then
+                table = ReadCsvTable(dialog.FileName, noHeaderColumns, ";")
+            End If
             If Not CsvHasColumn(table, "Agent", "NomPrenom", "Matricule") OrElse
                Not CsvHasColumn(table, "Motif") OrElse
                Not CsvHasColumn(table, "Début", "DateDebut") OrElse
@@ -391,7 +406,7 @@ Public Class usercAgentsAbsences
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            ImportAbsencesCsv(table)
+            ImportAbsencesCsv(table, hasHeader)
             If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
             Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             MessageBox.Show(table.Rows.Count & " absence(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
@@ -402,7 +417,7 @@ Public Class usercAgentsAbsences
         End Try
     End Sub
 
-    Private Sub ImportAbsencesCsv(table As DataTable)
+    Private Sub ImportAbsencesCsv(table As DataTable, hasHeader As Boolean)
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
@@ -411,10 +426,14 @@ Public Class usercAgentsAbsences
                     nextId = Convert.ToInt32(command.ExecuteScalar())
                 End Using
 
+                Dim activeAgents As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents WHERE Actif = 1", "NomPrenoms", "NomPrenoms", "NumMatr")
+                Dim activeMotifs As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT Motif FROM AbsencesMotifs WHERE Actif = 1", "Motif", "Motif")
                 Dim seenAbsences As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
                 For index As Integer = 0 To table.Rows.Count - 1
                     Dim row As DataRow = table.Rows(index)
-                    Dim rowNumber As Integer = index + 2
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
                     Dim agentInput As String = CsvValue(row, "Agent", "NomPrenom", "Matricule")
                     Dim motif As String = CsvValue(row, "Motif")
                     Dim startDate As DateTime = CsvDateValue(CsvValue(row, "Début", "DateDebut"), rowNumber, "Début")
@@ -424,28 +443,23 @@ Public Class usercAgentsAbsences
                     End If
                     If endDate < startDate Then Throw New FormatException("Ligne " & rowNumber & " : la fin de l'absence précède son début.")
 
-                    Dim agentName As String
-                    Using command As New SQLiteCommand(
-                        "SELECT NomPrenoms FROM agents WHERE Actif = 1 AND (NomPrenoms = @agent COLLATE NOCASE OR NumMatr = @agent COLLATE NOCASE) LIMIT 1",
-                        connection,
-                        transaction)
-                        command.Parameters.AddWithValue("@agent", agentInput)
-                        agentName = Convert.ToString(command.ExecuteScalar())
-                    End Using
-                    If String.IsNullOrWhiteSpace(agentName) Then
+                    Dim agentName As String = Nothing
+                    If Not activeAgents.TryGetValue(agentInput, agentName) Then
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
                     End If
 
-                    Using command As New SQLiteCommand("SELECT COUNT(*) FROM AbsencesMotifs WHERE Motif = @motif COLLATE NOCASE AND Actif = 1", connection, transaction)
-                        command.Parameters.AddWithValue("@motif", motif)
-                        If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
-                            Throw New InvalidOperationException("Ligne " & rowNumber & " : motif inactif ou inconnu (« " & motif & " »).")
-                        End If
-                    End Using
+                    Dim canonicalMotif As String = Nothing
+                    If Not activeMotifs.TryGetValue(motif, canonicalMotif) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : motif inactif ou inconnu (« " & motif & " »).")
+                    End If
+                    motif = canonicalMotif
 
                     Dim duplicateKey As String = String.Join("|", agentName, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), motif)
                     If Not seenAbsences.Add(duplicateKey) Then
-                        Throw New InvalidOperationException("Ligne " & rowNumber & " : absence répétée dans le fichier CSV.")
+                        Throw New InvalidOperationException(
+                            "Ligne " & rowNumber & " : absence répétée dans le fichier CSV pour « " & agentName &
+                            " », du " & startDate.ToString("dd/MM/yyyy") & " au " & endDate.ToString("dd/MM/yyyy") &
+                            " (motif : « " & motif & " »).")
                     End If
                     Using command As New SQLiteCommand(
                         "SELECT COUNT(*) FROM Absences WHERE StdBy = 0 AND NomPrenom = @agent AND DateDebut = @start AND DateFin = @finish AND Motif = @motif",
@@ -456,7 +470,10 @@ Public Class usercAgentsAbsences
                         command.Parameters.AddWithValue("@finish", endDate.ToString("yyyy-MM-dd"))
                         command.Parameters.AddWithValue("@motif", motif)
                         If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
-                            Throw New InvalidOperationException("Ligne " & rowNumber & " : cette absence existe déjà pour « " & agentName & " ».")
+                            Throw New InvalidOperationException(
+                                "Ligne " & rowNumber & " : cette absence existe déjà pour « " & agentName &
+                                " », du " & startDate.ToString("dd/MM/yyyy") & " au " & endDate.ToString("dd/MM/yyyy") &
+                                " (motif : « " & motif & " »).")
                         End If
                     End Using
 

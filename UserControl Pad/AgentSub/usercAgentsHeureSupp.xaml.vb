@@ -208,7 +208,22 @@ Public Class usercAgentsHeureSupp
         If dialog.ShowDialog() <> True Then Return
 
         Try
-            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            Dim table As DataTable = Nothing
+            Dim hasHeader As Boolean = False
+            Dim noHeaderColumns As String() = {"DateHS", "Agent", "NbFaction", "SiteHS", "Obs"}
+            Try
+                table = ReadCsvTable(dialog.FileName)
+                hasHeader =
+                    CsvHasColumn(table, "Agent", "Matricule") AndAlso
+                    CsvHasColumn(table, "Site", "SiteHS") AndAlso
+                    CsvHasColumn(table, "Date", "DateHS") AndAlso
+                    CsvHasColumn(table, "Nombre de vacations", "NbFaction")
+            Catch ex As FormatException
+                ' Un CSV sans en-tête peut être interprété comme des en-têtes invalides.
+            End Try
+            If Not hasHeader Then
+                table = ReadCsvTable(dialog.FileName, noHeaderColumns, ";")
+            End If
             If Not CsvHasColumn(table, "Agent", "Matricule") OrElse
                Not CsvHasColumn(table, "Site", "SiteHS") OrElse
                Not CsvHasColumn(table, "Date", "DateHS") OrElse
@@ -226,7 +241,7 @@ Public Class usercAgentsHeureSupp
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            ImportHeuresSuppCsv(table)
+            ImportHeuresSuppCsv(table, hasHeader)
             If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
             Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             MessageBox.Show(table.Rows.Count & " ligne(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
@@ -237,7 +252,7 @@ Public Class usercAgentsHeureSupp
         End Try
     End Sub
 
-    Private Sub ImportHeuresSuppCsv(table As DataTable)
+    Private Sub ImportHeuresSuppCsv(table As DataTable, hasHeader As Boolean)
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
@@ -246,10 +261,15 @@ Public Class usercAgentsHeureSupp
                     nextId = Convert.ToInt32(command.ExecuteScalar())
                 End Using
 
+                Dim activeAgents As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents WHERE Actif = 1", "NomPrenoms", "NomPrenoms", "NumMatr")
+                Dim activeSites As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomSite FROM siteaffectation WHERE Actif = 1", "NomSite", "NomSite")
+
                 Dim seenEntries As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
                 For index As Integer = 0 To table.Rows.Count - 1
                     Dim row As DataRow = table.Rows(index)
-                    Dim rowNumber As Integer = index + 2
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
                     Dim agentInput As String = CsvValue(row, "Agent", "Matricule")
                     Dim siteName As String = CsvValue(row, "Site", "SiteHS")
                     Dim dateHS As DateTime = CsvDateValue(CsvValue(row, "Date", "DateHS"), rowNumber, "Date")
@@ -262,24 +282,16 @@ Public Class usercAgentsHeureSupp
                         Throw New FormatException("Ligne " & rowNumber & " : le nombre de vacations doit être 1 ou 2.")
                     End If
 
-                    Dim agentName As String
-                    Using command As New SQLiteCommand(
-                        "SELECT NomPrenoms FROM agents WHERE Actif = 1 AND (NomPrenoms = @agent COLLATE NOCASE OR NumMatr = @agent COLLATE NOCASE) LIMIT 1",
-                        connection,
-                        transaction)
-                        command.Parameters.AddWithValue("@agent", agentInput)
-                        agentName = Convert.ToString(command.ExecuteScalar())
-                    End Using
-                    If String.IsNullOrWhiteSpace(agentName) Then
+                    Dim agentName As String = Nothing
+                    If Not activeAgents.TryGetValue(agentInput, agentName) Then
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
                     End If
 
-                    Using command As New SQLiteCommand("SELECT COUNT(*) FROM siteaffectation WHERE NomSite = @site COLLATE NOCASE AND Actif = 1", connection, transaction)
-                        command.Parameters.AddWithValue("@site", siteName)
-                        If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
-                            Throw New InvalidOperationException("Ligne " & rowNumber & " : site inactif ou inconnu (« " & siteName & " »).")
-                        End If
-                    End Using
+                    Dim activeSiteName As String = Nothing
+                    If Not activeSites.TryGetValue(siteName, activeSiteName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : site inactif ou inconnu (« " & siteName & " »).")
+                    End If
+                    siteName = activeSiteName
 
                     Dim duplicateKey As String = String.Join("|", agentName, dateHS.ToString("yyyy-MM-dd"), siteName)
                     If Not seenEntries.Add(duplicateKey) Then

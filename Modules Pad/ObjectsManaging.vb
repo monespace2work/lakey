@@ -2,6 +2,7 @@
 Imports System.Windows.Threading
 Imports System.IO
 Imports System.Data
+Imports System.Data.SQLite
 Imports System.Threading.Tasks
 Imports System.Globalization
 Imports System.Text
@@ -40,7 +41,12 @@ Module ObjectsManaging
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning)
                 End If
-            Catch ex As Exception
+            Catch ex As Exception When TypeOf ex Is SQLiteException OrElse
+                                       TypeOf ex Is ArgumentException OrElse
+                                       TypeOf ex Is InvalidOperationException OrElse
+                                       TypeOf ex Is System.IO.IOException OrElse
+                                       TypeOf ex Is UnauthorizedAccessException OrElse
+                                       TypeOf ex Is System.Security.SecurityException
                 System.Diagnostics.Debug.WriteLine("Échec de l'actualisation après une modification : " & ex.ToString())
                 MessageBox.Show(
                     "L'opération est enregistrée, mais l'actualisation de la base locale a échoué : " & ex.Message,
@@ -584,22 +590,46 @@ Module ObjectsManaging
     End Sub
 
     Public Function ReadCsvTable(filePath As String) As DataTable
+        Return ReadCsvTable(filePath, Nothing)
+    End Function
+
+    Public Function ReadCsvTable(filePath As String, columnNames As String()) As DataTable
+        Return ReadCsvTable(filePath, columnNames, Nothing)
+    End Function
+
+    Public Function ReadCsvTable(filePath As String, columnNames As String(), delimiterOverride As String) As DataTable
+        Try
+            Return ReadCsvTable(filePath, columnNames, delimiterOverride, New UTF8Encoding(False, True))
+        Catch ex As DecoderFallbackException
+            Return ReadCsvTable(filePath, columnNames, delimiterOverride, Encoding.GetEncoding(1252))
+        End Try
+    End Function
+
+    Private Function ReadCsvTable(filePath As String, columnNames As String(), delimiterOverride As String, fileEncoding As Encoding) As DataTable
         Dim delimiter As String
-        Using reader As New StreamReader(filePath, Encoding.UTF8, True)
-            Dim firstLine As String = reader.ReadLine()
-            If firstLine Is Nothing Then Return New DataTable()
-            delimiter = If(CountCsvDelimiters(firstLine, ";"c) > CountCsvDelimiters(firstLine, ","c), ";", ",")
-        End Using
+        If String.IsNullOrEmpty(delimiterOverride) Then
+            Using reader As New StreamReader(filePath, fileEncoding, True)
+                Dim firstLine As String = reader.ReadLine()
+                If firstLine Is Nothing Then Return New DataTable()
+                delimiter = If(CountCsvDelimiters(firstLine, ";"c) > CountCsvDelimiters(firstLine, ","c), ";", ",")
+            End Using
+        Else
+            delimiter = delimiterOverride
+        End If
 
         Dim table As New DataTable()
-        Using parser As New TextFieldParser(filePath, Encoding.UTF8, True)
+        Using parser As New TextFieldParser(filePath, fileEncoding, True)
             parser.TextFieldType = FieldType.Delimited
             parser.SetDelimiters(delimiter)
             parser.HasFieldsEnclosedInQuotes = True
             parser.TrimWhiteSpace = False
 
             If parser.EndOfData Then Return table
-            Dim headers As String() = parser.ReadFields()
+            Dim hasHeader As Boolean = columnNames Is Nothing
+            Dim headers As String() = If(hasHeader, parser.ReadFields(), columnNames)
+            If headers Is Nothing OrElse headers.Length = 0 Then
+                Throw New FormatException("Le CSV ne contient aucun en-tête de colonne.")
+            End If
             For Each header As String In headers
                 Dim normalizedHeader As String = NormalizeCsvHeader(header)
                 If normalizedHeader.Length = 0 Then Throw New FormatException("Une colonne du CSV ne possède pas d'en-tête.")
@@ -607,7 +637,7 @@ Module ObjectsManaging
                 table.Columns.Add(normalizedHeader, GetType(String))
             Next
 
-            Dim recordNumber As Integer = 1
+            Dim recordNumber As Integer = If(hasHeader, 1, 0)
             While Not parser.EndOfData
                 Dim fields As String() = parser.ReadFields()
                 recordNumber += 1
@@ -630,10 +660,33 @@ Module ObjectsManaging
         For Each header As String In headerNames
             Dim columnName As String = NormalizeCsvHeader(header)
             If row.Table.Columns.Contains(columnName) AndAlso Not row.IsNull(columnName) Then
-                Return Convert.ToString(row(columnName)).Trim()
+                Return NormalizeCsvValue(Convert.ToString(row(columnName)))
             End If
         Next
         Return ""
+    End Function
+
+    Public Function NormalizeCsvValue(value As String) As String
+        Return If(value, "").Trim().Normalize(NormalizationForm.FormC)
+    End Function
+
+    Public Function LoadCsvLookup(connection As SQLiteConnection, transaction As SQLiteTransaction, query As String, valueColumn As String, ParamArray keyColumns As String()) As Dictionary(Of String, String)
+        Dim lookup As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
+        Using command As New SQLiteCommand(query, connection, transaction)
+            Using reader As SQLiteDataReader = command.ExecuteReader()
+                Dim valueOrdinal As Integer = reader.GetOrdinal(valueColumn)
+                Dim keyOrdinals As Integer() = keyColumns.Select(Function(column) reader.GetOrdinal(column)).ToArray()
+                While reader.Read()
+                    Dim value As String = Convert.ToString(reader(valueOrdinal))
+                    If String.IsNullOrWhiteSpace(value) Then Continue While
+                    For Each keyOrdinal As Integer In keyOrdinals
+                        Dim key As String = NormalizeCsvValue(Convert.ToString(reader(keyOrdinal)))
+                        If key.Length > 0 AndAlso Not lookup.ContainsKey(key) Then lookup.Add(key, value)
+                    Next
+                End While
+            End Using
+        End Using
+        Return lookup
     End Function
 
     Public Function CsvDateValue(value As String, rowNumber As Integer, fieldName As String) As DateTime
@@ -644,6 +697,97 @@ Module ObjectsManaging
             Return parsedDate
         End If
         Throw New FormatException("Ligne " & rowNumber & " : la date « " & fieldName & " » est invalide (« " & value & " »).")
+    End Function
+
+    Public Function CsvBooleanValue(value As String, rowNumber As Integer, fieldName As String) As Boolean
+        Select Case NormalizeCsvValue(value).ToLowerInvariant()
+            Case "1", "true", "vrai", "oui", "yes", "actif"
+                Return True
+            Case "0", "false", "faux", "non", "no", "inactif"
+                Return False
+            Case Else
+                Throw New FormatException("Ligne " & rowNumber & " : la valeur de « " & fieldName & " » est invalide (« " & value & " »). Utilisez 1/0, vrai/faux ou oui/non.")
+        End Select
+    End Function
+
+    Public Function ConfirmAdminPassword(owner As System.Windows.Window, actionDescription As String, connectionString As String) As Boolean
+        Dim passwordBox As New System.Windows.Controls.PasswordBox With {
+            .MinWidth = 300,
+            .Margin = New System.Windows.Thickness(0, 0, 0, 14)
+        }
+        Dim prompt As New System.Windows.Controls.TextBlock With {
+            .Text = "Pour confirmer " & actionDescription & ", saisissez le mot de passe d'un compte administrateur autorisé à gérer et supprimer les données.",
+            .TextWrapping = System.Windows.TextWrapping.Wrap,
+            .Margin = New System.Windows.Thickness(0, 0, 0, 12)
+        }
+        Dim cancelButton As New System.Windows.Controls.Button With {
+            .Content = "Annuler",
+            .IsCancel = True,
+            .MinWidth = 85,
+            .Margin = New System.Windows.Thickness(0, 0, 8, 0),
+            .Padding = New System.Windows.Thickness(10, 5, 10, 5)
+        }
+        Dim confirmButton As New System.Windows.Controls.Button With {
+            .Content = "Confirmer",
+            .IsDefault = True,
+            .MinWidth = 85,
+            .Padding = New System.Windows.Thickness(10, 5, 10, 5)
+        }
+        Dim buttons As New System.Windows.Controls.StackPanel With {
+            .Orientation = System.Windows.Controls.Orientation.Horizontal,
+            .HorizontalAlignment = System.Windows.HorizontalAlignment.Right
+        }
+        buttons.Children.Add(cancelButton)
+        buttons.Children.Add(confirmButton)
+
+        Dim content As New System.Windows.Controls.StackPanel With {
+            .Margin = New System.Windows.Thickness(16)
+        }
+        content.Children.Add(prompt)
+        content.Children.Add(passwordBox)
+        content.Children.Add(buttons)
+
+        Dim dialog As New System.Windows.Window With {
+            .Title = "Validation administrateur",
+            .Width = 400,
+            .SizeToContent = System.Windows.SizeToContent.Height,
+            .ResizeMode = System.Windows.ResizeMode.NoResize,
+            .ShowInTaskbar = False,
+            .WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen,
+            .Content = content
+        }
+        If owner IsNot Nothing Then
+            dialog.Owner = owner
+            dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+        End If
+        AddHandler confirmButton.Click, Sub(sender As Object, args As System.Windows.RoutedEventArgs) dialog.DialogResult = True
+        AddHandler dialog.Loaded, Sub(sender As Object, args As System.Windows.RoutedEventArgs) passwordBox.Focus()
+
+        If dialog.ShowDialog() <> True Then Return False
+        Dim password As String = passwordBox.Password
+        passwordBox.Clear()
+        If String.IsNullOrEmpty(password) Then Return False
+
+        Try
+            Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(connectionString, True))
+                connection.Open()
+                Using command As New SQLiteCommand(
+                    "SELECT COUNT(*) FROM lada l JOIN LadaWet p ON p.Id = l.UserLever " &
+                    "WHERE l.UserPassWord = @password AND p.CanGlobalDataManage = 1 AND p.CanDeleteDattaOrdinary = 1",
+                    connection)
+                    command.Parameters.AddWithValue("@password", password)
+                    If Convert.ToInt32(command.ExecuteScalar()) > 0 Then Return True
+                End Using
+            End Using
+        Catch ex As Exception
+            MessageBox.Show("La vérification du mot de passe administrateur a échoué : " & ex.Message,
+                            "Validation administrateur", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return False
+        End Try
+
+        MessageBox.Show("Mot de passe administrateur incorrect ou compte sans droit de suppression.",
+                        "Validation administrateur", MessageBoxButton.OK, MessageBoxImage.Warning)
+        Return False
     End Function
 
     Private Function NormalizeCsvHeader(value As String) As String

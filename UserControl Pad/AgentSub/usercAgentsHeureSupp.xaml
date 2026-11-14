@@ -64,7 +64,7 @@
                 </StackPanel>
                 <WrapPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button x:Name="btnNewData" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5"/>
-                    <Button x:Name="btnImportCsv" Content="IMPORTER" Background="#FF757A0F" Foreground="White" Style="{StaticResource NewRecordButton}" MinWidth="110" Margin="8" Padding="5" ToolTip="Colonnes : Agent (nom ou matricule), Site, Date, Nombre de vacations (1 ou 2), Observations."/>
+                    <Button x:Name="btnImportCsv" Content="IMPORTER" Background="#FF757A0F" Foreground="White" Style="{StaticResource NewRecordButton}" MinWidth="110" Margin="8" Padding="5" ToolTip="CSV séparé par ;, sans en-tête : DateHS;Agent;NbFaction;SiteHS;Obs. Les CSV avec en-têtes sont aussi acceptés."/>
                     <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Visibility="Collapsed" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}"/>
                     <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeSuccessButtonBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
                 </WrapPanel>

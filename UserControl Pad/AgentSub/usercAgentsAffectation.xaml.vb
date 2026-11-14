@@ -246,7 +246,22 @@ Public Class usercAgentsAffectation
         If dialog.ShowDialog() <> True Then Return
 
         Try
-            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            Dim table As DataTable = Nothing
+            Dim hasHeader As Boolean = False
+            Dim noHeaderColumns As String() = {"DateAffect", "FinAffect", "AgentAffect", "SiteAffect", "SiteAffectPrecedent", "ObsAffect"}
+            Try
+                table = ReadCsvTable(dialog.FileName)
+                hasHeader =
+                    CsvHasColumn(table, "Agent", "AgentAffect", "NomPrenoms", "Matricule") AndAlso
+                    CsvHasColumn(table, "Nouveau site", "Site", "SiteAffect") AndAlso
+                    CsvHasColumn(table, "Début", "DateAffect") AndAlso
+                    CsvHasColumn(table, "Fin", "FinAffect")
+            Catch ex As FormatException
+                ' Un CSV sans en-tête peut être interprété comme des en-têtes invalides.
+            End Try
+            If Not hasHeader Then
+                table = ReadCsvTable(dialog.FileName, noHeaderColumns, ";")
+            End If
             If Not CsvHasColumn(table, "Agent", "AgentAffect", "NomPrenoms", "Matricule") OrElse
                Not CsvHasColumn(table, "Nouveau site", "Site", "SiteAffect") OrElse
                Not CsvHasColumn(table, "Début", "DateAffect") OrElse
@@ -264,7 +279,7 @@ Public Class usercAgentsAffectation
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            Await Task.Run(Sub() ImportAffectationsCsv(table))
+            Await Task.Run(Sub() ImportAffectationsCsv(table, hasHeader))
             Await RefreshAfterMutationAsync()
             MessageBox.Show(table.Rows.Count & " affectation(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
         Catch ex As Exception
@@ -274,7 +289,7 @@ Public Class usercAgentsAffectation
         End Try
     End Sub
 
-    Private Sub ImportAffectationsCsv(table As DataTable)
+    Private Sub ImportAffectationsCsv(table As DataTable, hasHeader As Boolean)
         Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
         Using connection As New SQLiteConnection(writeConnectionString)
             connection.Open()
@@ -284,10 +299,16 @@ Public Class usercAgentsAffectation
                     nextId = Convert.ToInt32(command.ExecuteScalar())
                 End Using
 
+                Dim activeAgents As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents WHERE Actif = 1", "NomPrenoms", "NomPrenoms", "NumMatr")
+                Dim activeAgentMatricules As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents WHERE Actif = 1", "NumMatr", "NomPrenoms", "NumMatr")
+                Dim activeSites As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomSite FROM siteaffectation WHERE Actif = 1", "NomSite", "NomSite")
                 Dim seenEntries As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
                 For index As Integer = 0 To table.Rows.Count - 1
                     Dim row As DataRow = table.Rows(index)
-                    Dim rowNumber As Integer = index + 2
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
                     Dim agentInput As String = CsvValue(row, "Agent", "AgentAffect", "NomPrenoms", "Matricule")
                     Dim newSite As String = CsvValue(row, "Nouveau site", "Site", "SiteAffect")
                     Dim startDate As DateTime = CsvDateValue(CsvValue(row, "Début", "DateAffect"), rowNumber, "Début")
@@ -297,26 +318,29 @@ Public Class usercAgentsAffectation
                     End If
                     If endDate <= startDate Then Throw New FormatException("Ligne " & rowNumber & " : la fin doit être postérieure au début.")
 
-                    Dim agentName As String
-                    Using command As New SQLiteCommand(
-                        "SELECT a.NomPrenoms FROM agents a WHERE a.Actif = 1 AND (a.NomPrenoms = @agent COLLATE NOCASE OR a.NumMatr = @agent COLLATE NOCASE) " &
-                        "AND EXISTS (SELECT 1 FROM contratstbl c WHERE c.NomPrenoms = a.NumMatr AND c.FinContr >= @start) LIMIT 1",
-                        connection,
-                        transaction)
-                        command.Parameters.AddWithValue("@agent", agentInput)
-                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
-                        agentName = Convert.ToString(command.ExecuteScalar())
-                    End Using
-                    If String.IsNullOrWhiteSpace(agentName) Then
+                    Dim agentName As String = Nothing
+                    Dim agentMatricule As String = Nothing
+                    If Not activeAgents.TryGetValue(agentInput, agentName) OrElse
+                       Not activeAgentMatricules.TryGetValue(agentInput, agentMatricule) Then
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif ayant un contrat valide introuvable (« " & agentInput & " »).")
                     End If
 
-                    Using command As New SQLiteCommand("SELECT COUNT(*) FROM siteaffectation WHERE NomSite = @site COLLATE NOCASE AND Actif = 1", connection, transaction)
-                        command.Parameters.AddWithValue("@site", newSite)
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM contratstbl WHERE NomPrenoms = @agent AND FinContr >= @start",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentMatricule)
+                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
                         If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
-                            Throw New InvalidOperationException("Ligne " & rowNumber & " : nouveau site inactif ou inconnu (« " & newSite & " »).")
+                            Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif ayant un contrat valide introuvable (« " & agentInput & " »).")
                         End If
                     End Using
+
+                    Dim canonicalSite As String = Nothing
+                    If Not activeSites.TryGetValue(newSite, canonicalSite) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : nouveau site inactif ou inconnu (« " & newSite & " »).")
+                    End If
+                    newSite = canonicalSite
 
                     Dim duplicateKey As String = String.Join("|", agentName, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), newSite)
                     If Not seenEntries.Add(duplicateKey) Then

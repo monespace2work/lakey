@@ -108,9 +108,16 @@ Public Class usercAgentsPlanning
 
         Try
             Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            Dim hasHeader As Boolean =
+                CsvHasColumn(table, "Agent", "NomPrenoms") AndAlso
+                CsvHasColumn(table, "Date", "DatePlan") AndAlso
+                CsvHasColumn(table, "Poste", "Code", "Désignation")
+            If Not hasHeader Then
+                table = ReadCsvTable(dialog.FileName, New String() {"Date", "Agent", "Poste"})
+            End If
             If Not CsvHasColumn(table, "Agent", "NomPrenoms") OrElse
                Not CsvHasColumn(table, "Date", "DatePlan") OrElse
-               Not CsvHasColumn(table, "Poste", "Code") Then
+               Not CsvHasColumn(table, "Poste", "Code", "Désignation") Then
                 Throw New FormatException("Colonnes obligatoires : Agent, Date et Poste (code ou désignation).")
             End If
             If table.Rows.Count = 0 Then
@@ -124,7 +131,7 @@ Public Class usercAgentsPlanning
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            Await Task.Run(Sub() ImportPlanningCsv(table))
+            Await Task.Run(Sub() ImportPlanningCsv(table, hasHeader))
             Await RefreshAfterDatabaseMutationAsync(Sub() initializ())
             MessageBox.Show(table.Rows.Count & " affectation(s) au planning importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
         Catch ex As Exception
@@ -134,51 +141,57 @@ Public Class usercAgentsPlanning
         End Try
     End Sub
 
-    Private Sub ImportPlanningCsv(table As DataTable)
+    Private Sub ImportPlanningCsv(table As DataTable, hasHeader As Boolean)
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim activeAgents As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents WHERE Actif = 1", "NomPrenoms", "NomPrenoms", "NumMatr")
+                Dim activePosts As New Dictionary(Of String, KeyValuePair(Of String, String))(StringComparer.OrdinalIgnoreCase)
+                Using command As New SQLiteCommand(
+                    "SELECT Code, Designation, Code || '# ' || Designation AS CodeDesignation, NomSite FROM postes WHERE Actif = 1",
+                    connection,
+                    transaction)
+                    Using reader As SQLiteDataReader = command.ExecuteReader()
+                        While reader.Read()
+                            Dim postCode As String = Convert.ToString(reader("Code"))
+                            If String.IsNullOrWhiteSpace(postCode) Then Continue While
+                            Dim postSite As String = Convert.ToString(reader("NomSite"))
+                            For Each identifier As String In {
+                                postCode,
+                                Convert.ToString(reader("Designation")),
+                                Convert.ToString(reader("CodeDesignation"))
+                            }
+                                Dim normalizedIdentifier As String = NormalizeCsvValue(identifier)
+                                If normalizedIdentifier.Length > 0 AndAlso Not activePosts.ContainsKey(normalizedIdentifier) Then
+                                    activePosts.Add(normalizedIdentifier, New KeyValuePair(Of String, String)(postCode, postSite))
+                                End If
+                            Next
+                        End While
+                    End Using
+                End Using
                 Dim seenEntries As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
                 For index As Integer = 0 To table.Rows.Count - 1
                     Dim row As DataRow = table.Rows(index)
-                    Dim rowNumber As Integer = index + 2
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
                     Dim agentInput As String = CsvValue(row, "Agent", "NomPrenoms")
                     Dim planDate As DateTime = CsvDateValue(CsvValue(row, "Date", "DatePlan"), rowNumber, "Date")
-                    Dim postInput As String = CsvValue(row, "Poste", "Code")
+                    Dim postInput As String = CsvValue(row, "Poste", "Code", "Désignation")
                     If String.IsNullOrWhiteSpace(agentInput) OrElse String.IsNullOrWhiteSpace(postInput) Then
                         Throw New FormatException("Ligne " & rowNumber & " : l'agent et le poste sont obligatoires.")
                     End If
 
-                    Dim agentName As String
-                    Using command As New SQLiteCommand(
-                        "SELECT NomPrenoms FROM agents WHERE Actif = 1 AND (NomPrenoms = @agent COLLATE NOCASE OR NumMatr = @agent COLLATE NOCASE) LIMIT 1",
-                        connection,
-                        transaction)
-                        command.Parameters.AddWithValue("@agent", agentInput)
-                        agentName = Convert.ToString(command.ExecuteScalar())
-                    End Using
-                    If String.IsNullOrWhiteSpace(agentName) Then
+                    Dim agentName As String = Nothing
+                    If Not activeAgents.TryGetValue(agentInput, agentName) Then
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
                     End If
 
-                    Dim postCode As String = Nothing
-                    Dim postSite As String = Nothing
-                    Using command As New SQLiteCommand(
-                        "SELECT Code, NomSite FROM postes WHERE Actif = 1 AND " &
-                        "(Code = @poste COLLATE NOCASE OR Designation = @poste COLLATE NOCASE OR Code || '# ' || Designation = @poste COLLATE NOCASE) LIMIT 1",
-                        connection,
-                        transaction)
-                        command.Parameters.AddWithValue("@poste", postInput)
-                        Using reader As SQLiteDataReader = command.ExecuteReader()
-                            If reader.Read() Then
-                                postCode = Convert.ToString(reader("Code"))
-                                postSite = Convert.ToString(reader("NomSite"))
-                            End If
-                        End Using
-                    End Using
-                    If String.IsNullOrWhiteSpace(postCode) Then
+                    Dim post As KeyValuePair(Of String, String)
+                    If Not activePosts.TryGetValue(postInput, post) Then
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : poste actif introuvable (« " & postInput & " »).")
                     End If
+                    Dim postCode As String = post.Key
+                    Dim postSite As String = post.Value
 
                     Using command As New SQLiteCommand(
                         "SELECT COUNT(*) FROM Affectation WHERE AgentAffect = @agent AND SiteAffect = @site AND DateAffect <= @date AND FinAffect >= @date",

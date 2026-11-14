@@ -203,6 +203,151 @@ Public Class usercClientsContrat
         SaveNewContrat = SaveNewData(istr, iConnxStr)
         If SaveNewContrat Then Joper("SaveNewClient for " & TbxNom.Text & " at " & RefCrt, iConnxStr)
     End Function
+
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer des contrats clients depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim table As DataTable = Nothing
+            Dim hasHeader As Boolean = False
+            Dim noHeaderColumns As String() = {
+                "NomClient", "TypeClient", "MontantFacturationUnitaire", "TypeFacturation",
+                "Ville", "Adresse", "DateDebutCollabor", "DescriptionClient", "Obs"
+            }
+            Try
+                table = ReadCsvTable(dialog.FileName)
+                hasHeader =
+                    CsvHasColumn(table, "NomClient") AndAlso
+                    CsvHasColumn(table, "TypeClient") AndAlso
+                    CsvHasColumn(table, "MontantFacturationUnitaire") AndAlso
+                    CsvHasColumn(table, "TypeFacturation") AndAlso
+                    CsvHasColumn(table, "Ville") AndAlso
+                    CsvHasColumn(table, "Adresse") AndAlso
+                    CsvHasColumn(table, "DateDebutCollabor")
+            Catch ex As FormatException
+                ' Un CSV sans en-tête peut être interprété comme des en-têtes invalides.
+            End Try
+            If Not hasHeader Then table = ReadCsvTable(dialog.FileName, noHeaderColumns, ";")
+
+            If Not CsvHasColumn(table, "NomClient") OrElse
+               Not CsvHasColumn(table, "TypeClient") OrElse
+               Not CsvHasColumn(table, "MontantFacturationUnitaire") OrElse
+               Not CsvHasColumn(table, "TypeFacturation") OrElse
+               Not CsvHasColumn(table, "Ville") OrElse
+               Not CsvHasColumn(table, "Adresse") OrElse
+               Not CsvHasColumn(table, "DateDebutCollabor") Then
+                Throw New FormatException("Colonnes obligatoires : NomClient, TypeClient, MontantFacturationUnitaire, TypeFacturation, Ville, Adresse et DateDebutCollabor.")
+            End If
+            If table.Rows.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+            If MessageBox.Show(
+                "Importer " & table.Rows.Count & " contrat(s) client ? Toute l'opération sera annulée si une ligne est invalide ou en doublon.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            Await Task.Run(Sub() ImportClientContratsCsv(table, hasHeader))
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
+            MessageBox.Show(table.Rows.Count & " contrat(s) client importé(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV des contrats clients a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Sub ImportClientContratsCsv(table As DataTable, hasHeader As Boolean)
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim nextId As Integer
+                Using command As New SQLiteCommand("SELECT COALESCE(MAX(RefCtr), 0) + 1 FROM Client", connection, transaction)
+                    nextId = Convert.ToInt32(command.ExecuteScalar())
+                End Using
+
+                Dim existingClients As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomClient FROM Client", "NomClient", "NomClient")
+                Dim activeClientTypes As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT TypeClient FROM ClientType WHERE Actif = 1", "TypeClient", "TypeClient")
+                Dim activeBillingTypes As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT TypeFacutration FROM ClientTypeFacturation WHERE Actif = 1", "TypeFacutration", "TypeFacutration")
+                Dim importedNames As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+                For index As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(index)
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
+                    Dim clientName As String = CsvValue(row, "NomClient")
+                    Dim clientType As String = CsvValue(row, "TypeClient")
+                    Dim billingType As String = CsvValue(row, "TypeFacturation")
+                    Dim city As String = CsvValue(row, "Ville")
+                    Dim address As String = CsvValue(row, "Adresse")
+                    Dim amountText As String = CsvValue(row, "MontantFacturationUnitaire")
+                    Dim startDate As DateTime = CsvDateValue(CsvValue(row, "DateDebutCollabor"), rowNumber, "DateDebutCollabor")
+                    Dim description As String = CsvValue(row, "DescriptionClient")
+                    Dim observations As String = CsvValue(row, "Obs")
+
+                    If clientName.Length <= 1 OrElse city.Length <= 1 OrElse address.Length <= 1 OrElse
+                       String.IsNullOrWhiteSpace(clientType) OrElse String.IsNullOrWhiteSpace(billingType) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : nom, type, type de facturation, ville et adresse sont obligatoires.")
+                    End If
+
+                    Dim amount As Integer
+                    If Not Integer.TryParse(amountText, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, amount) OrElse amount <= 5000 Then
+                        Throw New FormatException("Ligne " & rowNumber & " : le montant doit être un nombre entier supérieur à 5000.")
+                    End If
+
+                    Dim canonicalClientType As String = Nothing
+                    If Not activeClientTypes.TryGetValue(clientType, canonicalClientType) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : type de client inactif ou inconnu (« " & clientType & " »).")
+                    End If
+                    Dim canonicalBillingType As String = Nothing
+                    If Not activeBillingTypes.TryGetValue(billingType, canonicalBillingType) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : type de facturation inactif ou inconnu (« " & billingType & " »).")
+                    End If
+                    If existingClients.ContainsKey(clientName) OrElse Not importedNames.Add(clientName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : le client « " & clientName & " » existe déjà.")
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO Client (NomClient, Actif, TypeClient, MontantFacturationUnitaire, TypeFacturation, Ville, Adresse, DateDebutCollabor, DescriptionClient, Obs, RefCtr) " &
+                        "VALUES (@name, 1, @type, @amount, @billingType, @city, @address, @start, @description, @observations, @id)",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@name", clientName)
+                        command.Parameters.AddWithValue("@type", canonicalClientType)
+                        command.Parameters.AddWithValue("@amount", amount)
+                        command.Parameters.AddWithValue("@billingType", canonicalBillingType)
+                        command.Parameters.AddWithValue("@city", city)
+                        command.Parameters.AddWithValue("@address", address)
+                        command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@description", description)
+                        command.Parameters.AddWithValue("@observations", observations)
+                        command.Parameters.AddWithValue("@id", nextId)
+                        command.ExecuteNonQuery()
+                    End Using
+                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
+                        command.Parameters.AddWithValue("@operation", "ImportCsvClient for " & clientName)
+                        command.Parameters.AddWithValue("@operator", UserName)
+                        command.ExecuteNonQuery()
+                    End Using
+                    nextId += 1
+                Next
+
+                transaction.Commit()
+            End Using
+        End Using
+    End Sub
+
     Function SaveModifCtr() As Boolean
         SaveModifCtr = False
         Dim istr As String = " update Client  set "
@@ -530,21 +675,83 @@ Public Class usercClientsContrat
     End Sub
     Function DeleteCtr() As Boolean
         DeleteCtr = False
-        Dim istr As String = " delete from Client "
-        istr += " where RefCtr=" & RefCrt & " "
+        Dim clientName As String = Nothing
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
-        DeleteCtr = SaveNewData(istr, iConnxStr)
-        If DeleteCtr Then Joper("DeleteCtrClient at " & RefCrt, iConnxStr)
+        Try
+            Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    Using command As New SQLiteCommand("SELECT NomClient FROM Client WHERE RefCtr = @id", connection, transaction)
+                        command.Parameters.AddWithValue("@id", RefCrt)
+                        clientName = Convert.ToString(command.ExecuteScalar())
+                    End Using
+                    If String.IsNullOrWhiteSpace(clientName) Then
+                        MessageBox.Show("Le client sélectionné est introuvable.", "Suppression du client", MessageBoxButton.OK, MessageBoxImage.Warning)
+                        Return False
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM Client WHERE NomClient = @name AND RefCtr <> @id",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@name", clientName)
+                        command.Parameters.AddWithValue("@id", RefCrt)
+                        If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                            Throw New InvalidOperationException("Plusieurs clients portent le même nom. Suppression annulée car leurs sites ne peuvent pas être attribués sans ambiguïté.")
+                        End If
+                    End Using
+
+                    Dim dependentDeletes As String() = {
+                        "DELETE FROM PlanPoste WHERE Poste IN (SELECT p.Code FROM Postes p JOIN SiteAffectation s ON s.NomSite = p.NomSite WHERE s.Client = @client)",
+                        "DELETE FROM Affectation WHERE SiteAffect IN (SELECT NomSite FROM SiteAffectation WHERE Client = @client)",
+                        "DELETE FROM Events WHERE SiteEvent IN (SELECT NomSite FROM SiteAffectation WHERE Client = @client)",
+                        "DELETE FROM HeureSup WHERE SiteHS IN (SELECT NomSite FROM SiteAffectation WHERE Client = @client)",
+                        "DELETE FROM sortie WHERE SiteSortie IN (SELECT NomSite FROM SiteAffectation WHERE Client = @client)",
+                        "DELETE FROM Postes WHERE NomSite IN (SELECT NomSite FROM SiteAffectation WHERE Client = @client)",
+                        "DELETE FROM SiteAffectation WHERE Client = @client"
+                    }
+                    For Each deleteStatement As String In dependentDeletes
+                        Using command As New SQLiteCommand(deleteStatement, connection, transaction)
+                            command.Parameters.AddWithValue("@client", clientName)
+                            command.ExecuteNonQuery()
+                        End Using
+                    Next
+
+                    Using command As New SQLiteCommand("DELETE FROM Client WHERE RefCtr = @id", connection, transaction)
+                        command.Parameters.AddWithValue("@id", RefCrt)
+                        If command.ExecuteNonQuery() = 0 Then
+                            Throw New InvalidOperationException("Le client sélectionné n'a pas été supprimé.")
+                        End If
+                    End Using
+
+                    transaction.Commit()
+                End Using
+            End Using
+
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Joper("DeleteCtrClient at " & RefCrt, iConnxStr)
+            DeleteCtr = True
+        Catch ex As SQLiteException
+            MessageBox.Show("La suppression du client et de ses données liées a échoué : " & ex.Message,
+                            "Suppression du client", MessageBoxButton.OK, MessageBoxImage.Error)
+        Catch ex As InvalidOperationException
+            MessageBox.Show(ex.Message, "Suppression du client", MessageBoxButton.OK, MessageBoxImage.Warning)
+        Catch ex As ArgumentException
+            MessageBox.Show("La suppression du client et de ses données liées a échoué : " & ex.Message,
+                            "Suppression du client", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Try
     End Function
 
 
     Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
-        If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & TbxNom.Text & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+        If MessageBox.Show("Voulez supprimer le client « " & TbxNom.Text & " » et ses sites et données liées (postes, affectations, événements, heures supplémentaires, planifications et sorties) ?",
+                           "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+            If Not ConfirmAdminPassword(System.Windows.Window.GetWindow(Me),
+                                        "la suppression du client « " & TbxNom.Text & " » et de ses données liées",
+                                        iConnxStr) Then Return
             If DeleteCtr() Then
                 MsgBox("Donnée supprimées avec succès ")
                 Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
-            Else
-                MsgBox("Erreur de suppression")
             End If
         End If
     End Sub
@@ -553,12 +760,14 @@ Public Class usercClientsContrat
         Dim rowView As DataRowView = TryCast(DgClientsContrats.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             RefCrt = rowView.Row.ItemArray(11).ToString
-            If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+            If MessageBox.Show("Voulez supprimer le client « " & rowView.Row.ItemArray(0).ToString & " » et ses sites et données liées (postes, affectations, événements, heures supplémentaires, planifications et sorties) ?",
+                               "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+                If Not ConfirmAdminPassword(System.Windows.Window.GetWindow(Me),
+                                            "la suppression du client « " & rowView.Row.ItemArray(0).ToString & " » et de ses données liées",
+                                            iConnxStr) Then Return
                 If DeleteCtr() Then
                     MsgBox("Donnée supprimées avec succès ")
                     Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
-                Else
-                    MsgBox("Erreur de suppression")
                 End If
             End If
         End If

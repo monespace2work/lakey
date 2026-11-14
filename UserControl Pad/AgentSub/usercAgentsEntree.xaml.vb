@@ -307,8 +307,16 @@ Public Class usercAgentsEntree
     End Sub
 
     Private Function ReadAgentCsv(filePath As String) As List(Of AgentCsvRecord)
+        Try
+            Return ReadAgentCsv(filePath, New UTF8Encoding(False, True))
+        Catch ex As DecoderFallbackException
+            Return ReadAgentCsv(filePath, Encoding.GetEncoding(1252))
+        End Try
+    End Function
+
+    Private Function ReadAgentCsv(filePath As String, fileEncoding As Encoding) As List(Of AgentCsvRecord)
         Dim delimiter As String
-        Using reader As New IO.StreamReader(filePath, Encoding.UTF8, True)
+        Using reader As New IO.StreamReader(filePath, fileEncoding, True)
             Dim firstLine As String = reader.ReadLine()
             If firstLine Is Nothing Then Return New List(Of AgentCsvRecord)()
             Dim semicolonCount As Integer = CountUnquotedDelimiters(firstLine, ";"c)
@@ -322,7 +330,7 @@ Public Class usercAgentsEntree
         Dim matricules As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
         Dim noms As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
 
-        Using parser As New TextFieldParser(filePath, Encoding.UTF8, True)
+        Using parser As New TextFieldParser(filePath, fileEncoding, True)
             parser.TextFieldType = FieldType.Delimited
             parser.SetDelimiters(delimiter)
             parser.HasFieldsEnclosedInQuotes = True
@@ -494,7 +502,7 @@ Public Class usercAgentsEntree
     Private Function GetCsvValue(fields As String(), columnIndexes As Dictionary(Of String, Integer), columnName As String) As String
         Dim index As Integer
         If columnIndexes.TryGetValue(columnName, index) AndAlso index < fields.Length Then
-            Return fields(index).Trim()
+            Return NormalizeCsvValue(fields(index))
         End If
         Return ""
     End Function
@@ -534,66 +542,59 @@ Public Class usercAgentsEntree
                     nextRef = Convert.ToInt32(command.ExecuteScalar())
                 End Using
 
-                Using duplicateCommand As New SQLiteCommand(
-                    "SELECT COUNT(*) FROM agents WHERE NumMatr = @NumMatr COLLATE NOCASE OR NomPrenoms = @NomPrenoms COLLATE NOCASE",
-                    connection,
-                    transaction)
-                    duplicateCommand.Parameters.Add("@NumMatr", DbType.String)
-                    duplicateCommand.Parameters.Add("@NomPrenoms", DbType.String)
-                    Using functionCommand As New SQLiteCommand(
-                        "SELECT COUNT(*) FROM fonction WHERE Fonction = @Fonction COLLATE NOCASE AND Actif = 1",
+                Dim existingAgents As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents", "NomPrenoms", "NomPrenoms", "NumMatr")
+                Dim activeFunctions As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT Fonction FROM fonction WHERE Actif = 1", "Fonction", "Fonction")
+                For Each record As AgentCsvRecord In records
+                    Dim canonicalFunction As String = Nothing
+                    If Not activeFunctions.TryGetValue(record.Fonction, canonicalFunction) Then
+                        Throw New InvalidOperationException("La fonction « " & record.Fonction & " » de l'agent « " & record.NomPrenoms & " » n'existe pas ou n'est pas active.")
+                    End If
+                    record.Fonction = canonicalFunction
+
+                    Dim matriculeKey As String = NormalizeCsvValue(record.NumMatr)
+                    Dim nameKey As String = NormalizeCsvValue(record.NomPrenoms)
+                    If existingAgents.ContainsKey(matriculeKey) OrElse existingAgents.ContainsKey(nameKey) Then
+                        Throw New InvalidOperationException("Le matricule ou le nom complet « " & record.NomPrenoms & " / " & record.NumMatr & " » existe déjà dans la base.")
+                    End If
+
+                    Using insertCommand As New SQLiteCommand(
+                        "INSERT INTO agents (RefAgent, NomPrenoms, NomAgent, PrenomAgent, NumMatr, Contacts, DateNaiss, Sexe, CatEch, NbEnf, Actif, DateEntree, VilleResidence, Quartier, Fonction, OpTime, Pays, MatrimoSituation, Nsecu, CarteType, CarteNumero, Banque, NumCompte, LieuNaiss, PrefNaiss) " &
+                        "VALUES (@RefAgent, @NomPrenoms, @NomAgent, @PrenomAgent, @NumMatr, @Contacts, @DateNaiss, @Sexe, @CatEch, @NbEnf, @Actif, @DateEntree, @VilleResidence, @Quartier, @Fonction, @OpTime, @Pays, @MatrimoSituation, @Nsecu, @CarteType, @CarteNumero, @Banque, @NumCompte, @LieuNaiss, @PrefNaiss)",
                         connection,
                         transaction)
-                        functionCommand.Parameters.Add("@Fonction", DbType.String)
-
-                        For Each record As AgentCsvRecord In records
-                            functionCommand.Parameters("@Fonction").Value = record.Fonction
-                            If Convert.ToInt32(functionCommand.ExecuteScalar()) = 0 Then
-                                Throw New InvalidOperationException("La fonction « " & record.Fonction & " » de l'agent « " & record.NomPrenoms & " » n'existe pas ou n'est pas active.")
-                            End If
-
-                            duplicateCommand.Parameters("@NumMatr").Value = record.NumMatr
-                            duplicateCommand.Parameters("@NomPrenoms").Value = record.NomPrenoms
-                            If Convert.ToInt32(duplicateCommand.ExecuteScalar()) > 0 Then
-                                Throw New InvalidOperationException("Le matricule ou le nom complet « " & record.NomPrenoms & " / " & record.NumMatr & " » existe déjà dans la base.")
-                            End If
-
-                            Using insertCommand As New SQLiteCommand(
-                                "INSERT INTO agents (RefAgent, NomPrenoms, NomAgent, PrenomAgent, NumMatr, Contacts, DateNaiss, Sexe, CatEch, NbEnf, Actif, DateEntree, VilleResidence, Quartier, Fonction, OpTime, Pays, MatrimoSituation, Nsecu, CarteType, CarteNumero, Banque, NumCompte, LieuNaiss, PrefNaiss) " &
-                                "VALUES (@RefAgent, @NomPrenoms, @NomAgent, @PrenomAgent, @NumMatr, @Contacts, @DateNaiss, @Sexe, @CatEch, @NbEnf, @Actif, @DateEntree, @VilleResidence, @Quartier, @Fonction, @OpTime, @Pays, @MatrimoSituation, @Nsecu, @CarteType, @CarteNumero, @Banque, @NumCompte, @LieuNaiss, @PrefNaiss)",
-                                connection,
-                                transaction)
-                                insertCommand.Parameters.AddWithValue("@RefAgent", nextRef)
-                                insertCommand.Parameters.AddWithValue("@NomPrenoms", record.NomPrenoms)
-                                insertCommand.Parameters.AddWithValue("@NomAgent", record.NomAgent)
-                                insertCommand.Parameters.AddWithValue("@PrenomAgent", record.PrenomAgent)
-                                insertCommand.Parameters.AddWithValue("@NumMatr", record.NumMatr)
-                                insertCommand.Parameters.AddWithValue("@Contacts", record.Contacts)
-                                insertCommand.Parameters.AddWithValue("@DateNaiss", record.DateNaiss.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
-                                insertCommand.Parameters.AddWithValue("@Sexe", record.Sexe)
-                                insertCommand.Parameters.AddWithValue("@CatEch", record.CatEch)
-                                insertCommand.Parameters.AddWithValue("@NbEnf", record.NbEnf)
-                                insertCommand.Parameters.AddWithValue("@Actif", If(record.Actif, 1, 0))
-                                insertCommand.Parameters.AddWithValue("@DateEntree", record.DateEntree.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
-                                insertCommand.Parameters.AddWithValue("@VilleResidence", record.VilleResidence)
-                                insertCommand.Parameters.AddWithValue("@Quartier", record.Quartier)
-                                insertCommand.Parameters.AddWithValue("@Fonction", record.Fonction)
-                                insertCommand.Parameters.AddWithValue("@OpTime", Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
-                                insertCommand.Parameters.AddWithValue("@Pays", record.Pays)
-                                insertCommand.Parameters.AddWithValue("@MatrimoSituation", record.MatrimoSituation)
-                                insertCommand.Parameters.AddWithValue("@Nsecu", record.Nsecu)
-                                insertCommand.Parameters.AddWithValue("@CarteType", record.CarteType)
-                                insertCommand.Parameters.AddWithValue("@CarteNumero", record.CarteNumero)
-                                insertCommand.Parameters.AddWithValue("@Banque", record.Banque)
-                                insertCommand.Parameters.AddWithValue("@NumCompte", record.NumCompte)
-                                insertCommand.Parameters.AddWithValue("@LieuNaiss", record.LieuNaiss)
-                                insertCommand.Parameters.AddWithValue("@PrefNaiss", record.PrefNaiss)
-                                insertCommand.ExecuteNonQuery()
-                            End Using
-                            nextRef += 1
-                        Next
+                        insertCommand.Parameters.AddWithValue("@RefAgent", nextRef)
+                        insertCommand.Parameters.AddWithValue("@NomPrenoms", record.NomPrenoms)
+                        insertCommand.Parameters.AddWithValue("@NomAgent", record.NomAgent)
+                        insertCommand.Parameters.AddWithValue("@PrenomAgent", record.PrenomAgent)
+                        insertCommand.Parameters.AddWithValue("@NumMatr", record.NumMatr)
+                        insertCommand.Parameters.AddWithValue("@Contacts", record.Contacts)
+                        insertCommand.Parameters.AddWithValue("@DateNaiss", record.DateNaiss.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                        insertCommand.Parameters.AddWithValue("@Sexe", record.Sexe)
+                        insertCommand.Parameters.AddWithValue("@CatEch", record.CatEch)
+                        insertCommand.Parameters.AddWithValue("@NbEnf", record.NbEnf)
+                        insertCommand.Parameters.AddWithValue("@Actif", If(record.Actif, 1, 0))
+                        insertCommand.Parameters.AddWithValue("@DateEntree", record.DateEntree.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                        insertCommand.Parameters.AddWithValue("@VilleResidence", record.VilleResidence)
+                        insertCommand.Parameters.AddWithValue("@Quartier", record.Quartier)
+                        insertCommand.Parameters.AddWithValue("@Fonction", record.Fonction)
+                        insertCommand.Parameters.AddWithValue("@OpTime", Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
+                        insertCommand.Parameters.AddWithValue("@Pays", record.Pays)
+                        insertCommand.Parameters.AddWithValue("@MatrimoSituation", record.MatrimoSituation)
+                        insertCommand.Parameters.AddWithValue("@Nsecu", record.Nsecu)
+                        insertCommand.Parameters.AddWithValue("@CarteType", record.CarteType)
+                        insertCommand.Parameters.AddWithValue("@CarteNumero", record.CarteNumero)
+                        insertCommand.Parameters.AddWithValue("@Banque", record.Banque)
+                        insertCommand.Parameters.AddWithValue("@NumCompte", record.NumCompte)
+                        insertCommand.Parameters.AddWithValue("@LieuNaiss", record.LieuNaiss)
+                        insertCommand.Parameters.AddWithValue("@PrefNaiss", record.PrefNaiss)
+                        insertCommand.ExecuteNonQuery()
                     End Using
-                End Using
+                    If Not existingAgents.ContainsKey(matriculeKey) Then existingAgents.Add(matriculeKey, record.NomPrenoms)
+                    If Not existingAgents.ContainsKey(nameKey) Then existingAgents.Add(nameKey, record.NomPrenoms)
+                    nextRef += 1
+                Next
 
                 transaction.Commit()
             End Using
@@ -1077,15 +1078,17 @@ Public Class usercAgentsEntree
         Dim rowView As DataRowView = TryCast(DgAgentListe.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             RefAg = rowView.Row.ItemArray(14).ToString
-            If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " " & rowView.Row.ItemArray(1).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+            If MessageBox.Show("Voulez supprimer définitivement l'agent « " & rowView.Row.ItemArray(0).ToString & " " & rowView.Row.ItemArray(1).ToString & " » ainsi que ses contrats, affectations, absences, heures supplémentaires, sorties, plannings et références d'événements ? Une agence dont il est responsable devra d'abord être réaffectée.",
+                               "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+                If Not ConfirmAdminPassword(System.Windows.Window.GetWindow(Me),
+                                            "la suppression de l'agent « " & rowView.Row.ItemArray(0).ToString & " " & rowView.Row.ItemArray(1).ToString & " » et de ses données liées",
+                                            iConnxStr) Then Return
                 If DeleteAgent() Then
-                    MsgBox("Donnée supprimées avec succès ")
+                    MsgBox("L'agent et ses données liées ont été supprimés avec succès.")
                     Await RefreshAfterDatabaseMutationAsync(Sub()
                                                                 InitializeMyFields()
                                                                 SearchAgent(BtnAgentListeSearch.Text)
                                                             End Sub)
-                Else
-                    MsgBox("Erreur de suppression")
                 End If
             End If
 
@@ -1110,26 +1113,111 @@ Public Class usercAgentsEntree
 
     Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
         'If SaveNewData("delete from Agents  where RefAgent=" & RefAg) Then InitialLoad()
-        If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & NomPrenomAg & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+        If MessageBox.Show("Voulez supprimer définitivement l'agent « " & NomPrenomAg & " » ainsi que ses contrats, affectations, absences, heures supplémentaires, sorties, plannings et références d'événements ? Une agence dont il est responsable devra d'abord être réaffectée.",
+                           "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
+            If Not ConfirmAdminPassword(System.Windows.Window.GetWindow(Me),
+                                        "la suppression de l'agent « " & NomPrenomAg & " » et de ses données liées",
+                                        iConnxStr) Then Return
             If DeleteAgent() Then
-                MsgBox("Donnée supprimées avec succès ")
+                MsgBox("L'agent et ses données liées ont été supprimés avec succès.")
                 AfficheStat?.Invoke()
                 Await RefreshAfterDatabaseMutationAsync(Sub()
                                                             InitializeMyFields()
                                                             SearchAgent(BtnAgentListeSearch.Text)
                                                         End Sub)
-            Else
-                MsgBox("Erreur de suppression")
             End If
         End If
 
     End Sub
     Function DeleteAgent() As Boolean
         DeleteAgent = False
-        Dim istr As String = " delete from Agents "
-        istr += " where RefAgent=" & RefAg & " "
-        DeleteAgent = SaveNewData(istr, iConnxStr)
-        If DeleteAgent Then Joper("DeleteAgent at " & RefAg, iConnxStr)
+        Dim agentName As String = Nothing
+        Dim matricule As String = Nothing
+        Try
+            Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    Using command As New SQLiteCommand("SELECT NomPrenoms, NumMatr FROM Agents WHERE RefAgent = @id", connection, transaction)
+                        command.Parameters.AddWithValue("@id", RefAg)
+                        Using reader As SQLiteDataReader = command.ExecuteReader()
+                            If reader.Read() Then
+                                agentName = reader.GetString(0)
+                                matricule = reader.GetString(1)
+                            End If
+                        End Using
+                    End Using
+                    If String.IsNullOrWhiteSpace(agentName) OrElse String.IsNullOrWhiteSpace(matricule) Then
+                        MessageBox.Show("L'agent sélectionné est introuvable.", "Suppression de l'agent", MessageBoxButton.OK, MessageBoxImage.Warning)
+                        Return False
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND lower(name) = 'agences'",
+                        connection,
+                        transaction)
+                        If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                            Using agencyCommand As New SQLiteCommand("SELECT COUNT(*) FROM Agences WHERE Responsable = @agent", connection, transaction)
+                                agencyCommand.Parameters.AddWithValue("@agent", agentName)
+                                If Convert.ToInt32(agencyCommand.ExecuteScalar()) > 0 Then
+                                    Throw New InvalidOperationException("Cet agent est responsable d'une ou plusieurs agences. Réaffectez d'abord le responsable dans la gestion des agences, puis réessayez. Les agences et leurs sites ne seront pas supprimés.")
+                                End If
+                            End Using
+                        End If
+                    End Using
+
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM Events WHERE instr(AgentsEvt, @agent) > 0 AND trim(AgentsEvt) <> @agent",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                            Throw New InvalidOperationException("Un événement contient le nom de cet agent avec d'autres informations. Corrigez cette référence manuellement avant de relancer la suppression.")
+                        End If
+                    End Using
+
+                    Dim dependentDeletes As String() = {
+                        "DELETE FROM Absences WHERE NomPrenom = @agent",
+                        "DELETE FROM Affectation WHERE AgentAffect = @agent",
+                        "DELETE FROM ContratsTbl WHERE NomPrenoms = @matricule",
+                        "DELETE FROM HeureSup WHERE Agent = @agent",
+                        "DELETE FROM sortie WHERE NomsPrenoms = @agent",
+                        "DELETE FROM PlanPoste WHERE Agent = @agent"
+                    }
+                    For Each deleteStatement As String In dependentDeletes
+                        Using command As New SQLiteCommand(deleteStatement, connection, transaction)
+                            If deleteStatement.Contains("@agent") Then command.Parameters.AddWithValue("@agent", agentName)
+                            If deleteStatement.Contains("@matricule") Then command.Parameters.AddWithValue("@matricule", matricule)
+                            command.ExecuteNonQuery()
+                        End Using
+                    Next
+
+                    Using command As New SQLiteCommand("UPDATE Events SET AgentsEvt = '' WHERE trim(AgentsEvt) = @agent", connection, transaction)
+                        command.Parameters.AddWithValue("@agent", agentName)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    Using command As New SQLiteCommand("DELETE FROM Agents WHERE RefAgent = @id", connection, transaction)
+                        command.Parameters.AddWithValue("@id", RefAg)
+                        If command.ExecuteNonQuery() = 0 Then
+                            Throw New InvalidOperationException("L'agent sélectionné n'a pas été supprimé.")
+                        End If
+                    End Using
+
+                    transaction.Commit()
+                End Using
+            End Using
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Joper("DeleteAgent at " & RefAg, iConnxStr)
+            DeleteAgent = True
+        Catch ex As SQLiteException
+            MessageBox.Show("La suppression de l’agent et de ses données liées a échoué : " & ex.Message,
+                            "Suppression de l’agent", MessageBoxButton.OK, MessageBoxImage.Error)
+        Catch ex As InvalidOperationException
+            MessageBox.Show(ex.Message, "Suppression de l’agent", MessageBoxButton.OK, MessageBoxImage.Warning)
+        Catch ex As ArgumentException
+            MessageBox.Show("La suppression de l’agent et de ses données liées a échoué : " & ex.Message,
+                            "Suppression de l’agent", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Try
 
     End Function
 

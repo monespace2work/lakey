@@ -202,6 +202,148 @@ Public Class usercClientsPoste
         SaveNewPoste = SaveNewData(istr, iConnxStr)
         If SaveNewPoste Then Joper("SaveNewPoste for " & TbxDesignation.Text, iConnxStr)
     End Function
+
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer des postes clients depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim table As DataTable = Nothing
+            Dim hasHeader As Boolean = False
+            Dim noHeaderColumns As String() = {"NomSite", "Designation", "Code", "Duree", "ReposHebdo", "Actif"}
+            Try
+                table = ReadCsvTable(dialog.FileName)
+                hasHeader =
+                    CsvHasColumn(table, "NomSite") AndAlso
+                    CsvHasColumn(table, "Designation") AndAlso
+                    CsvHasColumn(table, "Code") AndAlso
+                    CsvHasColumn(table, "Duree") AndAlso
+                    CsvHasColumn(table, "ReposHebdo") AndAlso
+                    CsvHasColumn(table, "Actif")
+            Catch ex As FormatException
+                ' Un CSV sans en-tête peut être interprété comme des en-têtes invalides.
+            End Try
+            If Not hasHeader Then table = ReadCsvTable(dialog.FileName, noHeaderColumns, ";")
+
+            If Not CsvHasColumn(table, "NomSite") OrElse
+               Not CsvHasColumn(table, "Designation") OrElse
+               Not CsvHasColumn(table, "Code") OrElse
+               Not CsvHasColumn(table, "Duree") OrElse
+               Not CsvHasColumn(table, "ReposHebdo") OrElse
+               Not CsvHasColumn(table, "Actif") Then
+                Throw New FormatException("Colonnes obligatoires : NomSite, Designation, Code, Duree, ReposHebdo et Actif.")
+            End If
+            If table.Rows.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+            If MessageBox.Show(
+                "Importer " & table.Rows.Count & " poste(s) ? Toute l'opération sera annulée si une ligne est invalide ou en doublon.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            Await Task.Run(Sub() ImportClientPostesCsv(table, hasHeader))
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
+            MessageBox.Show(table.Rows.Count & " poste(s) importé(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV des postes a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Sub ImportClientPostesCsv(table As DataTable, hasHeader As Boolean)
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim nextId As Integer
+                Using command As New SQLiteCommand("SELECT COALESCE(MAX(IdPoste), 0) + 1 FROM postes", connection, transaction)
+                    nextId = Convert.ToInt32(command.ExecuteScalar())
+                End Using
+
+                Dim activeSites As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomSite FROM siteaffectation WHERE Actif = 1", "NomSite", "NomSite")
+                Dim activeDurations As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT Duree FROM PosteDuree WHERE Actif = 1", "Duree", "Duree")
+                Dim activeRestDays As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT JourRepos FROM PosteRepos WHERE Actif = 1", "JourRepos", "JourRepos")
+                Dim existingCodes As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT Code FROM postes", "Code", "Code")
+                Dim existingDesignations As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT Designation FROM postes", "Designation", "Designation")
+                Dim importedCodes As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Dim importedDesignations As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+                For index As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(index)
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
+                    Dim siteInput As String = CsvValue(row, "NomSite")
+                    Dim designation As String = CsvValue(row, "Designation")
+                    Dim code As String = CsvValue(row, "Code").ToUpperInvariant()
+                    Dim duration As String = CsvValue(row, "Duree")
+                    Dim restDay As String = CsvValue(row, "ReposHebdo")
+                    Dim isActive As Boolean = CsvBooleanValue(CsvValue(row, "Actif"), rowNumber, "Actif")
+
+                    If String.IsNullOrWhiteSpace(siteInput) OrElse designation.Length <= 3 OrElse code.Length <= 3 OrElse
+                       String.IsNullOrWhiteSpace(duration) OrElse String.IsNullOrWhiteSpace(restDay) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : site, désignation, code, durée et jour de repos sont obligatoires.")
+                    End If
+
+                    Dim siteName As String = Nothing
+                    If Not activeSites.TryGetValue(siteInput, siteName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : site actif introuvable (« " & siteInput & " »).")
+                    End If
+                    Dim canonicalDuration As String = Nothing
+                    If Not activeDurations.TryGetValue(duration, canonicalDuration) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : durée inactive ou inconnue (« " & duration & " »).")
+                    End If
+                    Dim canonicalRestDay As String = Nothing
+                    If Not activeRestDays.TryGetValue(restDay, canonicalRestDay) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : jour de repos inactif ou inconnu (« " & restDay & " »).")
+                    End If
+
+                    If existingCodes.ContainsKey(code) OrElse Not importedCodes.Add(code) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : le code de poste « " & code & " » existe déjà.")
+                    End If
+                    If existingDesignations.ContainsKey(designation) OrElse Not importedDesignations.Add(designation) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : la désignation « " & designation & " » existe déjà.")
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO postes (Designation, Code, Actif, Duree, ReposHebdo, NomSite, IdPoste) " &
+                        "VALUES (@designation, @code, @active, @duration, @restDay, @site, @id)",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@designation", designation)
+                        command.Parameters.AddWithValue("@code", code)
+                        command.Parameters.AddWithValue("@active", isActive)
+                        command.Parameters.AddWithValue("@duration", canonicalDuration)
+                        command.Parameters.AddWithValue("@restDay", canonicalRestDay)
+                        command.Parameters.AddWithValue("@site", siteName)
+                        command.Parameters.AddWithValue("@id", nextId)
+                        command.ExecuteNonQuery()
+                    End Using
+                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
+                        command.Parameters.AddWithValue("@operation", "ImportCsvPoste for " & designation)
+                        command.Parameters.AddWithValue("@operator", UserName)
+                        command.ExecuteNonQuery()
+                    End Using
+                    nextId += 1
+                Next
+
+                transaction.Commit()
+            End Using
+        End Using
+    End Sub
+
     Function SaveModifPoste() As Boolean
         SaveModifPoste = False
         Dim istr As String = " update postes  set "

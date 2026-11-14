@@ -258,7 +258,23 @@ Public Class usercAgentsContrat
         If dialog.ShowDialog() <> True Then Return
 
         Try
-            Dim table As DataTable = ReadCsvTable(dialog.FileName)
+            Dim table As DataTable = Nothing
+            Dim hasHeader As Boolean = False
+            Dim noHeaderColumns As String() = {"Agent", "DebutContr", "FinContr", "TypContr", "NaturContr"}
+            Try
+                table = ReadCsvTable(dialog.FileName)
+                hasHeader =
+                    CsvHasColumn(table, "Agent", "NomPrenoms", "Matricule") AndAlso
+                    CsvHasColumn(table, "Type", "TypeExt", "TypContr") AndAlso
+                    CsvHasColumn(table, "Nature", "NaturContr") AndAlso
+                    CsvHasColumn(table, "Début", "DebutContr") AndAlso
+                    CsvHasColumn(table, "Fin", "FinContr")
+            Catch ex As FormatException
+                ' Un CSV sans en-tête peut être interprété comme des en-têtes invalides.
+            End Try
+            If Not hasHeader Then
+                table = ReadCsvTable(dialog.FileName, noHeaderColumns, ";")
+            End If
             If Not CsvHasColumn(table, "Agent", "NomPrenoms", "Matricule") OrElse
                Not CsvHasColumn(table, "Type", "TypeExt", "TypContr") OrElse
                Not CsvHasColumn(table, "Nature", "NaturContr") OrElse
@@ -277,7 +293,7 @@ Public Class usercAgentsContrat
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            ImportContratsCsv(table)
+            ImportContratsCsv(table, hasHeader)
             If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
             Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             MessageBox.Show(table.Rows.Count & " contrat(s) importé(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
@@ -288,7 +304,7 @@ Public Class usercAgentsContrat
         End Try
     End Sub
 
-    Private Sub ImportContratsCsv(table As DataTable)
+    Private Sub ImportContratsCsv(table As DataTable, hasHeader As Boolean)
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
@@ -297,10 +313,16 @@ Public Class usercAgentsContrat
                     nextId = Convert.ToInt32(command.ExecuteScalar())
                 End Using
 
+                Dim activeAgents As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents WHERE Actif = 1", "NumMatr", "NomPrenoms", "NumMatr")
+                Dim activeContractTypes As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT TypContr FROM contratstype WHERE Actif = 1", "TypContr", "TypContr")
+                Dim activeContractNatures As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NatureContr FROM contratsnature WHERE Actif = 1", "NatureContr", "NatureContr")
                 Dim seenContracts As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
                 For index As Integer = 0 To table.Rows.Count - 1
                     Dim row As DataRow = table.Rows(index)
-                    Dim rowNumber As Integer = index + 2
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
                     Dim agentInput As String = CsvValue(row, "Agent", "NomPrenoms", "Matricule", "NumMatr")
                     Dim contractType As String = CsvValue(row, "TypeExt", "TypContr", "Type")
                     Dim contractNature As String = CsvValue(row, "Nature", "NaturContr")
@@ -311,32 +333,22 @@ Public Class usercAgentsContrat
                     End If
                     If endDate < startDate Then Throw New FormatException("Ligne " & rowNumber & " : la fin du contrat précède son début.")
 
-                    Dim agentMatricule As String
-                    Using command As New SQLiteCommand(
-                        "SELECT NumMatr FROM agents WHERE Actif = 1 AND (NomPrenoms = @agent COLLATE NOCASE OR NumMatr = @agent COLLATE NOCASE) LIMIT 1",
-                        connection,
-                        transaction)
-                        command.Parameters.AddWithValue("@agent", agentInput)
-                        agentMatricule = Convert.ToString(command.ExecuteScalar())
-                    End Using
-                    If String.IsNullOrWhiteSpace(agentMatricule) Then
+                    Dim agentMatricule As String = Nothing
+                    If Not activeAgents.TryGetValue(agentInput, agentMatricule) Then
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
                     End If
 
-                    For Each reference As KeyValuePair(Of String, String) In {
-                        New KeyValuePair(Of String, String)("contratstype", contractType),
-                        New KeyValuePair(Of String, String)("contratsnature", contractNature)
-                    }
-                        Dim query As String = If(reference.Key = "contratstype",
-                                                 "SELECT COUNT(*) FROM contratstype WHERE TypContr = @value COLLATE NOCASE AND Actif = 1",
-                                                 "SELECT COUNT(*) FROM contratsnature WHERE NatureContr = @value COLLATE NOCASE AND Actif = 1")
-                        Using command As New SQLiteCommand(query, connection, transaction)
-                            command.Parameters.AddWithValue("@value", reference.Value)
-                            If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
-                                Throw New InvalidOperationException("Ligne " & rowNumber & " : type ou nature de contrat inactif/inconnu (« " & reference.Value & " »).")
-                            End If
-                        End Using
-                    Next
+                    Dim canonicalContractType As String = Nothing
+                    If Not activeContractTypes.TryGetValue(contractType, canonicalContractType) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : type ou nature de contrat inactif/inconnu (« " & contractType & " »).")
+                    End If
+                    contractType = canonicalContractType
+
+                    Dim canonicalContractNature As String = Nothing
+                    If Not activeContractNatures.TryGetValue(contractNature, canonicalContractNature) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : type ou nature de contrat inactif/inconnu (« " & contractNature & " »).")
+                    End If
+                    contractNature = canonicalContractNature
 
                     Dim contractNumber As String = CsvValue(row, "N° contrat", "N°", "NumContrat", "Numero contrat")
                     Dim observations As String = CsvValue(row, "Observations", "Obs")

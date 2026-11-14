@@ -235,6 +235,171 @@ Public Class usercClientsSite
         SaveNewSite = SaveNewData(istr, iConnxStr)
         If SaveNewSite Then Joper("SaveNewSite for " & TbxSite.Text & " at " & RefCrt, iConnxStr)
     End Function
+
+    Private Async Sub btnImportCsv_Click(sender As Object, e As RoutedEventArgs) Handles btnImportCsv.Click
+        Dim dialog As New Microsoft.Win32.OpenFileDialog With {
+            .Title = "Importer des sites clients depuis un fichier CSV",
+            .Filter = "Fichiers CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+            .CheckFileExists = True,
+            .Multiselect = False
+        }
+        If dialog.ShowDialog() <> True Then Return
+
+        Try
+            Dim table As DataTable = Nothing
+            Dim hasHeader As Boolean = False
+            Dim noHeaderColumns As String() = {
+                "Client", "NomSite", "Localisation", "AdressSite", "Duree", "TypeSite",
+                "RespSite", "DateCreation", "DateFermeture", "Observations", "Actif"
+            }
+            Try
+                table = ReadCsvTable(dialog.FileName)
+                hasHeader =
+                    CsvHasColumn(table, "Client") AndAlso
+                    CsvHasColumn(table, "NomSite") AndAlso
+                    CsvHasColumn(table, "Localisation") AndAlso
+                    CsvHasColumn(table, "AdressSite") AndAlso
+                    CsvHasColumn(table, "Duree") AndAlso
+                    CsvHasColumn(table, "TypeSite") AndAlso
+                    CsvHasColumn(table, "RespSite") AndAlso
+                    CsvHasColumn(table, "DateCreation") AndAlso
+                    CsvHasColumn(table, "Actif")
+            Catch ex As FormatException
+                ' Un CSV sans en-tête peut être interprété comme des en-têtes invalides.
+            End Try
+            If Not hasHeader Then table = ReadCsvTable(dialog.FileName, noHeaderColumns, ";")
+
+            If Not CsvHasColumn(table, "Client") OrElse
+               Not CsvHasColumn(table, "NomSite") OrElse
+               Not CsvHasColumn(table, "Localisation") OrElse
+               Not CsvHasColumn(table, "AdressSite") OrElse
+               Not CsvHasColumn(table, "Duree") OrElse
+               Not CsvHasColumn(table, "TypeSite") OrElse
+               Not CsvHasColumn(table, "RespSite") OrElse
+               Not CsvHasColumn(table, "DateCreation") OrElse
+               Not CsvHasColumn(table, "Actif") Then
+                Throw New FormatException("Colonnes obligatoires : Client, NomSite, Localisation, AdressSite, Duree, TypeSite, RespSite, DateCreation et Actif.")
+            End If
+            If table.Rows.Count = 0 Then
+                MessageBox.Show("Le fichier CSV ne contient aucune donnée à importer.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+                Return
+            End If
+            If MessageBox.Show(
+                "Importer " & table.Rows.Count & " site(s) client ? Toute l'opération sera annulée si une ligne est invalide ou en doublon.",
+                "Confirmation de l'import CSV",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
+
+            elpStatus.Visibility = Visibility.Visible
+            Await Task.Run(Sub() ImportClientSitesCsv(table, hasHeader))
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
+            MessageBox.Show(table.Rows.Count & " site(s) client importé(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
+        Catch ex As Exception
+            MessageBox.Show("L'import CSV des sites clients a échoué : " & ex.Message, "Import CSV", MessageBoxButton.OK, MessageBoxImage.Error)
+        Finally
+            elpStatus.Visibility = Visibility.Collapsed
+        End Try
+    End Sub
+
+    Private Sub ImportClientSitesCsv(table As DataTable, hasHeader As Boolean)
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+            connection.Open()
+            Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                Dim nextId As Integer
+                Using command As New SQLiteCommand("SELECT COALESCE(MAX(IdSite), 0) + 1 FROM siteaffectation", connection, transaction)
+                    nextId = Convert.ToInt32(command.ExecuteScalar())
+                End Using
+
+                Dim existingSites As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomSite FROM siteaffectation", "NomSite", "NomSite")
+                Dim activeClients As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT NomClient FROM Client WHERE Actif = 1", "NomClient", "NomClient")
+                Dim activeSiteTypes As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT TypeSite FROM typesite WHERE Actif = 1", "TypeSite", "TypeSite")
+                Dim activeDurations As Dictionary(Of String, String) =
+                    LoadCsvLookup(connection, transaction, "SELECT Duree FROM dureerotation WHERE Actif = 1", "Duree", "Duree")
+                Dim importedSites As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+                For index As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(index)
+                    Dim rowNumber As Integer = index + If(hasHeader, 2, 1)
+                    Dim clientInput As String = CsvValue(row, "Client")
+                    Dim siteName As String = CsvValue(row, "NomSite")
+                    Dim location As String = CsvValue(row, "Localisation")
+                    Dim address As String = CsvValue(row, "AdressSite")
+                    Dim duration As String = CsvValue(row, "Duree")
+                    Dim siteType As String = CsvValue(row, "TypeSite")
+                    Dim manager As String = CsvValue(row, "RespSite")
+                    Dim creationDate As DateTime = CsvDateValue(CsvValue(row, "DateCreation"), rowNumber, "DateCreation")
+                    Dim closingDateText As String = CsvValue(row, "DateFermeture")
+                    Dim observations As String = CsvValue(row, "Observations")
+                    Dim isActive As Boolean = CsvBooleanValue(CsvValue(row, "Actif"), rowNumber, "Actif")
+
+                    If siteName.Length <= 3 OrElse location.Length <= 1 OrElse address.Length <= 1 OrElse
+                       manager.Length <= 2 OrElse String.IsNullOrWhiteSpace(clientInput) OrElse
+                       String.IsNullOrWhiteSpace(duration) OrElse String.IsNullOrWhiteSpace(siteType) Then
+                        Throw New FormatException("Ligne " & rowNumber & " : client, site, localisation, adresse, durée, type et responsable doivent être renseignés.")
+                    End If
+
+                    Dim clientName As String = Nothing
+                    If Not activeClients.TryGetValue(clientInput, clientName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : client actif introuvable (« " & clientInput & " »).")
+                    End If
+                    Dim canonicalSiteType As String = Nothing
+                    If Not activeSiteTypes.TryGetValue(siteType, canonicalSiteType) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : type de site inactif ou inconnu (« " & siteType & " »).")
+                    End If
+                    Dim canonicalDuration As String = Nothing
+                    If Not activeDurations.TryGetValue(duration, canonicalDuration) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : durée inactive ou inconnue (« " & duration & " »).")
+                    End If
+
+                    Dim closingDate As DateTime? = Nothing
+                    If closingDateText.Length > 0 Then
+                        closingDate = CsvDateValue(closingDateText, rowNumber, "DateFermeture")
+                        If closingDate.Value < creationDate Then
+                            Throw New FormatException("Ligne " & rowNumber & " : la date de fermeture précède la date de création.")
+                        End If
+                    End If
+                    If existingSites.ContainsKey(siteName) OrElse Not importedSites.Add(siteName) Then
+                        Throw New InvalidOperationException("Ligne " & rowNumber & " : le site « " & siteName & " » existe déjà.")
+                    End If
+
+                    Dim closingValue As Object = DBNull.Value
+                    If closingDate.HasValue Then closingValue = closingDate.Value.ToString("yyyy-MM-dd")
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO siteaffectation (NomSite, Actif, Localisation, AdressSite, Duree, TypeSite, RespSite, DateCreation, DateFermeture, Client, Observations, IdSite) " &
+                        "VALUES (@name, @active, @location, @address, @duration, @type, @manager, @created, @closed, @client, @observations, @id)",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@name", siteName)
+                        command.Parameters.AddWithValue("@active", isActive)
+                        command.Parameters.AddWithValue("@location", location)
+                        command.Parameters.AddWithValue("@address", address)
+                        command.Parameters.AddWithValue("@duration", canonicalDuration)
+                        command.Parameters.AddWithValue("@type", canonicalSiteType)
+                        command.Parameters.AddWithValue("@manager", manager)
+                        command.Parameters.AddWithValue("@created", creationDate.ToString("yyyy-MM-dd"))
+                        command.Parameters.AddWithValue("@closed", closingValue)
+                        command.Parameters.AddWithValue("@client", clientName)
+                        command.Parameters.AddWithValue("@observations", observations)
+                        command.Parameters.AddWithValue("@id", nextId)
+                        command.ExecuteNonQuery()
+                    End Using
+                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
+                        command.Parameters.AddWithValue("@operation", "ImportCsvSite for " & siteName)
+                        command.Parameters.AddWithValue("@operator", UserName)
+                        command.ExecuteNonQuery()
+                    End Using
+                    nextId += 1
+                Next
+
+                transaction.Commit()
+            End Using
+        End Using
+    End Sub
+
     Function SaveModifCtr() As Boolean
         SaveModifCtr = False
         Dim istr As String = " update siteaffectation  set "

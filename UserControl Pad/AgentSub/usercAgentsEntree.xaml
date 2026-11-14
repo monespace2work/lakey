@@ -67,7 +67,7 @@
                     </StackPanel>
                     <WrapPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Button x:Name="btnNewAg" Content="NOUVEAU" Style="{StaticResource NewRecordButton}" MinWidth="100" Margin=" 8" Padding="5" Background="#FF1FFB97"/>
-                        <Button x:Name="btnImportCsv" Content="IMPORTER" Background="#FF757A0F" Foreground="White" Style="{StaticResource NewRecordButton}" MinWidth="110" Margin="8" Padding="5" ToolTip="CSV séparé par ; ou , avec en-têtes : Nom, Prénom, Matricule, Contact, Date naissance (aaaa-MM-jj ou jj/MM/aaaa), Sexe, Catégorie, Date embauche, Ville, Quartier, Fonction."/>
+                        <Button x:Name="btnImportCsv" Content="IMPORTER" Background="#FF757A0F" Foreground="White" Style="{StaticResource NewRecordButton}" MinWidth="110" Margin="8" Padding="5" ToolTip="CSV séparé par ; ou , avec en-têtes : Nom, Prénom, Matricule, Contact, Date naissance (aaaa-MM-jj ou jj/MM/aaaa), Sexe, Catégorie, Date embauche, Ville, Quartier, Fonction." IsEnabled="False"/>
                         <Button x:Name="btnDeleteAg" Content="SUPPRIMER" MinWidth="100" Margin=" 8" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}" Visibility="Collapsed"/>
                         <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeActionBrightSuccessTextBrush}" Foreground="{DynamicResource ThemeSuccessButtonTextBrush}" Margin=" 12"  Width="100"/>
                     </WrapPanel>
