@@ -456,7 +456,8 @@ Public Class usercClientsSite
                     End If
 
                     If ChbActif.IsChecked = False Then
-                        Using command As New SQLiteCommand("update Postes set Actif=0 where NomSite='" & Apost(TbxSite.Text) & "'", connection, transaction)
+                        Using command As New SQLiteCommand("UPDATE Postes SET Actif = 0 WHERE NomSite = @site", connection, transaction)
+                            command.Parameters.AddWithValue("@site", TbxSite.Text)
                             command.ExecuteNonQuery()
                         End Using
                     End If
@@ -752,38 +753,105 @@ Public Class usercClientsSite
     Private Sub dtpDebut_SelectedDateChanged(sender As Object, e As SelectionChangedEventArgs) Handles dtpDebut.SelectedDateChanged
         ActivSaveBtn()
     End Sub
-    Function DeleteSite() As Boolean
+    Function DeleteSite(ByRef deletedPostCount As Integer) As Boolean
         DeleteSite = False
-        Dim istr As String = " delete from siteaffectation "
-        istr += " where IdSite=" & RefCrt & " "
+        deletedPostCount = 0
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
-        DeleteSite = SaveNewData(istr, iConnxStr)
-        If DeleteSite Then Joper("DeleteSite at " & RefCrt, iConnxStr)
+        Try
+            Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    Dim siteName As String = Nothing
+                    Using command As New SQLiteCommand("SELECT NomSite FROM SiteAffectation WHERE IdSite = @id", connection, transaction)
+                        command.Parameters.AddWithValue("@id", RefCrt)
+                        siteName = Convert.ToString(command.ExecuteScalar())
+                    End Using
+                    If String.IsNullOrWhiteSpace(siteName) Then
+                        Throw New InvalidOperationException("Le site sélectionné est introuvable.")
+                    End If
+
+                    Using command As New SQLiteCommand(
+                        "SELECT COUNT(*) FROM SiteAffectation WHERE NomSite = @name AND IdSite <> @id",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@name", siteName)
+                        command.Parameters.AddWithValue("@id", RefCrt)
+                        If Convert.ToInt32(command.ExecuteScalar()) > 0 Then
+                            Throw New InvalidOperationException("Plusieurs sites portent le même nom. Suppression annulée car leurs données liées ne peuvent pas être attribuées sans ambiguïté.")
+                        End If
+                    End Using
+
+                    Using command As New SQLiteCommand("SELECT COUNT(*) FROM Postes WHERE NomSite = @site", connection, transaction)
+                        command.Parameters.AddWithValue("@site", siteName)
+                        deletedPostCount = Convert.ToInt32(command.ExecuteScalar())
+                    End Using
+
+                    Dim dependentDeletes As String() = {
+                        "DELETE FROM PlanPoste WHERE Poste IN (SELECT Code FROM Postes WHERE NomSite = @site)",
+                        "DELETE FROM Affectation WHERE SiteAffect = @site",
+                        "DELETE FROM Events WHERE SiteEvent = @site",
+                        "DELETE FROM HeureSup WHERE SiteHS = @site",
+                        "DELETE FROM sortie WHERE SiteSortie = @site",
+                        "DELETE FROM Postes WHERE NomSite = @site"
+                    }
+                    For Each deleteStatement As String In dependentDeletes
+                        Using command As New SQLiteCommand(deleteStatement, connection, transaction)
+                            command.Parameters.AddWithValue("@site", siteName)
+                            command.ExecuteNonQuery()
+                        End Using
+                    Next
+
+                    Using command As New SQLiteCommand("DELETE FROM SiteAffectation WHERE IdSite = @id", connection, transaction)
+                        command.Parameters.AddWithValue("@id", RefCrt)
+                        If command.ExecuteNonQuery() = 0 Then
+                            Throw New InvalidOperationException("Le site sélectionné n'a pas été supprimé.")
+                        End If
+                    End Using
+
+                    transaction.Commit()
+                End Using
+            End Using
+
+            If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
+            Joper("DeleteSite at " & RefCrt, iConnxStr)
+            DeleteSite = True
+        Catch ex As SQLiteException
+            MessageBox.Show("La suppression du site, de ses postes et de ses données liées a échoué : " & ex.Message,
+                            "Suppression du site", MessageBoxButton.OK, MessageBoxImage.Error)
+        Catch ex As InvalidOperationException
+            MessageBox.Show(ex.Message, "Suppression du site", MessageBoxButton.OK, MessageBoxImage.Warning)
+        Catch ex As ArgumentException
+            MessageBox.Show("La suppression du site, de ses postes et de ses données liées a échoué : " & ex.Message,
+                            "Suppression du site", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Try
+    End Function
+
+    Private Async Function ConfirmAndDeleteSiteAsync(siteName As String) As System.Threading.Tasks.Task
+        Dim actionDescription As String = "la suppression du site « " & siteName & " », de ses postes associés et de leurs données liées"
+        If MessageBox.Show("Voulez-vous supprimer définitivement le site « " & siteName & " » ainsi que ses postes associés et leurs données liées (planifications, affectations, événements, heures supplémentaires et sorties) ?",
+                           "SUPPRESSION", MessageBoxButton.YesNo, MessageBoxImage.Warning) <> MessageBoxResult.Yes Then Return
+        If Not ConfirmAdminPassword(System.Windows.Window.GetWindow(Me), actionDescription, iConnxStr) Then Return
+
+        Dim deletedPostCount As Integer
+        If DeleteSite(deletedPostCount) Then
+            Dim deletedPostsDescription As String = If(deletedPostCount = 0,
+                                                       "aucun poste associé",
+                                                       If(deletedPostCount = 1, "1 poste associé", deletedPostCount & " postes associés"))
+            MessageBox.Show("Le site « " & siteName & " » et " & deletedPostsDescription & ", ainsi que les données liées, ont été supprimés.",
+                            "Suppression du site", MessageBoxButton.OK, MessageBoxImage.Information)
+            Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
+        End If
     End Function
 
     Private Async Sub btnDeleteAg_Click(sender As Object, e As RoutedEventArgs) Handles btnDeleteAg.Click
-        If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & TbxSite.Text & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
-            If DeleteSite() Then
-                MsgBox("Donnée supprimées avec succès ")
-                Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
-            Else
-                MsgBox("Erreur de suppression")
-            End If
-        End If
+        Await ConfirmAndDeleteSiteAsync(TbxSite.Text)
     End Sub
 
     Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgClientSite.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
             RefCrt = rowView.Row.ItemArray(11).ToString
-            If MessageBox.Show("Voulez supprimer cette donnée de " & Environment.NewLine & rowView.Row.ItemArray(0).ToString & " ? " & Environment.NewLine & "Continuer", "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
-                If DeleteSite() Then
-                    MsgBox("Donnée supprimées avec succès ")
-                    Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
-                Else
-                    MsgBox("Erreur de suppression")
-                End If
-            End If
+            Await ConfirmAndDeleteSiteAsync(rowView.Row.ItemArray(0).ToString)
         End If
 
     End Sub
@@ -827,7 +895,7 @@ Public Class usercClientsSite
         If iFormLoaded Then ActivSaveBtn()
     End Sub
 
-    Private Sub ChbActif_Checked(sender As Object, e As RoutedEventArgs) Handles ChbActif.Checked
+    Private Sub ChbActif_Changed(sender As Object, e As RoutedEventArgs) Handles ChbActif.Checked, ChbActif.Unchecked
         If iFormLoaded Then ActivSaveBtn()
     End Sub
     Sub AfficheProfilUser()
