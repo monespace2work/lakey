@@ -52,6 +52,23 @@ Class MainWindow
         End If
     End Sub
 
+    Public Shared Sub CopyContextMenuRowToClipboard(dataGrid As DataGrid)
+        Dim rowView As DataRowView = TryCast(dataGrid.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+
+        Dim values As New List(Of String)
+        For Each value As Object In rowView.Row.ItemArray
+            values.Add(If(value Is DBNull.Value, "", Convert.ToString(value)))
+        Next
+
+        Try
+            Clipboard.SetText(String.Join(vbTab, values))
+        Catch ex As Runtime.InteropServices.ExternalException
+            MessageBox.Show("Impossible de copier la ligne dans le presse-papiers : " & ex.Message,
+                            "Copie", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Try
+    End Sub
+
     Public Shared Sub OpenAgentContextMenuView(dataGrid As DataGrid,
                                                agentNameColumn As String,
                                                target As AgentRelatedView,

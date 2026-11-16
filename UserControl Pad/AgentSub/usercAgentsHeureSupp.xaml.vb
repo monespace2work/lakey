@@ -629,6 +629,10 @@ Public Class usercAgentsHeureSupp
 
     End Sub
 
+    Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.CopyContextMenuRowToClipboard(DgAgentHeureSupp)
+    End Sub
+
     Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
         MainWindow.OpenAgentContextMenuView(DgAgentHeureSupp, "Agent", MainWindow.AgentRelatedView.Contract)
     End Sub

@@ -76,8 +76,8 @@
                                         <!--MenuItem Header="Modifier" Name="cmiModif"/-->
                                         <!--MenuItem Header="Supprimer" Background="#FF4D0000" Name="cmiSuppr" Foreground="White"/-->
                                         <!--Separator/-->
-                                        <!--MenuItem Header="Copier"/>
-                                        <Separator/-->
+                                        <MenuItem Header="Copier" Click="cmiCopier_Click"/>
+                                        <Separator/>
                                         <MenuItem Header="Contrat" Name="cmiContrat" />
                                         <MenuItem Header="Affectation" Name="cmiAffectation" />
                                         <MenuItem Header="Abence/Permission" Name="cmiAbsence" />

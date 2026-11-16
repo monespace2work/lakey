@@ -774,6 +774,10 @@ Public Class usercAgentsAbsences
         MainWindow.SelectContextMenuRow(DgAgentAbsence, e)
     End Sub
 
+    Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.CopyContextMenuRowToClipboard(DgAgentAbsence)
+    End Sub
+
     Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
         MainWindow.OpenAgentContextMenuView(DgAgentAbsence, "NomPrenom", MainWindow.AgentRelatedView.Contract)
     End Sub

@@ -1257,6 +1257,10 @@ Public Class usercAgentsEntree
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.CopyContextMenuRowToClipboard(DgAgentListe)
+    End Sub
+
     Private Sub cmiContrat_Click(sender As Object, e As RoutedEventArgs) Handles cmiContrat.Click
         OpenSelectedAgentView(Sub(mainWindow, agentRef)
                                   mainWindow.LoadContrat(agentRef)

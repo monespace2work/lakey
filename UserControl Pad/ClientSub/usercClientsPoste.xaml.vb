@@ -702,6 +702,9 @@ Public Class usercClientsPoste
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.CopyContextMenuRowToClipboard(DgClientsPoste)
+    End Sub
     Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgClientsPoste.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then

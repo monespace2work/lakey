@@ -186,7 +186,7 @@
                                             <MenuItem Header="Modifier" Name="cmiModif"/>
                                             <MenuItem Header="Supprimer" Background="{DynamicResource ThemeActionDangerBrush}" Name="cmiSuppr" Foreground="{DynamicResource ThemeActionDangerTextBrush}"/>
                                             <Separator/>
-                                            <MenuItem Header="Copier"/>
+                                            <MenuItem Header="Copier" Click="cmiCopier_Click"/>
                                             <Separator/>
                                             <MenuItem Header="Sites" Name="cmiSites" />
                                             <MenuItem Header="Postes" Name="cmiPostes" />

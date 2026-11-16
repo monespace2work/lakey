@@ -814,6 +814,10 @@ Public Class usercClientsContrat
         MainWindow.SelectContextMenuRow(DgClientsContrats, e)
     End Sub
 
+    Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.CopyContextMenuRowToClipboard(DgClientsContrats)
+    End Sub
+
     Private Sub btnExportExcel_Click(sender As Object, e As RoutedEventArgs) Handles btnExportExcel.Click
         Dim iTitre As String = "Contrat clients "
         If dtpDebutSearch.SelectedDate.HasValue And dtpFinSearch.SelectedDate.HasValue Then

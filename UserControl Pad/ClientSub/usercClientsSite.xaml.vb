@@ -750,6 +750,9 @@ Public Class usercClientsSite
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.CopyContextMenuRowToClipboard(DgClientSite)
+    End Sub
     Private Sub dtpDebut_SelectedDateChanged(sender As Object, e As SelectionChangedEventArgs) Handles dtpDebut.SelectedDateChanged
         ActivSaveBtn()
     End Sub

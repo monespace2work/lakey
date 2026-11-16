@@ -39,6 +39,10 @@ Public Class usercAgents
         MainWindow.OpenAgentContextMenuView(DgEmployes, "NomPrenoms", MainWindow.AgentRelatedView.Absence)
     End Sub
 
+    Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.CopyContextMenuRowToClipboard(DgEmployes)
+    End Sub
+
     Private Sub DgEmployes_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgEmployes.PreviewMouseRightButtonDown
         MainWindow.SelectContextMenuRow(DgEmployes, e)
     End Sub
