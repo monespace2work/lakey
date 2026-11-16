@@ -3,12 +3,26 @@
   "WorkspaceRootPath": "C:\\iclones\\lakey\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\iclones\\lakey\\usercontrol pad\\agentsub\\usercagentsabsences.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\agentsub\\usercagentsabsences.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|Lakey||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\iclones\\lakey\\modules pad\\dbmanipulation.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:modules pad\\dbmanipulation.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|c:\\iclones\\lakey\\usercontrol pad\\userctbord.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\userctbord.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|C:\\iclones\\lakey\\usercontrol pad\\clientsub\\usercclientssite.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\clientsub\\usercclientssite.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|c:\\iclones\\lakey\\usercontrol pad\\usercclients.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\usercclients.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|c:\\iclones\\lakey\\usercontrol pad\\usercclients.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|solutionrelative:usercontrol pad\\usercclients.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AE551211-DE32-4086-8AB5-69249A78E93C}|Lakey.vbproj|c:\\iclones\\lakey\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|00aa1f44-2ba3-4eaa-b54a-ce18000e6c5d"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +32,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,27 +40,69 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "usercAgentsAbsences.xaml",
-              "DocumentMoniker": "C:\\iclones\\lakey\\UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
-              "RelativeDocumentMoniker": "UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
-              "ToolTip": "C:\\iclones\\lakey\\UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
-              "RelativeToolTip": "UserControl Pad\\AgentSub\\usercAgentsAbsences.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-05-19T11:06:11.338Z",
-              "EditorCaption": ""
+              "DocumentIndex": 3,
+              "Title": "usercClients.xaml.vb",
+              "DocumentMoniker": "C:\\iclones\\lakey\\UserControl Pad\\usercClients.xaml.vb",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercClients.xaml.vb",
+              "ToolTip": "C:\\iclones\\lakey\\UserControl Pad\\usercClients.xaml.vb",
+              "RelativeToolTip": "UserControl Pad\\usercClients.xaml.vb",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAIwBcAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2026-11-16T14:08:46.723Z",
+              "EditorCaption": "",
+              "OwnerCaption": "%2"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "DbManipulation.vb",
-              "DocumentMoniker": "C:\\iclones\\lakey\\Modules Pad\\DbManipulation.vb",
-              "RelativeDocumentMoniker": "Modules Pad\\DbManipulation.vb",
-              "ToolTip": "C:\\iclones\\lakey\\Modules Pad\\DbManipulation.vb",
-              "RelativeToolTip": "Modules Pad\\DbManipulation.vb",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwBsAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-12-17T12:18:13.02Z"
+              "Title": "usercTBord.xaml",
+              "DocumentMoniker": "C:\\iclones\\lakey\\UserControl Pad\\usercTBord.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercTBord.xaml",
+              "ToolTip": "C:\\iclones\\lakey\\UserControl Pad\\usercTBord.xaml",
+              "RelativeToolTip": "UserControl Pad\\usercTBord.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-11-16T13:46:15.776Z",
+              "EditorCaption": "",
+              "OwnerCaption": "%2"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "usercClients.xaml",
+              "DocumentMoniker": "C:\\iclones\\lakey\\UserControl Pad\\usercClients.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\usercClients.xaml",
+              "ToolTip": "C:\\iclones\\lakey\\UserControl Pad\\usercClients.xaml",
+              "RelativeToolTip": "UserControl Pad\\usercClients.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-11-16T13:43:18.45Z",
+              "EditorCaption": "",
+              "OwnerCaption": "%2"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "usercClientsSite.xaml",
+              "DocumentMoniker": "C:\\iclones\\lakey\\UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "RelativeDocumentMoniker": "UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "ToolTip": "C:\\iclones\\lakey\\UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "RelativeToolTip": "UserControl Pad\\ClientSub\\usercClientsSite.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-11-15T09:47:29.166Z",
+              "EditorCaption": "",
+              "OwnerCaption": "%2"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Lakey",
+              "DocumentMoniker": "C:\\iclones\\lakey\\Lakey.vbproj",
+              "RelativeDocumentMoniker": "Lakey.vbproj",
+              "ToolTip": "C:\\iclones\\lakey\\Lakey.vbproj",
+              "RelativeToolTip": "Lakey.vbproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-11-14T18:44:40.527Z",
+              "EditorCaption": "",
+              "OwnerCaption": "%3"
             }
           ]
         }

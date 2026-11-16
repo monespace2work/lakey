@@ -1,4 +1,4 @@
-﻿Imports System.Data
+Imports System.Data
 Imports LiveCharts
 Imports LiveCharts.Wpf
 Imports System.Data.SQLite
@@ -51,7 +51,24 @@ Public Class usercTBord
             Return
         End If
 
+        ApplyDashboardContextMenuPermissions()
         ResetLoad()
+    End Sub
+
+    Private Sub ApplyDashboardContextMenuPermissions()
+        Dim canDelete As Boolean = CanDeleteDataOrdinary Or CanGlobalDataManage
+
+        cmiModifContratEcheant.Visibility = If(CanModifyDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+        cmiModifNewAgent.Visibility = If(CanModifyDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+        cmiSortieContratEcheant.Visibility = If(CanAddDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+        cmiSortieNewAgent.Visibility = If(CanAddDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+
+        cmiModifGrandClient.Visibility = If(CanModifyDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+        cmiModifAncienClient.Visibility = If(CanModifyDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+        cmiNouveauGrandClient.Visibility = If(CanAddDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+        cmiNouveauAncienClient.Visibility = If(CanAddDataOrdinary, Visibility.Visible, Visibility.Collapsed)
+        cmiDesactiverGrandClient.Visibility = If(canDelete, Visibility.Visible, Visibility.Collapsed)
+        cmiDesactiverAncienClient.Visibility = If(canDelete, Visibility.Visible, Visibility.Collapsed)
     End Sub
 
     Private Function IsDashboardDatabaseUsable(ByRef errorMessage As String) As Boolean
@@ -422,11 +439,11 @@ Public Class usercTBord
     End Sub
 
     Private Sub cmiContratEcheant_Click(sender As Object, e As RoutedEventArgs) Handles cmiContratEcheant.Click
-        MainWindow.OpenAgentContextMenuView(dgContratEcheant, "NomPrenoms", MainWindow.AgentRelatedView.Contract)
+        MainWindow.OpenAgentContextMenuView(dgContratEcheant, "NomPrenoms", MainWindow.AgentRelatedView.Contract, "NumMatr")
     End Sub
 
     Private Sub cmiAffectationEcheant_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectationEcheant.Click
-        MainWindow.OpenAgentContextMenuView(dgContratEcheant, "NomPrenoms", MainWindow.AgentRelatedView.Affectation)
+        MainWindow.OpenAgentContextMenuView(dgContratEcheant, "NomPrenoms", MainWindow.AgentRelatedView.Affectation, "NumMatr")
     End Sub
 
     Private Sub dgContratEcheant_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles dgContratEcheant.PreviewMouseRightButtonDown
@@ -434,15 +451,135 @@ Public Class usercTBord
     End Sub
 
     Private Sub cmiContratNewAgent_Click(sender As Object, e As RoutedEventArgs) Handles cmiContratNewAgent.Click
-        MainWindow.OpenAgentContextMenuView(dgNewAgent, "NomPrenoms", MainWindow.AgentRelatedView.Contract)
+        MainWindow.OpenAgentContextMenuView(dgNewAgent, "NomPrenoms", MainWindow.AgentRelatedView.Contract, "NumMatr")
     End Sub
 
     Private Sub cmiAffectationNewAgent_Click(sender As Object, e As RoutedEventArgs) Handles cmiAffectationNewAgent.Click
-        MainWindow.OpenAgentContextMenuView(dgNewAgent, "NomPrenoms", MainWindow.AgentRelatedView.Affectation)
+        MainWindow.OpenAgentContextMenuView(dgNewAgent, "NomPrenoms", MainWindow.AgentRelatedView.Affectation, "NumMatr")
     End Sub
 
     Private Sub dgNewAgent_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles dgNewAgent.PreviewMouseRightButtonDown
         MainWindow.SelectContextMenuRow(dgNewAgent, e)
+    End Sub
+
+    Private Sub DashboardAgentGrid_AutoGeneratingColumn(sender As Object, e As DataGridAutoGeneratingColumnEventArgs)
+        If e.PropertyName = "IdContr" OrElse e.PropertyName = "NumMatr" Then
+            e.Column.Visibility = Visibility.Collapsed
+        End If
+    End Sub
+
+    Private Sub cmiModifContratEcheant_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.OpenAgentContextMenuView(dgContratEcheant,
+                                            "NomPrenoms",
+                                            MainWindow.AgentRelatedView.Contract,
+                                            "NumMatr",
+                                            "IdContr")
+    End Sub
+
+    Private Sub cmiModifNewAgent_Click(sender As Object, e As RoutedEventArgs)
+        MainWindow.OpenAgentContextMenuView(dgNewAgent,
+                                            "NomPrenoms",
+                                            MainWindow.AgentRelatedView.Contract,
+                                            "NumMatr",
+                                            "IdContr")
+    End Sub
+
+    Private Sub cmiSortieAgent_Click(sender As Object, e As RoutedEventArgs)
+        Dim dataGrid As DataGrid = ContextMenuDataGrid(sender)
+        Dim rowView As DataRowView = TryCast(dataGrid?.CurrentItem, DataRowView)
+        If rowView Is Nothing OrElse Not rowView.Row.Table.Columns.Contains("NomPrenoms") Then Return
+
+        Dim mainWindow As MainWindow = MainWindow.FindOpenMainWindow()
+        If mainWindow Is Nothing Then
+            MessageBox.Show("La fenêtre principale est introuvable.",
+                            "Ouverture des sorties", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+        mainWindow.LoadSortie(Convert.ToString(rowView("NomPrenoms")), Convert.ToString(rowView("NumMatr")))
+    End Sub
+
+    Private Sub DashboardClientGrid_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs)
+        MainWindow.SelectContextMenuRow(DirectCast(sender, DataGrid), e)
+    End Sub
+
+    Private Function ContextMenuDataGrid(sender As Object) As DataGrid
+        Dim menuItem As MenuItem = TryCast(sender, MenuItem)
+        If menuItem Is Nothing Then Return Nothing
+
+        Dim contextMenu As ContextMenu = TryCast(menuItem.Parent, ContextMenu)
+        If contextMenu Is Nothing Then Return Nothing
+        Return TryCast(contextMenu.PlacementTarget, DataGrid)
+    End Function
+
+    Private Function SelectedDashboardClientName(sender As Object) As String
+        Dim dataGrid As DataGrid = ContextMenuDataGrid(sender)
+        Dim rowView As DataRowView = TryCast(dataGrid?.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return Nothing
+
+        Dim columnName As String = If(rowView.Row.Table.Columns.Contains("Client"), "Client", "NomClient")
+        If Not rowView.Row.Table.Columns.Contains(columnName) Then
+            MessageBox.Show("La ligne sélectionnée ne contient pas le nom du client.",
+                            "Gestion du client", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return Nothing
+        End If
+        Return Convert.ToString(rowView(columnName))
+    End Function
+
+    Private Sub cmiModifClient_Click(sender As Object, e As RoutedEventArgs)
+        If Not CanModifyDataOrdinary Then Return
+        Dim clientName As String = SelectedDashboardClientName(sender)
+        If String.IsNullOrWhiteSpace(clientName) Then Return
+
+        Dim mainWindow As MainWindow = TryCast(Application.Current.MainWindow, MainWindow)
+        If mainWindow Is Nothing Then
+            MessageBox.Show("La fenêtre principale est introuvable.",
+                            "Gestion du client", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+        mainWindow.LoadClientContrat(clientName)
+    End Sub
+
+    Private Sub cmiNouveauSite_Click(sender As Object, e As RoutedEventArgs)
+        If Not CanAddDataOrdinary Then Return
+        Dim clientName As String = SelectedDashboardClientName(sender)
+        If String.IsNullOrWhiteSpace(clientName) Then Return
+
+        Dim mainWindow As MainWindow = MainWindow.FindOpenMainWindow()
+        If mainWindow Is Nothing Then
+            MessageBox.Show("La fenêtre principale est introuvable.",
+                            "Gestion du client", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+        mainWindow.LoadSite(clientName, True)
+    End Sub
+
+    Private Sub cmiSiteClient_Click(sender As Object, e As RoutedEventArgs)
+        Dim clientName As String = SelectedDashboardClientName(sender)
+        If String.IsNullOrWhiteSpace(clientName) Then Return
+
+        Dim mainWindow As MainWindow = MainWindow.FindOpenMainWindow()
+        If mainWindow Is Nothing Then
+            MessageBox.Show("La fenêtre principale est introuvable.",
+                            "Gestion des sites", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+        mainWindow.LoadSite(clientName)
+    End Sub
+
+    Private Sub cmiDesactiverClient_Click(sender As Object, e As RoutedEventArgs)
+        If Not (CanDeleteDataOrdinary Or CanGlobalDataManage) Then Return
+        Dim clientName As String = SelectedDashboardClientName(sender)
+        If String.IsNullOrWhiteSpace(clientName) Then Return
+
+        Dim endClientWindow As New wdwEndClient(clientName)
+        Dim ownerWindow As Window = Window.GetWindow(Me)
+        If ownerWindow IsNot Nothing Then
+            endClientWindow.Owner = ownerWindow
+            endClientWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner
+        End If
+        endClientWindow.ShowDialog()
+        LoadClientGrandT10()
+        LoadClientAnciensT20()
     End Sub
 
     Private Sub cmiHeureSup_Click(sender As Object, e As RoutedEventArgs) Handles cmiHeureSup.Click
@@ -541,7 +678,7 @@ Public Class usercTBord
 
     Sub LoadContratEcheance()
         Try
-            Dim iStr As String = "select a.NomPrenoms,format(c.FinContr) as FinContr , n.IdNature as Nature,format(c.DebutContr) as DebutContr from contratstbl c  join agents a on a.NumMatr=c.NomPrenoms join contratsnature n on n.NatureContr=c.NaturContr "
+            Dim iStr As String = "select a.NomPrenoms,format(c.FinContr) as FinContr , n.IdNature as Nature,format(c.DebutContr) as DebutContr,c.IdContr as IdContr,a.NumMatr as NumMatr from contratstbl c  join agents a on a.NumMatr=c.NomPrenoms join contratsnature n on n.NatureContr=c.NaturContr "
             iStr += " where c.FinContr>='" & DebutDuMois(Today).ToString("yyyy-MM-dd") & "' and c.FinContr<='" & FinDuMois(Today).AddDays(15).ToString("yyyy-MM-dd") & "' and a.actif=1"
             iStr += " order by c.FinContr,a.NomPrenoms"
             myDtblContratEch = LoadDataTable(iStr, LocalConnxStr)
@@ -555,7 +692,7 @@ Public Class usercTBord
 
     Sub LoadNewAgents()
         Try
-            Dim iStr As String = "select a.NomPrenoms, format(c.DebutContr) as Début from agents a join contratstbl c on a.NumMatr=c.NomPrenoms "
+            Dim iStr As String = "select a.NomPrenoms, format(c.DebutContr) as Début,c.IdContr as IdContr,a.NumMatr as NumMatr from agents a join contratstbl c on a.NumMatr=c.NomPrenoms "
             iStr += " where c.FinContr>='" & DebutDuMois(Today).ToString("yyyy-MM-dd") & "' and a.Actif=1 and c.DebutContr>='" & DebutDuMois(Today).ToString("yyyy-MM-dd") & "'"  ' c.FinContr<='" & FinDuMois(Today).AddDays(15).ToString("yyyy-MM-dd") & "' and a.actif=1"
             iStr += " order by a.DateEntree desc, a.NomPrenoms "
             myDtblNewAgent = LoadDataTable(iStr, LocalConnxStr)

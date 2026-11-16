@@ -67,7 +67,22 @@
                                 </Button>
                             </StackPanel>
                             <TextBox x:Name="tbxNbClientActifs" Text=" Nombre de clients actif "  Background="#FF150452" Foreground="LightSkyBlue" HorizontalContentAlignment="Center"/>
-                            <DataGrid x:Name="DgClients" AutoGenerateColumns="True" />
+                            <DataGrid x:Name="DgClients" AutoGenerateColumns="True" PreviewMouseRightButtonDown="DgClients_PreviewMouseRightButtonDown">
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Modifier" x:Name="cmiModifClientActif" Click="cmiModif_Click"/>
+                                        <!--MenuItem Header="Supprimer" x:Name="cmiSupprClientActif" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}" Click="cmiSuppr_Click"/-->
+                                        <Separator/>
+                                        <MenuItem Header="Copier" Click="cmiCopier_Click"/>
+                                        <Separator/>
+                                        <MenuItem Header="Sites" Click="cmiSites_Click"/>
+                                        <MenuItem Header="Postes" Click="cmiPostes_Click"/>
+                                        <MenuItem Header="Agents" Click="cmiAgents_Click"/>
+                                        <Separator/>
+                                        <MenuItem Header="Résumé" Click="cmiResume_Click"/>
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
+                            </DataGrid>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="5,0">
                             <StackPanel Orientation="Horizontal">
@@ -79,7 +94,22 @@
                                 </Button>
                             </StackPanel>
                                 <TextBox x:Name="tbxNbClientInactifs" Text=" Nombre de clients inactif "  Background="#FF150452" Foreground="LightSkyBlue" HorizontalContentAlignment="Center"/>
-                            <DataGrid x:Name="DgClientsInactifs" AutoGenerateColumns="True" />
+                            <DataGrid x:Name="DgClientsInactifs" AutoGenerateColumns="True" PreviewMouseRightButtonDown="DgClients_PreviewMouseRightButtonDown">
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Modifier" x:Name="cmiModifClientInactif" Click="cmiModif_Click"/>
+                                        <!--MenuItem Header="Supprimer" x:Name="cmiSupprClientInactif" Background="{DynamicResource ThemeActionDangerBrush}" Foreground="{DynamicResource ThemeActionDangerTextBrush}" Click="cmiSuppr_Click"/-->
+                                        <Separator/>
+                                        <MenuItem Header="Copier" Click="cmiCopier_Click"/>
+                                        <Separator/>
+                                        <MenuItem Header="Sites" Click="cmiSites_Click"/>
+                                        <MenuItem Header="Postes" Click="cmiPostes_Click"/>
+                                        <!--MenuItem Header="Agents" Click="cmiAgents_Click"/-->
+                                        <Separator/>
+                                        <MenuItem Header="Résumé" Click="cmiResume_Click"/>
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
+                            </DataGrid>
                         </StackPanel>
                     </Grid>                    
                 </StackPanel>

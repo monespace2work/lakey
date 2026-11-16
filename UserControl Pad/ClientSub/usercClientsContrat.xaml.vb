@@ -15,22 +15,31 @@ Public Class usercClientsContrat
     Dim NewData As Boolean = True
     Dim NewNom As String = ""
     Dim retourDansMainWindow As Action
+    Private clientToOpen As String
+    Private deleteClientOnOpen As Boolean
     Public Shared NomClientTemp As String
     Public Shared AfficheStat As Action
-    Public Sub New(clb As Action)
+    Public Sub New(clb As Action,
+                   Optional selectedClientName As String = Nothing,
+                   Optional deleteSelectedClient As Boolean = False)
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = clb
+        clientToOpen = selectedClientName
+        deleteClientOnOpen = deleteSelectedClient
     End Sub
-    Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
+    Private Async Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         iConnxStr = LocalConnxStr
 
         InialiseLoad()
+        If Not String.IsNullOrWhiteSpace(clientToOpen) Then
+            Await OpenClientFromContextMenuAsync(clientToOpen, deleteClientOnOpen)
+        End If
         ChangeYN = False
         inputTimer = New DispatcherTimer()
         inputTimer.Interval = TimeSpan.FromSeconds(3)
@@ -757,8 +766,42 @@ Public Class usercClientsContrat
     End Sub
 
     Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
-        Dim rowView As DataRowView = TryCast(DgClientsContrats.CurrentItem, DataRowView)
+        Await DeleteClientAsync(TryCast(DgClientsContrats.CurrentItem, DataRowView))
+    End Sub
+
+    Private Async Function OpenClientFromContextMenuAsync(clientName As String, deleteClient As Boolean) As Task
+        Dim escapedName As String = clientName.Replace("'", "''")
+        Dim clientRows As DataTable = LoadDataTable(
+            "SELECT c.NomClient, c.Actif, c.TypeClient, c.MontantFacturationUnitaire as MontantUnit, c.TypeFacturation, c.Ville, c.Adresse, format(c.DateDebutCollabor) as DateDebut, format(c.DateFinCollabor) as DateFin, c.DescriptionClient, c.Obs, c.RefCtr " &
+            "FROM Client c WHERE c.NomClient = '" & escapedName & "' ORDER BY c.Actif DESC, c.RefCtr",
+            LocalConnxStr)
+
+        If clientRows.Rows.Count <> 1 Then
+            If clientRows.Rows.Count > 1 Then
+                DgClientsContrats.ItemsSource = clientRows.DefaultView
+                MessageBox.Show("Plusieurs fiches portent ce nom. Sélectionnez la fiche voulue dans la liste des contrats avant de la modifier ou de la supprimer.",
+                                "Gestion du client", MessageBoxButton.OK, MessageBoxImage.Warning)
+            Else
+                MessageBox.Show("La fiche du client sélectionné est introuvable.",
+                                "Gestion du client", MessageBoxButton.OK, MessageBoxImage.Warning)
+            End If
+            Return
+        End If
+
+        DgClientsContrats.ItemsSource = clientRows.DefaultView
+        DgClientsContrats.SelectedItem = clientRows.DefaultView(0)
+        If deleteClient Then
+            If Not (CanDeleteDataOrdinary Or CanGlobalDataManage) Then Return
+            Await DeleteClientAsync(TryCast(DgClientsContrats.CurrentItem, DataRowView))
+        Else
+            If Not CanModifyDataOrdinary Then Return
+            LoadRowItems(TryCast(DgClientsContrats.CurrentItem, DataRowView))
+        End If
+    End Function
+
+    Private Async Function DeleteClientAsync(rowView As DataRowView) As Task
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then
+            If Not (CanDeleteDataOrdinary Or CanGlobalDataManage) Then Return
             RefCrt = rowView.Row.ItemArray(11).ToString
             If MessageBox.Show("Voulez supprimer le client « " & rowView.Row.ItemArray(0).ToString & " » et ses sites et données liées (postes, affectations, événements, heures supplémentaires, planifications et sorties) ?",
                                "SUPPRESSION ", MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.Yes Then
@@ -771,7 +814,7 @@ Public Class usercClientsContrat
                 End If
             End If
         End If
-    End Sub
+    End Function
 
     Private Sub cmiModif_Click(sender As Object, e As RoutedEventArgs) Handles cmiModif.Click
         Dim rowView As DataRowView = TryCast(DgClientsContrats.CurrentItem, DataRowView)

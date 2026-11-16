@@ -15,20 +15,41 @@ Public Class usercClientsSite
     Dim NewData As Boolean = True
     Dim NewNom As String = ""
     Dim retourDansMainWindow As Action
+    Private selectedClientName As String
+    Private startNewSiteOnOpen As Boolean
     Public Shared AfficheStat As Action
-    Public Sub New(clb As Action)
+    Public Sub New(clb As Action, Optional clientName As String = Nothing, Optional startNewSite As Boolean = False)
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = clb
+        selectedClientName = clientName
+        startNewSiteOnOpen = startNewSite
     End Sub
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
         iConnxStr = "Data Source=" & DbPath & ";Version=3;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         InialiseLoad()
+        If Not String.IsNullOrWhiteSpace(selectedClientName) Then
+            If Not CbxClient.Items.Contains(selectedClientName) Then
+                MessageBox.Show("Le client sélectionné n'est pas disponible pour la gestion de ses sites.",
+                                "Gestion des sites", MessageBoxButton.OK, MessageBoxImage.Warning)
+            Else
+                CbxClient.SelectedItem = selectedClientName
+                Dim siteView As DataView = TryCast(DgClientSite.ItemsSource, DataView)
+                If siteView IsNot Nothing Then
+                    siteView.RowFilter = "Client = '" & selectedClientName.Replace("'", "''") & "'"
+                    tblNbClientSiteActifs.Text = "Sites du client affichés : " & siteView.Count
+                End If
+                If startNewSiteOnOpen AndAlso CanAddDataOrdinary Then
+                    stpSaisie.Visibility = Visibility.Visible
+                    btnNewData.Visibility = Visibility.Collapsed
+                End If
+            End If
+        End If
         ChangeYN = False
         inputTimer = New DispatcherTimer()
         inputTimer.Interval = TimeSpan.FromSeconds(3)
@@ -750,9 +771,61 @@ Public Class usercClientsSite
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub cmiResume_Click(sender As Object, e As RoutedEventArgs) Handles cmiResume.Click
+        Dim rowView As DataRowView = TryCast(DgClientSite.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+
+        Dim siteName As String = Convert.ToString(rowView("NomSite"))
+        Dim status As String = "Inconnu"
+        If Not Convert.IsDBNull(rowView("Actif")) Then
+            status = If(Convert.ToBoolean(rowView("Actif")), "Actif", "Inactif")
+        End If
+
+        Dim summary As String =
+            "Site : " & siteName & Environment.NewLine &
+            "Client : " & Convert.ToString(rowView("Client")) & Environment.NewLine &
+            "Statut : " & status & Environment.NewLine &
+            "Localisation : " & Convert.ToString(rowView("Localisation")) & Environment.NewLine &
+            "Adresse : " & Convert.ToString(rowView("Adresse")) & Environment.NewLine &
+            "Durée : " & Convert.ToString(rowView("Duree")) & Environment.NewLine &
+            "Type : " & Convert.ToString(rowView("Type")) & Environment.NewLine &
+            "Responsable : " & Convert.ToString(rowView("Responsable")) & Environment.NewLine &
+            "Date de création : " & Convert.ToString(rowView("DateCreation")) & Environment.NewLine &
+            "Date de fermeture : " & Convert.ToString(rowView("DateFermeture")) & Environment.NewLine &
+            "Observations : " & Convert.ToString(rowView("Observations"))
+        MsgBox(summary, MsgBoxStyle.OkOnly, "SITE - " & UCase(siteName))
+    End Sub
+
+    Private Sub cmiClient_Click(sender As Object, e As RoutedEventArgs) Handles cmiClient.Click
+        ShowSiteContextSummary("CLIENT", Function(rowView) ResumeClient(rowView("Client").ToString(), LocalConnxStr))
+    End Sub
+
+    Private Sub cmiPostes_Click(sender As Object, e As RoutedEventArgs) Handles cmiPostes.Click
+        ShowSiteContextSummary("POSTES", Function(rowView) ListePosteSite(rowView("NomSite").ToString(), LocalConnxStr))
+    End Sub
+
+    Private Sub cmiAgents_Click(sender As Object, e As RoutedEventArgs) Handles cmiAgents.Click
+        ShowSiteContextSummary("AGENTS AFFECTÉS", Function(rowView) ListeAgentSite(rowView("NomSite").ToString(), LocalConnxStr))
+    End Sub
+
+    Private Sub ShowSiteContextSummary(title As String, getSummary As Func(Of DataRowView, String))
+        Dim rowView As DataRowView = TryCast(DgClientSite.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+
+        Dim siteName As String = rowView("NomSite").ToString()
+        Dim summary As String = getSummary(rowView)
+        If String.IsNullOrWhiteSpace(summary) Then summary = "Aucun élément affecté."
+        MsgBox(summary, MsgBoxStyle.OkOnly, title & " - " & UCase(siteName))
+    End Sub
+
+    Private Sub DgClientSite_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgClientSite.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgClientSite, e)
+    End Sub
+
     Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
         MainWindow.CopyContextMenuRowToClipboard(DgClientSite)
     End Sub
+
     Private Sub dtpDebut_SelectedDateChanged(sender As Object, e As SelectionChangedEventArgs) Handles dtpDebut.SelectedDateChanged
         ActivSaveBtn()
     End Sub

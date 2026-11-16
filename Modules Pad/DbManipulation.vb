@@ -922,6 +922,29 @@ Module DbManipulation
         End Using
     End Function
 
+    Public Function ListeAgentSite(NomSite As String, Optional ConnexStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
+        Dim iStr As String = "select distinct a.AgentAffect from Affectation a where a.SiteAffect = @site and a.AgentAffect is not null and a.FinAffect >= date() order by a.AgentAffect"
+        Dim iWord As String = ""
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(ConnexStr, False))
+            connection.Open()
+            Using command As New SQLiteCommand(iStr, connection)
+                command.Parameters.AddWithValue("@site", NomSite)
+                Using reader As SQLiteDataReader = command.ExecuteReader()
+                    Dim iNb As Integer = 1
+                    While reader.Read()
+                        iWord &= Right("000" & iNb, 3) & ". " & reader(0).ToString() & Environment.NewLine
+                        iNb += 1
+                    End While
+                End Using
+            End Using
+        End Using
+
+        If iWord.Length > 0 Then
+            iWord = iWord.Substring(0, iWord.Length - Environment.NewLine.Length)
+        End If
+        Return iWord
+    End Function
+
     Public Function ListePosteClient(NomClient As String, Optional ConnexStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         ListePosteClient = ""
         Dim iStr As String = "select c.Designation||'  ('||c.Code||')',c.Actif from Postes c join siteaffectation s on s.NomSite=c.NomSite where s.Client='" & Apost(NomClient) & "' order by c.Actif desc, c.Designation"
@@ -1713,13 +1736,13 @@ Module DbManipulation
 
     End Function
 
-    Public Function ResumeClient(iName As String) As String
+    Public Function ResumeClient(iName As String, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String
         Dim iResum As String = "" 'UCase(iName) & Environment.NewLine
-        iResum += "=== Montant facturation : " & Format(MayStatVal("select c.MontantFacturationUnitaire from client c where c.NomClient like '" & Apost(iName) & "'"), "# ###") & Environment.NewLine
-        iResum += "=== Date Début : " & MyStatValStr("select c.DateDebutCollabor from client c where c.NomClient like '" & Apost(iName) & "'") & Environment.NewLine
-        iResum += "=== Date fin : " & MyStatValStr("select c.DateFinCollabor from client c where c.NomClient like '" & Apost(iName) & "'") & Environment.NewLine
-        iResum += "=== Total d'agents : " & MyStatValStr("select count(*) as NbAgent from siteaffectation s  join affectation a on a.SiteAffect=s.NomSite where  s.Actif=1 and a.FinAffect>=date() and  s.Client not like '%g2s%' and s.Client='" & Apost(iName) & "'") & Environment.NewLine
-        iResum += "=== Site ====" & Environment.NewLine & ListeSiteClient(iName)
+        iResum += "=== Montant facturation : " & Format(MayStatVal("select c.MontantFacturationUnitaire from client c where c.NomClient like '" & Apost(iName) & "'", iConxStr), "# ###") & Environment.NewLine
+        iResum += "=== Date Début : " & MyStatValStr("select c.DateDebutCollabor from client c where c.NomClient like '" & Apost(iName) & "'", iConxStr) & Environment.NewLine
+        iResum += "=== Date fin : " & MyStatValStr("select c.DateFinCollabor from client c where c.NomClient like '" & Apost(iName) & "'", iConxStr) & Environment.NewLine
+        iResum += "=== Total d'agents : " & MyStatValStr("select count(*) as NbAgent from siteaffectation s  join affectation a on a.SiteAffect=s.NomSite where  s.Actif=1 and a.FinAffect>=date() and  s.Client not like '%g2s%' and s.Client='" & Apost(iName) & "'", iConxStr) & Environment.NewLine
+        iResum += "=== Site ====" & Environment.NewLine & ListeSiteClient(iName, iConxStr)
         ResumeClient = iResum
     End Function
     Public Function ListeAgentClient(iName As String, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As String

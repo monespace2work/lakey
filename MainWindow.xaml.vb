@@ -1,4 +1,4 @@
-﻿Imports System.Windows.Threading
+Imports System.Windows.Threading
 Imports System.Data
 Imports System.Data.SQLite
 Imports System.ComponentModel
@@ -13,10 +13,13 @@ Class MainWindow
 
     'Dim iUsrcEnntree As New usercAgentsEntree(AddressOf LoadEntree)
     Dim iUserC As New UserControl
+    Private ReadOnly previousCentralContents As New Stack(Of Object)
+    Private lastCentralContent As Object
     Public LocalConnxStr As String
     Private isDarkTheme As Boolean = True
     Private isLeftPanelCollapsed As Boolean
     Private isRightPanelCollapsed As Boolean
+    Private isRestoringPreviousContent As Boolean
     Private ReadOnly userControlLoadingTimer As New DispatcherTimer With {
         .Interval = TimeSpan.FromMilliseconds(500)
     }
@@ -29,6 +32,7 @@ Class MainWindow
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
 
+        lastCentralContent = cctrlCentral.Content
         Dim contentDescriptor = DependencyPropertyDescriptor.FromProperty(ContentControl.ContentProperty, GetType(ContentControl))
         contentDescriptor.AddValueChanged(cctrlCentral, AddressOf CentralContentChanged)
 
@@ -72,7 +76,8 @@ Class MainWindow
     Public Shared Sub OpenAgentContextMenuView(dataGrid As DataGrid,
                                                agentNameColumn As String,
                                                target As AgentRelatedView,
-                                               Optional matriculeColumn As String = Nothing)
+                                               Optional matriculeColumn As String = Nothing,
+                                               Optional contractIdColumn As String = Nothing)
         Dim rowView As DataRowView = TryCast(dataGrid.CurrentItem, DataRowView)
         If rowView Is Nothing Then Return
         If Not rowView.Row.Table.Columns.Contains(agentNameColumn) Then
@@ -95,12 +100,21 @@ Class MainWindow
            rowView.Row.Table.Columns.Contains(matriculeColumn) Then
             matricule = Convert.ToString(rowView.Row(matriculeColumn))
         End If
-        mainWindow.OpenAgentRelatedView(agentName, target, matricule)
+        Dim contractId As Integer = 0
+        If Not String.IsNullOrWhiteSpace(contractIdColumn) AndAlso
+           rowView.Row.Table.Columns.Contains(contractIdColumn) AndAlso
+           Not Integer.TryParse(Convert.ToString(rowView.Row(contractIdColumn)), contractId) Then
+            MessageBox.Show("Le contrat sélectionné ne peut pas être identifié.",
+                            "Ouverture des données de l'agent", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+        mainWindow.OpenAgentRelatedView(agentName, target, matricule, contractId)
     End Sub
 
     Public Sub OpenAgentRelatedView(agentName As String,
                                     target As AgentRelatedView,
-                                    Optional matricule As String = Nothing)
+                                    Optional matricule As String = Nothing,
+                                    Optional contractId As Integer = 0)
         If String.IsNullOrWhiteSpace(agentName) Then Return
 
         Dim lookupColumn As String = If(String.IsNullOrWhiteSpace(matricule), "NomPrenoms", "NumMatr")
@@ -138,13 +152,15 @@ Class MainWindow
             Return
         End Try
 
-        OpenAgentRelatedView(agentRef, target)
+        OpenAgentRelatedView(agentRef, target, contractId)
     End Sub
 
-    Public Sub OpenAgentRelatedView(agentRef As Integer, target As AgentRelatedView)
+    Public Sub OpenAgentRelatedView(agentRef As Integer,
+                                    target As AgentRelatedView,
+                                    Optional contractId As Integer = 0)
         Select Case target
             Case AgentRelatedView.Contract
-                LoadContrat(agentRef)
+                LoadContrat(agentRef, contractId)
             Case AgentRelatedView.Affectation
                 LoadAffectation(agentRef)
             Case AgentRelatedView.Absence
@@ -155,7 +171,7 @@ Class MainWindow
         End Select
     End Sub
 
-    Private Shared Function FindOpenMainWindow() As MainWindow
+    Public Shared Function FindOpenMainWindow() As MainWindow
         If Application.Current Is Nothing Then Return Nothing
         Dim mainWindow As MainWindow = TryCast(Application.Current.MainWindow, MainWindow)
         If mainWindow IsNot Nothing Then Return mainWindow
@@ -309,6 +325,14 @@ Class MainWindow
     End Sub
 
     Private Sub CentralContentChanged(sender As Object, e As EventArgs)
+        Dim currentContent As Object = cctrlCentral.Content
+        If Not isRestoringPreviousContent AndAlso
+           lastCentralContent IsNot Nothing AndAlso
+           Not Object.ReferenceEquals(lastCentralContent, currentContent) Then
+            previousCentralContents.Push(lastCentralContent)
+        End If
+        lastCentralContent = currentContent
+
         Dim keepHeaderVisible =
             TypeOf cctrlCentral.Content Is usercAgentsAbsences OrElse
             TypeOf cctrlCentral.Content Is usercAgentsAffectation OrElse
@@ -706,6 +730,10 @@ Class MainWindow
     End Sub
 
     Private Async Sub btnTBord_Click(sender As Object, e As RoutedEventArgs)
+        Await ShowDashboardAsync()
+    End Sub
+
+    Private Async Function ShowDashboardAsync() As Task
         Await RunWithLoadingAsync(
             Sub()
                 iUserC = New usercTBord(Sub()
@@ -715,6 +743,21 @@ Class MainWindow
                 SelectPrincipalBtn(btnTBord)
                 SelecStp(stpTBord)
             End Sub)
+    End Function
+
+    Private Sub ShowPreviousCentralContent()
+        If previousCentralContents.Count = 0 Then Return
+
+        Dim previousContent As Object = previousCentralContents.Pop()
+        If previousContent Is Nothing OrElse Object.ReferenceEquals(previousContent, cctrlCentral.Content) Then Return
+
+        isRestoringPreviousContent = True
+        Try
+            cctrlCentral.Content = previousContent
+            lastCentralContent = previousContent
+        Finally
+            isRestoringPreviousContent = False
+        End Try
     End Sub
 
 
@@ -1203,12 +1246,12 @@ Class MainWindow
                 cctrlCentral.Content = iUserC
             End Sub)
     End Sub
-    Public Sub LoadContrat(Optional agentRef As Integer = 0)
+    Public Sub LoadContrat(Optional agentRef As Integer = 0, Optional contractId As Integer = 0)
         elpsLoading.Visibility = Visibility.Visible
         SelectAgentBtn(btnContrat)
         iUserC = New usercAgentsContrat(Sub()
                                             cctrlCentral.Content = iUserC
-                                        End Sub, agentRef)
+                                        End Sub, agentRef, contractId)
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
@@ -1257,12 +1300,12 @@ Class MainWindow
                 LoadSortie()
             End Sub)
     End Sub
-    Sub LoadSortie()
+    Public Sub LoadSortie(Optional agentName As String = Nothing, Optional matricule As String = Nothing)
         elpsLoading.Visibility = Visibility.Visible
         SelectAgentBtn(btnSortie)
         iUserC = New usercAgentsSortie(Sub()
                                            cctrlCentral.Content = iUserC
-                                       End Sub)
+                                       End Sub, agentName, matricule)
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
@@ -1329,12 +1372,12 @@ Class MainWindow
                 SelectClientBtn(btnSite)
             End Sub)
     End Sub
-    Sub LoadSite()
+    Public Sub LoadSite(Optional clientName As String = Nothing, Optional startNewSite As Boolean = False)
         elpsLoading.Visibility = Visibility.Visible
         SelectAgentBtn(btnEntree)
         iUserC = New usercClientsSite(Sub()
                                           cctrlCentral.Content = iUserC
-                                      End Sub)
+                                      End Sub, clientName, startNewSite)
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
@@ -1363,12 +1406,13 @@ Class MainWindow
                 SelectClientBtn(btnClientContrat)
             End Sub)
     End Sub
-    Sub LoadClientContrat()
+    Public Sub LoadClientContrat(Optional clientName As String = Nothing,
+                                 Optional deleteSelectedClient As Boolean = False)
         elpsLoading.Visibility = Visibility.Visible
         SelectAgentBtn(btnEntree)
         iUserC = New usercClientsContrat(Sub()
                                              cctrlCentral.Content = iUserC
-                                         End Sub)
+                                         End Sub, clientName, deleteSelectedClient)
         cctrlCentral.Content = iUserC
         elpsLoading.Visibility = Visibility.Collapsed
     End Sub
@@ -2234,6 +2278,18 @@ Class MainWindow
     End Sub
 
     Private Async Sub Window_KeyDown(sender As Object, e As KeyEventArgs)
+        Dim pressedKey As Key = If(e.Key = Key.System, e.SystemKey, e.Key)
+        If pressedKey = Key.Z AndAlso Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Alt) Then
+            ShowPreviousCentralContent()
+            e.Handled = True
+            Return
+        End If
+        If pressedKey = Key.T AndAlso Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Alt) Then
+            Await ShowDashboardAsync()
+            e.Handled = True
+            Return
+        End If
+
         If e.Key = Key.X AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             oDeconect()
         End If
@@ -2243,7 +2299,6 @@ Class MainWindow
         If e.Key = Key.A AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             Await RunWithLoadingAsync(Sub() InitializeGlobal())
         End If
-        Dim pressedKey As Key = If(e.Key = Key.System, e.SystemKey, e.Key)
         If pressedKey = Key.U AndAlso Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Alt) Then
             ChangerUtilisateur()
             e.Handled = True

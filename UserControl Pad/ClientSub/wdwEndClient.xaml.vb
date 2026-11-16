@@ -1,5 +1,16 @@
 ﻿Public Class wdwEndClient
     Dim iConnxStr As String
+    Private selectedClientName As String
+
+    Public Sub New()
+        Me.New(Nothing)
+    End Sub
+
+    Public Sub New(clientName As String)
+        InitializeComponent()
+        selectedClientName = clientName
+    End Sub
+
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = PaphBackUp()
         iConnxStr = "Data Source=" & DbPath & ";Version=3;"
@@ -10,13 +21,16 @@
         'cbxClent.SelectedItem=usercClients.nom
         dtpDateFin.SelectedDate = FinDuMois(Today)
         cbxClent.SelectedIndex = -1
+        If Not String.IsNullOrWhiteSpace(selectedClientName) AndAlso cbxClent.Items.Contains(selectedClientName) Then
+            cbxClent.SelectedItem = selectedClientName
+        End If
         maj()
         ActivBtnValid()
     End Sub
     Private Sub btnValid_Click(sender As Object, e As RoutedEventArgs) Handles btnValid.Click
         If MsgBox("Déactiver le client #" & cbxClent.SelectedItem, MsgBoxStyle.YesNo) = MsgBoxResult.No Then Exit Sub
         Dim PosteActifCbx, SiteActifCbx As New ComboBox
-        FilmyCbx(" select p.Code from POSTES p join siteaffectation s on p.NomSite=s.NomSite join client c on c.NomClient=s.Client  where p.Actif=1 and c.NomClient like '" & cbxClent.SelectedItem & "'", PosteActifCbx, iConnxStr)
+        FilmyCbx(" select p.Code from POSTES p join siteaffectation s on p.NomSite=s.NomSite join client c on c.NomClient=s.Client  where p.Actif=1 and c.NomClient = '" & Apost(cbxClent.SelectedItem) & "'", PosteActifCbx, iConnxStr)
         'FilmyCbx(" ", SiteActifCbx)
         For Each elt In PosteActifCbx.Items
             If Not SaveNewData("update POSTES set Actif=0 where Code='" & elt & "'", iConnxStr) Then

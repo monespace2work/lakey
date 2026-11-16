@@ -702,9 +702,95 @@ Public Class usercClientsPoste
         LoadRowItems(rowView)
     End Sub
 
+    Private Sub cmiResume_Click(sender As Object, e As RoutedEventArgs) Handles cmiResume.Click
+        Dim rowView As DataRowView = TryCast(DgClientsPoste.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+
+        Dim posteName As String = Convert.ToString(rowView("Designation"))
+        Dim status As String = "Inconnu"
+        If Not Convert.IsDBNull(rowView("Actif")) Then
+            status = If(Convert.ToBoolean(rowView("Actif")), "Actif", "Inactif")
+        End If
+
+        Dim summary As String =
+            "Poste : " & posteName & Environment.NewLine &
+            "Code : " & Convert.ToString(rowView("Code")) & Environment.NewLine &
+            "Statut : " & status & Environment.NewLine &
+            "Durée : " & Convert.ToString(rowView("Duree")) & Environment.NewLine &
+            "Repos hebdomadaire : " & Convert.ToString(rowView("ReposHebdo")) & Environment.NewLine &
+            "Site : " & Convert.ToString(rowView("NomSite"))
+        MsgBox(summary, MsgBoxStyle.OkOnly, "POSTE - " & UCase(posteName))
+    End Sub
+
+    Private Sub cmiClient_Click(sender As Object, e As RoutedEventArgs) Handles cmiClient.Click
+        Dim rowView As DataRowView = TryCast(DgClientsPoste.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+
+        Dim posteName As String = rowView("Designation").ToString()
+        Dim siteName As String = rowView("NomSite").ToString()
+        Dim clientName As String = GetClientForSite(siteName)
+        If String.IsNullOrWhiteSpace(clientName) Then
+            MsgBox("Aucun client affecté à ce site.", MsgBoxStyle.OkOnly, "CLIENT - " & UCase(posteName))
+            Return
+        End If
+
+        MsgBox(ResumeClient(clientName, LocalConnxStr), MsgBoxStyle.OkOnly, "CLIENT - " & UCase(clientName))
+    End Sub
+
+    Private Sub cmiSite_Click(sender As Object, e As RoutedEventArgs) Handles cmiSite.Click
+        Dim rowView As DataRowView = TryCast(DgClientsPoste.CurrentItem, DataRowView)
+        If rowView Is Nothing Then Return
+
+        Dim posteName As String = rowView("Designation").ToString()
+        Dim siteName As String = rowView("NomSite").ToString()
+        Dim summary As String = ResumeSiteForPoste(siteName)
+        If String.IsNullOrWhiteSpace(summary) Then summary = "Aucun site associé à ce poste."
+        MsgBox(summary, MsgBoxStyle.OkOnly, "SITE - " & UCase(posteName))
+    End Sub
+
+    Private Function GetClientForSite(siteName As String) As String
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(LocalConnxStr, False))
+            connection.Open()
+            Using command As New SQLiteCommand("SELECT Client FROM SiteAffectation WHERE NomSite = @site", connection)
+                command.Parameters.AddWithValue("@site", siteName)
+                Return Convert.ToString(command.ExecuteScalar())
+            End Using
+        End Using
+    End Function
+
+    Private Function ResumeSiteForPoste(siteName As String) As String
+        Dim query As String = "SELECT NomSite, Client, Localisation, AdressSite, TypeSite, RespSite, Actif " &
+                              "FROM SiteAffectation WHERE NomSite = @site"
+        Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(LocalConnxStr, False))
+            connection.Open()
+            Using command As New SQLiteCommand(query, connection)
+                command.Parameters.AddWithValue("@site", siteName)
+                Using reader As SQLiteDataReader = command.ExecuteReader()
+                    If Not reader.Read() Then Return ""
+
+                    Dim status As String = If(reader.IsDBNull(6),
+                                              "Inconnu",
+                                              If(Convert.ToBoolean(reader(6)), "Actif", "Inactif"))
+                    Return "Site : " & Convert.ToString(reader(0)) & Environment.NewLine &
+                           "Client : " & Convert.ToString(reader(1)) & Environment.NewLine &
+                           "Localisation : " & Convert.ToString(reader(2)) & Environment.NewLine &
+                           "Adresse : " & Convert.ToString(reader(3)) & Environment.NewLine &
+                           "Type : " & Convert.ToString(reader(4)) & Environment.NewLine &
+                           "Responsable : " & Convert.ToString(reader(5)) & Environment.NewLine &
+                           "Statut : " & status
+                End Using
+            End Using
+        End Using
+    End Function
+
+    Private Sub DgClientsPoste_PreviewMouseRightButtonDown(sender As Object, e As MouseButtonEventArgs) Handles DgClientsPoste.PreviewMouseRightButtonDown
+        MainWindow.SelectContextMenuRow(DgClientsPoste, e)
+    End Sub
+
     Private Sub cmiCopier_Click(sender As Object, e As RoutedEventArgs)
         MainWindow.CopyContextMenuRowToClipboard(DgClientsPoste)
     End Sub
+
     Private Async Sub cmiSuppr_Click(sender As Object, e As RoutedEventArgs) Handles cmiSuppr.Click
         Dim rowView As DataRowView = TryCast(DgClientsPoste.CurrentItem, DataRowView)
         If rowView IsNot Nothing AndAlso rowView.Row.ItemArray.Length > 1 Then

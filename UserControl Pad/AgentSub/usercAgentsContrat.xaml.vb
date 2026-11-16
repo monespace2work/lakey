@@ -7,6 +7,7 @@ Public Class usercAgentsContrat
     Dim ChangeYN As Boolean = False
     Dim RefCrt As Integer = 0
     Private selectedAgentRef As Integer
+    Private selectedContractId As Integer
     Dim inputTimer As DispatcherTimer
     Dim NewData As Boolean = True
     Dim iFormLoaded As Boolean = False
@@ -14,7 +15,7 @@ Public Class usercAgentsContrat
     Public Shared AfficheStat As Action
     Public Shared AfficheMemos As Action
 
-    Public Sub New(callback As Action, Optional agentRef As Integer = 0)
+    Public Sub New(callback As Action, Optional agentRef As Integer = 0, Optional contractId As Integer = 0)
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
@@ -22,6 +23,7 @@ Public Class usercAgentsContrat
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = callback
         selectedAgentRef = agentRef
+        selectedContractId = contractId
     End Sub
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
@@ -29,6 +31,24 @@ Public Class usercAgentsContrat
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         iConnxStr = LocalConnxStr
         InialiseLoad()
+        If selectedContractId > 0 Then
+            Dim contractRows As DataView = TryCast(DgAgentContrat.ItemsSource, DataView)
+            Dim selectedContractFound As Boolean = False
+            If contractRows IsNot Nothing Then
+                For Each rowView As DataRowView In contractRows
+                    If Convert.ToInt32(rowView("Ref")) = selectedContractId Then
+                        DgAgentContrat.SelectedItem = rowView
+                        LoadRowItems(rowView)
+                        selectedContractFound = True
+                        Exit For
+                    End If
+                Next
+            End If
+            If Not selectedContractFound Then
+                MessageBox.Show("Le contrat sélectionné est introuvable.",
+                                "Modification du contrat", MessageBoxButton.OK, MessageBoxImage.Warning)
+            End If
+        End If
         ChangeYN = False
         inputTimer = New DispatcherTimer()
         inputTimer.Interval = TimeSpan.FromSeconds(3)

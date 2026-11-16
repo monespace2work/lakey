@@ -302,13 +302,13 @@
                                         <Label x:Name="lblNbContratEcheance" Margin="10,0,0,0" Content="0" />
                                     </StackPanel>
                                     <ScrollViewer MaxHeight="150">
-                                        <DataGrid x:Name="dgContratEcheant" AutoGenerateColumns="True">
+                                        <DataGrid x:Name="dgContratEcheant" AutoGenerateColumns="True" AutoGeneratingColumn="DashboardAgentGrid_AutoGeneratingColumn">
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="Modifier" />
+                                                    <MenuItem Header="Modifier" x:Name="cmiModifContratEcheant" Click="cmiModifContratEcheant_Click"/>
                                                     <MenuItem Header="Contrat" Name="cmiContratEcheant" />
                                                     <MenuItem Header="Affectation" Name="cmiAffectationEcheant" />
-                                                    <MenuItem Header="Sortie" />
+                                                    <MenuItem Header="Sortie" x:Name="cmiSortieContratEcheant" Click="cmiSortieAgent_Click"/>
                                                 </ContextMenu>
                                             </DataGrid.ContextMenu>
 
@@ -323,13 +323,13 @@
                                         <Label x:Name="lblNbContratNouveau" Margin="10,0,0,0" Content="0"/>
                                     </StackPanel>
                                     <ScrollViewer MaxHeight="150">
-                                        <DataGrid x:Name="dgNewAgent" AutoGenerateColumns="True">
+                                        <DataGrid x:Name="dgNewAgent" AutoGenerateColumns="True" AutoGeneratingColumn="DashboardAgentGrid_AutoGeneratingColumn">
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="Modifier" />
+                                                    <MenuItem Header="Modifier" x:Name="cmiModifNewAgent" Click="cmiModifNewAgent_Click"/>
                                                     <MenuItem Header="Contrat" Name="cmiContratNewAgent" />
                                                     <MenuItem Header="Affectation" Name="cmiAffectationNewAgent" />
-                                                    <MenuItem Header="Sortie" />
+                                                    <MenuItem Header="Sortie" x:Name="cmiSortieNewAgent" Click="cmiSortieAgent_Click"/>
                                                 </ContextMenu>
                                             </DataGrid.ContextMenu>
 
@@ -341,13 +341,13 @@
                                 <StackPanel>
                                     <TextBlock Text="Top 10 - grands clients" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold" Background="{DynamicResource ThemeAccentSoftBrush}"/>
                                     <ScrollViewer MaxHeight="150">
-                                        <DataGrid x:Name="dgGrandClients" AutoGenerateColumns="True">
+                                        <DataGrid x:Name="dgGrandClients" AutoGenerateColumns="True" PreviewMouseRightButtonDown="DashboardClientGrid_PreviewMouseRightButtonDown">
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="Modifier" />
-                                                    <MenuItem Header="Nouveau" />
-                                                    <MenuItem Header="Site" />
-                                                    <MenuItem Header="Désactiver" />
+                                                    <MenuItem Header="Modifier" x:Name="cmiModifGrandClient" Click="cmiModifClient_Click"/>
+                                                    <MenuItem Header="Nouveau" x:Name="cmiNouveauGrandClient" Click="cmiNouveauSite_Click"/>
+                                                    <MenuItem Header="Site" Click="cmiSiteClient_Click"/>
+                                                    <MenuItem Header="Désactiver" x:Name="cmiDesactiverGrandClient" Click="cmiDesactiverClient_Click"/>
                                                 </ContextMenu>
                                             </DataGrid.ContextMenu>
 
@@ -359,13 +359,13 @@
                                 <StackPanel>
                                     <TextBlock Text="Top 20 - anciens clients" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold" Background="{DynamicResource ThemeAccentSoftBrush}"/>
                                     <ScrollViewer MaxHeight="150">
-                                        <DataGrid x:Name="dgAnciensClients" AutoGenerateColumns="True">
+                                        <DataGrid x:Name="dgAnciensClients" AutoGenerateColumns="True" PreviewMouseRightButtonDown="DashboardClientGrid_PreviewMouseRightButtonDown">
                                             <DataGrid.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="Modifier" />
-                                                    <MenuItem Header="Nouveau" />
-                                                    <MenuItem Header="Site" />
-                                                    <MenuItem Header="Désactiver" />
+                                                    <MenuItem Header="Modifier" x:Name="cmiModifAncienClient" Click="cmiModifClient_Click"/>
+                                                    <MenuItem Header="Nouveau" x:Name="cmiNouveauAncienClient" Click="cmiNouveauSite_Click"/>
+                                                    <MenuItem Header="Site" Click="cmiSiteClient_Click"/>
+                                                    <MenuItem Header="Désactiver" x:Name="cmiDesactiverAncienClient" Click="cmiDesactiverClient_Click"/>
                                                 </ContextMenu>
                                             </DataGrid.ContextMenu>
 

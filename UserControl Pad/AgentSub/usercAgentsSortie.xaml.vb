@@ -1,4 +1,4 @@
-﻿Imports System.Windows.Threading
+Imports System.Windows.Threading
 Imports System.Data.SQLite
 Public Class usercAgentsSortie
     Public iConnxStr As String
@@ -8,16 +8,22 @@ Public Class usercAgentsSortie
     Dim inputTimer As DispatcherTimer
     Dim iFormLoaded As Boolean = False
     Dim retourDansMainWindow As Action
+    Private selectedAgentName As String
+    Private selectedAgentMatricule As String
     Public Shared AfficheStat As Action 'AfficheMemos
     Public Shared AfficheMemos As Action 'AfficheMemos
 
-    Public Sub New(clb As Action)
+    Public Sub New(clb As Action,
+                   Optional agentName As String = Nothing,
+                   Optional agentMatricule As String = Nothing)
 
         ' Cet appel est requis par le concepteur.
         InitializeComponent()
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
         retourDansMainWindow = clb
+        selectedAgentName = agentName
+        selectedAgentMatricule = agentMatricule
     End Sub
 
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
@@ -26,6 +32,25 @@ Public Class usercAgentsSortie
         iConnxStr = "Data Source=" & DbPath & ";Version=3;Pooling=False;"
         LocalConnxStr = $"Data Source={DbPath};Version=3;"
         InialiseLoad()
+        If Not String.IsNullOrWhiteSpace(selectedAgentName) Then
+            If CbxNom.Items.Contains(selectedAgentName) Then
+                CbxNom.SelectedItem = selectedAgentName
+                If Not String.IsNullOrWhiteSpace(selectedAgentMatricule) Then
+                    If Not CbxNumMatr.Items.Contains(selectedAgentMatricule) Then
+                        CbxNom.SelectedIndex = -1
+                        MessageBox.Show("Le matricule de l'agent sélectionné n'est plus disponible.",
+                                        "Gestion des sorties", MessageBoxButton.OK, MessageBoxImage.Warning)
+                        Return
+                    End If
+                    CbxNumMatr.SelectedItem = selectedAgentMatricule
+                End If
+                stpSaisie.Visibility = Visibility.Visible
+                btnNewData.Visibility = Visibility.Collapsed
+            Else
+                MessageBox.Show("L'agent sélectionné n'est pas disponible pour une nouvelle sortie.",
+                                "Gestion des sorties", MessageBoxButton.OK, MessageBoxImage.Warning)
+            End If
+        End If
         inputTimer = New DispatcherTimer()
         inputTimer.Interval = TimeSpan.FromSeconds(5)
         AddHandler inputTimer.Tick, AddressOf OnInputTimerElapsed

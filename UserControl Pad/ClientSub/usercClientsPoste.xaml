@@ -156,9 +156,8 @@
                                             <Separator/>
                                             <MenuItem Header="Copier" Click="cmiCopier_Click"/>
                                             <Separator/>
-                                            <MenuItem Header="Contrat" Name="cmiContrat" />
-                                            <MenuItem Header="Affectation" Name="cmiAffectation" />
-                                            <MenuItem Header="Abence/Permission" Name="cmiAbsence" />
+                                            <MenuItem Header="Client" Name="cmiClient" />
+                                            <MenuItem Header="Site" Name="cmiSite" />
                                             <Separator/>
                                             <MenuItem Header="Résumé" Name="cmiResume" />
 
