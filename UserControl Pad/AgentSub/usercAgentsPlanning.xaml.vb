@@ -147,16 +147,15 @@ Public Class usercAgentsPlanning
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
                 Dim activeAgents As Dictionary(Of String, String) =
                     LoadCsvLookup(connection, transaction, "SELECT NomPrenoms, NumMatr FROM agents WHERE Actif = 1", "NomPrenoms", "NomPrenoms", "NumMatr")
-                Dim activePosts As New Dictionary(Of String, KeyValuePair(Of String, String))(StringComparer.OrdinalIgnoreCase)
+                Dim activePosts As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
                 Using command As New SQLiteCommand(
-                    "SELECT Code, Designation, Code || '# ' || Designation AS CodeDesignation, NomSite FROM postes WHERE Actif = 1",
+                    "SELECT Code, Designation, Code || '# ' || Designation AS CodeDesignation FROM postes WHERE Actif = 1",
                     connection,
                     transaction)
                     Using reader As SQLiteDataReader = command.ExecuteReader()
                         While reader.Read()
                             Dim postCode As String = Convert.ToString(reader("Code"))
                             If String.IsNullOrWhiteSpace(postCode) Then Continue While
-                            Dim postSite As String = Convert.ToString(reader("NomSite"))
                             For Each identifier As String In {
                                 postCode,
                                 Convert.ToString(reader("Designation")),
@@ -164,7 +163,7 @@ Public Class usercAgentsPlanning
                             }
                                 Dim normalizedIdentifier As String = NormalizeCsvValue(identifier)
                                 If normalizedIdentifier.Length > 0 AndAlso Not activePosts.ContainsKey(normalizedIdentifier) Then
-                                    activePosts.Add(normalizedIdentifier, New KeyValuePair(Of String, String)(postCode, postSite))
+                                    activePosts.Add(normalizedIdentifier, postCode)
                                 End If
                             Next
                         End While
@@ -186,24 +185,10 @@ Public Class usercAgentsPlanning
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : agent actif introuvable (« " & agentInput & " »).")
                     End If
 
-                    Dim post As KeyValuePair(Of String, String)
-                    If Not activePosts.TryGetValue(postInput, post) Then
+                    Dim postCode As String = Nothing
+                    If Not activePosts.TryGetValue(postInput, postCode) Then
                         Throw New InvalidOperationException("Ligne " & rowNumber & " : poste actif introuvable (« " & postInput & " »).")
                     End If
-                    Dim postCode As String = post.Key
-                    Dim postSite As String = post.Value
-
-                    Using command As New SQLiteCommand(
-                        "SELECT COUNT(*) FROM Affectation WHERE AgentAffect = @agent AND SiteAffect = @site AND DateAffect <= @date AND FinAffect >= @date",
-                        connection,
-                        transaction)
-                        command.Parameters.AddWithValue("@agent", agentName)
-                        command.Parameters.AddWithValue("@site", postSite)
-                        command.Parameters.AddWithValue("@date", planDate.ToString("yyyy-MM-dd"))
-                        If Convert.ToInt32(command.ExecuteScalar()) = 0 Then
-                            Throw New InvalidOperationException("Ligne " & rowNumber & " : « " & agentName & " » n'est pas affecté au site « " & postSite & " » à cette date.")
-                        End If
-                    End Using
 
                     Dim duplicateKey As String = String.Join("|", agentName, planDate.ToString("yyyy-MM-dd"), postCode)
                     If Not seenEntries.Add(duplicateKey) Then
@@ -244,8 +229,8 @@ Public Class usercAgentsPlanning
         LoadPlan12h = False
 
         If cbxSite.SelectedIndex >= 0 And Not is12Hloaded Then
-            If FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() and a.SiteAffect ='" & Apost(cbxSite.SelectedItem) & "' order by a.AgentAffect", CbxNom12H, LocalConnxStr) Then
-                If FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() and (a.SiteAffect like '%g2s%' or a.SiteAffect like '%rond%' ) and  a.SiteAffect not like '%direct%'  and  a.SiteAffect not like '%contr%'  order by a.AgentAffect", CbxNomRemplace12H, LocalConnxStr) Then
+            If FilmyCbx("select NomPrenoms from agents where Actif=1 order by NomPrenoms", CbxNom12H, LocalConnxStr) Then
+                If FilmyCbx("select NomPrenoms from agents where Actif=1 order by NomPrenoms", CbxNomRemplace12H, LocalConnxStr) Then
 
                 End If
                 FilmyCbx("select d.JourRepos from PosteRepos d where d.Actif=1 order by d.Ordre", CbxJrRepos, LocalConnxStr)
@@ -257,7 +242,7 @@ Public Class usercAgentsPlanning
     Function LoadPlan24h() As Boolean
         LoadPlan24h = False
         If cbxSite.SelectedIndex >= 0 And Not is24Hloaded Then
-            If FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() and a.SiteAffect ='" & Apost(cbxSite.SelectedItem) & "' order by a.AgentAffect", CbxNom24H1, LocalConnxStr) And FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() and a.SiteAffect ='" & cbxSite.SelectedItem & "' order by a.AgentAffect", CbxNom24H2, LocalConnxStr) Then
+            If FilmyCbx("select NomPrenoms from agents where Actif=1 order by NomPrenoms", CbxNom24H1, LocalConnxStr) And FilmyCbx("select NomPrenoms from agents where Actif=1 order by NomPrenoms", CbxNom24H2, LocalConnxStr) Then
                 is24Hloaded = True
             Else
                 is24Hloaded = False
@@ -268,7 +253,7 @@ Public Class usercAgentsPlanning
     Function LoadPlanHebdo() As Boolean
         LoadPlanHebdo = False
         If Not isHebdoloaded Then
-            If FilmyCbx("select a.AgentAffect,a.SiteAffect from affectation a where a.FinAffect>=date() order by a.AgentAffect", CbxNomHebdo, LocalConnxStr) Then
+            If FilmyCbx("select NomPrenoms from agents where Actif=1 order by NomPrenoms", CbxNomHebdo, LocalConnxStr) Then
                 dtpDebutHebdo.SelectedDate = DebutDuMois(Today)
                 dtpFinHebdo.SelectedDate = CDate("31/12/" & Today.Year)
                 isHebdoloaded = True
@@ -284,7 +269,7 @@ Public Class usercAgentsPlanning
         LoadPlanSubst = False
         If Not isSubstitloaded Then
             Dim iStrSortant As String = "select p.Agent from  planposte p where p.DatePlan>='" & dtpDebutSubst.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and  p.DatePlan<='" & dtpFinSubst.SelectedDate.Value.ToString("yyyy-MM-dd") & "' group by p.Agent  order by p.Agent"
-            Dim iStrEntrant As String = "select a.AgentAffect as IdPosteCompt from affectation a where a.FinAffect>=date() order by a.AgentAffect"
+            Dim iStrEntrant As String = "select NomPrenoms from agents where Actif=1 order by NomPrenoms"
             Dim iStrPoste As String = "select p.Poste||'# '||po.Designation as IdPosteCompt from  planposte p join postes po on po.Code=p.Poste where p.DatePlan>='" & dtpDebutSubst.SelectedDate.Value.ToString("yyyy-MM-dd") & "' and  p.DatePlan<='" & dtpFinSubst.SelectedDate.Value.ToString("yyyy-MM-dd") & "' group by IdPosteCompt  order by po.Designation"
             If FilmyCbx(iStrSortant, CbxAgentSortant, LocalConnxStr) And FilmyCbx(iStrPoste, CbxPosteRemplace, LocalConnxStr) And FilmyCbx(iStrEntrant, CbxAgentEntrant, LocalConnxStr) Then
                 CbxAgentSortant.Items.Insert(0, "*")
@@ -374,12 +359,9 @@ Public Class usercAgentsPlanning
     Private Sub CbxNomHebdo_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles CbxNomHebdo.SelectionChanged
         Try
             If CbxNomHebdo.SelectedIndex >= 0 Then
-                Dim iSite As String = MyStatValStr("select p.NomSite from affectation a join postes p on a.SiteAffect=p.NomSite  where a.FinAffect>=date() and a.AgentAffect like '" & CbxNomHebdo.SelectedItem & "'  and p.Actif=1 group by a.AgentAffect order by a.AgentAffect", LocalConnxStr)
-                If iSite <> "" Then
-                    filHebdoJour(iSite)
-                Else
-                    ClearHebdoJour()
-                End If
+                filHebdoJour()
+            Else
+                ClearHebdoJour()
             End If
         Catch ex As Exception
             MsgBox(ex.Message)
@@ -396,12 +378,8 @@ Public Class usercAgentsPlanning
         cbxDimanchePst.Items.Clear()
 
     End Sub
-    Sub filHebdoJour(Poste As String)
-        If LCase(Poste).Contains("rondier") Then
-            FilmyCbx("select p.Code||'# '||p.Designation from  postes p where p.Duree not like '%24%'  and p.Actif=1 order by p.Designation", cbxLundiPst, LocalConnxStr)
-            cbxLundiPst.Items.Insert(0, "REPOS")
-        ElseIf Poste <> "" Then
-            FilmyCbx("select p.Code||'# '||p.Designation from  postes p where p.NomSite like '" & Poste & "' and p.Actif=1 order by p.Designation", cbxLundiPst, LocalConnxStr)
+    Sub filHebdoJour()
+        If FilmyCbx("select p.Code||'# '||p.Designation from postes p where p.Actif=1 order by p.Designation", cbxLundiPst, LocalConnxStr) Then
             cbxLundiPst.Items.Insert(0, "REPOS")
         Else
             ClearHebdoJour()

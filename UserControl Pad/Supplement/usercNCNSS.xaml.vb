@@ -71,7 +71,7 @@ Public Class usercNCNSS
         istr += " order by a.Actif desc, a.NomPrenoms "
         Dim agentData As DataTable = LoadDataTable(istr)
         Dgcnss.ItemsSource = agentData.DefaultView
-        ShowTempMsg(istr)
+        'ShowTempMsg(istr)
         UpdateCNSSCounts(agentData, False)
 
         elpStatus.Visibility = Visibility.Collapsed
@@ -207,4 +207,5 @@ Public Class usercNCNSS
         End If
 
     End Sub
+
 End Class
