@@ -419,6 +419,16 @@ usercAgents
 InitializeComponent
 </summary>
 </member>
+<member name="T:Lakey.usercAnniversaires">
+<summary>
+usercAnniversaires
+</summary>
+</member>
+<member name="M:Lakey.usercAnniversaires.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
 <member name="T:Lakey.usercClients">
 <summary>
 usercClients
@@ -495,6 +505,16 @@ WaitFrm
 </summary>
 </member>
 <member name="M:Lakey.WaitFrm.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:Lakey.AnniversaireNotice">
+<summary>
+AnniversaireNotice
+</summary>
+</member>
+<member name="M:Lakey.AnniversaireNotice.InitializeComponent">
 <summary>
 InitializeComponent
 </summary>

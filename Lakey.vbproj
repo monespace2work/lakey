@@ -206,6 +206,7 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules Pad\DbManipulation.vb" />
+    <Compile Include="Modules Pad\AnniversaireService.vb" />
     <Compile Include="Modules Pad\IpTraitement.vb" />
     <Compile Include="Modules Pad\ObjectsManaging.vb" />
     <Compile Include="Modules Pad\Parameters.vb" />
@@ -287,6 +288,9 @@
     <Compile Include="UserControl Pad\usercAgents.xaml.vb">
       <DependentUpon>usercAgents.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControl Pad\usercAnniversaires.xaml.vb">
+      <DependentUpon>usercAnniversaires.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControl Pad\usercClients.xaml.vb">
       <DependentUpon>usercClients.xaml</DependentUpon>
     </Compile>
@@ -311,11 +315,18 @@
     <Compile Include="WaitFrm.xaml.vb">
       <DependentUpon>WaitFrm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms Pad\AnniversaireNotice.xaml.vb">
+      <DependentUpon>AnniversaireNotice.xaml</DependentUpon>
+    </Compile>
     <Page Include="Forms Pad\ReseauSelect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms Pad\TempMsg.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms Pad\AnniversaireNotice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -464,6 +475,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControl Pad\usercAgents.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\usercAnniversaires.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

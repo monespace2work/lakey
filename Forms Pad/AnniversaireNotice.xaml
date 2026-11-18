@@ -1,0 +1,55 @@
+<Window x:Class="AnniversaireNotice"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Anniversaires du jour" Width="470" SizeToContent="Height"
+        MinHeight="220" MaxHeight="600" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        Background="{DynamicResource ThemeContentSurfaceBrush}"
+        Foreground="{DynamicResource ThemeInkBrush}">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+            <TextBlock Text="🎂" FontFamily="Segoe UI Emoji" FontSize="34" Margin="0,0,12,0"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Joyeux anniversaire !" FontSize="22" FontWeight="Bold"
+                           Foreground="{DynamicResource ThemeHeadingBrush}"/>
+                <TextBlock Text="Aujourd'hui, souhaitons une belle journée à nos agents."
+                           TextWrapping="Wrap" Foreground="{DynamicResource ThemeInkBrush}"/>
+            </StackPanel>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" MaxHeight="390" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="icAnniversaires">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{DynamicResource ThemeContentCardBrush}"
+                                BorderBrush="{DynamicResource ThemeContentBorderBrush}" BorderThickness="1"
+                                CornerRadius="6" Padding="10" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding NomPrenoms}" FontSize="15" FontWeight="Bold"
+                                               Foreground="{DynamicResource ThemeHeadingBrush}"/>
+                                    <TextBlock Text="{Binding DateNaiss, StringFormat={}{0:dd MMMM}}"
+                                               Foreground="{DynamicResource ThemeInputDisabledTextBrush}"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="J'ai vu" Tag="{Binding RefAgent}"
+                                        Padding="12,5" Margin="10,0,0,0" Click="MarkSeen_Click"
+                                        Background="{DynamicResource ThemeSuccessButtonBrush}"
+                                        Foreground="{DynamicResource ThemeSuccessButtonTextBrush}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Button Grid.Row="2" Content="Fermer" HorizontalAlignment="Right"
+                Padding="16,6" Margin="0,10,0,0" Click="Close_Click"/>
+    </Grid>
+</Window>

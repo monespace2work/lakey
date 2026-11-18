@@ -1,0 +1,57 @@
+<UserControl x:Class="usercAnniversaires"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="420">
+    <Grid Background="{DynamicResource ThemeContentSurfaceBrush}">
+        <Border Background="{DynamicResource ThemeContentCardBrush}"
+                BorderBrush="{DynamicResource ThemeContentBorderBrush}"
+                BorderThickness="1" CornerRadius="8" Padding="18">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Anniversaires des agents"
+                               FontSize="23" FontWeight="Bold"
+                               Foreground="{DynamicResource ThemeHeadingBrush}"/>
+                    <TextBlock Text="Consultez les dates à venir, le mois précédent, ou recherchez un agent par nom ou matricule."
+                               Margin="0,5,0,14" TextWrapping="Wrap"
+                               Foreground="{DynamicResource ThemeInkBrush}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <RadioButton x:Name="rdoSemaine" Content="Dans 1 semaine"
+                                     IsChecked="True" Checked="Period_Checked" Margin="0,0,18,0"/>
+                        <RadioButton x:Name="rdoMois" Content="Dans 1 mois"
+                                     Checked="Period_Checked" Margin="0,0,18,0"/>
+                        <RadioButton x:Name="rdoMoisPrecedent" Content="Mois précédent"
+                                     Checked="Period_Checked"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Rechercher un agent :" VerticalAlignment="Center"
+                                   Margin="0,0,8,0" Foreground="{DynamicResource ThemeInkBrush}"/>
+                        <TextBox x:Name="tbxRecherche" Width="260" MaxWidth="420"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip="Saisir un nom, un matricule ou une ville de résidence"
+                                 TextChanged="Search_TextChanged"
+                                 KeyDown="Search_KeyDown"/>
+                    </StackPanel>
+                </StackPanel>
+                <DataGrid x:Name="dgAnniversaires" Grid.Row="2" AutoGenerateColumns="False"
+                          IsReadOnly="True" CanUserAddRows="False" HeadersVisibility="Column"
+                          Background="{DynamicResource ThemeContentCardBrush}"
+                          Foreground="{DynamicResource ThemeInkBrush}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Agent" Binding="{Binding NomPrenoms}" Width="2*"/>
+                        <DataGridTextColumn Header="Matricule" Binding="{Binding NumMatr}" Width="*"/>
+                        <DataGridTextColumn Header="Ville de résidence" Binding="{Binding VilleResidence}" Width="*"/>
+                        <DataGridTextColumn Header="Date" Binding="{Binding DateAnniversaire, StringFormat={}{0:dd/MM/yyyy}}" Width="*"/>
+                        <DataGridTextColumn Header="Échéance" Binding="{Binding Echeance}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

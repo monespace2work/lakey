@@ -204,6 +204,27 @@
                                 <ColumnDefinition MinWidth="90"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Right" MinHeight="35">
+                                <Button x:Name="btnBirthdayIndicator" Visibility="Collapsed"
+                                        Margin="6,0" Padding="10,4" MinWidth="155" MinHeight="40"
+                                        VerticalAlignment="Center" Background="#FFC62828"
+                                        Foreground="White" BorderBrush="#FFFFD54F" BorderThickness="2"
+                                        FontWeight="Bold" FontSize="12"
+                                        Click="btnBirthdayIndicator_Click"
+                                        ToolTip="Anniversaire(s) non vu(s) aujourd'hui — cliquer pour ouvrir le rappel.">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="🎂" FontFamily="Segoe UI Emoji" FontSize="18"
+                                                   Margin="0,0,6,0" Foreground="White"/>
+                                        <TextBlock Text="ANNIVERSAIRE" VerticalAlignment="Center"
+                                                   Foreground="White"/>
+                                        <Border Background="#FFFFF0C2" CornerRadius="10"
+                                                MinWidth="22" Height="22" Margin="7,0,0,0"
+                                                Padding="4,0">
+                                            <TextBlock x:Name="tbkBirthdayIndicatorCount" Text="0"
+                                                       Foreground="#FF5B2100" FontWeight="ExtraBold"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Button>
                                 <TextBlock x:Name="tbkSteName" Text="Ma Société" Margin="5,0" VerticalAlignment="Center" FontSize="16" TextDecorations="{x:Null}" Foreground="{DynamicResource ThemeHeaderTextBrush}" Background="#7F000000" Padding="5,0" TextWrapping="Wrap"/>
                                 <TextBlock x:Name="tbModeConnexion" Text="MODE LOCAL" Visibility="Collapsed"
                                            Margin="5,0" Padding="7,4" VerticalAlignment="Center"
@@ -308,6 +329,7 @@
                         </TextBlock>
                         <StackPanel x:Name="stpLeftPanelContent">
                         <Button x:Name="btnTBord" Content="Tableau de bord" ToolTip="Ctrl+Alt+T&#10;Afficher les indicateurs, graphiques et listes de suivi." ToolTipService.InitialShowDelay="350" ToolTipService.ShowDuration="10000" ToolTipService.ShowOnDisabled="True" Height="40" FontSize="14" FontWeight="ExtraBold" Foreground="{DynamicResource ThemeNavyBrush}"  Background="{DynamicResource ThemeCardBrush}" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
+                        <Button x:Name="btnAnniversaires" Content="🎂  Anniversaires" Style="{StaticResource btnStandars}" Click="btnAnniversaires_Click" Height="40" FontSize="14" FontWeight="Bold"/>
                         <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="{DynamicResource ThemeCardBrush}" Height="40" FontSize="14" FontWeight="Bold"/>
                         <Button x:Name="btnTraitement"  Content="Traitements"  Style="{StaticResource  btnStandars}" Click="btnTraitement_Click"  Height="40" FontWeight="Bold" FontSize="14"/>
                         <Button x:Name="btnClient"  Content="Clients" Style="{StaticResource  btnStandars}" Click="btnClient_Click"  Height="40" FontSize="14" FontWeight="Bold"/>

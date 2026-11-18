@@ -23,6 +23,12 @@ Class MainWindow
     Private ReadOnly userControlLoadingTimer As New DispatcherTimer With {
         .Interval = TimeSpan.FromMilliseconds(500)
     }
+    Private ReadOnly birthdayDateTimer As New DispatcherTimer With {
+        .Interval = TimeSpan.FromMinutes(1)
+    }
+    Private lastBirthdayCheckDate As Date = Date.MinValue
+    Private birthdayNoticeWindow As AnniversaireNotice
+    Private birthdayErrorShown As Boolean
     Private userControlLoadingPending As Boolean
     Private loadingOperationCount As Integer
     Private isSwitchingUser As Boolean
@@ -37,6 +43,7 @@ Class MainWindow
         contentDescriptor.AddValueChanged(cctrlCentral, AddressOf CentralContentChanged)
 
         AddHandler userControlLoadingTimer.Tick, AddressOf UserControlLoadingTimer_Tick
+        AddHandler birthdayDateTimer.Tick, AddressOf BirthdayDateTimer_Tick
 
         ' Ajoutez une initialisation quelconque après l'appel InitializeComponent().
     End Sub
@@ -321,7 +328,55 @@ Class MainWindow
             InitializeGlobal()
         End Sub,
         "Ouverture de la fenêtre principale...")
+        lastBirthdayCheckDate = Date.Today
+        CheckBirthdayAlerts(True)
+        birthdayDateTimer.Start()
         'If Not SessLogin() Then Me.Close()
+    End Sub
+
+    Private Sub BirthdayDateTimer_Tick(sender As Object, e As EventArgs)
+        If Date.Today = lastBirthdayCheckDate Then Return
+        lastBirthdayCheckDate = Date.Today
+        If birthdayNoticeWindow IsNot Nothing Then birthdayNoticeWindow.Close()
+        CheckBirthdayAlerts(True)
+    End Sub
+
+    Private Async Sub CheckBirthdayAlerts(showNotice As Boolean, Optional playSound As Boolean = True)
+        Try
+            Dim connectionString As String = $"Data Source={DbPath};Version=3;"
+            Dim todaysBirthdays As List(Of AnniversaireAgent) =
+                AnniversaireService.GetAnniversairesDuJourNonVus(connectionString)
+            tbkBirthdayIndicatorCount.Text = todaysBirthdays.Count.ToString()
+            btnBirthdayIndicator.Visibility = If(todaysBirthdays.Count > 0, Visibility.Visible, Visibility.Collapsed)
+
+            If showNotice AndAlso todaysBirthdays.Count > 0 AndAlso birthdayNoticeWindow Is Nothing Then
+                birthdayNoticeWindow = New AnniversaireNotice(
+                    todaysBirthdays,
+                    connectionString,
+                    Sub() CheckBirthdayAlerts(False))
+                AddHandler birthdayNoticeWindow.Closed,
+                    Sub()
+                        birthdayNoticeWindow = Nothing
+                    End Sub
+                birthdayNoticeWindow.Owner = Me
+                birthdayNoticeWindow.Show()
+                If playSound Then
+                    Try
+                        Await AnniversaireService.JouerJingleAnniversaireAsync()
+                    Catch ex As Exception
+                        MessageBox.Show("Le jingle d'anniversaire n'a pas pu être joué : " & ex.Message,
+                                        "Anniversaires", MessageBoxButton.OK, MessageBoxImage.Warning)
+                    End Try
+                End If
+            End If
+            birthdayErrorShown = False
+        Catch ex As Exception
+            If Not birthdayErrorShown Then
+                birthdayErrorShown = True
+                MessageBox.Show("Le suivi des anniversaires n'a pas pu être actualisé : " & ex.Message,
+                                "Anniversaires", MessageBoxButton.OK, MessageBoxImage.Error)
+            End If
+        End Try
     End Sub
 
     Private Sub CentralContentChanged(sender As Object, e As EventArgs)
@@ -921,6 +976,7 @@ Class MainWindow
         btnSupplement.Height = 40
         btnSeting.Height = 40
         btnTBord.Height = 30
+        btnAnniversaires.Height = 40
 
         btnTraitement.IsEnabled = True
         btnAgents.IsEnabled = True
@@ -929,6 +985,7 @@ Class MainWindow
         btnSupplement.IsEnabled = True
         btnSeting.IsEnabled = True
         btnTBord.IsEnabled = True
+        btnAnniversaires.IsEnabled = True
 
         btnTraitement.FontWeight = FontWeights.Normal
         btnAgents.FontWeight = FontWeights.Normal
@@ -937,6 +994,7 @@ Class MainWindow
         btnSupplement.FontWeight = FontWeights.Normal
         btnSeting.FontWeight = FontWeights.Normal
         btnTBord.FontWeight = FontWeights.Normal
+        btnAnniversaires.FontWeight = FontWeights.Normal
 
         btnTraitement.ClearValue(Button.BackgroundProperty)
         btnAgents.ClearValue(Button.BackgroundProperty)
@@ -945,6 +1003,7 @@ Class MainWindow
         btnSupplement.ClearValue(Button.BackgroundProperty)
         btnSeting.ClearValue(Button.BackgroundProperty)
         btnTBord.ClearValue(Button.BackgroundProperty)
+        btnAnniversaires.ClearValue(Button.BackgroundProperty)
 
     End Sub
 
@@ -1026,6 +1085,22 @@ Class MainWindow
                 SelecStp(stpSupplement)
                 SelectPrincipalBtn(btnSupplement)
             End Sub)
+    End Sub
+
+    Private Async Sub btnAnniversaires_Click(sender As Object, e As RoutedEventArgs)
+        Await RunWithLoadingAsync(
+            Sub()
+                cctrlCentral.Content = New usercAnniversaires
+                SelectPrincipalBtn(btnAnniversaires)
+            End Sub)
+    End Sub
+
+    Private Sub btnBirthdayIndicator_Click(sender As Object, e As RoutedEventArgs)
+        If birthdayNoticeWindow IsNot Nothing Then
+            birthdayNoticeWindow.Activate()
+            Return
+        End If
+        CheckBirthdayAlerts(True, False)
     End Sub
 
     Private Async Sub btnSeting_Click(sender As Object, e As RoutedEventArgs) Handles btnSeting.Click
