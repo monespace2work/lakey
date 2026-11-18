@@ -46,7 +46,7 @@
                         <Run Text="Tableau de bord"/>
                     </Paragraph>
                     <Paragraph Margin="0,0,0,6">
-                        <Run Text="Consultez les évolutions d'effectifs, les informations clients, les agents et sites actifs, ainsi que les contrats arrivant à échéance et d'autres listes de suivi."/>
+                        <Run Text="Consultez les évolutions d'effectifs, les informations clients, les agents et sites actifs, ainsi que les contrats arrivant à échéance et d'autres listes de suivi. Survolez un point, une barre ou une part de graphique pour afficher une infobulle contrastée avec le nom de la série et la valeur. Les sections « Détails » ouvrent les tableaux associés."/>
                     </Paragraph>
                     <Paragraph FontSize="13" FontWeight="Bold" Foreground="#244F83" Margin="0,5,0,2">
                         <Run Text="Agents et traitements"/>
@@ -70,7 +70,47 @@
                         <Run Text="Raccourcis et recherches"/>
                     </Paragraph>
                     <Paragraph Margin="0,0,0,6">
-                        <Run Text="Les raccourcis en haut de la fenêtre ouvrent rapidement les fonctions Agents et Clients. Les champs de recherche en bas filtrent les postes du jour, les agents et les contrats ; saisissez un terme puis appuyez sur Entrée."/>
+                        <Run Text="Les boutons de raccourci en haut de la fenêtre ouvrent rapidement les fonctions Agents et Clients. Les champs de recherche filtrent les listes ; saisissez un terme puis appuyez sur Entrée."/>
+                    </Paragraph>
+                    <Paragraph FontSize="13" FontWeight="Bold" Foreground="#244F83" Margin="0,5,0,2">
+                        <Run Text="Raccourcis clavier"/>
+                    </Paragraph>
+                    <Paragraph Margin="0,0,0,6">
+                        <Run Text="Survolez un bouton de raccourci pour afficher la combinaison de touches. Maintenez les touches de modification indiquées (Ctrl, Maj ou Alt), puis appuyez sur la lettre. Les raccourcis restent soumis aux droits de votre compte."/>
+                    </Paragraph>
+                    <Paragraph FontWeight="Bold" Foreground="#315B91" Margin="0,2,0,2">
+                        <Run Text="Tableau de bord et actions"/>
+                    </Paragraph>
+                    <Paragraph Margin="0,0,0,6">
+                        <Run Text="Tableau de bord : Ctrl+Alt+T"/><LineBreak/>
+                        <Run Text="Actualiser : Ctrl+Maj+A"/>
+                    </Paragraph>
+                    <Paragraph FontWeight="Bold" Foreground="#315B91" Margin="0,2,0,2">
+                        <Run Text="Agents"/>
+                    </Paragraph>
+                    <Paragraph Margin="0,0,0,6">
+                        <Run Text="Entrées : Ctrl+Maj+E"/><LineBreak/>
+                        <Run Text="Contrat : Ctrl+Maj+R"/><LineBreak/>
+                        <Run Text="Affectation : Ctrl+Maj+F"/><LineBreak/>
+                        <Run Text="Planning : Ctrl+Maj+L"/><LineBreak/>
+                        <Run Text="Absences : Ctrl+Maj+N"/><LineBreak/>
+                        <Run Text="Permissions : Ctrl+Maj+I"/><LineBreak/>
+                        <Run Text="Heures supplémentaires : Ctrl+Maj+H"/><LineBreak/>
+                        <Run Text="Point Congés : Ctrl+Maj+P"/><LineBreak/>
+                        <Run Text="Sortie : Ctrl+Maj+O"/>
+                    </Paragraph>
+                    <Paragraph FontWeight="Bold" Foreground="#315B91" Margin="0,2,0,2">
+                        <Run Text="Clients"/>
+                    </Paragraph>
+                    <Paragraph Margin="0,0,0,6">
+                        <Run Text="Contrat : Ctrl+Maj+C"/><LineBreak/>
+                        <Run Text="Site : Ctrl+Maj+T"/><LineBreak/>
+                        <Run Text="Poste : Ctrl+Maj+S"/><LineBreak/>
+                        <Run Text="État : Ctrl+Maj+V"/><LineBreak/>
+                        <Run Text="Agents affectés : Ctrl+Maj+G"/>
+                    </Paragraph>
+                    <Paragraph Margin="0,0,0,10">
+                        <Run Text="Ctrl+Maj+A reste réservé à Actualiser. Le raccourci d'accès à État est donc Ctrl+Maj+V. Les raccourcis Absences et Permissions ouvrent la vue commune Absences/Permissions."/>
                     </Paragraph>
                     <Paragraph FontSize="16" FontWeight="Bold" Foreground="#0B2440" Margin="0,8,0,6">
                         <Run Text="Exporter ce guide en PDF"/>

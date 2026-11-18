@@ -7,6 +7,35 @@
         mc:Ignorable="d"
         Title="Lakey" Height="850" Width="1440" MinHeight="620" MinWidth="980" WindowStartupLocation="CenterScreen" WindowState="Maximized" Loaded="Window_Loaded" PreviewKeyDown="Window_KeyDown" Background="{DynamicResource ThemeSurfaceBrush}" FontFamily="Segoe UI" UseLayoutRounding="True" SnapsToDevicePixels="True" Icon="/Lakey;component/MyIco.ico">
     <Window.Resources>
+        <Style TargetType="{x:Type ToolTip}">
+            <Setter Property="Background" Value="#FF0B1630"/>
+            <Setter Property="Foreground" Value="#FFFFFFFF"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="HasDropShadow" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToolTip}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="QuickAccessButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -16,6 +45,9 @@
             <Setter Property="MinHeight" Value="30"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="2,2"/>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="350"/>
+            <Setter Property="ToolTipService.ShowDuration" Value="10000"/>
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
             <Style.Triggers>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Opacity" Value="0.82"/>
@@ -202,14 +234,14 @@
                                           FontSize="13" FontWeight="Bold" Padding="2,2">
                                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                                         <StackPanel Orientation="Horizontal">
-                                            <Button x:Name="btnRacEntreeAg" Content="Entrées" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacContratAg" Content="Contrat" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacAffectationAg" Content="Affectation" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacPlanningAg" Content="Planning" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacAbsenceAg" Content="Absence/Permission/Congé" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacHeureSupAg" Content="HeuresSup" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacCalCong" Content="Point - Congés" Style="{StaticResource CongesQuickAccessButton}" Background="#FF170A3A" Foreground="White"/>
-                                            <Button x:Name="btnRacSortieAg" Content="Sortie" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            <Button x:Name="btnRacEntreeAg" Content="Entrées" ToolTip="Ctrl+Maj+E" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            <Button x:Name="btnRacContratAg" Content="Contrat" ToolTip="Ctrl+Maj+R" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            <Button x:Name="btnRacAffectationAg" Content="Affectation" ToolTip="Ctrl+Maj+F" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            <Button x:Name="btnRacPlanningAg" Content="Planning" ToolTip="Ctrl+Maj+L" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            <Button x:Name="btnRacAbsenceAg" Content="Absence/Permission/Congé" ToolTip="Absences : Ctrl+Maj+N&#10;Permissions : Ctrl+Maj+I" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            <Button x:Name="btnRacHeureSupAg" Content="HeuresSup" ToolTip="Ctrl+Maj+H" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            <Button x:Name="btnRacCalCong" Content="Point - Congés" ToolTip="Ctrl+Maj+P" Style="{StaticResource CongesQuickAccessButton}" Background="#FF170A3A" Foreground="White"/>
+                                            <Button x:Name="btnRacSortieAg" Content="Sortie" ToolTip="Ctrl+Maj+O" Style="{StaticResource AgentQuickAccessButton}"/>
                                         </StackPanel>
                                     </ScrollViewer>
                                 </Expander>
@@ -224,11 +256,11 @@
                                           FontSize="13" FontWeight="Bold" Padding="2,2">
                                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                                         <StackPanel Orientation="Horizontal">
-                                            <Button x:Name="btnRacContratCl" Content="Contrat" Style="{StaticResource ClientQuickAccessButton}"/>
-                                            <Button x:Name="btnRacSiteCl" Content="Sites" Style="{StaticResource ClientQuickAccessButton}"/>
-                                            <Button x:Name="btnRacPosteCl" Content="Postes" Style="{StaticResource ClientQuickAccessButton}"/>
-                                            <Button x:Name="btnRacEtatCl" Content="Etat" Style="{StaticResource ClientQuickAccessButton}"/>
-                                            <Button x:Name="btnRacAgentListeCl" Content="Agents affect." Style="{StaticResource ClientQuickAccessButton}"/>
+                                            <Button x:Name="btnRacContratCl" Content="Contrat" ToolTip="Ctrl+Maj+C" Style="{StaticResource ClientQuickAccessButton}"/>
+                                            <Button x:Name="btnRacSiteCl" Content="Sites" ToolTip="Ctrl+Maj+T" Style="{StaticResource ClientQuickAccessButton}"/>
+                                            <Button x:Name="btnRacPosteCl" Content="Postes" ToolTip="Ctrl+Maj+S" Style="{StaticResource ClientQuickAccessButton}"/>
+                                            <Button x:Name="btnRacEtatCl" Content="Etat" ToolTip="Ctrl+Maj+V" Style="{StaticResource ClientQuickAccessButton}"/>
+                                            <Button x:Name="btnRacAgentListeCl" Content="Agents affect." ToolTip="Ctrl+Maj+G" Style="{StaticResource ClientQuickAccessButton}"/>
                                         </StackPanel>
                                     </ScrollViewer>
                                 </Expander>
@@ -275,7 +307,7 @@
                             </TextBlock.LayoutTransform>
                         </TextBlock>
                         <StackPanel x:Name="stpLeftPanelContent">
-                        <Button x:Name="btnTBord" Content="Tableau de bord" Height="40" FontSize="14" FontWeight="ExtraBold" Foreground="{DynamicResource ThemeNavyBrush}"  Background="{DynamicResource ThemeCardBrush}" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
+                        <Button x:Name="btnTBord" Content="Tableau de bord" ToolTip="Ctrl+Alt+T&#10;Afficher les indicateurs, graphiques et listes de suivi." ToolTipService.InitialShowDelay="350" ToolTipService.ShowDuration="10000" ToolTipService.ShowOnDisabled="True" Height="40" FontSize="14" FontWeight="ExtraBold" Foreground="{DynamicResource ThemeNavyBrush}"  Background="{DynamicResource ThemeCardBrush}" Style="{StaticResource  btnStandars}" Click="btnTBord_Click"/>
                         <Button x:Name="btnAgents"  Content="Agents" Style="{StaticResource  btnStandars}" Click="btnAgents_Click" Background="{DynamicResource ThemeCardBrush}" Height="40" FontSize="14" FontWeight="Bold"/>
                         <Button x:Name="btnTraitement"  Content="Traitements"  Style="{StaticResource  btnStandars}" Click="btnTraitement_Click"  Height="40" FontWeight="Bold" FontSize="14"/>
                         <Button x:Name="btnClient"  Content="Clients" Style="{StaticResource  btnStandars}" Click="btnClient_Click"  Height="40" FontSize="14" FontWeight="Bold"/>
@@ -344,7 +376,7 @@
                     </TextBlock>
                     <StackPanel x:Name="stpRightPanelContent">
                     <Ellipse x:Name="elpsLoading" Width="10" Height="10" Fill="Orange" Visibility="Collapsed"/>
-                    <Button x:Name="btnRefresh" Content="ACTUALISER" Background="{DynamicResource ThemeAccentBrush}" Foreground="{DynamicResource ThemeNavyBrush}" Margin="10,5,10,7"/>
+                    <Button x:Name="btnRefresh" Content="ACTUALISER" ToolTip="Ctrl+Maj+A&#10;Réinitialiser les données de planning puis actualiser l'application. Une confirmation sera demandée." ToolTipService.InitialShowDelay="350" ToolTipService.ShowDuration="10000" ToolTipService.ShowOnDisabled="True" Background="{DynamicResource ThemeAccentBrush}" Foreground="{DynamicResource ThemeNavyBrush}" Margin="10,5,10,7"/>
                     <Separator/>
                     <Button x:Name="btnCalCong" Visibility="Collapsed" Content="Point - Congés" Style="{StaticResource btnSousStand}" Background="#FF557E94" BorderBrush="White" BorderThickness="2" Foreground="White" Margin="10,3"/>
                     <StackPanel x:Name="stpTBord" />

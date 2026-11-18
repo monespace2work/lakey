@@ -7,6 +7,22 @@
              xmlns:local="clr-namespace:Lakey"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="DashboardChartTooltipStyle" TargetType="{x:Type lvc:DefaultTooltip}">
+            <Setter Property="Background" Value="{DynamicResource ThemeNavyBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="BulletSize" Value="12"/>
+            <Setter Property="ShowTitle" Value="True"/>
+            <Setter Property="ShowSeries" Value="True"/>
+        </Style>
+    </UserControl.Resources>
     <Grid Background="{DynamicResource ThemeContentSurfaceBrush}">
 
         <Border BorderBrush="{DynamicResource ThemeContentBorderBrush}" BorderThickness="1" Background="{DynamicResource ThemeContentSurfaceBrush}">
@@ -79,17 +95,20 @@
                                     <StackPanel Margin="5" Background="{DynamicResource ThemeContentCardBrush}" >
                                         <TextBlock Text="Évolution des effectifs" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="18" FontWeight="Bold"/>
                                         <!-- Graphique avec LiveCharts -->
-                                        <lvc:CartesianChart Grid.Row="1" Name="chartVentes" Margin="5" Height="120" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartVentes" Margin="5" Height="200" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                            <lvc:CartesianChart.DataTooltip>
+                                                <lvc:DefaultTooltip Style="{StaticResource DashboardChartTooltipStyle}"/>
+                                            </lvc:CartesianChart.DataTooltip>
                                             <lvc:CartesianChart.Series>
                                                 <lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}" Stroke="{DynamicResource ThemeHeaderBrush}" Fill="Transparent" PointGeometrySize="8"/>
                                                 <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
                                                 <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
                                             </lvc:CartesianChart.Series>
                                             <lvc:CartesianChart.AxisX>
-                                                <lvc:Axis Title="Mois" Labels="{Binding MoisLabels}" />
+                                                <lvc:Axis Title="Mois" Labels="{Binding MoisLabels}" FontSize="11" Foreground="{DynamicResource ThemeChartsForegroundBrush}" />
                                             </lvc:CartesianChart.AxisX>
                                             <lvc:CartesianChart.AxisY >
-                                                <lvc:Axis Title="Nombre" MinValue="120" MaxValue="150">
+                                                <lvc:Axis Title="Nombre" MinValue="120" MaxValue="150" FontSize="11" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
 
                                                 </lvc:Axis>
                                             </lvc:CartesianChart.AxisY>
@@ -99,15 +118,18 @@
                                         </Expander>
                                         <Expander Header="Tranche d'âge (diagramme)" IsExpanded="False" FontWeight="Bold" Background="{DynamicResource ThemeAccentSoftBrush}" Foreground="{DynamicResource ThemeInkBrush}" >
                                             <StackPanel>
-                                            <lvc:CartesianChart Grid.Row="1" Name="chartTAges" Margin="5" Height="190" Foreground="{DynamicResource ThemeChartsForegroundBrush}" Background="{DynamicResource ThemeChartsBackgroundBrush}">
+                                            <lvc:CartesianChart Grid.Row="1" Name="chartTAges" Margin="5" Height="220" Foreground="{DynamicResource ThemeChartsForegroundBrush}" Background="#FF0B1630">
+                                                    <lvc:CartesianChart.DataTooltip>
+                                                        <lvc:DefaultTooltip Style="{StaticResource DashboardChartTooltipStyle}"/>
+                                                    </lvc:CartesianChart.DataTooltip>
                                                     <lvc:CartesianChart.Series >
-                                                        <lvc:ColumnSeries Title="Nombre" Values="{Binding NbTrancheSeries}" Fill="{DynamicResource ThemeHeaderBrush}" />
+                                                        <lvc:ColumnSeries Title="Nombre" Values="{Binding NbTrancheSeries}" Fill="{DynamicResource ThemeHeaderBrush}" DataLabels="True" />
                                                 </lvc:CartesianChart.Series>
                                                 <lvc:CartesianChart.AxisX>
-                                                        <lvc:Axis Title="Age" Labels="{Binding AgesLabels}" />
+                                                        <lvc:Axis Title="Âge" Labels="{Binding AgesLabels}" FontSize="11" Foreground="{DynamicResource ThemeChartsForegroundBrush}" />
                                                 </lvc:CartesianChart.AxisX>
                                                 <lvc:CartesianChart.AxisY >
-                                                    <lvc:Axis Title="Nombre" MinValue="15" MaxValue="70">
+                                                    <lvc:Axis Title="Nombre" MinValue="15" MaxValue="70" FontSize="11" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
 
                                                     </lvc:Axis>
                                                 </lvc:CartesianChart.AxisY>
@@ -123,32 +145,38 @@
                             <Border Background="{DynamicResource ThemeContentCardBrush}" Grid.Column="1" BorderBrush="{DynamicResource ThemeContentBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
                                 <StackPanel Margin="5,10,5,5">
                                     <TextBlock Text="Informations clients" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="18" FontWeight="Bold"/>
-                                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                        <StackPanel Orientation="Horizontal">
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  >
-                                                <StackPanel >
-                                                    <lvc:PieChart Name="PiechartClientType" Margin="5,0" MinWidth="138" MinHeight="138" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}"/>
-                                                    <TextBlock Text="client / type" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeInkBrush}"/>
-                                                </StackPanel>
-                                                <Expander Header="Détails" IsExpanded="False" Foreground="{DynamicResource ThemeInkBrush}">
-                                                    <DataGrid x:Name="dgClientNbAgent" AutoGenerateColumns="True"/>
-                                                </Expander>
-
-                                            </StackPanel>
-                                            <Expander  Header="+Villes" IsExpanded="True" Margin="5,0,0,0" >
+                                    <Grid Margin="0,5,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" MinWidth="165"/>
+                                            <ColumnDefinition Width="1.25*" MinWidth="205"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                            <lvc:PieChart Name="PiechartClientType" Margin="5" MinWidth="160" MinHeight="175" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                                <lvc:PieChart.DataTooltip>
+                                                    <lvc:DefaultTooltip Style="{StaticResource DashboardChartTooltipStyle}"/>
+                                                </lvc:PieChart.DataTooltip>
+                                            </lvc:PieChart>
+                                            <TextBlock Text="Répartition des clients" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeInkBrush}" Margin="0,0,0,5"/>
+                                            <Expander Header="Détails" IsExpanded="False" Foreground="{DynamicResource ThemeInkBrush}">
+                                                <DataGrid x:Name="dgClientNbAgent" AutoGenerateColumns="True"/>
+                                            </Expander>
+                                        </StackPanel>
+                                        <Expander Grid.Column="1" Header="Sites par ville" IsExpanded="True" Margin="5,0,0,0" Foreground="{DynamicResource ThemeInkBrush}">
                                                 <StackPanel Margin="0,0,5,5" Background="{DynamicResource ThemeContentSurfaceBrush}" >
-                                                    <!-- Diagramme à secteurs (PieChart) -->
-                                                    <lvc:CartesianChart Grid.Row="1" Name="chartClientVile" Margin="5" Height="116" MinWidth="238" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                                    <lvc:CartesianChart Grid.Row="1" Name="chartClientVile" Margin="5" Height="200" MinWidth="205" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                                        <lvc:CartesianChart.DataTooltip>
+                                                            <lvc:DefaultTooltip Style="{StaticResource DashboardChartTooltipStyle}"/>
+                                                        </lvc:CartesianChart.DataTooltip>
                                                         <lvc:CartesianChart.Series>
                                                             <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbSiteSeries}" Stroke="{DynamicResource ThemeHeaderBrush}" Fill="{DynamicResource ThemeHeaderBrush}" />
                                                             <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
                                                             <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
                                                         </lvc:CartesianChart.Series>
                                                         <lvc:CartesianChart.AxisX>
-                                                            <lvc:Axis Title="Localisation des sites" Labels="{Binding VilleLabels}" />
+                                                            <lvc:Axis Title="Ville" Labels="{Binding VilleLabels}" FontSize="11" Foreground="{DynamicResource ThemeChartsForegroundBrush}" />
                                                         </lvc:CartesianChart.AxisX>
                                                         <lvc:CartesianChart.AxisY >
-                                                            <lvc:Axis Title="Nombre" MinValue="1" MaxValue="100">
+                                                            <lvc:Axis Title="Sites">
 
                                                             </lvc:Axis>
                                                         </lvc:CartesianChart.AxisY>
@@ -157,33 +185,34 @@
                                                         <DataGrid x:Name="dgSiteVile" AutoGenerateColumns="True"/>
                                                     </Expander>
                                                 </StackPanel>
-                                            </Expander>
-                                        </StackPanel>
-                                    </ScrollViewer>
+                                        </Expander>
+                                    </Grid>
                                 </StackPanel>
                             </Border>
                             <Border x:Name="brdT11" Background="{DynamicResource ThemeContentCardBrush}" Grid.Column="2" BorderBrush="{DynamicResource ThemeContentBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="5">
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="55"/>
+                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                    <Border Grid.Row="0" VerticalAlignment="Bottom">
+                                    <Border Grid.Row="0" VerticalAlignment="Bottom" Margin="0,5,0,8">
                                         <TextBlock Text="Type de clients" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeHeadingBrush}" FontWeight="Bold"/>
                                     </Border>
-                                    <StackPanel Background="{DynamicResource ThemeContentCardBrush}" Grid.Row="1">
-                                        <!-- Diagramme à secteurs (PieChart) -->
-                                        <lvc:CartesianChart Grid.Row="1" Name="chartClientType" Margin="5" Height="116" MinWidth="138" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                    <StackPanel Background="{DynamicResource ThemeContentCardBrush}" Grid.Row="1" VerticalAlignment="Top">
+                                        <lvc:CartesianChart Grid.Row="1" Name="chartClientType" Margin="5" Height="200" MinWidth="190" Background="#FF0B1630" Foreground="{DynamicResource ThemeChartsForegroundBrush}">
+                                            <lvc:CartesianChart.DataTooltip>
+                                                <lvc:DefaultTooltip Style="{StaticResource DashboardChartTooltipStyle}"/>
+                                            </lvc:CartesianChart.DataTooltip>
                                             <lvc:CartesianChart.Series>
-                                                <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbTypeSiteSeries}" Fill="{DynamicResource ThemeHeaderBrush}" />
+                                                <lvc:ColumnSeries Title="Nombre de sites" Values="{Binding NbTypeSiteSeries}" Fill="{DynamicResource ThemeHeaderBrush}" DataLabels="True" />
                                                 <!--lvc:LineSeries Title="Effectif" Values="{Binding NbSeries}"   Stroke="#FF17336E" Fill="Transparent" PointGeometrySize="8"/-->
                                                 <!--lvc:PieChart   Title="Sortie" Values="{Binding SotieSeries}"/-->
                                             </lvc:CartesianChart.Series>
                                             <lvc:CartesianChart.AxisX>
-                                                <lvc:Axis Title="Type de site " Labels="{Binding TypeLabels}" />
+                                                <lvc:Axis Title="Type de site" Labels="{Binding TypeLabels}" FontSize="11" Foreground="{DynamicResource ThemeChartsForegroundBrush}" />
                                             </lvc:CartesianChart.AxisX>
                                             <lvc:CartesianChart.AxisY >
-                                                <lvc:Axis Title="Nombre" MinValue="1" MaxValue="50">
+                                                <lvc:Axis Title="Nombre">
 
                                                 </lvc:Axis>
                                             </lvc:CartesianChart.AxisY>

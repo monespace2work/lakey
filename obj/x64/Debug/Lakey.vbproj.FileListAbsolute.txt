@@ -145,152 +145,6 @@ C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.xml
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.pdb
 C:\Users\Public\TRACES\dev\Lakey\bin\x64\Debug\desktop.ini
 C:\Users\Public\TRACES\dev\Lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
-E:\iclones\lakey\bin\x64\Debug\desktop.ini
-E:\iclones\lakey\bin\x64\Debug\sqlite3.dll
-E:\iclones\lakey\bin\x64\Debug\Lakey.exe.config
-E:\iclones\lakey\bin\x64\Debug\Lakey.exe
-E:\iclones\lakey\bin\x64\Debug\Lakey.pdb
-E:\iclones\lakey\bin\x64\Debug\Lakey.xml
-E:\iclones\lakey\bin\x64\Debug\ClosedXML.dll
-E:\iclones\lakey\bin\x64\Debug\ClosedXML.Parser.dll
-E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.dll
-E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.Framework.dll
-E:\iclones\lakey\bin\x64\Debug\EntityFramework.dll
-E:\iclones\lakey\bin\x64\Debug\EntityFramework.SqlServer.dll
-E:\iclones\lakey\bin\x64\Debug\EPPlus.Interfaces.dll
-E:\iclones\lakey\bin\x64\Debug\ExcelNumberFormat.dll
-E:\iclones\lakey\bin\x64\Debug\LiveCharts.dll
-E:\iclones\lakey\bin\x64\Debug\LiveCharts.Wpf.dll
-E:\iclones\lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.dll
-E:\iclones\lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.dll
-E:\iclones\lakey\bin\x64\Debug\RBush.dll
-E:\iclones\lakey\bin\x64\Debug\System.Buffers.dll
-E:\iclones\lakey\bin\x64\Debug\System.ComponentModel.Annotations.dll
-E:\iclones\lakey\bin\x64\Debug\System.Data.SQLite.dll
-E:\iclones\lakey\bin\x64\Debug\System.Data.SQLite.EF6.dll
-E:\iclones\lakey\bin\x64\Debug\System.Data.SQLite.Linq.dll
-E:\iclones\lakey\bin\x64\Debug\System.Memory.dll
-E:\iclones\lakey\bin\x64\Debug\System.Numerics.Vectors.dll
-E:\iclones\lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.dll
-E:\iclones\lakey\bin\x64\Debug\ClosedXML.pdb
-E:\iclones\lakey\bin\x64\Debug\ClosedXML.xml
-E:\iclones\lakey\bin\x64\Debug\ClosedXML.Parser.xml
-E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.xml
-E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.Framework.xml
-E:\iclones\lakey\bin\x64\Debug\EntityFramework.xml
-E:\iclones\lakey\bin\x64\Debug\EntityFramework.SqlServer.xml
-E:\iclones\lakey\bin\x64\Debug\ExcelNumberFormat.xml
-E:\iclones\lakey\bin\x64\Debug\LiveCharts.pdb
-E:\iclones\lakey\bin\x64\Debug\LiveCharts.xml
-E:\iclones\lakey\bin\x64\Debug\LiveCharts.Wpf.pdb
-E:\iclones\lakey\bin\x64\Debug\LiveCharts.Wpf.xml
-E:\iclones\lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.xml
-E:\iclones\lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.xml
-E:\iclones\lakey\bin\x64\Debug\RBush.xml
-E:\iclones\lakey\bin\x64\Debug\System.Buffers.xml
-E:\iclones\lakey\bin\x64\Debug\System.Memory.xml
-E:\iclones\lakey\bin\x64\Debug\System.Numerics.Vectors.xml
-E:\iclones\lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.xml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.g.vb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwConges.g.vb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDconnexion.g.vb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDetails.g.vb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwPointMensuel.g.vb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwZoom.g.vb
-E:\iclones\lakey\obj\x64\Debug\LoadingWindow.g.vb
-E:\iclones\lakey\obj\x64\Debug\Login.g.vb
-E:\iclones\lakey\obj\x64\Debug\MainWindow.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAbsences.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAffectation.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsConges.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsContrat.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsEntree.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsHeureSupp.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsPlanning.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsSortie.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsContrat.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsEtat.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsPoste.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsSite.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwActivOldClient.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwEndClient.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\GeneralSets.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\ProfilUser.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\UserManager.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercAngence.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercSociete.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercEvenement.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercMemo.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNBanque.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNCNSS.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercRappel.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAgents.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercClients.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercExterneActs.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercFonction.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercSettings.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercStructure.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTBord.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTraitements.g.vb
-E:\iclones\lakey\obj\x64\Debug\WaitFrm.g.vb
-E:\iclones\lakey\obj\x64\Debug\Application.g.vb
-E:\iclones\lakey\obj\x64\Debug\Lakey_Content.g.vb
-E:\iclones\lakey\obj\x64\Debug\Lakey_MarkupCompile.cache
-E:\iclones\lakey\obj\x64\Debug\Lakey_MarkupCompile.lref
-E:\iclones\lakey\obj\x64\Debug\Application.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwConges.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDconnexion.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDetails.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwPointMensuel.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwZoom.baml
-E:\iclones\lakey\obj\x64\Debug\LoadingWindow.baml
-E:\iclones\lakey\obj\x64\Debug\Login.baml
-E:\iclones\lakey\obj\x64\Debug\MainWindow.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAbsences.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAffectation.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsConges.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsContrat.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsEntree.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsHeureSupp.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsPlanning.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsSortie.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsContrat.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsEtat.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsPoste.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsSite.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwActivOldClient.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwEndClient.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\GeneralSets.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\ProfilUser.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\UserManager.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercAngence.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercSociete.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercEvenement.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercMemo.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNBanque.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNCNSS.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercRappel.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAgents.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercClients.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercExterneActs.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercFonction.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercSettings.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercStructure.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTBord.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTraitements.baml
-E:\iclones\lakey\obj\x64\Debug\WaitFrm.baml
-E:\iclones\lakey\obj\x64\Debug\Lakey.g.resources
-E:\iclones\lakey\obj\x64\Debug\Lakey.Resources.resources
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.GenerateResource.cache
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
-E:\iclones\lakey\obj\x64\Debug\Lakey.exe
-E:\iclones\lakey\obj\x64\Debug\Lakey.xml
-E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
 C:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
 C:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
@@ -439,11 +293,6 @@ C:\iclones\lakey\obj\x64\Debug\WaitFrm.baml
 C:\iclones\lakey\obj\x64\Debug\Lakey.g.resources
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
 C:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.Up2Date
-E:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
-E:\iclones\lakey\obj\x64\Debug\HelpWindow.g.vb
-E:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.dll
-E:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.xml
-E:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
 E:\iclones\lakey\bin\x64\Verify\desktop.ini
 E:\iclones\lakey\bin\x64\Verify\sqlite3.dll
 E:\iclones\lakey\bin\x64\Verify\Lakey.exe.config
@@ -510,10 +359,192 @@ C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.exe.config
 C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.exe
 C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.pdb
 C:\Users\ROGIGA\AppData\Local\Temp\Lakey-agent-panel-build\Lakey.xml
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
 C:\Users\JPB\AppData\Local\Temp\LakeyBuild\desktop.ini
 C:\Users\JPB\AppData\Local\Temp\LakeyBuild\sqlite3.dll
 C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.exe.config
 C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.exe
 C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.pdb
 C:\Users\JPB\AppData\Local\Temp\LakeyBuild\Lakey.xml
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyShortcutValidation-cf2b8ffaa837426ca3367134e5f79ee2\bin\desktop.ini
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyShortcutValidation-cf2b8ffaa837426ca3367134e5f79ee2\bin\sqlite3.dll
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyShortcutValidation-cf2b8ffaa837426ca3367134e5f79ee2\bin\Lakey.exe.config
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyShortcutValidation-cf2b8ffaa837426ca3367134e5f79ee2\bin\Lakey.exe
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyShortcutValidation-cf2b8ffaa837426ca3367134e5f79ee2\bin\Lakey.pdb
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyShortcutValidation-cf2b8ffaa837426ca3367134e5f79ee2\bin\Lakey.xml
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipStyle-6a172943c2a349e68fdd3f3d817a334e\bin\desktop.ini
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipStyle-6a172943c2a349e68fdd3f3d817a334e\bin\sqlite3.dll
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipStyle-6a172943c2a349e68fdd3f3d817a334e\bin\Lakey.exe.config
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipStyle-6a172943c2a349e68fdd3f3d817a334e\bin\Lakey.exe
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipStyle-6a172943c2a349e68fdd3f3d817a334e\bin\Lakey.pdb
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipStyle-6a172943c2a349e68fdd3f3d817a334e\bin\Lakey.xml
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipFix-1cbdae9ea2ee40fdaf2bcc8a0b40d345\bin\desktop.ini
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipFix-1cbdae9ea2ee40fdaf2bcc8a0b40d345\bin\sqlite3.dll
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipFix-1cbdae9ea2ee40fdaf2bcc8a0b40d345\bin\Lakey.exe.config
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipFix-1cbdae9ea2ee40fdaf2bcc8a0b40d345\bin\Lakey.exe
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipFix-1cbdae9ea2ee40fdaf2bcc8a0b40d345\bin\Lakey.pdb
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyTooltipFix-1cbdae9ea2ee40fdaf2bcc8a0b40d345\bin\Lakey.xml
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyDisabledTooltip-1b93aaa15a4849f299ad1d3dbb72bcb1\bin\desktop.ini
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyDisabledTooltip-1b93aaa15a4849f299ad1d3dbb72bcb1\bin\sqlite3.dll
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyDisabledTooltip-1b93aaa15a4849f299ad1d3dbb72bcb1\bin\Lakey.exe.config
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyDisabledTooltip-1b93aaa15a4849f299ad1d3dbb72bcb1\bin\Lakey.exe
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyDisabledTooltip-1b93aaa15a4849f299ad1d3dbb72bcb1\bin\Lakey.pdb
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyDisabledTooltip-1b93aaa15a4849f299ad1d3dbb72bcb1\bin\Lakey.xml
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyButtonTooltips-48fe61c7142441698a524e9d9efc1398\bin\desktop.ini
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyButtonTooltips-48fe61c7142441698a524e9d9efc1398\bin\sqlite3.dll
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyButtonTooltips-48fe61c7142441698a524e9d9efc1398\bin\Lakey.exe.config
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyButtonTooltips-48fe61c7142441698a524e9d9efc1398\bin\Lakey.exe
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyButtonTooltips-48fe61c7142441698a524e9d9efc1398\bin\Lakey.pdb
+C:\Users\ROGIGA\AppData\Local\Temp\LakeyButtonTooltips-48fe61c7142441698a524e9d9efc1398\bin\Lakey.xml
+E:\iclones\lakey\bin\x64\Debug\desktop.ini
+E:\iclones\lakey\bin\x64\Debug\sqlite3.dll
+E:\iclones\lakey\bin\x64\Debug\Lakey.exe.config
+E:\iclones\lakey\bin\x64\Debug\Lakey.exe
+E:\iclones\lakey\bin\x64\Debug\Lakey.pdb
+E:\iclones\lakey\bin\x64\Debug\Lakey.xml
+E:\iclones\lakey\bin\x64\Debug\ClosedXML.dll
+E:\iclones\lakey\bin\x64\Debug\ClosedXML.Parser.dll
+E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.dll
+E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.Framework.dll
+E:\iclones\lakey\bin\x64\Debug\EntityFramework.dll
+E:\iclones\lakey\bin\x64\Debug\EntityFramework.SqlServer.dll
+E:\iclones\lakey\bin\x64\Debug\EPPlus.Interfaces.dll
+E:\iclones\lakey\bin\x64\Debug\ExcelNumberFormat.dll
+E:\iclones\lakey\bin\x64\Debug\LiveCharts.dll
+E:\iclones\lakey\bin\x64\Debug\LiveCharts.Wpf.dll
+E:\iclones\lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.dll
+E:\iclones\lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.dll
+E:\iclones\lakey\bin\x64\Debug\RBush.dll
+E:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.dll
+E:\iclones\lakey\bin\x64\Debug\System.Buffers.dll
+E:\iclones\lakey\bin\x64\Debug\System.ComponentModel.Annotations.dll
+E:\iclones\lakey\bin\x64\Debug\System.Data.SQLite.dll
+E:\iclones\lakey\bin\x64\Debug\System.Data.SQLite.EF6.dll
+E:\iclones\lakey\bin\x64\Debug\System.Data.SQLite.Linq.dll
+E:\iclones\lakey\bin\x64\Debug\System.Memory.dll
+E:\iclones\lakey\bin\x64\Debug\System.Numerics.Vectors.dll
+E:\iclones\lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.dll
+E:\iclones\lakey\bin\x64\Debug\ClosedXML.pdb
+E:\iclones\lakey\bin\x64\Debug\ClosedXML.xml
+E:\iclones\lakey\bin\x64\Debug\ClosedXML.Parser.xml
+E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.xml
+E:\iclones\lakey\bin\x64\Debug\DocumentFormat.OpenXml.Framework.xml
+E:\iclones\lakey\bin\x64\Debug\EntityFramework.xml
+E:\iclones\lakey\bin\x64\Debug\EntityFramework.SqlServer.xml
+E:\iclones\lakey\bin\x64\Debug\ExcelNumberFormat.xml
+E:\iclones\lakey\bin\x64\Debug\LiveCharts.pdb
+E:\iclones\lakey\bin\x64\Debug\LiveCharts.xml
+E:\iclones\lakey\bin\x64\Debug\LiveCharts.Wpf.pdb
+E:\iclones\lakey\bin\x64\Debug\LiveCharts.Wpf.xml
+E:\iclones\lakey\bin\x64\Debug\Microsoft.Bcl.HashCode.xml
+E:\iclones\lakey\bin\x64\Debug\Microsoft.IO.RecyclableMemoryStream.xml
+E:\iclones\lakey\bin\x64\Debug\RBush.xml
+E:\iclones\lakey\bin\x64\Debug\SixLabors.Fonts.xml
+E:\iclones\lakey\bin\x64\Debug\System.Buffers.xml
+E:\iclones\lakey\bin\x64\Debug\System.Memory.xml
+E:\iclones\lakey\bin\x64\Debug\System.Numerics.Vectors.xml
+E:\iclones\lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.xml
+E:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
+E:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwConges.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDconnexion.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDetails.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwPointMensuel.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwZoom.g.vb
+E:\iclones\lakey\obj\x64\Debug\LoadingWindow.g.vb
+E:\iclones\lakey\obj\x64\Debug\HelpWindow.g.vb
+E:\iclones\lakey\obj\x64\Debug\Login.g.vb
+E:\iclones\lakey\obj\x64\Debug\MainWindow.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAbsences.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAffectation.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsConges.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsContrat.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsEntree.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsHeureSupp.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsPlanning.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsSortie.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsContrat.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsEtat.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsPoste.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsSite.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwActivOldClient.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwEndClient.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\GeneralSets.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\ProfilUser.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\UserManager.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercAngence.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercSociete.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercEvenement.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercMemo.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNBanque.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNCNSS.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercRappel.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAgents.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercClients.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercExterneActs.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercFonction.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercSettings.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercStructure.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTBord.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTraitements.g.vb
+E:\iclones\lakey\obj\x64\Debug\WaitFrm.g.vb
+E:\iclones\lakey\obj\x64\Debug\Application.g.vb
+E:\iclones\lakey\obj\x64\Debug\Lakey_Content.g.vb
+E:\iclones\lakey\obj\x64\Debug\Lakey_MarkupCompile.cache
+E:\iclones\lakey\obj\x64\Debug\Lakey_MarkupCompile.lref
+E:\iclones\lakey\obj\x64\Debug\Application.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwConges.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDconnexion.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDetails.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwPointMensuel.baml
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwZoom.baml
+E:\iclones\lakey\obj\x64\Debug\LoadingWindow.baml
+E:\iclones\lakey\obj\x64\Debug\Login.baml
+E:\iclones\lakey\obj\x64\Debug\MainWindow.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAbsences.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsAffectation.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsConges.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsContrat.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsEntree.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsHeureSupp.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsPlanning.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\AgentSub\usercAgentsSortie.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsContrat.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsEtat.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsPoste.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\usercClientsSite.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwActivOldClient.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\ClientSub\wdwEndClient.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\GeneralSets.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\ProfilUser.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\UserManager.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercAngence.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercSociete.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercEvenement.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercMemo.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNBanque.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNCNSS.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercRappel.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAgents.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercClients.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercExterneActs.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercFonction.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercSettings.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercStructure.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTBord.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercTraitements.baml
+E:\iclones\lakey\obj\x64\Debug\WaitFrm.baml
+E:\iclones\lakey\obj\x64\Debug\Lakey.g.resources
+E:\iclones\lakey\obj\x64\Debug\Lakey.Resources.resources
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.GenerateResource.cache
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
+E:\iclones\lakey\obj\x64\Debug\Lakey.exe
+E:\iclones\lakey\obj\x64\Debug\Lakey.xml
+E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache

@@ -2290,14 +2290,56 @@ Class MainWindow
             Return
         End If
 
-        If e.Key = Key.X AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
+        If Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Shift) Then
+            Dim shortcutButton As Button = Nothing
+            Select Case pressedKey
+                Case Key.E
+                    shortcutButton = btnRacEntreeAg
+                Case Key.R
+                    shortcutButton = btnRacContratAg
+                Case Key.F
+                    shortcutButton = btnRacAffectationAg
+                Case Key.L
+                    shortcutButton = btnRacPlanningAg
+                Case Key.N, Key.I
+                    shortcutButton = btnRacAbsenceAg
+                Case Key.H
+                    shortcutButton = btnRacHeureSupAg
+                Case Key.P
+                    shortcutButton = btnRacCalCong
+                Case Key.O
+                    shortcutButton = btnRacSortieAg
+                Case Key.C
+                    shortcutButton = btnRacContratCl
+                Case Key.T
+                    shortcutButton = btnRacSiteCl
+                Case Key.S
+                    shortcutButton = btnRacPosteCl
+                Case Key.V
+                    shortcutButton = btnRacEtatCl
+                Case Key.G
+                    shortcutButton = btnRacAgentListeCl
+            End Select
+
+            If shortcutButton IsNot Nothing Then
+                If shortcutButton.IsEnabled AndAlso shortcutButton.IsVisible Then
+                    shortcutButton.RaiseEvent(New RoutedEventArgs(Button.ClickEvent, shortcutButton))
+                End If
+                e.Handled = True
+                Return
+            End If
+        End If
+
+        If pressedKey = Key.X AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             oDeconect()
         End If
-        If e.Key = Key.Q AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
+        If pressedKey = Key.Q AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             Me.Close()
         End If
-        If e.Key = Key.A AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
+        If pressedKey = Key.A AndAlso Keyboard.Modifiers = (ModifierKeys.Shift Or ModifierKeys.Control) Then
             Await RunWithLoadingAsync(Sub() InitializeGlobal())
+            e.Handled = True
+            Return
         End If
         If pressedKey = Key.U AndAlso Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Alt) Then
             ChangerUtilisateur()
