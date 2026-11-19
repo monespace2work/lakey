@@ -159,18 +159,20 @@
                         <MenuItem x:Name="mitPgeneraux" Header="Globaux"/>
                         <MenuItem x:Name="mitUtilisateur"  Header="Utilisateurs"/>
                         <Separator/>
+                        <MenuItem x:Name="mitAnniversariesEnabled"
+                                  Header="Désactiver le module anniversaires"
+                                  IsCheckable="True"
+                                  Click="mitAnniversariesEnabled_Click"/>
                         <MenuItem x:Name="btnThemeToggle" Header="Mode clair"
                                   Click="btnThemeToggle_Click"
                                   InputGestureText="Ctrl+Shift+M"
                                   ToolTip="Basculer entre le mode clair et le mode sombre"/>
                         <Separator/>
-                        <MenuItem Header="Mode de connexion">
-                            <MenuItem x:Name="mitModeConnecte" Header="Mode connecté" IsCheckable="True"
-                                      InputGestureText="Ctrl+Shift+K"
-                                      Click="mitModeConnecte_Click"/>
-                            <MenuItem x:Name="mitModeLocal" Header="Mode local" IsCheckable="True"
-                                      Click="mitModeLocal_Click"/>
-                        </MenuItem>
+                        <MenuItem x:Name="mitModeToggle"
+                                  Header="Passer en mode connecté"
+                                  InputGestureText="Ctrl+Shift+K"
+                                  ToolTip="Basculer entre le mode connecté et le mode local"
+                                  Click="mitModeToggle_Click"/>
                     </MenuItem>
                     <MenuItem x:Name="mitAide" Header="Aide">
                         <MenuItem x:Name="mitContact" Header="Contact" Click="mitContact_Click"/>

@@ -206,6 +206,7 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules Pad\DbManipulation.vb" />
+    <Compile Include="Modules Pad\IdBuder.vb" />
     <Compile Include="Modules Pad\AnniversaireService.vb" />
     <Compile Include="Modules Pad\IpTraitement.vb" />
     <Compile Include="Modules Pad\ObjectsManaging.vb" />

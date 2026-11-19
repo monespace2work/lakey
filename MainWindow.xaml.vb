@@ -17,6 +17,7 @@ Class MainWindow
     Private lastCentralContent As Object
     Public LocalConnxStr As String
     Private isDarkTheme As Boolean = True
+    Private anniversariesEnabled As Boolean = True
     Private isLeftPanelCollapsed As Boolean
     Private isRightPanelCollapsed As Boolean
     Private isRestoringPreviousContent As Boolean
@@ -297,6 +298,7 @@ Class MainWindow
     End Function
 
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+        LoadUserPreferences()
         CentralContentChanged(cctrlCentral, EventArgs.Empty)
 
         Await RunWithLoadingAsync(
@@ -304,6 +306,7 @@ Class MainWindow
             tbxVersion.Text = "V" & My.Application.Info.Version.ToString
             tbxUserName.Text = $"@{UserName} #{UserLevel}_{ProfilName}"
             DbPathGeneral = PaphBackUp()
+            IdBuder.Start(Function() DbPathGeneral)
             If Not LocalModeBb Then
                 Try
                     StartGeneralDatabaseListener()
@@ -328,13 +331,54 @@ Class MainWindow
             InitializeGlobal()
         End Sub,
         "Ouverture de la fenêtre principale...")
-        lastBirthdayCheckDate = Date.Today
-        CheckBirthdayAlerts(True)
-        birthdayDateTimer.Start()
+        ApplyAnniversaryFeature(anniversariesEnabled, True)
         'If Not SessLogin() Then Me.Close()
     End Sub
 
+    Private Sub LoadUserPreferences()
+        Try
+            isDarkTheme = My.Settings.UseDarkTheme
+            anniversariesEnabled = My.Settings.AnniversariesEnabled
+        Catch ex As Exception
+            isDarkTheme = True
+            anniversariesEnabled = True
+            MessageBox.Show("Les préférences utilisateur n'ont pas pu être lues. Les valeurs par défaut sont utilisées : " & ex.Message,
+                            "Préférences", MessageBoxButton.OK, MessageBoxImage.Warning)
+        End Try
+
+        mitAnniversariesEnabled.IsChecked = anniversariesEnabled
+        UpdateAnniversaryMenuHeader()
+        btnAnniversaires.Visibility = If(anniversariesEnabled, Visibility.Visible, Visibility.Collapsed)
+        If Not anniversariesEnabled Then btnBirthdayIndicator.Visibility = Visibility.Collapsed
+        ApplyTheme(isDarkTheme)
+    End Sub
+
+    Private Sub ApplyAnniversaryFeature(isEnabled As Boolean, showNotice As Boolean)
+        anniversariesEnabled = isEnabled
+        UpdateAnniversaryMenuHeader()
+        btnAnniversaires.Visibility = If(isEnabled, Visibility.Visible, Visibility.Collapsed)
+
+        If Not isEnabled Then
+            birthdayDateTimer.Stop()
+            btnBirthdayIndicator.Visibility = Visibility.Collapsed
+            If birthdayNoticeWindow IsNot Nothing Then birthdayNoticeWindow.Close()
+            Return
+        End If
+
+        lastBirthdayCheckDate = Date.Today
+        birthdayDateTimer.Start()
+        If showNotice Then CheckBirthdayAlerts(True)
+    End Sub
+
+    Private Sub UpdateAnniversaryMenuHeader()
+        mitAnniversariesEnabled.Header =
+            If(anniversariesEnabled,
+               "Désactiver le module anniversaires",
+               "Activer le module anniversaires")
+    End Sub
+
     Private Sub BirthdayDateTimer_Tick(sender As Object, e As EventArgs)
+        If Not anniversariesEnabled Then Return
         If Date.Today = lastBirthdayCheckDate Then Return
         lastBirthdayCheckDate = Date.Today
         If birthdayNoticeWindow IsNot Nothing Then birthdayNoticeWindow.Close()
@@ -342,6 +386,7 @@ Class MainWindow
     End Sub
 
     Private Async Sub CheckBirthdayAlerts(showNotice As Boolean, Optional playSound As Boolean = True)
+        If Not anniversariesEnabled Then Return
         Try
             Dim connectionString As String = $"Data Source={DbPath};Version=3;"
             Dim todaysBirthdays As List(Of AnniversaireAgent) =
@@ -506,9 +551,33 @@ Class MainWindow
             Sub()
                 isDarkTheme = requestedDarkTheme
                 ApplyTheme(isDarkTheme)
+                My.Settings.UseDarkTheme = isDarkTheme
+                Try
+                    My.Settings.Save()
+                Catch ex As Exception
+                    MessageBox.Show("Le thème a été changé, mais sa préférence n'a pas pu être enregistrée : " & ex.Message,
+                                    "Préférences", MessageBoxButton.OK, MessageBoxImage.Warning)
+                End Try
             End Sub,
             "Application du thème...",
             250)
+    End Sub
+
+    Private Sub mitAnniversariesEnabled_Click(sender As Object, e As RoutedEventArgs)
+        Dim requestedValue As Boolean = mitAnniversariesEnabled.IsChecked
+        Dim previousValue As Boolean = anniversariesEnabled
+        My.Settings.AnniversariesEnabled = requestedValue
+        Try
+            My.Settings.Save()
+        Catch ex As Exception
+            My.Settings.AnniversariesEnabled = previousValue
+            mitAnniversariesEnabled.IsChecked = previousValue
+            MessageBox.Show("Le réglage du module anniversaires n'a pas pu être enregistré : " & ex.Message,
+                            "Préférences", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End Try
+
+        ApplyAnniversaryFeature(requestedValue, True)
     End Sub
 
     Private Sub ApplyTheme(useDarkTheme As Boolean)
@@ -1092,6 +1161,7 @@ Class MainWindow
     End Sub
 
     Private Async Sub btnAnniversaires_Click(sender As Object, e As RoutedEventArgs)
+        If Not anniversariesEnabled Then Return
         Await RunWithLoadingAsync(
             Sub()
                 cctrlCentral.Content = New usercAnniversaires
@@ -1100,6 +1170,7 @@ Class MainWindow
     End Sub
 
     Private Sub btnBirthdayIndicator_Click(sender As Object, e As RoutedEventArgs)
+        If Not anniversariesEnabled Then Return
         If birthdayNoticeWindow IsNot Nothing Then
             birthdayNoticeWindow.Activate()
             Return
@@ -1860,8 +1931,7 @@ Class MainWindow
     End Sub
 
     Sub TestConnexionDbIcon()
-        mitModeConnecte.IsChecked = Not LocalModeBb
-        mitModeLocal.IsChecked = LocalModeBb
+        mitModeToggle.Header = If(LocalModeBb, "Passer en mode connecté", "Passer en mode local")
         If LocalModeBb Then
             imgHorsConnex.Visibility = Visibility.Visible
             tbModeConnexion.Visibility = Visibility.Visible
@@ -1880,8 +1950,12 @@ Class MainWindow
         Await SwitchToConnectedModeFromUIAsync()
     End Sub
 
-    Private Async Sub mitModeConnecte_Click(sender As Object, e As RoutedEventArgs)
-        Await SwitchToConnectedModeFromUIAsync()
+    Private Async Sub mitModeToggle_Click(sender As Object, e As RoutedEventArgs)
+        If LocalModeBb Then
+            Await SwitchToConnectedModeFromUIAsync()
+        Else
+            Await SwitchToLocalModeFromUIAsync()
+        End If
     End Sub
 
     Private Async Function SwitchToConnectedModeFromUIAsync() As Task
@@ -1899,8 +1973,7 @@ Class MainWindow
         End If
 
         btnReconnecter.IsEnabled = False
-        mitModeConnecte.IsEnabled = False
-        mitModeLocal.IsEnabled = False
+        mitModeToggle.IsEnabled = False
         Try
             Await RunWithLoadingAsync(AddressOf SwitchToConnectedMode,
                                       "Sauvegarde locale et connexion à la base centrale...")
@@ -1910,14 +1983,13 @@ Class MainWindow
                             "Erreur de bascule", MessageBoxButton.OK, MessageBoxImage.Error)
         Finally
             btnReconnecter.IsEnabled = LocalModeBb
-            mitModeConnecte.IsEnabled = True
-            mitModeLocal.IsEnabled = True
+            mitModeToggle.IsEnabled = True
             TestConnexionDbIcon()
         End Try
     End Function
 
-    Private Async Sub mitModeLocal_Click(sender As Object, e As RoutedEventArgs)
-        If LocalModeBb OrElse Not mitModeLocal.IsEnabled Then Return
+    Private Async Function SwitchToLocalModeFromUIAsync() As Task
+        If LocalModeBb OrElse Not mitModeToggle.IsEnabled Then Return
         If MessageBox.Show(
             "La copie de travail sera sauvegardée puis utilisée en mode local. Les modifications faites en mode local ne seront pas fusionnées dans la base centrale." &
             Environment.NewLine & Environment.NewLine & "Continuer ?",
@@ -1929,8 +2001,7 @@ Class MainWindow
         End If
 
         btnReconnecter.IsEnabled = False
-        mitModeConnecte.IsEnabled = False
-        mitModeLocal.IsEnabled = False
+        mitModeToggle.IsEnabled = False
         Try
             Await RunWithLoadingAsync(AddressOf SwitchToLocalMode,
                                       "Sauvegarde et passage en mode local...")
@@ -1939,11 +2010,10 @@ Class MainWindow
                             "Erreur de bascule", MessageBoxButton.OK, MessageBoxImage.Error)
         Finally
             btnReconnecter.IsEnabled = LocalModeBb
-            mitModeConnecte.IsEnabled = True
-            mitModeLocal.IsEnabled = True
+            mitModeToggle.IsEnabled = True
             TestConnexionDbIcon()
         End Try
-    End Sub
+    End Function
 
     Private Sub SwitchToLocalMode()
         Dim connectedDatabasePath As String = DbPath
@@ -2341,6 +2411,7 @@ Class MainWindow
 
         If isSwitchingUser Then
             StopGeneralDatabaseListener()
+            IdBuder.[Stop]()
             Me.DialogResult = False
             Return
         End If
@@ -2352,8 +2423,8 @@ Class MainWindow
         End If
 
         StopGeneralDatabaseListener()
+        IdBuder.[Stop]()
         Me.DialogResult = True
-        StopProcess("idbuder")
     End Sub
 
     Private Async Sub Window_KeyDown(sender As Object, e As KeyEventArgs)
@@ -2376,16 +2447,14 @@ Class MainWindow
                 Return
             End If
             If pressedKey = Key.K Then
-                If LocalModeBb Then
-                    mitModeConnecte.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, mitModeConnecte))
-                Else
-                    mitModeLocal.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, mitModeLocal))
-                End If
+                mitModeToggle.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, mitModeToggle))
                 e.Handled = True
                 Return
             End If
             If pressedKey = Key.V Then
-                btnAnniversaires.RaiseEvent(New RoutedEventArgs(Button.ClickEvent, btnAnniversaires))
+                If anniversariesEnabled Then
+                    btnAnniversaires.RaiseEvent(New RoutedEventArgs(Button.ClickEvent, btnAnniversaires))
+                End If
                 e.Handled = True
                 Return
             End If
