@@ -25,6 +25,17 @@ Module ObjectsManaging
     Private generalDatabaseSyncWarningShown As Boolean
     Private Const FinContratAffectationRowColorHandlerKey As String = "FinContratAffectationRowColorHandler"
 
+    Public Function BuildStatusRowFilter(statusColumn As String,
+                                         showActive As Boolean,
+                                         showInactive As Boolean,
+                                         Optional activeValue As Integer = 1,
+                                         Optional inactiveValue As Integer = 0) As String
+        If showActive AndAlso showInactive Then Return String.Empty
+        If showActive Then Return $"[{statusColumn}] = {activeValue}"
+        If showInactive Then Return $"[{statusColumn}] = {inactiveValue}"
+        Return "1 = 0"
+    End Function
+
     Public Async Function RefreshAfterDatabaseMutationAsync(refreshAction As Action) As Task
         Dim mainWindow As MainWindow = TryCast(Application.Current?.MainWindow, MainWindow)
         mainWindow?.BeginDatabaseLoading()

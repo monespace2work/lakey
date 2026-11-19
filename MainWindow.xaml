@@ -87,6 +87,22 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="SupplementQuickAccessButton" TargetType="Button" BasedOn="{StaticResource QuickAccessButton}">
+            <Setter Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeNavyBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ThemeLoginButtonBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeNavyBrush}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource ThemeAccentSoftBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeInputDisabledTextBrush}"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="CongesQuickAccessButton" TargetType="Button" BasedOn="{StaticResource QuickAccessButton}">
             <Setter Property="Background" Value="{DynamicResource ThemeCongesButtonBrush}"/>
             <Setter Property="Foreground" Value="{DynamicResource ThemeCongesButtonTextBrush}"/>
@@ -138,16 +154,16 @@
                 <Menu >
                     <MenuItem x:Name="mitActions"  Header="Actions">
                         <MenuItem x:Name="mitActual"  Header="_Actualiser" InputGestureText="Ctrl+Shift+A" ></MenuItem>
-                        <MenuItem x:Name="mitBackup"  Header="_BackUp" InputGestureText="Ctrl+Shift+U" ></MenuItem>
+                        <MenuItem x:Name="mitBackup" Header="_BackUp" InputGestureText="Ctrl+Shift+U" Click="mitBackup_Click"/>
                         <Separator/>
                         <MenuItem x:Name="mitChangerUtilisateur" Header="Changer d'utilisateur..." InputGestureText="Ctrl+Alt+U" Click="mitChangerUtilisateur_Click"/>
                         <MenuItem x:Name="mitDConexion"  Header="Déonne_xion" InputGestureText="Ctrl+Shift+X" ></MenuItem>
                         <MenuItem x:Name="mitQuit"  Header="_Quitter" InputGestureText="Ctrl+Shift+Q" ></MenuItem>
                     </MenuItem>
                     <MenuItem x:Name="mitMouvement"  Header="Mouvement">
-                        <MenuItem x:Name="mitEntree" Header="Entrée"/>
-                        <MenuItem x:Name="mitAffectation" Header="Affectation"/>
-                        <MenuItem x:Name="mitSortie" Header="Sortie"/>
+                        <MenuItem x:Name="mitEntree" Header="Entrée" InputGestureText="Ctrl+Maj+E" Click="mitEntree_Click"/>
+                        <MenuItem x:Name="mitAffectation" Header="Affectation" InputGestureText="Ctrl+Maj+F" Click="mitAffectation_Click"/>
+                        <MenuItem x:Name="mitSortie" Header="Sortie" InputGestureText="Ctrl+Maj+O" Click="mitSortie_Click"/>
                         <!--MenuItem Header="Utilisateurs"/-->
 
                     </MenuItem>
@@ -257,18 +273,27 @@
                                           Foreground="{DynamicResource ThemeAgentGroupLabelBrush}"
                                           IsExpanded="True" VerticalAlignment="Top" Background="{x:Null}"
                                           FontSize="13" FontWeight="Bold" Padding="2,2">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button x:Name="btnRacEntreeAg" Content="Entrées" ToolTip="Ctrl+Maj+E" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacContratAg" Content="Contrat" ToolTip="Ctrl+Maj+R" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacAffectationAg" Content="Affectation" ToolTip="Ctrl+Maj+F" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacPlanningAg" Content="Planning" ToolTip="Ctrl+Maj+L" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacAbsenceAg" Content="Absence/Permission/Congé" ToolTip="Absences : Ctrl+Maj+N&#10;Permissions : Ctrl+Maj+I" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacHeureSupAg" Content="HeuresSup" ToolTip="Ctrl+Maj+H" Style="{StaticResource AgentQuickAccessButton}"/>
-                                            <Button x:Name="btnRacCalCong" Content="Point - Congés" ToolTip="Ctrl+Maj+P" Style="{StaticResource CongesQuickAccessButton}"/>
-                                            <Button x:Name="btnRacSortieAg" Content="Sortie" ToolTip="Ctrl+Maj+O" Style="{StaticResource AgentQuickAccessButton}"/>
-                                        </StackPanel>
-                                    </ScrollViewer>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button x:Name="btnRacEntreeAg" Content="Entrées" ToolTip="Ctrl+Maj+E" Style="{StaticResource AgentQuickAccessButton}"/>
+                                                <Button x:Name="btnRacContratAg" Content="Contrat" ToolTip="Ctrl+Maj+R" Style="{StaticResource AgentQuickAccessButton}"/>
+                                                <Button x:Name="btnRacAffectationAg" Content="Affectation" ToolTip="Ctrl+Maj+F" Style="{StaticResource AgentQuickAccessButton}"/>
+                                                <Button x:Name="btnRacPlanningAg" Content="Planning" ToolTip="Ctrl+Maj+L" Style="{StaticResource AgentQuickAccessButton}"/>
+                                                <Button x:Name="btnRacAbsenceAg" Content="Absence/Permission/Congé" ToolTip="Ctrl+Maj+N" Style="{StaticResource AgentQuickAccessButton}"/>
+                                                <Button x:Name="btnRacHeureSupAg" Content="HeuresSup" ToolTip="Ctrl+Maj+H" Style="{StaticResource AgentQuickAccessButton}"/>
+                                                <Button x:Name="btnRacCalCong" Content="Point - Congés" ToolTip="Ctrl+Maj+P" Style="{StaticResource CongesQuickAccessButton}"/>
+                                                <Button x:Name="btnRacSortieAg" Content="Sortie" ToolTip="Ctrl+Maj+O" Style="{StaticResource AgentQuickAccessButton}"/>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                        <Button x:Name="btnRacSupplement" Grid.Column="1" Content="Suppléments"
+                                                Click="Button_Click" Style="{StaticResource SupplementQuickAccessButton}"
+                                                Margin="4,2,2,2"/>
+                                    </Grid>
                                 </Expander>
                             </Border>
                             <Border Grid.Column="1" Margin="4,0,0,0" Padding="6,3"

@@ -5,6 +5,7 @@ Public Class usercMemo
     Dim CasValidation As Integer = 0
     Dim iFrmLoaded As Boolean = False
     Public iConnxStr As String
+    Private memoData As DataTable
 
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = (PaphBackUp())
@@ -15,12 +16,28 @@ Public Class usercMemo
         Dim istr As String = "Select m.MemContent,date(m.DateMem) as Date,m.Actif,m.IdMem as Id from memos m "
         'istr += "  from events e "
         istr += " ORDER BY m.Actif desc, m.DateMem "
-        Dim memoData = LoadDataTable(istr)
+        memoData = LoadDataTable(istr)
         DgMemo.ItemsSource = memoData.DefaultView
-        tblNbMemo.Text = "Nombre de memos en attente : " & memoData.Select("Actif = 1").Length
         CasValidation = 0
         iFrmLoaded = True
+        ApplyActifFilter()
         ActivValidBtn()
+    End Sub
+
+    Private Sub ApplyActifFilter()
+        If memoData Is Nothing Then Return
+
+        memoData.DefaultView.RowFilter = BuildStatusRowFilter(
+            "Actif",
+            ckbxShowActive.IsChecked.GetValueOrDefault(),
+            ckbxShowInactive.IsChecked.GetValueOrDefault())
+        tblNbMemo.Text = "Nombre de mémos affichés : " & memoData.DefaultView.Count
+    End Sub
+
+    Private Sub DisplayStatus_CheckedChanged(sender As Object, e As RoutedEventArgs) _
+        Handles ckbxShowActive.Checked, ckbxShowActive.Unchecked,
+                ckbxShowInactive.Checked, ckbxShowInactive.Unchecked
+        If iFrmLoaded Then ApplyActifFilter()
     End Sub
     Private Sub DgMemo_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs) Handles DgMemo.MouseDoubleClick
         Dim rowView As DataRowView = TryCast(DgMemo.CurrentItem, DataRowView)

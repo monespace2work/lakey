@@ -94,7 +94,6 @@
                         <Run Text="Affectation : Ctrl+Maj+F"/><LineBreak/>
                         <Run Text="Planning : Ctrl+Maj+L"/><LineBreak/>
                         <Run Text="Absences : Ctrl+Maj+N"/><LineBreak/>
-                        <Run Text="Permissions : Ctrl+Maj+I"/><LineBreak/>
                         <Run Text="Heures supplémentaires : Ctrl+Maj+H"/><LineBreak/>
                         <Run Text="Point Congés : Ctrl+Maj+P"/><LineBreak/>
                         <Run Text="Sortie : Ctrl+Maj+O"/>
@@ -110,7 +109,7 @@
                         <Run Text="Agents affectés : Ctrl+Maj+G"/>
                     </Paragraph>
                     <Paragraph Margin="0,0,0,10">
-                        <Run Text="Ctrl+Maj+A reste réservé à Actualiser. Le raccourci d'accès à État est donc Ctrl+Maj+V. Les raccourcis Absences et Permissions ouvrent la vue commune Absences/Permissions."/>
+                        <Run Text="Ctrl+Maj+A reste réservé à Actualiser. Le raccourci d'accès à État est donc Ctrl+Maj+V. Le raccourci Absences ouvre la vue commune Absences/Permissions."/>
                     </Paragraph>
                     <Paragraph FontSize="16" FontWeight="Bold" Foreground="#0B2440" Margin="0,8,0,6">
                         <Run Text="Exporter ce guide en PDF"/>

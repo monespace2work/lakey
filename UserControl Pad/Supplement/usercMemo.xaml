@@ -21,6 +21,8 @@
                 <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Center">
                     <Label Content="OUTILS SUPPLLEMENTAIRES /" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="15" />
                     <Label Content="MEMOS-NOTES" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="20" HorizontalContentAlignment="Center" FontWeight="Bold" />
+                    <CheckBox x:Name="ckbxShowActive" Content="Actif" IsChecked="True" Foreground="{DynamicResource ThemeInkBrush}" VerticalAlignment="Center" Margin="8,0"/>
+                    <CheckBox x:Name="ckbxShowInactive" Content="Inactif" IsChecked="False" Foreground="{DynamicResource ThemeInkBrush}" VerticalAlignment="Center" Margin="8,0"/>
                 </StackPanel>
                 <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
 
@@ -35,7 +37,7 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
-                            <TextBlock x:Name="tblNbMemo" Text=" Nombre d'agents actif: "  Background="#FF00170C" Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="tblNbMemo" Text=" Nombre de mémos actifs : " Background="#FF00170C" Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Center" />
                             <StackPanel x:Name="stpAddNewFonction" Background="#4C02233E" >
                                 <StackPanel Orientation="Horizontal" Margin="10,10,10,0">
                                     <TextBlock Text=" Mémo : " MinWidth="50" Margin="0,10,5,5" Foreground="White"/>

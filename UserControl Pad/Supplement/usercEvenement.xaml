@@ -21,6 +21,8 @@
                 <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Center">
                     <Label Content="OUTILS SUPPLLEMENTAIRES /" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="15" />
                     <Label Content="EVENEMENTS" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="20" HorizontalContentAlignment="Center" FontWeight="Bold" />
+                    <CheckBox x:Name="ckbxShowActive" Content="Actif" IsChecked="True" Foreground="{DynamicResource ThemeInkBrush}" VerticalAlignment="Center" Margin="8,0"/>
+                    <CheckBox x:Name="ckbxShowInactive" Content="Inactif" IsChecked="False" Foreground="{DynamicResource ThemeInkBrush}" VerticalAlignment="Center" Margin="8,0"/>
                 </StackPanel>
                 <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
 
@@ -35,7 +37,7 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
-                            <TextBlock x:Name="tblNbEvent" Text=" Nombre d'agents actif: "  Background="#FF00170C" Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="tblNbEvent" Text=" Nombre d'événements en attente de résolution : " Background="#FF00170C" Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Center" />
                             <DataGrid x:Name="DgEvent" AutoGenerateColumns="True" />
                         </StackPanel>
                     </Grid>

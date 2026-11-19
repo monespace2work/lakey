@@ -443,10 +443,14 @@ E:\iclones\lakey\bin\x64\Debug\System.Buffers.xml
 E:\iclones\lakey\bin\x64\Debug\System.Memory.xml
 E:\iclones\lakey\bin\x64\Debug\System.Numerics.Vectors.xml
 E:\iclones\lakey\bin\x64\Debug\System.Runtime.CompilerServices.Unsafe.xml
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
 E:\iclones\lakey\obj\x64\Debug\Lakey.exe.config
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\AnniversaireNotice.baml
 E:\iclones\lakey\obj\x64\Debug\HelpWindow.baml
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAnniversaires.baml
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\ReseauSelect.g.vb
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\TempMsg.g.vb
+E:\iclones\lakey\obj\x64\Debug\Forms Pad\AnniversaireNotice.g.vb
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwCongeGlobal.g.vb
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwConges.g.vb
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\wdwDconnexion.g.vb
@@ -482,6 +486,7 @@ E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNBanque.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercNCNSS.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Supplement\usercRappel.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAgents.g.vb
+E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAnniversaires.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercClients.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercExterneActs.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Structure\usercFonction.g.vb
@@ -543,11 +548,7 @@ E:\iclones\lakey\obj\x64\Debug\Lakey.g.resources
 E:\iclones\lakey\obj\x64\Debug\Lakey.Resources.resources
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.GenerateResource.cache
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
 E:\iclones\lakey\obj\x64\Debug\Lakey.exe
 E:\iclones\lakey\obj\x64\Debug\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\AnniversaireNotice.baml
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAnniversaires.baml
-E:\iclones\lakey\obj\x64\Debug\Forms Pad\AnniversaireNotice.g.vb
-E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAnniversaires.g.vb
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete

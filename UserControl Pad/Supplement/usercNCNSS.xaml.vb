@@ -4,6 +4,7 @@ Public Class usercNCNSS
     Dim inputTimer As DispatcherTimer
     Dim iConnxStr As String
     Dim iCbxNsecu As New ComboBox
+    Private agentData As DataTable
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         elpStatus.Visibility = Visibility.Visible
         DbPathGeneral = (PaphBackUp())
@@ -18,11 +19,10 @@ Public Class usercNCNSS
 
     End Sub
     Sub Initilisation()
-        Dim istr As String = " select a.NomPrenoms,a.NumMatr, a.Nsecu,  a.Contacts,a.Actif from agents a where a.Actif=1 "
+        Dim istr As String = " select a.NomPrenoms,a.NumMatr, a.Nsecu,  a.Contacts,a.Actif from agents a "
         istr += " order by a.Actif desc, a.NomPrenoms "
-        Dim agentData As DataTable = LoadDataTable(istr)
-        Dgcnss.ItemsSource = agentData.DefaultView
-        UpdateCNSSCounts(agentData, True)
+        agentData = LoadDataTable(istr)
+        ApplyActifFilter()
         If Not FilmyCbx("select a.NomPrenoms from agents a order by a.Actif desc, a.NomPrenoms, a.NumMatr ", cbxAgent) Then cbxAgent.Items.Clear()
         If Not FilmyCbx("select a.Nsecu from agents a", iCbxNsecu) Then iCbxNsecu.Items.Clear()
         btnValidNewData.Visibility = Visibility.Collapsed
@@ -30,11 +30,11 @@ Public Class usercNCNSS
         'select a.Banque||a.NumCompte from agents a where a.Banque not like'' and a.NumCompte not like'' order by a.Banque 
     End Sub
 
-    Private Sub UpdateCNSSCounts(agentData As DataTable, activeOnly As Boolean)
+    Private Sub UpdateCNSSCounts(agentView As DataView)
         Dim withNumber As Integer = 0
         Dim withoutNumber As Integer = 0
-        For Each row As DataRow In agentData.Rows
-            If row.IsNull("Nsecu") Then Continue For
+        For Each row As DataRowView In agentView
+            If row.Row.IsNull("Nsecu") Then Continue For
             If Convert.ToString(row("Nsecu")) = "" Then
                 withoutNumber += 1
             Else
@@ -42,9 +42,27 @@ Public Class usercNCNSS
             End If
         Next
 
-        Dim label As String = If(activeOnly, "Nombre d'agents actifs", "Nombre d'agents")
-        tblNbcnss.Text = label & " ayant un N° CNSSS : " & withNumber &
-                         " | " & label & " sans un N° CNSSS : " & withoutNumber
+        tblNbcnss.Text = "Agents affichés : " & agentView.Count &
+                         " | avec un N° CNSS : " & withNumber &
+                         " | sans un N° CNSS : " & withoutNumber
+    End Sub
+
+    Private Sub ApplyActifFilter()
+        If agentData Is Nothing Then Return
+
+        Dim agentView As DataView = agentData.DefaultView
+        agentView.RowFilter = BuildStatusRowFilter(
+            "Actif",
+            ckbxShowActive.IsChecked.GetValueOrDefault(),
+            ckbxShowInactive.IsChecked.GetValueOrDefault())
+        Dgcnss.ItemsSource = agentView
+        UpdateCNSSCounts(agentView)
+    End Sub
+
+    Private Sub DisplayStatus_CheckedChanged(sender As Object, e As RoutedEventArgs) _
+        Handles ckbxShowActive.Checked, ckbxShowActive.Unchecked,
+                ckbxShowInactive.Checked, ckbxShowInactive.Unchecked
+        ApplyActifFilter()
     End Sub
 
     Private Sub OnInputTimerElapsed(sender As Object, e As EventArgs)
@@ -54,25 +72,16 @@ Public Class usercNCNSS
     Sub SearchNumCNSS(KeyWord As String)
         elpStatus.Visibility = Visibility.Visible
 
-        Dim sufix As String = ""
-        If KeyWord = "" Then
-            sufix = " and a.Actif=1 "
-        ElseIf KeyWord = "*" Or KeyWord = "%" Then
-            KeyWord = "%"
-            sufix = ""
-        Else
-            sufix = ""
+        Dim istr As String = " select a.NomPrenoms,a.NumMatr, a.Nsecu,  a.Contacts,a.Actif from agents a "
+        If Not String.IsNullOrWhiteSpace(KeyWord) AndAlso KeyWord <> "*" AndAlso KeyWord <> "%" Then
+            istr &= " where (a.NomPrenoms like '%" & KeyWord & "%' "
+            istr &= " or a.Nsecu like '%" & KeyWord & "%' "
+            istr &= " or a.NumMatr like '%" & KeyWord & "%' "
+            istr &= " or a.Contacts like '%" & KeyWord & "%' )"
         End If
-        Dim istr As String = " select a.NomPrenoms,a.NumMatr, a.Nsecu,  a.Contacts,a.Actif from agents a where "
-        istr += " (a.NomPrenoms  like '%" & KeyWord & "%' "
-        istr += " or a.Nsecu  like '%" & KeyWord & "%' "
-        istr += " or a.NumMatr  like '%" & KeyWord & "%' "
-        istr += " or a.Contacts  like '%" & KeyWord & "%' )" & sufix
         istr += " order by a.Actif desc, a.NomPrenoms "
-        Dim agentData As DataTable = LoadDataTable(istr)
-        Dgcnss.ItemsSource = agentData.DefaultView
-        'uShowTempMsg(istr)
-        UpdateCNSSCounts(agentData, False)
+        agentData = LoadDataTable(istr)
+        ApplyActifFilter()
 
         elpStatus.Visibility = Visibility.Collapsed
 

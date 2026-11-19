@@ -21,6 +21,8 @@
                 <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Center">
                     <Label Content="OUTILS SUPPLLEMENTAIRES /" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="15" />
                     <Label Content="SECURITE SOCIALE" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="20" HorizontalContentAlignment="Center" FontWeight="Bold" />
+                    <CheckBox x:Name="ckbxShowActive" Content="Actif" IsChecked="True" Foreground="{DynamicResource ThemeInkBrush}" VerticalAlignment="Center" Margin="8,0"/>
+                    <CheckBox x:Name="ckbxShowInactive" Content="Inactif" IsChecked="False" Foreground="{DynamicResource ThemeInkBrush}" VerticalAlignment="Center" Margin="8,0"/>
                 </StackPanel>
                 <TextBox x:Name="BtnAgentListeSearch" Width="150" Height="36" Style="{StaticResource SearchButtonRounded}" Grid.Column="2"/>
 
@@ -36,7 +38,7 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
                             <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
-                            <TextBlock x:Name="tblNbcnss" Text=" Nombre d'agents actif: "  Background="#FF00170C" Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="tblNbcnss" Text=" Nombre d'agents actifs : " Background="#FF00170C" Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Center" />
 
                             <StackPanel x:Name="stpAddNewFonction" Background="#66020A3E" Margin="10" >
                                 <StackPanel Orientation="Horizontal" Margin="10,10,10,0">

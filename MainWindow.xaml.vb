@@ -2349,6 +2349,10 @@ Class MainWindow
         oDeconect()
     End Sub
 
+    Private Sub mitBackup_Click(sender As Object, e As RoutedEventArgs)
+        IdBuder.BackupNow()
+    End Sub
+
     Private Sub mitChangerUtilisateur_Click(sender As Object, e As RoutedEventArgs)
         ChangerUtilisateur()
     End Sub
@@ -2441,6 +2445,11 @@ Class MainWindow
         End If
 
         If Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Shift) Then
+            If pressedKey = Key.U Then
+                mitBackup.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, mitBackup))
+                e.Handled = True
+                Return
+            End If
             If pressedKey = Key.M Then
                 btnThemeToggle.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, btnThemeToggle))
                 e.Handled = True
@@ -2468,7 +2477,7 @@ Class MainWindow
                     shortcutButton = btnRacAffectationAg
                 Case Key.L
                     shortcutButton = btnRacPlanningAg
-                Case Key.N, Key.I
+                Case Key.N
                     shortcutButton = btnRacAbsenceAg
                 Case Key.H
                     shortcutButton = btnRacHeureSupAg
@@ -2512,36 +2521,16 @@ Class MainWindow
         End If
     End Sub
 
-    Private Async Sub mitEntree_Click(sender As Object, e As RoutedEventArgs) Handles mitEntree.Click
-        Await RunWithLoadingAsync(
-            Sub()
-                SelecStp(stpEmployes)
-                SelectPrincipalBtn(btnAgents)
-                LoadEntree()
-                SelectRacoucourcilBtn(btnRacEntreeAg)
-            End Sub)
+    Private Sub mitEntree_Click(sender As Object, e As RoutedEventArgs)
+        btnRacEntreeAg.RaiseEvent(New RoutedEventArgs(Button.ClickEvent, btnRacEntreeAg))
     End Sub
 
-    Private Async Sub mitAffectation_Click(sender As Object, e As RoutedEventArgs) Handles mitAffectation.Click
-        Await RunWithLoadingAsync(
-            Sub()
-                SelecStp(stpEmployes)
-                SelectPrincipalBtn(btnAgents)
-                SelectAgentBtn(btnAffectation)
-                LoadAffectation()
-                SelectRacoucourcilBtn(btnRacAffectationAg)
-            End Sub)
+    Private Sub mitAffectation_Click(sender As Object, e As RoutedEventArgs)
+        btnRacAffectationAg.RaiseEvent(New RoutedEventArgs(Button.ClickEvent, btnRacAffectationAg))
     End Sub
 
-    Private Async Sub mitSortie_Click(sender As Object, e As RoutedEventArgs) Handles mitSortie.Click
-        Await RunWithLoadingAsync(
-            Sub()
-                SelecStp(stpEmployes)
-                SelectPrincipalBtn(btnAgents)
-                SelectAgentBtn(btnSortie)
-                LoadSortie()
-                SelectRacoucourcilBtn(btnRacSortieAg)
-            End Sub)
+    Private Sub mitSortie_Click(sender As Object, e As RoutedEventArgs)
+        btnRacSortieAg.RaiseEvent(New RoutedEventArgs(Button.ClickEvent, btnRacSortieAg))
     End Sub
 
     Private Async Sub mitFonction_Click(sender As Object, e As RoutedEventArgs) Handles mitFonction.Click

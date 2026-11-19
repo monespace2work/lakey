@@ -58,6 +58,11 @@ Public NotInheritable Class IdBuder
         sourcePathProvider = Nothing
     End Sub
 
+    Public Shared Sub BackupNow()
+        If backupTimer IsNot Nothing Then backupTimer.Change(backupInterval, backupInterval)
+        BeginBackup()
+    End Sub
+
     Private Shared Function LoadSettings() As String
         If Not File.Exists(SettingsPath) Then Return Nothing
 
@@ -388,7 +393,7 @@ Public NotInheritable Class IdBuder
     End Sub
 
     Private Shared Sub BackupNow_Click(sender As Object, e As EventArgs)
-        BeginBackup()
+        BackupNow()
     End Sub
 
     Private Shared Sub BackupTimer_Tick(state As Object)

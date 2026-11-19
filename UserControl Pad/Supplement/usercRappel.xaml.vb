@@ -5,6 +5,7 @@ Public Class usercRappel
     Dim CasValidation As Integer = 0
     Dim iFrmLoaded As Boolean = False
     Public iConnxStr As String
+    Private rappelData As DataTable
     Private Sub UserControl_Loaded(sender As Object, e As RoutedEventArgs)
         DbPathGeneral = (PaphBackUp())
         iConnxStr = $"Data Source={DbPath};Version=3;"
@@ -19,13 +20,29 @@ Public Class usercRappel
         maj()
         Dim istr As String = " select r.NoteRappel,format(r.Debut) as Debut,format(r.Fin) as Fin,r.Obs,r.Actif,r.Id from rappels r "
         istr += " ORDER BY r.Actif desc, r.Debut "
-        Dim rappelData = LoadDataTable(istr)
+        rappelData = LoadDataTable(istr)
         DgRappels.ItemsSource = rappelData.DefaultView
-        tblNbRappels.Text = "Nombre de rappels actifs : " & rappelData.Select("Actif = 1").Length
         CasValidation = 0
         iFrmLoaded = True
+        ApplyActifFilter()
         ActivValidBtn()
         AfficheProfilUser()
+    End Sub
+
+    Private Sub ApplyActifFilter()
+        If rappelData Is Nothing Then Return
+
+        rappelData.DefaultView.RowFilter = BuildStatusRowFilter(
+            "Actif",
+            ckbxShowActive.IsChecked.GetValueOrDefault(),
+            ckbxShowInactive.IsChecked.GetValueOrDefault())
+        tblNbRappels.Text = "Nombre de rappels affichés : " & rappelData.DefaultView.Count
+    End Sub
+
+    Private Sub DisplayStatus_CheckedChanged(sender As Object, e As RoutedEventArgs) _
+        Handles ckbxShowActive.Checked, ckbxShowActive.Unchecked,
+                ckbxShowInactive.Checked, ckbxShowInactive.Unchecked
+        If iFrmLoaded Then ApplyActifFilter()
     End Sub
 
     Sub resetvalues()
