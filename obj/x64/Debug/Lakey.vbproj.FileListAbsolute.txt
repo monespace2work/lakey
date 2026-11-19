@@ -543,7 +543,6 @@ E:\iclones\lakey\obj\x64\Debug\Lakey.g.resources
 E:\iclones\lakey\obj\x64\Debug\Lakey.Resources.resources
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.GenerateResource.cache
 E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CoreCompileInputs.cache
-E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete
 E:\iclones\lakey\obj\x64\Debug\Lakey.exe
 E:\iclones\lakey\obj\x64\Debug\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
@@ -551,3 +550,5 @@ E:\iclones\lakey\obj\x64\Debug\Forms Pad\AnniversaireNotice.baml
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAnniversaires.baml
 E:\iclones\lakey\obj\x64\Debug\Forms Pad\AnniversaireNotice.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\usercAnniversaires.g.vb
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.CopyComplete

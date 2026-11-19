@@ -613,6 +613,8 @@ Class MainWindow
             SetThemeColor("ThemeReminderSurfaceBrush", "#302329")
             SetThemeColor("ThemeReminderTextBrush", "#F3E8EA")
             SetThemeColor("ThemeReminderBorderBrush", "#80535C")
+            SetThemeColor("ThemeToolTipBrush", "#0B1630")
+            SetThemeColor("ThemeToolTipTextBrush", "#FFFFFF")
             btnThemeToggle.Header = "Mode clair"
         Else
             SetThemeColor("ThemeSurfaceBrush", "#E7EEF2")
@@ -715,6 +717,8 @@ Class MainWindow
             SetThemeColor("ThemeReminderSurfaceBrush", "#FFF7F7")
             SetThemeColor("ThemeReminderTextBrush", "#493238")
             SetThemeColor("ThemeReminderBorderBrush", "#D8AEB4")
+            SetThemeColor("ThemeToolTipBrush", "#FFFFFF")
+            SetThemeColor("ThemeToolTipTextBrush", "#172B3F")
             btnThemeToggle.Header = "Mode sombre"
         End If
 
@@ -2366,6 +2370,25 @@ Class MainWindow
         End If
 
         If Keyboard.Modifiers = (ModifierKeys.Control Or ModifierKeys.Shift) Then
+            If pressedKey = Key.M Then
+                btnThemeToggle.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, btnThemeToggle))
+                e.Handled = True
+                Return
+            End If
+            If pressedKey = Key.K Then
+                If LocalModeBb Then
+                    mitModeConnecte.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, mitModeConnecte))
+                Else
+                    mitModeLocal.RaiseEvent(New RoutedEventArgs(MenuItem.ClickEvent, mitModeLocal))
+                End If
+                e.Handled = True
+                Return
+            End If
+            If pressedKey = Key.V Then
+                btnAnniversaires.RaiseEvent(New RoutedEventArgs(Button.ClickEvent, btnAnniversaires))
+                e.Handled = True
+                Return
+            End If
             Dim shortcutButton As Button = Nothing
             Select Case pressedKey
                 Case Key.E
@@ -2390,8 +2413,6 @@ Class MainWindow
                     shortcutButton = btnRacSiteCl
                 Case Key.S
                     shortcutButton = btnRacPosteCl
-                Case Key.V
-                    shortcutButton = btnRacEtatCl
                 Case Key.G
                     shortcutButton = btnRacAgentListeCl
             End Select

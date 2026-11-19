@@ -108,6 +108,19 @@ ShutdownMode="OnMainWindowClose">
         <SolidColorBrush x:Key="ThemeReminderSurfaceBrush" Color="#302329"/>
         <SolidColorBrush x:Key="ThemeReminderTextBrush" Color="#F3E8EA"/>
         <SolidColorBrush x:Key="ThemeReminderBorderBrush" Color="#80535C"/>
+        <SolidColorBrush x:Key="ThemeToolTipBrush" Color="#0B1630"/>
+        <SolidColorBrush x:Key="ThemeToolTipTextBrush" Color="#FFFFFF"/>
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="{DynamicResource ThemeToolTipBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeToolTipTextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HasDropShadow" Value="True"/>
+        </Style>
         <Style TargetType="Image">
             <Setter Property="Stretch" Value="Uniform"/>
         </Style>
