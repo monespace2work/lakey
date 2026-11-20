@@ -232,11 +232,17 @@
     End Function
 
     Private Function IsLocalDatabaseSchemaUsable(databasePath As String,
-                                                 ByRef errorMessage As String) As Boolean
+                                                 ByRef errorMessage As String,
+                                                 Optional runIntegrityCheck As Boolean = True) As Boolean
         errorMessage = ""
-        Dim databaseError As String = Nothing
-        If Not IsSQLiteDatabaseHealthy(databasePath, databaseError) Then
-            errorMessage = databaseError
+        If runIntegrityCheck Then
+            Dim databaseError As String = Nothing
+            If Not IsSQLiteDatabaseHealthy(databasePath, databaseError) Then
+                errorMessage = databaseError
+                Return False
+            End If
+        ElseIf Not IO.File.Exists(databasePath) Then
+            errorMessage = "Le fichier de base de données est introuvable."
             Return False
         End If
 
@@ -476,7 +482,7 @@
         End If
 
         Dim schemaError As String = Nothing
-        If Not IsLocalDatabaseSchemaUsable(databasePath, schemaError) Then
+        If Not IsLocalDatabaseSchemaUsable(databasePath, schemaError, False) Then
             Return Tuple.Create(False, "La base ne contient pas un schéma LAKEY valide. " & schemaError)
         End If
 

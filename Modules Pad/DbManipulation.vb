@@ -3,7 +3,7 @@ Imports System.Data.SQLite
 Imports System.IO
 'Imports System.Windows.Forms
 Module DbManipulation
-    Public Const DefaultSQLiteBusyTimeoutMilliseconds As Integer = 5000
+    Public Const DefaultSQLiteBusyTimeoutMilliseconds As Integer = 15000
     Public MyConnection As SQLiteConnection
     Public MyCommand As SQLiteCommand
     Public iConnectStr As String = "Data Source=" & DbPath & ";Version=3;"
@@ -1832,13 +1832,45 @@ Module DbManipulation
         Joper = SaveNewData(iStr, iConxStr)
     End Function
     Public Function SessLogin(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
+        SessLogin = False
         If Not LocalModeBb AndAlso Not maj() Then Return False
         'Dim iConxStr As String = $"Data Source={PaphBackUp()};Version=3;"
         Dim iUserName As String = UCase(UserName & "@" & My.Computer.Name)
-        IdSession = MayStatVal("select  max (SesId) from sesslog", iConxStr) + 1
-        Dim iStr As String = "insert into SessLog (UserName,SesId) values ('" & Apost(iUserName) & "'," & IdSession & ") "
-        'ShowTempMsg(iConxStr)
-        SessLogin = SaveNewData(iStr, iConxStr)
+        Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConxStr, True)
+
+        Try
+            Using connection As New SQLiteConnection(writeConnectionString)
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    Dim newSessionId As Integer
+                    Using command As New SQLiteCommand(
+                        "SELECT COALESCE(MAX(SesId), 0) + 1 FROM sesslog;", connection, transaction)
+                        newSessionId = Convert.ToInt32(command.ExecuteScalar())
+                    End Using
+
+                    Using command As New SQLiteCommand(
+                        "INSERT INTO SessLog (UserName, SesId) VALUES (@username, @sessionId);",
+                        connection,
+                        transaction)
+                        command.Parameters.AddWithValue("@username", iUserName)
+                        command.Parameters.AddWithValue("@sessionId", newSessionId)
+                        command.ExecuteNonQuery()
+                    End Using
+
+                    transaction.Commit()
+                    IdSession = newSessionId
+                    SessLogin = True
+                End Using
+            End Using
+
+            If SessLogin AndAlso Not LocalModeBb AndAlso
+               IsMainDatabasePath(New SQLiteConnectionStringBuilder(writeConnectionString).DataSource) Then
+                NotifyGeneralDatabaseChanged()
+            End If
+        Catch ex As SQLiteException
+            System.Diagnostics.Debug.WriteLine("Échec de l'ouverture de session SQLite : " & ex.ToString())
+            MsgBox(ex.Message)
+        End Try
     End Function
     Public Function SessLogout(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
         'Dim iConxStr As String = $"Data Source={PaphBackUp()};Version=3;"
