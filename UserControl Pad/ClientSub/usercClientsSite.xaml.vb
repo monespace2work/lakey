@@ -1024,8 +1024,8 @@ Public Class usercClientsSite
         Dim Fin As Date = CDate("24/" & Today.ToString("MM/yyyy"))
         'If dtpDebutSearch.SelectedDate.HasValue Then debut = dtpDebutSearch.SelectedDate
         'If dtpFinSearch.SelectedDate.HasValue Then Fin = dtpFinSearch.SelectedDate
-        Dim istr As String = "SELECT s.Client, s.NomSite,date(s.DateCreation) DebutCreation ,date(s.DateFermeture) DébutFin, a.AgentAffect "
-        istr &= " FROM siteaffectation s join affectation a on a.SiteAffect=s.NomSite "
+        Dim istr As String = "SELECT s.Client, s.NomSite,date(s.DateCreation) DebutCreation ,date(s.DateFermeture) DébutFin, a.AgentAffect, c.Obs "
+        istr &= " from siteaffectation s join affectation a on a.SiteAffect=s.NomSite join client c on c.NomClient=s.Client "
         istr &= " WHERE  a.DateAffect >='" & debut.ToString("yyyy-MM-dd") & "' and  a.DateAffect <='" & Fin.ToString("yyyy-MM-dd") & "'"
         istr &= " and s.DateCreation >='" & debut.ToString("yyyy-MM-dd") & "' and s.DateCreation <='" & Fin.ToString("yyyy-MM-dd") & "'"
         istr &= " and s.Actif=1 "
