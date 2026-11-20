@@ -22,6 +22,11 @@
                         <Label Content="CLIENT"  Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
                         <Label Content=" / "  Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
                         <Label Content="CONTRATS"  Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" HorizontalContentAlignment="Center" FontSize="20" FontWeight="Bold" Grid.Column="1"/>
+                    <StackPanel Orientation="Horizontal" Margin="30,0,0,0" Background="#4C000000" VerticalAlignment="Center" >
+                        <Label Content="Point mensuel" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" VerticalAlignment="Center"/>
+                        <Button x:Name="btnPointNouveauC" Content="Debut C." Margin="30,10,15,15" Padding="10,1" Background="{DynamicResource ThemeActionPointBrush}" ToolTip="POINT DES NOUVEAUX CONTRATS" Foreground="{DynamicResource ThemeActionPointTextBrush}"/>
+                        <Button x:Name="btnPointFinC" Content="Fin C." Margin="15,10,15,15" Padding="10,1" Background="{DynamicResource ThemeActionPointBrush}" ToolTip="POINT DES FINS DE CONTRAT" Foreground="{DynamicResource ThemeActionPointTextBrush}"/>
+                    </StackPanel>
                 </StackPanel>
                 <Border  Grid.Column="1" Background="#FFF3E0FF" >
                     <Button x:Name="btnAgrandir" Margin="5" BorderBrush="{x:Null}" Style="{StaticResource FlatAgrandirButton}">
@@ -40,15 +45,15 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition MinWidth="200"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
+            <StackPanel Grid.Column="0" Background="{DynamicResource ThemeSectionHeaderBrush}">
                 <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Visible">
-                    <Label Content="CLIENTS" Foreground="#FF9DFF87" FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
-                    <Label Content=" / " Foreground="LightSkyBlue" FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                    <Label Content="CONTRATS" Foreground="White" FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                    <Label Content="CLIENTS" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
+                    <Label Content=" / " Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                    <Label Content="CONTRATS" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
                     <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height="10" Visibility="Collapsed" />
                 </WrapPanel>
                 <WrapPanel>
-                    <TextBlock x:Name="tblNbClientContratActifs" Text=" Nombre de contrats en cours de validité : " Background="#FF150452" Foreground="LightSkyBlue" />
+                    <TextBlock x:Name="tblNbClientContratActifs" Text=" Nombre de contrats en cours de validité : " Foreground="{DynamicResource ThemeInkBrush}" />
                     <CheckBox x:Name="CltActif" Content="Actif" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}" IsChecked="True" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="20,0,7,0" />
                     <CheckBox x:Name="CltInActif" Content="Inactif" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}" IsChecked="False" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="20,0,7,0" />
                 </WrapPanel>

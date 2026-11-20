@@ -204,7 +204,7 @@ Public Class usercNCNSS
         If MessageBox.Show("Modifier ce Numéro ?", "MODIFICATION...", MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             Dim iStr As String = ""
             iStr = "update agents  set "
-            iStr &= $" Nsecu='{ Apost(tbxNumSecu.Text.Trim)}' where NumMatr='{Apost(cbxMatric.SelectedItem)}'"
+            iStr &= $" Nsecu='{ Apost(tbxNumSecu.Text.Trim)}', OpTime='{Now.ToString("yyyy-MM-dd HH:mm:ss")}' where NumMatr='{Apost(cbxMatric.SelectedItem)}'"
             If SaveNewData(iStr, iConnxStr) Then
                 Joper("Modif Num CNSS de " & cbxAgent.SelectedItem, iConnxStr)
                 MsgBox("MODIFICATION réalisée avec succès")

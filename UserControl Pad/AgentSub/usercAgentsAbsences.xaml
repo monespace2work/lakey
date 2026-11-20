@@ -58,15 +58,15 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition MinWidth="200"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
+                <StackPanel Grid.Column="0" Background="{DynamicResource ThemeSectionHeaderBrush}">
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Visible">
-                        <Label Content="ABSENCES" Foreground="#FF9DFF87"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
-                        <Label Content=" / " Foreground="LightSkyBlue"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                        <Label Content="PERMISSIONS" Foreground="White"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}"  />
+                        <Label Content="ABSENCES" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
+                        <Label Content=" / " Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                        <Label Content="PERMISSIONS" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}"  />
                         <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
 
                     </WrapPanel>
-                    <TextBlock x:Name="tblNbAgentAbsence"  Foreground="LightSkyBlue" Margin="10,0,0,0" ><Run Text=" Nombre d'a"/><Run Text="bsences"/><Run Text=" : "/></TextBlock>
+                    <TextBlock x:Name="tblNbAgentAbsence"  Foreground="{DynamicResource ThemeInkBrush}" Margin="10,0,0,0" ><Run Text=" Nombre d'a"/><Run Text="bsences"/><Run Text=" : "/></TextBlock>
 
                 </StackPanel>
                 <WrapPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,0,0">

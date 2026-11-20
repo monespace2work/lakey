@@ -955,4 +955,38 @@ Public Class usercClientsContrat
         End If
         If iFormLoaded Then SearchData(BtnDataSearch.Text)
     End Sub
+
+    Private Sub btnPointNouveauC_Click(sender As Object, e As RoutedEventArgs) Handles btnPointNouveauC.Click
+        Dim debut As Date = CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy"))
+        Dim Fin As Date = CDate("24/" & Today.ToString("MM/yyyy"))
+        'If dtpDebutSearch.SelectedDate.HasValue Then debut = dtpDebutSearch.SelectedDate
+        'If dtpFinSearch.SelectedDate.HasValue Then Fin = dtpFinSearch.SelectedDate
+        Dim istr As String = "SELECT c.NomClient, c.Adresse, c.TypeClient,c.MontantFacturationUnitaire MontantUnitaire,date(c.DateDebutCollabor) DébutContrat, date(c.DateFinCollabor) FinContrat "
+        istr &= " FROM client c "
+        istr &= " WHERE c.DateDebutCollabor >='" & debut.ToString("yyyy-MM-dd") & "' and c.DateDebutCollabor <='" & Fin.ToString("yyyy-MM-dd") & "'"
+        'Istr &= " and a.DateEntree >='" & DebutDuMois(Fin.AddMonths(-6)).ToString("yyyy-MM-dd") & "'"
+        'istr &= " and (c.NomClient LIKE '%stag%') "
+        'istr &= " GROUP BY s.Client, a.NomPrenoms  "
+        istr &= " ORDER BY c.NomClient"
+        'ShowTempMsg(istr)
+        openPointMensuel(debut, Fin, istr, "NOUVEAUX CLIENTS du " & debut.ToString("dd/MM/yyyy") & " au " & Fin.ToString("dd/MM/yyyy"), "STAGES")
+
+    End Sub
+
+    Private Sub btnPointFinC_Click(sender As Object, e As RoutedEventArgs) Handles btnPointFinC.Click
+        Dim debut As Date = CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy"))
+        Dim Fin As Date = CDate("24/" & Today.ToString("MM/yyyy"))
+        'If dtpDebutSearch.SelectedDate.HasValue Then debut = dtpDebutSearch.SelectedDate
+        'If dtpFinSearch.SelectedDate.HasValue Then Fin = dtpFinSearch.SelectedDate
+        Dim istr As String = "SELECT c.NomClient, c.TypeClient,date(c.DateFinCollabor) FinContrat ,date(c.DateDebutCollabor) DébutContrat, a.AgentAffect Agent"
+        istr &= " from client c join siteaffectation s on s.Client=c.NomClient join affectation a on a.SiteAffect=s.NomSite "
+        istr &= " WHERE c.DateFinCollabor >='" & debut.ToString("yyyy-MM-dd") & "' and c.DateFinCollabor <='" & Fin.ToString("yyyy-MM-dd") & "'"
+        istr &= " and a.FinAffect >='" & debut.ToString("yyyy-MM-dd") & "' and a.FinAffect <='" & Fin.ToString("yyyy-MM-dd") & "'"
+        'istr &= " and (c.NomClient LIKE '%stag%') "
+        'istr &= " GROUP BY s.Client, a.NomPrenoms  "
+        istr &= " ORDER BY c.NomClient"
+        'ShowTempMsg(istr)
+        openPointMensuel(debut, Fin, istr, "NOUVEAUX CLIENTS du " & debut.ToString("dd/MM/yyyy") & " au " & Fin.ToString("dd/MM/yyyy"), "STAGES")
+
+    End Sub
 End Class

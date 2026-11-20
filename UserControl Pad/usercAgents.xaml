@@ -42,11 +42,11 @@
                                         <ColumnDefinition MinWidth="250" Width="3*"/>
                                         <ColumnDefinition MinWidth="200"  Width="2*" />
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
+                                    <StackPanel Grid.Column="0" Background="{DynamicResource ThemeSectionHeaderBrush}">
                                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Visible">
                                             <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
                                         </WrapPanel>
-                                        <TextBlock x:Name="tblNbAgents" Text="Nb agents : " Foreground="LightSkyBlue" Margin="10,0,0,0" />
+                                        <TextBlock x:Name="tblNbAgents" Text="Nb agents : " Foreground="{DynamicResource ThemeInkBrush}" Margin="10,0,0,0" />
                                     </StackPanel>
                                     <WrapPanel Orientation="Horizontal"  Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,7,0">
                                         <StackPanel>

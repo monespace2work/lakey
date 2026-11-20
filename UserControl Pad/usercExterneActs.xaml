@@ -1,16 +1,118 @@
-﻿<UserControl x:Class="usercExterneActs"
+<UserControl x:Class="usercExterneActs"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Lakey"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <DataTemplate x:Key="SupplementPreviewItemTemplate">
+            <Border BorderBrush="{DynamicResource ThemeContentBorderBrush}" BorderThickness="0,0,0,1" Padding="0,7">
+                <StackPanel>
+                    <TextBlock Text="{Binding DateText}" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" FontSize="11"/>
+                    <TextBlock Text="{Binding Title}" Foreground="{DynamicResource ThemeInkBrush}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding Details}" Foreground="{DynamicResource ThemeInputPlaceholderBrush}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+        <Style x:Key="SupplementPreviewCard" TargetType="Border">
+            <Setter Property="Width" Value="320"/>
+            <Setter Property="MinHeight" Value="225"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeContentCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeContentBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+        <Style x:Key="SupplementPreviewMoreButton" TargetType="Button">
+            <Setter Property="Content" Value="Voir plus"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeNavyBrush}"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="{DynamicResource ThemeContentSurfaceBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Border Style="{StaticResource SectionHeaderBorder}" BorderThickness="1" MinHeight="56">
-            <Label Content="OUTILS SUPPLEMENTAIRES" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}" HorizontalContentAlignment="Center" FontSize="20"/>
-
+            <Label Content="OUTILS SUPPLÉMENTAIRES"
+                   Foreground="{DynamicResource ThemeSectionHeaderTextBrush}"
+                   HorizontalContentAlignment="Center"
+                   FontSize="20"/>
         </Border>
-
+        <ScrollViewer x:Name="svRecentOptions"
+                      Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      PreviewMouseWheel="RecentOptions_PreviewMouseWheel">
+            <WrapPanel HorizontalAlignment="Center" Margin="8">
+                <Border Style="{StaticResource SupplementPreviewCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="MÉMOS / NOTES" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="16" FontWeight="Bold"/>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding MemoPreview}" ItemTemplate="{StaticResource SupplementPreviewItemTemplate}"/>
+                        <Button Grid.Row="2" Style="{StaticResource SupplementPreviewMoreButton}" Tag="Memo" Click="BtnVoirPlus_Click"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SupplementPreviewCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="ÉVÉNEMENTS" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="16" FontWeight="Bold"/>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding EventPreview}" ItemTemplate="{StaticResource SupplementPreviewItemTemplate}"/>
+                        <Button Grid.Row="2" Style="{StaticResource SupplementPreviewMoreButton}" Tag="Events" Click="BtnVoirPlus_Click"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SupplementPreviewCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="RAPPELS" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="16" FontWeight="Bold"/>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding RappelPreview}" ItemTemplate="{StaticResource SupplementPreviewItemTemplate}"/>
+                        <Button Grid.Row="2" Style="{StaticResource SupplementPreviewMoreButton}" Tag="Rappel" Click="BtnVoirPlus_Click"/>
+                    </Grid>
+                </Border>
+                <Border x:Name="cardCompta" Style="{StaticResource SupplementPreviewCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="COMPTA" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="16" FontWeight="Bold"/>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding ComptaPreview}" ItemTemplate="{StaticResource SupplementPreviewItemTemplate}"/>
+                        <Button Grid.Row="2" Style="{StaticResource SupplementPreviewMoreButton}" Tag="Compta" Click="BtnVoirPlus_Click"/>
+                    </Grid>
+                </Border>
+                <Border x:Name="cardCnss" Style="{StaticResource SupplementPreviewCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="CNSS" Foreground="{DynamicResource ThemeHeadingBrush}" FontSize="16" FontWeight="Bold"/>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding CnssPreview}" ItemTemplate="{StaticResource SupplementPreviewItemTemplate}"/>
+                        <Button Grid.Row="2" Style="{StaticResource SupplementPreviewMoreButton}" Tag="Cnss" Click="BtnVoirPlus_Click"/>
+                    </Grid>
+                </Border>
+            </WrapPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

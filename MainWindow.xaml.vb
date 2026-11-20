@@ -1591,44 +1591,59 @@ Class MainWindow
             End Sub)
     End Sub
 
-    Private Async Sub btnCompta_Click(sender As Object, e As RoutedEventArgs) Handles btnCompta.Click
+    Public Async Function OpenSupplementView(view As SupplementView) As Task
+        If Not [Enum].IsDefined(GetType(SupplementView), view) Then
+            MessageBox.Show("La vue supplémentaire sélectionnée n'est pas reconnue.",
+                            "Outils supplémentaires", MessageBoxButton.OK, MessageBoxImage.Error)
+            Return
+        End If
+        If (view = SupplementView.Compta OrElse view = SupplementView.Cnss) AndAlso
+           Not CanAddDataSpecial Then
+            MessageBox.Show("Vous n'avez pas les droits nécessaires pour consulter cette vue.",
+                            "Accès refusé", MessageBoxButton.OK, MessageBoxImage.Warning)
+            Return
+        End If
+
         Await RunWithLoadingAsync(
             Sub()
-                SelectSupplement(btnCompta)
-                cctrlCentral.Content = New usercNBanque
+                Select Case view
+                    Case SupplementView.Memo
+                        SelectSupplement(btnMemo)
+                        cctrlCentral.Content = New usercMemo
+                    Case SupplementView.Events
+                        SelectSupplement(btnEvenement)
+                        cctrlCentral.Content = New usercEvenement
+                    Case SupplementView.Rappel
+                        SelectSupplement(btnRappel)
+                        cctrlCentral.Content = New usercRappel
+                    Case SupplementView.Compta
+                        SelectSupplement(btnCompta)
+                        cctrlCentral.Content = New usercNBanque
+                    Case SupplementView.Cnss
+                        SelectSupplement(btnCnss)
+                        cctrlCentral.Content = New usercNCNSS
+                End Select
             End Sub)
+    End Function
+
+    Private Async Sub btnCompta_Click(sender As Object, e As RoutedEventArgs) Handles btnCompta.Click
+        Await OpenSupplementView(SupplementView.Compta)
     End Sub
 
     Private Async Sub btnCnss_Click(sender As Object, e As RoutedEventArgs) Handles btnCnss.Click
-        Await RunWithLoadingAsync(
-            Sub()
-                SelectSupplement(btnCnss)
-                cctrlCentral.Content = New usercNCNSS
-            End Sub)
+        Await OpenSupplementView(SupplementView.Cnss)
     End Sub
 
     Private Async Sub btnRappel_Click(sender As Object, e As RoutedEventArgs) Handles btnRappel.Click
-        Await RunWithLoadingAsync(
-            Sub()
-                SelectSupplement(btnRappel)
-                cctrlCentral.Content = New usercRappel
-            End Sub)
+        Await OpenSupplementView(SupplementView.Rappel)
     End Sub
 
     Private Async Sub btnMemo_Click(sender As Object, e As RoutedEventArgs) Handles btnMemo.Click
-        Await RunWithLoadingAsync(
-            Sub()
-                SelectSupplement(btnMemo)
-                cctrlCentral.Content = New usercMemo
-            End Sub)
+        Await OpenSupplementView(SupplementView.Memo)
     End Sub
 
     Private Async Sub btnEvenement_Click_1(sender As Object, e As RoutedEventArgs) Handles btnEvenement.Click
-        Await RunWithLoadingAsync(
-            Sub()
-                SelectSupplement(btnEvenement)
-                cctrlCentral.Content = New usercEvenement
-            End Sub)
+        Await OpenSupplementView(SupplementView.Events)
     End Sub
 
     Private Async Sub btnGeneral_Click(sender As Object, e As RoutedEventArgs) Handles btnGeneral.Click

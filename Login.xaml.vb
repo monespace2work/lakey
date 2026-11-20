@@ -249,7 +249,8 @@
             Dim connectionString As New Data.SQLite.SQLiteConnectionStringBuilder With {
                 .DataSource = databasePath,
                 .Version = 3,
-                .ReadOnly = False
+                .ReadOnly = True,
+                .BusyTimeout = DefaultSQLiteBusyTimeoutMilliseconds
             }
             Using connection As New Data.SQLite.SQLiteConnection(connectionString.ToString())
                 connection.Open()
@@ -483,8 +484,9 @@
             Dim connectionString As New Data.SQLite.SQLiteConnectionStringBuilder With {
                 .DataSource = databasePath,
                 .Version = 3,
-                .ReadOnly = False,
-                .DefaultTimeout = 10
+                .ReadOnly = True,
+                .DefaultTimeout = 30,
+                .BusyTimeout = DefaultSQLiteBusyTimeoutMilliseconds
             }
             Using connection As New Data.SQLite.SQLiteConnection(connectionString.ToString())
                 connection.Open()
@@ -527,34 +529,25 @@
 
     Shared Function UserTest(uName As String, uPssw As String, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Integer
         UserTest = 1976
-        Dim iStr As String = "select l.UserName, l.UserPassWord, l.UserLever from lada l "
-        'MsgBox(iConxStr)
+        Dim iStr As String = "SELECT l.UserLever FROM lada l " &
+                             "WHERE l.UserName = @username AND l.UserPassWord = @password LIMIT 1;"
         Try
             Dim authConnectionString As New Data.SQLite.SQLiteConnectionStringBuilder(iConxStr) With {
-                .ReadOnly = False
+                .ReadOnly = True,
+                .BusyTimeout = DefaultSQLiteBusyTimeoutMilliseconds
             }
             Using iConx As New Data.SQLite.SQLiteConnection(authConnectionString.ToString())
                 iConx.Open()
                 Using iCmd As New Data.SQLite.SQLiteCommand(iStr, iConx)
-                    Dim iReader As Data.SQLite.SQLiteDataReader = iCmd.ExecuteReader
-                    While iReader.Read
-                        'MsgBox(iReader(2))
-                        If Not IsDBNull(iReader(0)) AndAlso Not IsDBNull(iReader(1)) AndAlso Not IsDBNull(iReader(2)) Then
-                            'MsgBox(iReader(2))
-                            If iReader(0) = uName And iReader(1) = uPssw Then
-                                UserName = iReader(0)
-                                UserPW = iReader(1)
-                                UserLevel = iReader(2)
-                                UserTest = iReader(2)
-                                'MsgBox(iReader(2))
-                            Else
-                                ' UserTest = 1976
-                            End If
-                            'MsgBox(iReader(0))
-                        Else
-                            'UserTest = 1976
-                        End If
-                    End While
+                    iCmd.Parameters.AddWithValue("@username", If(uName, String.Empty))
+                    iCmd.Parameters.AddWithValue("@password", If(uPssw, String.Empty))
+                    Dim level As Object = iCmd.ExecuteScalar()
+                    If level IsNot Nothing AndAlso Not IsDBNull(level) Then
+                        UserName = uName
+                        UserPW = uPssw
+                        UserLevel = Convert.ToInt32(level)
+                        UserTest = UserLevel
+                    End If
                 End Using
             End Using
 

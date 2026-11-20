@@ -54,14 +54,14 @@
                     <ColumnDefinition  MinWidth=" 150"/>
                 </Grid.ColumnDefinitions>
             <!--Label Content="EMPLOYES / AGENTS" Foreground="White" HorizontalContentAlignment="Center" FontSize="20" Grid.Column="1"/-->
-                <StackPanel Grid.Column="0"  Grid.ColumnSpan="2" HorizontalAlignment="Left"  >
+                <StackPanel Grid.Column="0"  Grid.ColumnSpan="2" HorizontalAlignment="Left" Background="{DynamicResource ThemeSectionHeaderBrush}" >
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                        <Label Content="SORTIES" Foreground="#FF9DFF87"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" />
-                        <Label Content=" / " Foreground="LightSkyBlue"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                        <Label Content="FINS DE SERVICE" Foreground="White"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                        <Label Content="SORTIES" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" />
+                        <Label Content=" / " Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                        <Label Content="FINS DE SERVICE" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
                         <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
                     </WrapPanel>
-                    <TextBlock x:Name="tblNbAgentSortie" Text=" Nombre d'agents : "  Background="#FF150452" Foreground="LightSkyBlue" />
+                    <TextBlock x:Name="tblNbAgentSortie" Text=" Nombre d'agents : "  Foreground="{DynamicResource ThemeInkBrush}" />
 
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="11,3,91.333,3">

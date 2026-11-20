@@ -3,6 +3,7 @@ Imports System.Data.SQLite
 Imports System.IO
 'Imports System.Windows.Forms
 Module DbManipulation
+    Public Const DefaultSQLiteBusyTimeoutMilliseconds As Integer = 5000
     Public MyConnection As SQLiteConnection
     Public MyCommand As SQLiteCommand
     Public iConnectStr As String = "Data Source=" & DbPath & ";Version=3;"
@@ -16,16 +17,19 @@ Module DbManipulation
 
     Public Function ResolveMainDatabaseConnectionString(connectionString As String,
                                                        useGeneralDatabase As Boolean) As String
-        If LocalModeBb OrElse String.IsNullOrWhiteSpace(connectionString) OrElse
-           String.IsNullOrWhiteSpace(DbPath) OrElse String.IsNullOrWhiteSpace(DbPathGeneral) Then
-            Return connectionString
-        End If
+        If String.IsNullOrWhiteSpace(connectionString) Then Return connectionString
 
         Dim builder As New SQLiteConnectionStringBuilder(connectionString)
-        Dim requestedPath As String = builder.DataSource
-        If Not IsMainDatabasePath(requestedPath) Then Return connectionString
+        If Not LocalModeBb AndAlso
+           Not String.IsNullOrWhiteSpace(DbPath) AndAlso
+           Not String.IsNullOrWhiteSpace(DbPathGeneral) Then
+            Dim requestedPath As String = builder.DataSource
+            If IsMainDatabasePath(requestedPath) Then
+                builder.DataSource = If(useGeneralDatabase, DbPathGeneral, DbPath)
+            End If
+        End If
 
-        builder.DataSource = If(useGeneralDatabase, DbPathGeneral, DbPath)
+        builder.BusyTimeout = Math.Max(builder.BusyTimeout, DefaultSQLiteBusyTimeoutMilliseconds)
         Return builder.ToString()
     End Function
 
@@ -400,7 +404,8 @@ Module DbManipulation
             Dim connectionString As New SQLiteConnectionStringBuilder With {
                 .DataSource = databasePath,
                 .Version = 3,
-                .ReadOnly = True
+                .ReadOnly = True,
+                .BusyTimeout = DefaultSQLiteBusyTimeoutMilliseconds
             }
             Using connection As New SQLiteConnection(connectionString.ToString())
                 connection.Open()
@@ -441,7 +446,8 @@ Module DbManipulation
             Dim sourceConnectionString As New SQLiteConnectionStringBuilder With {
                 .DataSource = fullSourcePath,
                 .Version = 3,
-                .ReadOnly = True
+                .ReadOnly = True,
+                .BusyTimeout = DefaultSQLiteBusyTimeoutMilliseconds
             }
             Using source As New SQLiteConnection(sourceConnectionString.ToString())
                 source.Open()

@@ -51,14 +51,14 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition MinWidth="200"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
+                <StackPanel Grid.Column="0" Background="{DynamicResource ThemeSectionHeaderBrush}">
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Visible">
-                        <Label Content="HEURES SUP." Foreground="#FF9DFF87"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
-                        <Label Content=" / " Foreground="LightSkyBlue"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                        <Label Content="H. S." Foreground="White"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}"  />
+                        <Label Content="HEURES SUP." Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" Margin="10,0,0,0" />
+                        <Label Content=" / " Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                        <Label Content="H. S." Foreground="{DynamicResource ThemeSectionHeaderTextBrush}"  FontSize="12" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}"  />
                         <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Collapsed" />
                     </WrapPanel>
-                    <TextBlock x:Name="tblNbAgentHeureSupp" Text=" Nombre d'heure sup. : "  Background="#FF150452" Foreground="LightSkyBlue" />
+                    <TextBlock x:Name="tblNbAgentHeureSupp" Text=" Nombre d'heure sup. : "  Foreground="{DynamicResource ThemeInkBrush}" />
 
 
                 </StackPanel>

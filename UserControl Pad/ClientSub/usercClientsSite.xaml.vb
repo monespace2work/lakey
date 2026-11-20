@@ -1018,4 +1018,39 @@ Public Class usercClientsSite
         End If
         If iFormLoaded Then SearchData(BtnDataSearch.Text)
     End Sub
+
+    Private Sub btnPointScrees_Click(sender As Object, e As RoutedEventArgs) Handles btnPointScrees.Click
+        Dim debut As Date = CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy"))
+        Dim Fin As Date = CDate("24/" & Today.ToString("MM/yyyy"))
+        'If dtpDebutSearch.SelectedDate.HasValue Then debut = dtpDebutSearch.SelectedDate
+        'If dtpFinSearch.SelectedDate.HasValue Then Fin = dtpFinSearch.SelectedDate
+        Dim istr As String = "SELECT s.Client, s.NomSite,date(s.DateCreation) DebutCreation ,date(s.DateFermeture) DébutFin, a.AgentAffect "
+        istr &= " FROM siteaffectation s join affectation a on a.SiteAffect=s.NomSite "
+        istr &= " WHERE  a.DateAffect >='" & debut.ToString("yyyy-MM-dd") & "' and  a.DateAffect <='" & Fin.ToString("yyyy-MM-dd") & "'"
+        istr &= " and s.DateCreation >='" & debut.ToString("yyyy-MM-dd") & "' and s.DateCreation <='" & Fin.ToString("yyyy-MM-dd") & "'"
+        istr &= " and s.Actif=1 "
+        'istr &= " GROUP BY s.Client, a.NomPrenoms  "
+        istr &= " ORDER BY s.Client, s.NomSite"
+        'ShowTempMsg(istr)
+        openPointMensuel(debut, Fin, istr, "SITES CREES du " & debut.ToString("dd/MM/yyyy") & " au " & Fin.ToString("dd/MM/yyyy"), "STAGES")
+
+    End Sub
+
+    Private Sub btnPointSfermes_Click(sender As Object, e As RoutedEventArgs) Handles btnPointSfermes.Click
+        Dim debut As Date = CDate("25/" & Today.AddMonths(-1).ToString("MM/yyyy"))
+        Dim Fin As Date = CDate("24/" & Today.ToString("MM/yyyy"))
+        'If dtpDebutSearch.SelectedDate.HasValue Then debut = dtpDebutSearch.SelectedDate
+        'If dtpFinSearch.SelectedDate.HasValue Then Fin = dtpFinSearch.SelectedDate
+        'If debut = Today Then debut =CDate( DateFinEtatFinancierMensuel &
+        Dim istr As String = "SELECT s.Client, s.NomSite,date(s.DateCreation) DebutCreation ,date(s.DateFermeture) DébutFin, a.AgentAffect "
+        istr &= " FROM siteaffectation s join affectation a on a.SiteAffect=s.NomSite "
+        istr &= " WHERE  a.FinAffect >='" & debut.ToString("yyyy-MM-dd") & "' and  a.FinAffect <='" & Fin.ToString("yyyy-MM-dd") & "'"
+        istr &= " and s.DateFermeture >='" & debut.ToString("yyyy-MM-dd") & "' and s.DateFermeture <='" & Fin.ToString("yyyy-MM-dd") & "'"
+        istr &= " and s.Actif=0 "
+        'istr &= " GROUP BY s.Client, a.NomPrenoms  "
+        istr &= " ORDER BY s.Client, s.NomSite"
+        'ShowTempMsg(istr)
+        openPointMensuel(debut, Fin, istr, "SITES FERMES du " & debut.ToString("dd/MM/yyyy") & " au " & Fin.ToString("dd/MM/yyyy"), "STAGES")
+
+    End Sub
 End Class

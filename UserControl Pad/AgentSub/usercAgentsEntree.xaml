@@ -52,14 +52,14 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition MinWidth="200"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Background="#33150452" >
+                    <StackPanel Grid.Column="0" Background="{DynamicResource ThemeSectionHeaderBrush}" >
                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" >
-                            <Label Content="ENTREES" Foreground="#FF9DFF87"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                            <Label Content=" / " Foreground="LightSkyBlue"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
-                            <Label Content="EMBAUCHES" Foreground="White"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" />
+                            <Label Content="ENTREES" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                            <Label Content=" / " Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" />
+                            <Label Content="EMBAUCHES" Foreground="{DynamicResource ThemeSectionHeaderTextBrush}"  FontSize="18" FontStretch="ExtraExpanded" HorizontalContentAlignment="Center" Background="{x:Null}" FontWeight="Bold" />
                             <Ellipse x:Name="elpStatus" Fill="Red" Width="10" Height=" 10" Visibility="Visible"  />
                         </WrapPanel>
-                        <TextBlock x:Name="tblNbAgent" Text=" Nombre d'agents actif: "  Foreground="LightSkyBlue" Margin="5,0,0,0" HorizontalAlignment="Left" Grid.Column="1" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="tblNbAgent" Text=" Nombre d'agents actif: "  Foreground="{DynamicResource ThemeInkBrush}" Margin="5,0,0,0" HorizontalAlignment="Left" Grid.Column="1" TextWrapping="Wrap"/>
                         <WrapPanel HorizontalAlignment="Center" Margin="0,5,0,0" >
                             <CheckBox x:Name="AgActif" Content="Actif" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}" IsChecked="True" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="20,0,7,0" />
                             <CheckBox x:Name="AgInActif" Content="Inactif" Background="{DynamicResource ThemeCardBrush}" Foreground="{DynamicResource ThemeInkBrush}" IsChecked="False" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="20,0,7,0" />

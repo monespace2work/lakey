@@ -27,12 +27,12 @@
             </Grid>
         </Border>
         <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="#FF000A1D">
-            <StackPanel Background="#FF150452">
+            <StackPanel Background="{DynamicResource ThemeSectionHeaderBrush}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Label Content="ETATS" Foreground="White" FontSize="15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Label Content="ETATS" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}" FontSize="15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <Button x:Name="btnPointG" Content="Details / cient" Margin="50,5,15,5" Padding="10,1" Background="{DynamicResource ThemeActionPointBrush}" ToolTip="POINT POUR LE SALAIRE" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ThemeActionPointTextBrush}"/>
                 </StackPanel>
-                <TextBlock x:Name="tblNbClientEtatsActifs" Text=" Nombre de contrats en cours de validité : " Background="#FF150452" Foreground="LightSkyBlue" />
+                <TextBlock x:Name="tblNbClientEtatsActifs" Text=" Nombre de contrats en cours de validité : " Foreground="{DynamicResource ThemeInkBrush}" />
             </StackPanel>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">

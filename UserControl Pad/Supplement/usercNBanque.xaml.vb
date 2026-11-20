@@ -234,7 +234,7 @@ Public Class usercNBanque
         If MessageBox.Show("Modifier ce compte ?", "MODIFICATION...", MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             Dim iStr As String = ""
             iStr = "update agents  set "
-            iStr &= $"Banque='{Apost(cbxBank.SelectedItem)}', NumCompte='{ Apost(tbxNumCompt.Text)}' where NumMatr='{Apost(cbxMatric.SelectedItem)}'"
+            iStr &= $"Banque='{Apost(cbxBank.SelectedItem)}', NumCompte='{ Apost(tbxNumCompt.Text)}', OpTime='{Now.ToString("yyyy-MM-dd HH:mm:ss")}' where NumMatr='{Apost(cbxMatric.SelectedItem)}'"
             If SaveNewData(iStr, iConnxStr) Then
                 Joper("Modif new Agent Compte de " & cbxAgent.SelectedItem, iConnxStr)
                 MsgBox("MODIFICATION réalisée avec succès")

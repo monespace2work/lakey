@@ -55,9 +55,9 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
-                    <Label Content="PLANNING" Foreground="White"  FontSize="15" HorizontalContentAlignment="Center"/>
-                    <TextBlock x:Name="tblNbAgentPlanning" Text=" Nombre d'affectations en cours de validité : " Foreground="LightSkyBlue" />
+                <StackPanel Grid.Column="0" Background="{DynamicResource ThemeSectionHeaderBrush}">
+                    <Label Content="PLANNING" Foreground="{DynamicResource ThemeSectionHeaderAccentBrush}"  FontSize="15" HorizontalContentAlignment="Center"/>
+                    <TextBlock x:Name="tblNbAgentPlanning" Text=" Nombre d'affectations en cours de validité : " Foreground="{DynamicResource ThemeInkBrush}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
