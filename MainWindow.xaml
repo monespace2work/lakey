@@ -219,11 +219,7 @@
                 <StackPanel >
                     <Border x:Name="bdrEnTete001" >
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition MinWidth="90"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Right" MinHeight="35">
+                            <StackPanel   Orientation="Horizontal" HorizontalAlignment="Right" MinHeight="35">
                                 <Button x:Name="btnBirthdayIndicator" Visibility="Collapsed"
                                         Margin="6,0" Padding="10,4" MinWidth="155" MinHeight="40"
                                         VerticalAlignment="Center" Background="#FFC62828"

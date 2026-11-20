@@ -301,8 +301,8 @@ Public Class usercTBord
             iDt.Columns.Add("26-40ans")
             iDt.Columns.Add("31-45ans")
             iDt.Columns.Add("26-50ans")
-            iDt.Columns.Add("31-55ans")
-            iDt.Columns.Add("31-60ans")
+            iDt.Columns.Add("51-55ans")
+            iDt.Columns.Add("56-60ans")
             iDt.Columns.Add(">60ans")
 
             'MsgBox(iStr)
