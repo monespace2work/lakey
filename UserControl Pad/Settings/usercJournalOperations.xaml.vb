@@ -103,7 +103,10 @@ Public Class usercJournalOperations
             "ELSE '' END"
 
         Dim sql As String =
-            "SELECT DateOperation, Operateur, " &
+            "SELECT CASE " &
+            "WHEN DateOperation IS NULL OR TRIM(CAST(DateOperation AS TEXT)) = '' THEN '' " &
+            "ELSE strftime('%m-%d-%Y %H:%M:%S', DateOperation) " &
+            "END AS DateOperation, Operateur, " &
             "COALESCE(Operation,'') AS Operation, " &
             effectiveActionExpr & " AS ActionType, " &
             "COALESCE(Entite,'') AS Entite, " &

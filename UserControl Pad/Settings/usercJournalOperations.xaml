@@ -92,7 +92,7 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Date" Binding="{Binding DateOperation}" Width="150"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding DateOperation, StringFormat={}{0:MM-dd-yyyy HH:mm:ss}}" Width="160"/>
                     <DataGridTextColumn Header="Opérateur" Binding="{Binding Operateur}" Width="140"/>
                     <DataGridTextColumn Header="Opération" Binding="{Binding Operation}" Width="*" MinWidth="320"/>
                     <DataGridTextColumn Header="Action" Binding="{Binding ActionType}" Width="90"/>

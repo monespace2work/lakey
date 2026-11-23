@@ -553,3 +553,4 @@ E:\iclones\lakey\obj\x64\Debug\Lakey.xml
 E:\iclones\lakey\obj\x64\Debug\Lakey.pdb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\usercJournalOperations.g.vb
 E:\iclones\lakey\obj\x64\Debug\UserControl Pad\Settings\usercJournalOperations.baml
+E:\iclones\lakey\obj\x64\Debug\Lakey.vbproj.AssemblyReference.cache

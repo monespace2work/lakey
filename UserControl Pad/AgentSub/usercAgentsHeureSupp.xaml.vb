@@ -102,7 +102,7 @@ Public Class usercAgentsHeureSupp
         CbxNbrFaction.SelectedIndex = -1
         CbxNom.SelectedIndex = -1
         maj()
-        Dim istr As String = " select h.Agent,format(h.DateHS)  ,h.NbFaction,SiteHS,h.Obs,h.IdHS  "
+        Dim istr As String = " select h.Agent,format(h.DateHS) as DateHS, h.NbFaction, SiteHS, h.Obs, h.IdHS "
         istr += " from heuresup h join agents ag on ag.NomPrenoms=h.Agent "
         istr += " where ag.Actif=1 and h.DateHS>='" & DebutDuMois(Today.AddMonths(-1)).ToString("yyyy-MM-dd") & "' "
         istr += " order by ag.Actif desc, h.DateHS desc,  h.Agent "
