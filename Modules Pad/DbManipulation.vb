@@ -1825,11 +1825,173 @@ Module DbManipulation
             ListePermissionCongeEnAttente = ""
         End If
     End Function
-    Public Function Joper(ChaineDeMots As String, Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
-        Joper = False
-        'Dim iConxStr As String = $"Data Source={PaphBackUp()};Version=3;"
-        Dim iStr As String = "insert into jope (operation,operateur) values ('" & Apost(ChaineDeMots) & "','" & Apost(UserName) & "') "
-        Joper = SaveNewData(iStr, iConxStr)
+    Public Function GetGeneralDatabaseConnectionString(Optional iConxStr As String = "") As String
+        Dim source As String = iConxStr
+        If String.IsNullOrWhiteSpace(source) Then
+            If Not String.IsNullOrWhiteSpace(DbPathGeneral) Then
+                source = "Data Source=" & DbPathGeneral & ";Version=3;"
+            ElseIf Not String.IsNullOrWhiteSpace(DbPath) Then
+                source = "Data Source=" & DbPath & ";Version=3;"
+            Else
+                source = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;"
+            End If
+        End If
+
+        Dim resolved As String = ResolveMainDatabaseConnectionString(source, True)
+        If Not String.IsNullOrWhiteSpace(DbPathGeneral) Then
+            Try
+                Dim builder As New SQLiteConnectionStringBuilder(resolved)
+                If IsMainDatabasePath(builder.DataSource) Then
+                    builder.DataSource = DbPathGeneral
+                    resolved = builder.ToString()
+                End If
+            Catch
+                ' Conserver la chaîne résolue si elle ne peut pas être normalisée.
+            End Try
+        End If
+        Return resolved
+    End Function
+
+    Public Sub EnsureJopeSchema(Optional connectionString As String = "")
+        Dim resolvedConnectionString As String = GetGeneralDatabaseConnectionString(connectionString)
+        Try
+            Using connection As New SQLiteConnection(resolvedConnectionString)
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    EnsureJopeSchema(connection, transaction)
+                    transaction.Commit()
+                End Using
+            End Using
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("Impossible de vérifier le schéma JOPE : " & ex.ToString())
+        End Try
+    End Sub
+
+    Public Sub EnsureJopeSchema(connection As SQLiteConnection, transaction As SQLiteTransaction)
+        ExecuteJopeSchemaNonQuery(
+            "CREATE TABLE IF NOT EXISTS JOPE (" &
+            "OrdrOperation INTEGER PRIMARY KEY AUTOINCREMENT, " &
+            "DateOperation datetime NOT NULL DEFAULT (datetime('now','localtime')), " &
+            "Operation varchar(255) NOT NULL, " &
+            "Operateur varchar(255) NOT NULL, " &
+            "ActionType varchar(50), " &
+            "Entite varchar(100), " &
+            "Cible varchar(255), " &
+            "Details TEXT)", connection, transaction)
+
+        EnsureJopeColumn(connection, transaction, "DateOperation", "datetime")
+        EnsureJopeColumn(connection, transaction, "ActionType", "varchar(50)")
+        EnsureJopeColumn(connection, transaction, "Entite", "varchar(100)")
+        EnsureJopeColumn(connection, transaction, "Cible", "varchar(255)")
+        EnsureJopeColumn(connection, transaction, "Details", "TEXT")
+
+        ExecuteJopeSchemaNonQuery("CREATE INDEX IF NOT EXISTS idx_jope_date ON JOPE(DateOperation)", connection, transaction)
+        ExecuteJopeSchemaNonQuery("CREATE INDEX IF NOT EXISTS idx_jope_operateur ON JOPE(Operateur)", connection, transaction)
+        ExecuteJopeSchemaNonQuery("CREATE INDEX IF NOT EXISTS idx_jope_action ON JOPE(ActionType)", connection, transaction)
+    End Sub
+
+    Private Sub EnsureJopeColumn(connection As SQLiteConnection, transaction As SQLiteTransaction, columnName As String, columnType As String)
+        Dim exists As Boolean = False
+        Using cmd As New SQLiteCommand("PRAGMA table_info(JOPE)", connection, transaction)
+            Using reader As SQLiteDataReader = cmd.ExecuteReader()
+                While reader.Read()
+                    If String.Equals(Convert.ToString(reader("name")), columnName, StringComparison.OrdinalIgnoreCase) Then
+                        exists = True
+                        Exit While
+                    End If
+                End While
+            End Using
+        End Using
+        If Not exists Then
+            ExecuteJopeSchemaNonQuery("ALTER TABLE JOPE ADD COLUMN " & columnName & " " & columnType, connection, transaction)
+        End If
+    End Sub
+
+    Private Sub ExecuteJopeSchemaNonQuery(sql As String, connection As SQLiteConnection, transaction As SQLiteTransaction)
+        Using cmd As New SQLiteCommand(sql, connection, transaction)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+    Private Function NormalizeJopeOperator(Optional operateur As String = "") As String
+        Dim value As String = If(String.IsNullOrWhiteSpace(operateur), UserName, operateur)
+        If value Is Nothing Then value = ""
+        value = value.Trim()
+        If value.Length > 255 Then value = value.Substring(0, 255)
+        Return value
+    End Function
+
+    Private Function NormalizeJopeText(value As String, Optional maxLength As Integer = 255) As String
+        If value Is Nothing Then Return Nothing
+        Dim normalized As String = value.Trim()
+        If normalized = "" Then Return Nothing
+        If maxLength > 0 AndAlso normalized.Length > maxLength Then
+            normalized = normalized.Substring(0, maxLength)
+        End If
+        Return normalized
+    End Function
+
+    Public Sub JoperInTransaction(connection As SQLiteConnection,
+                                  transaction As SQLiteTransaction,
+                                  operation As String,
+                                  Optional actionType As String = "",
+                                  Optional entite As String = "",
+                                  Optional cible As String = "",
+                                  Optional details As String = "",
+                                  Optional operateur As String = "")
+        EnsureJopeSchema(connection, transaction)
+
+        Dim opText As String = If(operation, "").Trim()
+        If String.IsNullOrWhiteSpace(opText) Then opText = "Opération"
+        If opText.Length > 255 Then opText = opText.Substring(0, 255)
+
+        Dim finalActionType As String = NormalizeJopeText(actionType, 50)
+        Dim finalEntite As String = NormalizeJopeText(entite, 100)
+        Dim finalCible As String = NormalizeJopeText(cible, 255)
+        Dim finalDetails As String = details
+        If finalDetails IsNot Nothing Then
+            finalDetails = finalDetails.Trim()
+            If finalDetails = "" Then finalDetails = Nothing
+        End If
+
+        Using command As New SQLiteCommand(
+            "INSERT INTO JOPE (DateOperation, Operation, Operateur, ActionType, Entite, Cible, Details) " &
+            "VALUES (@dateOperation, @operation, @operateur, @actionType, @entite, @cible, @details)",
+            connection, transaction)
+            command.Parameters.AddWithValue("@dateOperation", Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            command.Parameters.AddWithValue("@operation", opText)
+            command.Parameters.AddWithValue("@operateur", NormalizeJopeOperator(operateur))
+            command.Parameters.AddWithValue("@actionType", If(finalActionType, CType(DBNull.Value, Object)))
+            command.Parameters.AddWithValue("@entite", If(finalEntite, CType(DBNull.Value, Object)))
+            command.Parameters.AddWithValue("@cible", If(finalCible, CType(DBNull.Value, Object)))
+            command.Parameters.AddWithValue("@details", If(finalDetails, CType(DBNull.Value, Object)))
+            command.ExecuteNonQuery()
+        End Using
+    End Sub
+
+    Public Function Joper(ChaineDeMots As String,
+                          Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;",
+                          Optional actionType As String = "",
+                          Optional entite As String = "",
+                          Optional cible As String = "",
+                          Optional details As String = "") As Boolean
+        Try
+            Dim resolvedConnectionString As String = GetGeneralDatabaseConnectionString(iConxStr)
+            Using connection As New SQLiteConnection(resolvedConnectionString)
+                connection.Open()
+                Using transaction As SQLiteTransaction = connection.BeginTransaction()
+                    JoperInTransaction(connection, transaction, ChaineDeMots, actionType, entite, cible, details)
+                    transaction.Commit()
+                End Using
+            End Using
+            If Not LocalModeBb AndAlso IsMainDatabasePath(New SQLiteConnectionStringBuilder(resolvedConnectionString).DataSource) Then
+                NotifyGeneralDatabaseChanged()
+            End If
+            Return True
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("Échec de l'écriture dans le journal JOPE : " & ex.ToString())
+            Return False
+        End Try
     End Function
     Public Function SessLogin(Optional iConxStr As String = "Data Source=C:\LkyRess\ManA.sqlite;Version=3;") As Boolean
         SessLogin = False

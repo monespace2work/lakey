@@ -421,7 +421,7 @@ Public Class usercAgentsAbsences
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            ImportAbsencesCsv(table, hasHeader)
+            ImportAbsencesCsv(table, hasHeader, dialog.FileName)
             If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
             Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             MessageBox.Show(table.Rows.Count & " absence(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
@@ -432,7 +432,7 @@ Public Class usercAgentsAbsences
         End Try
     End Sub
 
-    Private Sub ImportAbsencesCsv(table As DataTable, hasHeader As Boolean)
+    Private Sub ImportAbsencesCsv(table As DataTable, hasHeader As Boolean, Optional importFilePath As String = "")
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
@@ -506,14 +506,13 @@ Public Class usercAgentsAbsences
                         command.Parameters.AddWithValue("@observations", CsvValue(row, "Observations", "Obs"))
                         command.ExecuteNonQuery()
                     End Using
-                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
-                        command.Parameters.AddWithValue("@operation", "ImportCsvAbsence for " & agentName)
-                        command.Parameters.AddWithValue("@operator", UserName)
-                        command.ExecuteNonQuery()
-                    End Using
                     nextId += 1
                 Next
 
+                JoperInTransaction(connection, transaction,
+                                   "Import CSV absences : " & table.Rows.Count & " ligne(s)" & If(String.IsNullOrWhiteSpace(importFilePath), "", " depuis " & IO.Path.GetFileName(importFilePath)),
+                                   "IMPORT", "Absences", If(String.IsNullOrWhiteSpace(importFilePath), Nothing, IO.Path.GetFileName(importFilePath)),
+                                   importFilePath)
                 transaction.Commit()
             End Using
         End Using

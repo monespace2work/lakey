@@ -339,6 +339,16 @@ UserManager
 InitializeComponent
 </summary>
 </member>
+<member name="T:Lakey.usercJournalOperations">
+<summary>
+usercJournalOperations
+</summary>
+</member>
+<member name="M:Lakey.usercJournalOperations.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
 <member name="T:Lakey.usercAngence">
 <summary>
 usercAngence

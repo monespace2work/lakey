@@ -2368,6 +2368,14 @@ Class MainWindow
         IdBuder.BackupNow()
     End Sub
 
+    Private Sub mitJournalOperations_Click(sender As Object, e As RoutedEventArgs)
+        Try
+            cctrlCentral.Content = New usercJournalOperations
+        Catch ex As Exception
+            MessageBox.Show("Impossible d'ouvrir le journal des opérations : " & ex.Message, "Journal des opérations", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Try
+    End Sub
+
     Private Sub mitChangerUtilisateur_Click(sender As Object, e As RoutedEventArgs)
         ChangerUtilisateur()
     End Sub

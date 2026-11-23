@@ -265,6 +265,9 @@
     <Compile Include="UserControl Pad\Settings\UserManager.xaml.vb">
       <DependentUpon>UserManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControl Pad\Settings\usercJournalOperations.xaml.vb">
+      <DependentUpon>usercJournalOperations.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControl Pad\Structure\usercAngence.xaml.vb">
       <DependentUpon>usercAngence.xaml</DependentUpon>
     </Compile>
@@ -444,6 +447,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControl Pad\Settings\UserManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl Pad\Settings\usercJournalOperations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

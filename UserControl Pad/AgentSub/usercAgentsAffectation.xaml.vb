@@ -231,14 +231,10 @@ Public Class usercAgentsAffectation
                 Dim operation As String = If(isNew,
                                              "SaveNewAffectation for " & agentName,
                                              "SaveModifAffect for " & agentName & " at " & affectationId)
-                Using command As New SQLiteCommand(
-                    "INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)",
-                    connection,
-                    transaction)
-                    command.Parameters.AddWithValue("@operation", operation)
-                    command.Parameters.AddWithValue("@operator", UserName)
-                    command.ExecuteNonQuery()
-                End Using
+                JoperInTransaction(connection, transaction, operation,
+                                   If(isNew, "CREATE", "UPDATE"), "Affectation",
+                                   If(isNew, agentName, affectationId.ToString()),
+                                   If(isNew, "Nouvelle affectation", "Modification d'affectation"))
 
                 transaction.Commit()
             End Using
@@ -290,7 +286,7 @@ Public Class usercAgentsAffectation
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            Await Task.Run(Sub() ImportAffectationsCsv(table, hasHeader))
+            Await Task.Run(Sub() ImportAffectationsCsv(table, hasHeader, dialog.FileName))
             Await RefreshAfterMutationAsync()
             MessageBox.Show(table.Rows.Count & " affectation(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
         Catch ex As Exception
@@ -300,7 +296,7 @@ Public Class usercAgentsAffectation
         End Try
     End Sub
 
-    Private Sub ImportAffectationsCsv(table As DataTable, hasHeader As Boolean)
+    Private Sub ImportAffectationsCsv(table As DataTable, hasHeader As Boolean, Optional importFilePath As String = "")
         Dim writeConnectionString As String = ResolveMainDatabaseConnectionString(iConnxStr, True)
         Using connection As New SQLiteConnection(writeConnectionString)
             connection.Open()
@@ -424,14 +420,13 @@ Public Class usercAgentsAffectation
                         command.Parameters.AddWithValue("@observations", CsvValue(row, "Observations", "ObsAffect", "Obs"))
                         command.ExecuteNonQuery()
                     End Using
-                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
-                        command.Parameters.AddWithValue("@operation", "ImportCsvAffectation for " & agentName)
-                        command.Parameters.AddWithValue("@operator", UserName)
-                        command.ExecuteNonQuery()
-                    End Using
                     nextId += 1
                 Next
 
+                JoperInTransaction(connection, transaction,
+                                   "Import CSV affectations : " & table.Rows.Count & " ligne(s)" & If(String.IsNullOrWhiteSpace(importFilePath), "", " depuis " & IO.Path.GetFileName(importFilePath)),
+                                   "IMPORT", "Affectation", If(String.IsNullOrWhiteSpace(importFilePath), Nothing, IO.Path.GetFileName(importFilePath)),
+                                   importFilePath)
                 transaction.Commit()
             End Using
         End Using
@@ -451,14 +446,7 @@ Public Class usercAgentsAffectation
                     command.ExecuteNonQuery()
                 End Using
 
-                Using command As New SQLiteCommand(
-                    "INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)",
-                    connection,
-                    transaction)
-                    command.Parameters.AddWithValue("@operation", "DeleteAff at " & affectationId)
-                    command.Parameters.AddWithValue("@operator", UserName)
-                    command.ExecuteNonQuery()
-                End Using
+                JoperInTransaction(connection, transaction, "DeleteAff at " & affectationId, "DELETE", "Affectation", affectationId.ToString())
 
                 transaction.Commit()
             End Using

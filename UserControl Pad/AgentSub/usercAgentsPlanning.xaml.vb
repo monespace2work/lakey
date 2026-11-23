@@ -131,7 +131,7 @@ Public Class usercAgentsPlanning
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            Await Task.Run(Sub() ImportPlanningCsv(table, hasHeader))
+            Await Task.Run(Sub() ImportPlanningCsv(table, hasHeader, dialog.FileName))
             Await RefreshAfterDatabaseMutationAsync(Sub() initializ())
             MessageBox.Show(table.Rows.Count & " affectation(s) au planning importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
         Catch ex As Exception
@@ -141,7 +141,7 @@ Public Class usercAgentsPlanning
         End Try
     End Sub
 
-    Private Sub ImportPlanningCsv(table As DataTable, hasHeader As Boolean)
+    Private Sub ImportPlanningCsv(table As DataTable, hasHeader As Boolean, Optional importFilePath As String = "")
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
@@ -214,11 +214,10 @@ Public Class usercAgentsPlanning
                     End Using
                 Next
 
-                Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
-                    command.Parameters.AddWithValue("@operation", "ImportCsvPlanning (" & table.Rows.Count & " entrées)")
-                    command.Parameters.AddWithValue("@operator", UserName)
-                    command.ExecuteNonQuery()
-                End Using
+                JoperInTransaction(connection, transaction,
+                                   "ImportCsvPlanning (" & table.Rows.Count & " entrées)" & If(String.IsNullOrWhiteSpace(importFilePath), "", " depuis " & IO.Path.GetFileName(importFilePath)),
+                                   "IMPORT", "Planning", If(String.IsNullOrWhiteSpace(importFilePath), Nothing, IO.Path.GetFileName(importFilePath)),
+                                   importFilePath)
                 transaction.Commit()
             End Using
         End Using
@@ -1147,7 +1146,7 @@ Public Class usercAgentsPlanning
                 MsgBox(ex.Message)
             End Try
         End If
-        If DeletePlanning Then Joper("SaveModifHS for " & Agent & " at " & Poste, iConnxStr)
+        If DeletePlanning Then Joper("DeletePlanning for " & Agent & " at " & Poste, iConnxStr, "DELETE", "Planning", Poste)
     End Function
 
 End Class

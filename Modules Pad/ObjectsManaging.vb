@@ -166,6 +166,16 @@ Module ObjectsManaging
                 wb.SaveAs(FicherNom)
             End Using
 
+            Try
+                Dim exportScope As String = If(iDataGrid.SelectedItems.Count > 0, "Partiel", "Complet")
+                Dim exportLabel As String = If(String.IsNullOrWhiteSpace(Titre), filename, Titre)
+                Joper("Export Excel : " & exportLabel & " (" & exportScope & ", " & exportTable.Rows.Count & " ligne(s))",
+                      Nothing, "EXPORT", "Export", IO.Path.GetFileName(FicherNom),
+                      "Fichier=" & FicherNom & "; Titre=" & Titre & "; Lignes=" & exportTable.Rows.Count & "; Portee=" & exportScope)
+            Catch exLog As Exception
+                System.Diagnostics.Debug.WriteLine("Erreur journal export Excel: " & exLog.Message)
+            End Try
+
             MessageBox.Show($"Exporté avec succès : {FicherNom}", "Export", MessageBoxButton.OK, MessageBoxImage.Information)
             Process.Start(New ProcessStartInfo(FicherNom) With {.UseShellExecute = True})
 

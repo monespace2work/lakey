@@ -249,7 +249,7 @@ Public Class usercClientsPoste
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            Await Task.Run(Sub() ImportClientPostesCsv(table, hasHeader))
+            Await Task.Run(Sub() ImportClientPostesCsv(table, hasHeader, dialog.FileName))
             If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
             Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             MessageBox.Show(table.Rows.Count & " poste(s) importé(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
@@ -260,7 +260,7 @@ Public Class usercClientsPoste
         End Try
     End Sub
 
-    Private Sub ImportClientPostesCsv(table As DataTable, hasHeader As Boolean)
+    Private Sub ImportClientPostesCsv(table As DataTable, hasHeader As Boolean, Optional importFilePath As String = "")
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
@@ -331,14 +331,13 @@ Public Class usercClientsPoste
                         command.Parameters.AddWithValue("@id", nextId)
                         command.ExecuteNonQuery()
                     End Using
-                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
-                        command.Parameters.AddWithValue("@operation", "ImportCsvPoste for " & designation)
-                        command.Parameters.AddWithValue("@operator", UserName)
-                        command.ExecuteNonQuery()
-                    End Using
                     nextId += 1
                 Next
 
+                JoperInTransaction(connection, transaction,
+                                   "Import CSV postes clients : " & table.Rows.Count & " ligne(s)" & If(String.IsNullOrWhiteSpace(importFilePath), "", " depuis " & IO.Path.GetFileName(importFilePath)),
+                                   "IMPORT", "Poste", If(String.IsNullOrWhiteSpace(importFilePath), Nothing, IO.Path.GetFileName(importFilePath)),
+                                   importFilePath)
                 transaction.Commit()
             End Using
         End Using

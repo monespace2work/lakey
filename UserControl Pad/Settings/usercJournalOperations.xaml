@@ -1,0 +1,138 @@
+<UserControl x:Class="usercJournalOperations"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Lakey"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="1000"
+             Loaded="UserControl_Loaded">
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#FF0F583B" Padding="16,10">
+            <StackPanel>
+                <TextBlock Text="Journal des opérations" Foreground="White" FontSize="22" FontWeight="SemiBold"/>
+                <TextBlock x:Name="TbkSubtitle" Text="Consultez les opérations enregistrées." Foreground="#FFD9F2EA" Margin="0,2,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Margin="12,10,12,6" Padding="10"
+                Background="{DynamicResource ThemeCardBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" CornerRadius="4">
+            <WrapPanel VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Margin="0,0,12,6" VerticalAlignment="Center">
+                    <TextBlock Text="Du" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ThemeInkBrush}"/>
+                    <DatePicker x:Name="DtpFrom" Width="140"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,12,6" VerticalAlignment="Center">
+                    <TextBlock Text="Au" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ThemeInkBrush}"/>
+                    <DatePicker x:Name="DtpTo" Width="140"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,12,6" VerticalAlignment="Center">
+                    <TextBlock Text="Action" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ThemeInkBrush}"/>
+                    <ComboBox x:Name="CbxAction" Width="140" IsEditable="False">
+                        <ComboBoxItem Content="Toutes" IsSelected="True"/>
+                        <ComboBoxItem Content="CREATE"/>
+                        <ComboBoxItem Content="UPDATE"/>
+                        <ComboBoxItem Content="DELETE"/>
+                        <ComboBoxItem Content="IMPORT"/>
+                        <ComboBoxItem Content="EXPORT"/>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel x:Name="SpOperateur" Orientation="Horizontal" Margin="0,0,12,6" VerticalAlignment="Center" Visibility="Collapsed">
+                    <TextBlock Text="Opérateur" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ThemeInkBrush}"/>
+                    <TextBox x:Name="TbxOperateur" Width="160" ToolTip="Filtrer par nom d'utilisateur (administrateur)"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,12,6" VerticalAlignment="Center">
+                    <TextBlock Text="Recherche" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ThemeInkBrush}"/>
+                    <TextBox x:Name="TbxSearch" Width="220" ToolTip="Opération, entité, cible ou détails"/>
+                </StackPanel>
+                <Button x:Name="BtnRefresh" Content="Actualiser" Width="100" Height="28" Margin="0,0,8,6" Click="BtnRefresh_Click"/>
+                <Button x:Name="BtnClear" Content="Réinitialiser" Width="100" Height="28" Margin="0,0,0,6" Click="BtnClear_Click"/>
+            </WrapPanel>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="12,0,12,8">
+            <DataGrid x:Name="DgvJournal"
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      CanUserAddRows="False" CanUserDeleteRows="False"
+                      SelectionMode="Single" HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal"
+                      Background="{DynamicResource ThemeCardBrush}"
+                      Foreground="{DynamicResource ThemeInkBrush}"
+                      RowBackground="Transparent"
+                      AlternationCount="2"
+                      AlternatingRowBackground="#14808080"
+                      BorderBrush="{DynamicResource ThemeBorderBrush}"
+                      HorizontalGridLinesBrush="{DynamicResource ThemeBorderBrush}"
+                      VerticalGridLinesBrush="{DynamicResource ThemeBorderBrush}">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+                        <Setter Property="Background" Value="{DynamicResource ThemeCardBrush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                        <Setter Property="Padding" Value="8,6"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    </Style>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeInkBrush}"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="4,2"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Date" Binding="{Binding DateOperation}" Width="150"/>
+                    <DataGridTextColumn Header="Opérateur" Binding="{Binding Operateur}" Width="140"/>
+                    <DataGridTextColumn Header="Opération" Binding="{Binding Operation}" Width="*" MinWidth="320"/>
+                    <DataGridTextColumn Header="Action" Binding="{Binding ActionType}" Width="90"/>
+                    <DataGridTextColumn Header="Entité" Binding="{Binding Entite}" Width="130"/>
+                    <DataGridTextColumn Header="Cible" Binding="{Binding Cible}" Width="140"/>
+                    <DataGridTextColumn Header="Détails" Binding="{Binding Details}" Width="260"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Border x:Name="LoadingOverlay" Visibility="Collapsed" Background="#7F202020" Panel.ZIndex="10">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid Width="44" Height="44" RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="SpinnerRotateTransform" Angle="0"/>
+                        </Grid.RenderTransform>
+                        <Ellipse Stroke="#55FFFFFF" StrokeThickness="5"/>
+                        <Path Stroke="White" StrokeThickness="5" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              Data="M 22,2 A 20,20 0 1 1 2,22"/>
+                        <Grid.Triggers>
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                <BeginStoryboard x:Name="SpinnerStoryboard">
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="SpinnerRotateTransform"
+                                                         Storyboard.TargetProperty="Angle"
+                                                         From="0" To="360" Duration="0:0:1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Grid.Triggers>
+                    </Grid>
+                    <TextBlock Text="Chargement du journal..." Margin="0,10,0,0" Foreground="White" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="3" Margin="12,0,12,10" Padding="6,4" Background="Transparent">
+            <DockPanel>
+                <TextBlock x:Name="TbkCount" Text="0 opération(s)" VerticalAlignment="Center" Foreground="{DynamicResource ThemeInkBrush}"/>
+                <TextBlock x:Name="TbkScope" DockPanel.Dock="Right" Text="" Foreground="{DynamicResource ThemeInkBrush}" VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>

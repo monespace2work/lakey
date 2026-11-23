@@ -241,7 +241,7 @@ Public Class usercAgentsHeureSupp
                 MessageBoxImage.Question) <> MessageBoxResult.Yes Then Return
 
             elpStatus.Visibility = Visibility.Visible
-            ImportHeuresSuppCsv(table, hasHeader)
+            ImportHeuresSuppCsv(table, hasHeader, dialog.FileName)
             If Not LocalModeBb Then NotifyGeneralDatabaseChanged()
             Await RefreshAfterDatabaseMutationAsync(Sub() ResetValues())
             MessageBox.Show(table.Rows.Count & " ligne(s) importée(s) avec succès.", "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information)
@@ -252,7 +252,7 @@ Public Class usercAgentsHeureSupp
         End Try
     End Sub
 
-    Private Sub ImportHeuresSuppCsv(table As DataTable, hasHeader As Boolean)
+    Private Sub ImportHeuresSuppCsv(table As DataTable, hasHeader As Boolean, Optional importFilePath As String = "")
         Using connection As New SQLiteConnection(ResolveMainDatabaseConnectionString(iConnxStr, True))
             connection.Open()
             Using transaction As SQLiteTransaction = connection.BeginTransaction()
@@ -321,14 +321,13 @@ Public Class usercAgentsHeureSupp
                         command.Parameters.AddWithValue("@observations", CsvValue(row, "Observations", "Obs"))
                         command.ExecuteNonQuery()
                     End Using
-                    Using command As New SQLiteCommand("INSERT INTO jope (operation, operateur) VALUES (@operation, @operator)", connection, transaction)
-                        command.Parameters.AddWithValue("@operation", "ImportCsvHS for " & agentName)
-                        command.Parameters.AddWithValue("@operator", UserName)
-                        command.ExecuteNonQuery()
-                    End Using
                     nextId += 1
                 Next
 
+                JoperInTransaction(connection, transaction,
+                                   "Import CSV heures supplémentaires : " & table.Rows.Count & " ligne(s)" & If(String.IsNullOrWhiteSpace(importFilePath), "", " depuis " & IO.Path.GetFileName(importFilePath)),
+                                   "IMPORT", "HeureSup", If(String.IsNullOrWhiteSpace(importFilePath), Nothing, IO.Path.GetFileName(importFilePath)),
+                                   importFilePath)
                 transaction.Commit()
             End Using
         End Using
@@ -356,7 +355,7 @@ Public Class usercAgentsHeureSupp
         istr += " where IdHS=" & RefHS & " "
         If LocalModeBb Then MsgBox("Vous travaillez en MODE LOCAL ")
         DeleteHS = SaveNewData(istr, iConnxStr)
-        If DeleteHS Then Joper("DeleteAgent at " & RefHS, iConnxStr)
+        If DeleteHS Then Joper("DeleteHS at " & RefHS, iConnxStr, "DELETE", "HeureSup", RefHS.ToString())
 
     End Function
 
