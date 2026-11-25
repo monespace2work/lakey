@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/iclones/lakey/build/cmake_install.cmake",
+		"E:/iclones/lakey/build/flutter/cmake_install.cmake",
+		"E:/iclones/lakey/build/runner/cmake_install.cmake",
+		"E:/iclones/lakey/build/plugins/jni/cmake_install.cmake",
+		"E:/iclones/lakey/build/plugins/jni/shared/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
